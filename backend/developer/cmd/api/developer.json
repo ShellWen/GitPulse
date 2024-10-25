@@ -1,0 +1,121 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "",
+    "version": ""
+  },
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/developer/{username}": {
+      "get": {
+        "operationId": "getDeveloper",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/GetDeveloperResp"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "developer"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "GetDeveloperReq": {
+      "type": "object",
+      "title": "GetDeveloperReq"
+    },
+    "GetDeveloperResp": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "data": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          },
+          "avatar_url": {
+            "type": "string"
+          },
+          "company": {
+            "type": "string"
+          },
+          "location": {
+            "type": "string"
+          },
+          "bio": {
+            "type": "string"
+          },
+          "blog": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "create_at": {
+            "type": "string"
+          },
+          "update_at": {
+            "type": "string"
+          }
+        }
+      },
+      "title": "GetDeveloperResp",
+      "required": [
+        "code",
+        "message",
+        "id",
+        "name",
+        "username",
+        "avatar_url",
+        "company",
+        "location",
+        "bio",
+        "blog",
+        "email",
+        "create_at",
+        "update_at"
+      ]
+    }
+  },
+  "securityDefinitions": {
+    "apiKey": {
+      "type": "apiKey",
+      "description": "Enter JWT Bearer token **_only_**",
+      "name": "Authorization",
+      "in": "header"
+    }
+  }
+}

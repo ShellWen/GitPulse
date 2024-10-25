@@ -1,0 +1,131 @@
+syntax = "proto3";
+
+option go_package ="./pb";
+
+package pb;
+
+// ------------------------------------ 
+// Messages
+// ------------------------------------ 
+
+//--------------------------------developer--------------------------------
+message Developer {
+  uint64 dataId = 1; //Generated primary key, MUST NOT be changed.
+  int64 dataCreateAt = 2; //dataCreateAt
+  int64 dataUpdateAt = 3; //dataUpdateAt
+  uint64 id = 4; //Unique id of GitHub user.
+  string name = 5; //name
+  string username = 6; //username
+  string avatarUrl = 7; //avatarUrl
+  string company = 8; //company
+  string location = 9; //location
+  string bio = 10; //bio
+  string blog = 11; //blog
+  string email = 12; //email
+  int64 createAt = 13; //createAt
+  int64 updateAt = 14; //updateAt
+}
+
+message AddDeveloperReq {
+  uint64 id = 1; //Unique id of GitHub user.
+  string name = 2; //name
+  string username = 3; //username
+  string avatarUrl = 4; //avatarUrl
+  string company = 5; //company
+  string location = 6; //location
+  string bio = 7; //bio
+  string blog = 8; //blog
+  string email = 9; //email
+  int64 createAt = 10; //createAt
+  int64 updateAt = 11; //updateAt
+}
+
+message AddDeveloperResp {
+}
+
+message UpdateDeveloperReq {
+  uint64 id = 1; //Unique id of GitHub user.
+  string name = 2; //name
+  string username = 3; //username
+  string avatarUrl = 4; //avatarUrl
+  string company = 5; //company
+  string location = 6; //location
+  string bio = 7; //bio
+  string blog = 8; //blog
+  string email = 9; //email
+  int64 createAt = 10; //createAt
+  int64 updateAt = 11; //updateAt
+}
+
+message UpdateDeveloperResp {
+}
+
+message DelDeveloperByIdReq {
+  uint64 id = 1; //id
+}
+
+message DelDeveloperByIdResp {
+}
+
+message DelDeveloperByUsernameReq {
+  string username = 1; //username
+}
+
+message DelDeveloperByUsernameResp {
+}
+
+message GetDeveloperByIdReq {
+  uint64 id = 1; //id
+}
+
+message GetDeveloperByIdResp {
+  Developer developer = 1; //developer
+}
+
+message GetDeveloperByUsernameReq {
+  string username = 1; //username
+}
+
+message GetDeveloperByUsernameResp {
+  Developer developer = 1; //developer
+}
+
+message SearchDeveloperReq {
+  int64 page = 1; //page
+  int64 limit = 2; //limit
+  int64 dataId = 3; //Generated primary key, MUST NOT be changed.
+  int64 dataCreateAt = 4; //dataCreateAt
+  int64 dataUpdateAt = 5; //dataUpdateAt
+  uint64 id = 6; //Unique id of GitHub user.
+  string name = 7; //name
+  string username = 8; //username
+  string avatarUrl = 9; //avatarUrl
+  string company = 10; //company
+  string location = 11; //location
+  string bio = 12; //bio
+  string blog = 13; //blog
+  string email = 14; //email
+  int64 createAt = 15; //createAt
+  int64 updateAt = 16; //updateAt
+}
+
+message SearchDeveloperResp {
+  repeated Developer developer = 1; //developer
+}
+
+
+
+// ------------------------------------ 
+// Rpc Func
+// ------------------------------------ 
+
+service developer{
+	 //-----------------------developer----------------------- 
+	 rpc AddDeveloper(AddDeveloperReq) returns (AddDeveloperResp); 
+	 rpc UpdateDeveloper(UpdateDeveloperReq) returns (UpdateDeveloperResp); 
+	 rpc DelDeveloperById(DelDeveloperByIdReq) returns (DelDeveloperByIdResp);
+   rpc DelDeveloperByUsername(DelDeveloperByUsernameReq) returns (DelDeveloperByUsernameResp);
+	 rpc GetDeveloperById(GetDeveloperByIdReq) returns (GetDeveloperByIdResp);
+   rpc GetDeveloperByUsername(GetDeveloperByUsernameReq) returns (GetDeveloperByUsernameResp);
+	 rpc SearchDeveloper(SearchDeveloperReq) returns (SearchDeveloperResp);
+}

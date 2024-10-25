@@ -1,0 +1,35 @@
+syntax = "v1"
+
+type (
+	GetDeveloperReq {
+		Username string `path:"username"`
+	}
+	GetDeveloperResp {
+		Code    int32  `json:"code"`
+		Message string `json:"message"`
+		Data {
+			Id        uint64 `json:"id"`
+			Name      string `json:"name"`
+			Username  string `json:"username"`
+			AvatarUrl string `json:"avatar_url"`
+			Company   string `json:"company"`
+			Location  string `json:"location"`
+			Bio       string `json:"bio"`
+			Blog      string `json:"blog"`
+			Email     string `json:"email"`
+			CreateAt  string `json:"create_at"`
+			UpdateAt  string `json:"update_at"`
+		} `json:"data"`
+	}
+)
+
+@server (
+	prefix:  /developer
+	group:   developer
+	timeout: 500ms
+)
+service Developer {
+	@handler getDeveloper
+	get /:username (GetDeveloperReq) returns (GetDeveloperResp)
+}
+
