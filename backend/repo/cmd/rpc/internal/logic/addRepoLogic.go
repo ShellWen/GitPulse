@@ -1,0 +1,54 @@
+package logic
+
+import (
+	"context"
+	"github.com/ShellWen/GitPulse/repo/model"
+	"time"
+
+	"github.com/ShellWen/GitPulse/repo/cmd/rpc/internal/svc"
+	"github.com/ShellWen/GitPulse/repo/cmd/rpc/pb"
+
+	"github.com/zeromicro/go-zero/core/logx"
+)
+
+type AddRepoLogic struct {
+	ctx    context.Context
+	svcCtx *svc.ServiceContext
+	logx.Logger
+}
+
+func NewAddRepoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AddRepoLogic {
+	return &AddRepoLogic{
+		ctx:    ctx,
+		svcCtx: svcCtx,
+		Logger: logx.WithContext(ctx),
+	}
+}
+
+// -----------------------repo-----------------------
+func (l *AddRepoLogic) AddRepo(in *pb.AddRepoReq) (resp *pb.AddRepoResp, err error) {
+	repo := &model.Repo{
+		DataCreateAt: time.Now(),
+		DataUpdateAt: time.Now(),
+		Id:           in.Id,
+		Name:         in.Name,
+		Gist:         in.Gist,
+		StarCount:    in.StarCount,
+		ForkCount:    in.ForkCount,
+		IssueCount:   in.IssueCount,
+		CommitCount:  in.CommitCount,
+		PrCount:      in.PrCount,
+		Language:     in.Language,
+		Description:  in.Description,
+		Readme:       in.Readme,
+	}
+
+	_, err = l.svcCtx.RepoModel.Insert(l.ctx, repo)
+	if err != nil {
+		return nil, err
+	}
+
+	resp = &pb.AddRepoResp{}
+
+	return
+}
