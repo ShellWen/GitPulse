@@ -28,17 +28,19 @@ func NewAddDeveloperLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AddD
 // -----------------------developer-----------------------
 func (l *AddDeveloperLogic) AddDeveloper(in *pb.AddDeveloperReq) (resp *pb.AddDeveloperResp, err error) {
 	developer := &model.Developer{
-		Id:        in.Id,
-		Name:      in.Name,
-		Username:  in.Username,
-		AvatarUrl: in.AvatarUrl,
-		Company:   in.Company,
-		Location:  in.Location,
-		Bio:       in.Bio,
-		Blog:      in.Blog,
-		Email:     in.Email,
-		CreateAt:  time.Unix(in.CreateAt, 0),
-		UpdateAt:  time.Unix(in.UpdateAt, 0),
+		DataCreateAt: time.Now(),
+		DataUpdateAt: time.Now(),
+		Id:           in.Id,
+		Name:         in.Name,
+		Username:     in.Username,
+		AvatarUrl:    in.AvatarUrl,
+		Company:      in.Company,
+		Location:     in.Location,
+		Bio:          in.Bio,
+		Blog:         in.Blog,
+		Email:        in.Email,
+		CreateAt:     time.Unix(in.CreateAt, 0),
+		UpdateAt:     time.Unix(in.UpdateAt, 0),
 	}
 
 	_, err = l.svcCtx.DeveloperModel.Insert(l.ctx, developer)
