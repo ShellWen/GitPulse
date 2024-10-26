@@ -11,3 +11,6 @@ export const baseResponse = <T extends z.ZodType>(data: T) => z.object({
 })
 
 export type BaseResponse<T extends z.ZodType> = z.infer<ReturnType<typeof baseResponse<T>>>
+
+export const baseResponseNull = baseResponse(z.null())
+export type BaseResponseNull = z.infer<ReturnType<typeof baseResponse<z.ZodNull>>>

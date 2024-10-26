@@ -7,8 +7,18 @@ import { BASE_URL } from './index.ts'
 
 // noinspection JSUnusedGlobalSymbols
 export const handlers = [
-  http.get(`${BASE_URL}/user/:userName`, async () => {
+  http.get(`${BASE_URL}/user/:userName`, async ({ params }) => {
     await delay(1000)
+
+    if (params.userName !== 'shellwen') {
+      return HttpResponse.json(baseResponse(z.null()).parse({
+        code: 404,
+        message: 'User not found',
+        data: null,
+      }), {
+        status: 404,
+      })
+    }
 
     const userResponse = baseResponse(user)
     type UserResponse = z.infer<typeof userResponse>
