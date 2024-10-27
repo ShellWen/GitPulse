@@ -35,7 +35,7 @@ const data = [
 ]
 
 // It's too large to bundle the whole antd
-const Pie = lazy(() => import('@ant-design/plots').then((mod) => ({ default: mod.Pie })))
+const Pie = lazy(() => import('@ant-design/plots/es/components/pie'))
 
 const DemoPie = () => {
   const isDarkMode = useDarkMode()
