@@ -1,4 +1,4 @@
-import { ComponentProps, PropsWithChildren, Suspense, useCallback, useMemo } from 'react'
+import { ComponentProps, PropsWithChildren, Suspense, lazy, useCallback, useMemo } from 'react'
 
 import UserGlance from '$/component/user/UserGlance.tsx'
 import UserInfo from '$/component/user/UserInfo.tsx'
@@ -6,7 +6,6 @@ import UserInfoSkeleton from '$/component/user/UserInfoSkeleton.tsx'
 import { BusinessError } from '$/lib/query/error.ts'
 import { useSuspenseUser } from '$/lib/query/useUser.ts'
 import useDarkMode from '$/lib/useDarkMode.ts'
-import { Pie } from '@ant-design/plots'
 import { QueryErrorResetBoundary } from '@tanstack/react-query'
 import { createLazyFileRoute, getRouteApi } from '@tanstack/react-router'
 import { Button, Skeleton } from 'react-daisyui'
@@ -34,6 +33,10 @@ const data = [
   { type: '分类五', value: 10 },
   { type: '其他', value: 5 },
 ]
+
+// It's too large to bundle the whole antd
+const Pie = lazy(() => import('@ant-design/plots').then((mod) => ({ default: mod.Pie })))
+
 const DemoPie = () => {
   const isDarkMode = useDarkMode()
   const config = useMemo(
@@ -65,9 +68,11 @@ const UserTable = () => {
   return (
     <div className="flex w-full max-w-4xl flex-col">
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <section className="h-64 w-full rounded bg-base-200">
-          <DemoPie />
-        </section>
+        <Suspense fallback={<Skeleton className="h-64 w-full rounded bg-base-200" />}>
+          <section className="h-64 w-full rounded bg-base-200">
+            <DemoPie />
+          </section>
+        </Suspense>
         <Skeleton className="h-64 w-full rounded bg-base-200" />
         <Skeleton className="h-64 w-full rounded bg-base-200" />
         <Skeleton className="h-64 w-full rounded bg-base-200" />

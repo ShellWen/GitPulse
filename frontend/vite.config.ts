@@ -11,4 +11,15 @@ export default defineConfig({
       '$': '/src',
     },
   },
+
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // Split antd and antd-charts into separate chunks cuz they are too large
+          'ant-charts': ['@ant-design/charts', '@ant-design/plots'],
+        }
+      }
+    }
+  }
 })
