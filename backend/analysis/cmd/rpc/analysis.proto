@@ -1,0 +1,71 @@
+syntax = "proto3";
+
+option go_package ="./pb";
+
+package pb;
+
+// ------------------------------------ 
+// Messages
+// ------------------------------------ 
+
+//--------------------------------analysis--------------------------------
+message Analysis {
+  int64 dataId = 1; //dataId
+  int64 dataCreateAt = 2; //dataCreateAt
+  int64 dataUpdateAt = 3; //dataUpdateAt
+  string languages = 4; //languages
+  double talentRank = 5; //talentRank
+  int64 developerId = 6; //developerId
+  string nation = 7; //nation
+}
+
+message AddAnalysisReq {
+  string languages = 1; //languages
+  double talentRank = 2; //talentRank
+  int64 developerId = 3; //developerId
+  string nation = 4; //nation
+}
+
+message AddAnalysisResp {
+}
+
+message UpdateAnalysisReq {
+  string languages = 1; //languages
+  double talentRank = 2; //talentRank
+  int64 developerId = 3; //developerId
+  string nation = 4; //nation
+}
+
+message UpdateAnalysisResp {
+}
+
+message DelAnalysisReq {
+  int64 developerId = 1; //developerId
+}
+
+message DelAnalysisResp {
+}
+
+message GetAnalysisReq {
+  int64 developerId = 1; //developerId
+}
+
+message GetAnalysisResp {
+  Analysis analysis = 1; //analysis
+}
+
+
+
+// ------------------------------------ 
+// Rpc Func
+// ------------------------------------ 
+
+service analysis{ 
+
+	 //-----------------------analysis----------------------- 
+	 rpc AddAnalysis(AddAnalysisReq) returns (AddAnalysisResp); 
+	 rpc UpdateAnalysis(UpdateAnalysisReq) returns (UpdateAnalysisResp); 
+	 rpc DelAnalysis(DelAnalysisReq) returns (DelAnalysisResp); 
+	 rpc GetAnalysis(GetAnalysisReq) returns (GetAnalysisResp);
+
+}
