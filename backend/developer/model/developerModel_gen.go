@@ -19,24 +19,24 @@ import (
 )
 
 var (
-	developerFieldNames          = builder.RawFieldNames(&Developer{})
+	developerFieldNames          = builder.RawFieldNames(&Developer{}, true)
 	developerRows                = strings.Join(developerFieldNames, ",")
-	developerRowsExpectAutoSet   = strings.Join(stringx.Remove(developerFieldNames, "`data_id`", "`create_at`", "`create_time`", "`created_at`", "`update_at`", "`update_time`", "`updated_at`"), ",")
-	developerRowsWithPlaceHolder = strings.Join(stringx.Remove(developerFieldNames, "`data_id`", "`create_at`", "`create_time`", "`created_at`", "`update_at`", "`update_time`", "`updated_at`"), "=?,") + "=?"
+	developerRowsExpectAutoSet   = strings.Join(stringx.Remove(developerFieldNames, "data_id", "create_at", "create_time", "created_at", "update_at", "update_time", "updated_at"), ",")
+	developerRowsWithPlaceHolder = builder.PostgreSqlJoin(stringx.Remove(developerFieldNames, "data_id", "create_at", "create_time", "created_at", "update_at", "update_time", "updated_at"))
 
-	cacheDeveloperDataIdPrefix   = "cache:developer:dataId:"
-	cacheDeveloperIdPrefix       = "cache:developer:id:"
-	cacheDeveloperUsernamePrefix = "cache:developer:username:"
+	cacheDeveloperDeveloperDataIdPrefix   = "cache:developer:developer:dataId:"
+	cacheDeveloperDeveloperIdPrefix       = "cache:developer:developer:id:"
+	cacheDeveloperDeveloperUsernamePrefix = "cache:developer:developer:username:"
 )
 
 type (
 	developerModel interface {
 		Insert(ctx context.Context, data *Developer) (sql.Result, error)
-		FindOne(ctx context.Context, dataId uint64) (*Developer, error)
-		FindOneById(ctx context.Context, id uint64) (*Developer, error)
+		FindOne(ctx context.Context, dataId int64) (*Developer, error)
+		FindOneById(ctx context.Context, id int64) (*Developer, error)
 		FindOneByUsername(ctx context.Context, username string) (*Developer, error)
 		Update(ctx context.Context, data *Developer) error
-		Delete(ctx context.Context, dataId uint64) error
+		Delete(ctx context.Context, dataId int64) error
 	}
 
 	defaultDeveloperModel struct {
@@ -45,10 +45,10 @@ type (
 	}
 
 	Developer struct {
-		DataId       uint64    `db:"data_id"` // Generated primary key, MUST NOT be changed.
+		DataId       int64     `db:"data_id"`
 		DataCreateAt time.Time `db:"data_create_at"`
 		DataUpdateAt time.Time `db:"data_update_at"`
-		Id           uint64    `db:"id"` // Unique id of GitHub user.
+		Id           int64     `db:"id"`
 		Name         string    `db:"name"`
 		Username     string    `db:"username"`
 		AvatarUrl    string    `db:"avatar_url"`
@@ -65,31 +65,31 @@ type (
 func newDeveloperModel(conn sqlx.SqlConn, c cache.CacheConf, opts ...cache.Option) *defaultDeveloperModel {
 	return &defaultDeveloperModel{
 		CachedConn: sqlc.NewConn(conn, c, opts...),
-		table:      "`developer`",
+		table:      `"developer"."developer"`,
 	}
 }
 
-func (m *defaultDeveloperModel) Delete(ctx context.Context, dataId uint64) error {
+func (m *defaultDeveloperModel) Delete(ctx context.Context, dataId int64) error {
 	data, err := m.FindOne(ctx, dataId)
 	if err != nil {
 		return err
 	}
 
-	developerDataIdKey := fmt.Sprintf("%s%v", cacheDeveloperDataIdPrefix, dataId)
-	developerIdKey := fmt.Sprintf("%s%v", cacheDeveloperIdPrefix, data.Id)
-	developerUsernameKey := fmt.Sprintf("%s%v", cacheDeveloperUsernamePrefix, data.Username)
+	developerDeveloperDataIdKey := fmt.Sprintf("%s%v", cacheDeveloperDeveloperDataIdPrefix, dataId)
+	developerDeveloperIdKey := fmt.Sprintf("%s%v", cacheDeveloperDeveloperIdPrefix, data.Id)
+	developerDeveloperUsernameKey := fmt.Sprintf("%s%v", cacheDeveloperDeveloperUsernamePrefix, data.Username)
 	_, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("delete from %s where `data_id` = ?", m.table)
+		query := fmt.Sprintf("delete from %s where data_id = $1", m.table)
 		return conn.ExecCtx(ctx, query, dataId)
-	}, developerDataIdKey, developerIdKey, developerUsernameKey)
+	}, developerDeveloperDataIdKey, developerDeveloperIdKey, developerDeveloperUsernameKey)
 	return err
 }
 
-func (m *defaultDeveloperModel) FindOne(ctx context.Context, dataId uint64) (*Developer, error) {
-	developerDataIdKey := fmt.Sprintf("%s%v", cacheDeveloperDataIdPrefix, dataId)
+func (m *defaultDeveloperModel) FindOne(ctx context.Context, dataId int64) (*Developer, error) {
+	developerDeveloperDataIdKey := fmt.Sprintf("%s%v", cacheDeveloperDeveloperDataIdPrefix, dataId)
 	var resp Developer
-	err := m.QueryRowCtx(ctx, &resp, developerDataIdKey, func(ctx context.Context, conn sqlx.SqlConn, v any) error {
-		query := fmt.Sprintf("select %s from %s where `data_id` = ? limit 1", developerRows, m.table)
+	err := m.QueryRowCtx(ctx, &resp, developerDeveloperDataIdKey, func(ctx context.Context, conn sqlx.SqlConn, v any) error {
+		query := fmt.Sprintf("select %s from %s where data_id = $1 limit 1", developerRows, m.table)
 		return conn.QueryRowCtx(ctx, v, query, dataId)
 	})
 	switch err {
@@ -102,11 +102,11 @@ func (m *defaultDeveloperModel) FindOne(ctx context.Context, dataId uint64) (*De
 	}
 }
 
-func (m *defaultDeveloperModel) FindOneById(ctx context.Context, id uint64) (*Developer, error) {
-	developerIdKey := fmt.Sprintf("%s%v", cacheDeveloperIdPrefix, id)
+func (m *defaultDeveloperModel) FindOneById(ctx context.Context, id int64) (*Developer, error) {
+	developerDeveloperIdKey := fmt.Sprintf("%s%v", cacheDeveloperDeveloperIdPrefix, id)
 	var resp Developer
-	err := m.QueryRowIndexCtx(ctx, &resp, developerIdKey, m.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v any) (i any, e error) {
-		query := fmt.Sprintf("select %s from %s where `id` = ? limit 1", developerRows, m.table)
+	err := m.QueryRowIndexCtx(ctx, &resp, developerDeveloperIdKey, m.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v any) (i any, e error) {
+		query := fmt.Sprintf("select %s from %s where id = $1 limit 1", developerRows, m.table)
 		if err := conn.QueryRowCtx(ctx, &resp, query, id); err != nil {
 			return nil, err
 		}
@@ -123,10 +123,10 @@ func (m *defaultDeveloperModel) FindOneById(ctx context.Context, id uint64) (*De
 }
 
 func (m *defaultDeveloperModel) FindOneByUsername(ctx context.Context, username string) (*Developer, error) {
-	developerUsernameKey := fmt.Sprintf("%s%v", cacheDeveloperUsernamePrefix, username)
+	developerDeveloperUsernameKey := fmt.Sprintf("%s%v", cacheDeveloperDeveloperUsernamePrefix, username)
 	var resp Developer
-	err := m.QueryRowIndexCtx(ctx, &resp, developerUsernameKey, m.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v any) (i any, e error) {
-		query := fmt.Sprintf("select %s from %s where `username` = ? limit 1", developerRows, m.table)
+	err := m.QueryRowIndexCtx(ctx, &resp, developerDeveloperUsernameKey, m.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v any) (i any, e error) {
+		query := fmt.Sprintf("select %s from %s where username = $1 limit 1", developerRows, m.table)
 		if err := conn.QueryRowCtx(ctx, &resp, query, username); err != nil {
 			return nil, err
 		}
@@ -143,13 +143,13 @@ func (m *defaultDeveloperModel) FindOneByUsername(ctx context.Context, username 
 }
 
 func (m *defaultDeveloperModel) Insert(ctx context.Context, data *Developer) (sql.Result, error) {
-	developerDataIdKey := fmt.Sprintf("%s%v", cacheDeveloperDataIdPrefix, data.DataId)
-	developerIdKey := fmt.Sprintf("%s%v", cacheDeveloperIdPrefix, data.Id)
-	developerUsernameKey := fmt.Sprintf("%s%v", cacheDeveloperUsernamePrefix, data.Username)
+	developerDeveloperDataIdKey := fmt.Sprintf("%s%v", cacheDeveloperDeveloperDataIdPrefix, data.DataId)
+	developerDeveloperIdKey := fmt.Sprintf("%s%v", cacheDeveloperDeveloperIdPrefix, data.Id)
+	developerDeveloperUsernameKey := fmt.Sprintf("%s%v", cacheDeveloperDeveloperUsernamePrefix, data.Username)
 	ret, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, developerRowsExpectAutoSet)
+		query := fmt.Sprintf("insert into %s (%s) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)", m.table, developerRowsExpectAutoSet)
 		return conn.ExecCtx(ctx, query, data.DataCreateAt, data.DataUpdateAt, data.Id, data.Name, data.Username, data.AvatarUrl, data.Company, data.Location, data.Bio, data.Blog, data.Email)
-	}, developerDataIdKey, developerIdKey, developerUsernameKey)
+	}, developerDeveloperDataIdKey, developerDeveloperIdKey, developerDeveloperUsernameKey)
 	return ret, err
 }
 
@@ -159,22 +159,22 @@ func (m *defaultDeveloperModel) Update(ctx context.Context, newData *Developer) 
 		return err
 	}
 
-	developerDataIdKey := fmt.Sprintf("%s%v", cacheDeveloperDataIdPrefix, data.DataId)
-	developerIdKey := fmt.Sprintf("%s%v", cacheDeveloperIdPrefix, data.Id)
-	developerUsernameKey := fmt.Sprintf("%s%v", cacheDeveloperUsernamePrefix, data.Username)
+	developerDeveloperDataIdKey := fmt.Sprintf("%s%v", cacheDeveloperDeveloperDataIdPrefix, data.DataId)
+	developerDeveloperIdKey := fmt.Sprintf("%s%v", cacheDeveloperDeveloperIdPrefix, data.Id)
+	developerDeveloperUsernameKey := fmt.Sprintf("%s%v", cacheDeveloperDeveloperUsernamePrefix, data.Username)
 	_, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("update %s set %s where `data_id` = ?", m.table, developerRowsWithPlaceHolder)
-		return conn.ExecCtx(ctx, query, newData.DataCreateAt, newData.DataUpdateAt, newData.Id, newData.Name, newData.Username, newData.AvatarUrl, newData.Company, newData.Location, newData.Bio, newData.Blog, newData.Email, newData.DataId)
-	}, developerDataIdKey, developerIdKey, developerUsernameKey)
+		query := fmt.Sprintf("update %s set %s where data_id = $1", m.table, developerRowsWithPlaceHolder)
+		return conn.ExecCtx(ctx, query, newData.DataId, newData.DataCreateAt, newData.DataUpdateAt, newData.Id, newData.Name, newData.Username, newData.AvatarUrl, newData.Company, newData.Location, newData.Bio, newData.Blog, newData.Email)
+	}, developerDeveloperDataIdKey, developerDeveloperIdKey, developerDeveloperUsernameKey)
 	return err
 }
 
 func (m *defaultDeveloperModel) formatPrimary(primary any) string {
-	return fmt.Sprintf("%s%v", cacheDeveloperDataIdPrefix, primary)
+	return fmt.Sprintf("%s%v", cacheDeveloperDeveloperDataIdPrefix, primary)
 }
 
 func (m *defaultDeveloperModel) queryPrimary(ctx context.Context, conn sqlx.SqlConn, v, primary any) error {
-	query := fmt.Sprintf("select %s from %s where `data_id` = ? limit 1", developerRows, m.table)
+	query := fmt.Sprintf("select %s from %s where data_id = $1 limit 1", developerRows, m.table)
 	return conn.QueryRowCtx(ctx, v, query, primary)
 }
 

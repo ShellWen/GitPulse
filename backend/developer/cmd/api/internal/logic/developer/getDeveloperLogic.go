@@ -35,7 +35,7 @@ func (l *GetDeveloperLogic) GetDeveloper(req *types.GetDeveloperReq) (resp *type
 
 	resp = &types.GetDeveloperResp{
 		Data: struct {
-			Id        uint64 `json:"id"`
+			Id        int64  `json:"id"`
 			Name      string `json:"name"`
 			Username  string `json:"username"`
 			AvatarUrl string `json:"avatar_url"`

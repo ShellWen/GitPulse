@@ -5,7 +5,6 @@ package handler
 
 import (
 	"net/http"
-	"time"
 
 	developer "github.com/ShellWen/GitPulse/developer/cmd/api/internal/handler/developer"
 	"github.com/ShellWen/GitPulse/developer/cmd/api/internal/svc"
@@ -23,6 +22,5 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 		},
 		rest.WithPrefix("/developer"),
-		rest.WithTimeout(500*time.Millisecond),
 	)
 }

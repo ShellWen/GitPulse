@@ -11,7 +11,7 @@ type GetDeveloperResp struct {
 	Code    int32  `json:"code"`
 	Message string `json:"message"`
 	Data    struct {
-		Id        uint64 `json:"id"`
+		Id        int64  `json:"id"`
 		Name      string `json:"name"`
 		Username  string `json:"username"`
 		AvatarUrl string `json:"avatar_url"`

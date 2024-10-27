@@ -10,10 +10,10 @@ package pb;
 
 //--------------------------------developer--------------------------------
 message Developer {
-  uint64 dataId = 1; //Generated primary key, MUST NOT be changed.
+  int64 dataId = 1; //Generated primary key, MUST NOT be changed.
   int64 dataCreateAt = 2; //dataCreateAt
   int64 dataUpdateAt = 3; //dataUpdateAt
-  uint64 id = 4; //Unique id of GitHub user.
+  int64 id = 4; //Unique id of GitHub user.
   string name = 5; //name
   string username = 6; //username
   string avatarUrl = 7; //avatarUrl
@@ -27,7 +27,7 @@ message Developer {
 }
 
 message AddDeveloperReq {
-  uint64 id = 1; //Unique id of GitHub user.
+  int64 id = 1; //Unique id of GitHub user.
   string name = 2; //name
   string username = 3; //username
   string avatarUrl = 4; //avatarUrl
@@ -44,7 +44,7 @@ message AddDeveloperResp {
 }
 
 message UpdateDeveloperReq {
-  uint64 id = 1; //Unique id of GitHub user.
+  int64 id = 1; //Unique id of GitHub user.
   string name = 2; //name
   string username = 3; //username
   string avatarUrl = 4; //avatarUrl
@@ -61,7 +61,7 @@ message UpdateDeveloperResp {
 }
 
 message DelDeveloperByIdReq {
-  uint64 id = 1; //id
+  int64 id = 1; //id
 }
 
 message DelDeveloperByIdResp {
@@ -75,7 +75,7 @@ message DelDeveloperByUsernameResp {
 }
 
 message GetDeveloperByIdReq {
-  uint64 id = 1; //id
+  int64 id = 1; //id
 }
 
 message GetDeveloperByIdResp {
