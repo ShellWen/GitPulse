@@ -98,3 +98,6 @@ sketch
 # .env
 .env
 .env.local
+
+# TypeScript
+*.tsbuildinfo
