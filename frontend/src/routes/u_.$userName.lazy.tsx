@@ -1,13 +1,16 @@
-import { ComponentProps, Suspense, useMemo } from 'react'
+import { ComponentProps, PropsWithChildren, Suspense, useCallback, useMemo } from 'react'
 
 import UserGlance from '$/component/user/UserGlance.tsx'
 import UserInfo from '$/component/user/UserInfo.tsx'
 import UserInfoSkeleton from '$/component/user/UserInfoSkeleton.tsx'
+import { BusinessError } from '$/lib/query/error.ts'
 import { useSuspenseUser } from '$/lib/query/useUser.ts'
 import useDarkMode from '$/lib/useDarkMode.ts'
 import { Pie } from '@ant-design/plots'
+import { QueryErrorResetBoundary } from '@tanstack/react-query'
 import { createLazyFileRoute, getRouteApi } from '@tanstack/react-router'
-import { Skeleton } from 'react-daisyui'
+import { Button, Skeleton } from 'react-daisyui'
+import { ErrorBoundary, FallbackProps } from 'react-error-boundary'
 
 const route = getRouteApi('/u_/$userName')
 
@@ -74,20 +77,62 @@ const UserTable = () => {
     </div>
   )
 }
+const UserNotFoundErrorBoundary = ({ children }: PropsWithChildren) => {
+  const renderer = useCallback(({ error }: FallbackProps) => {
+    if (!(error instanceof BusinessError) || error.code !== 404) {
+      // Only handle 404 error
+      throw error
+    }
+    // TODO: Add a button to redirect to home page
+    return <div>您请求的用户名不存在</div>
+  }, [])
+  return <ErrorBoundary fallbackRender={renderer}>{children}</ErrorBoundary>
+}
+
+const UserInfoErrorBoundary = ({ children }: PropsWithChildren) => {
+  const renderer = useCallback(({ resetErrorBoundary, error }: FallbackProps) => {
+    if (error instanceof BusinessError && error.code === 404) {
+      // When user not found, the UserNotFoundErrorBoundary will handle it
+      throw error
+    }
+    const errorMsg = error instanceof Error ? error.message : '未知错误'
+    return (
+      <div>
+        请求用户信息失败：{errorMsg}
+        <Button onClick={() => resetErrorBoundary()}>重试</Button>
+      </div>
+    )
+  }, [])
+  return (
+    <QueryErrorResetBoundary>
+      {({ reset }) => (
+        <ErrorBoundary onReset={reset} fallbackRender={renderer}>
+          {children}
+        </ErrorBoundary>
+      )}
+    </QueryErrorResetBoundary>
+  )
+}
 
 const UserPage = () => {
   const { userName } = route.useParams()
+
   return (
     <section className="flex w-full flex-col items-center gap-8 px-4 pt-8">
-      <Suspense fallback={<UserInfoSkeleton />}>
-        <UserInfoWrapper userName={userName} />
-      </Suspense>
-      <Suspense fallback={<></>}>
-        <UserGlanceWrapper userName={userName} />
-      </Suspense>
-      <Suspense fallback={<>TODO</>}>
-        <UserTable />
-      </Suspense>
+      <UserNotFoundErrorBoundary>
+        <>
+          <UserInfoErrorBoundary>
+            <Suspense fallback={<UserInfoSkeleton />}>
+              <UserInfoWrapper userName={userName} />
+              <UserGlanceWrapper userName={userName} />
+            </Suspense>
+          </UserInfoErrorBoundary>
+          {/* TODO: Add ErrorBoundary */}
+          <Suspense fallback={<>TODO</>}>
+            <UserTable />
+          </Suspense>
+        </>
+      </UserNotFoundErrorBoundary>
     </section>
   )
 }
