@@ -10,6 +10,7 @@ import { QueryErrorResetBoundary } from '@tanstack/react-query'
 import { createLazyFileRoute, getRouteApi } from '@tanstack/react-router'
 import { Button, Skeleton } from 'react-daisyui'
 import { ErrorBoundary, FallbackProps } from 'react-error-boundary'
+import { PieConfig } from '@ant-design/plots/es/components/pie'
 
 const route = getRouteApi('/u_/$userName')
 
@@ -25,6 +26,11 @@ const UserGlanceWrapper = ({ userName }: { userName: string }) => {
   return <UserGlance user={user} />
 }
 
+interface DataItem {
+  type: string
+  value: number
+}
+
 const data = [
   { type: '分类一', value: 27 },
   { type: '分类二', value: 25 },
@@ -32,14 +38,14 @@ const data = [
   { type: '分类四', value: 15 },
   { type: '分类五', value: 10 },
   { type: '其他', value: 5 },
-]
+] as DataItem[]
 
 // It's too large to bundle the whole antd
 const Pie = lazy(() => import('@ant-design/plots/es/components/pie'))
 
 const DemoPie = () => {
   const isDarkMode = useDarkMode()
-  const config = useMemo(
+  const config: PieConfig = useMemo(
     () =>
       ({
         data,
@@ -47,7 +53,7 @@ const DemoPie = () => {
         colorField: 'type',
         radius: 0.8,
         label: {
-          text: (d) => `${d.type}\n ${d.value}`,
+          text: (d: DataItem) => `${d.type}\n ${d.value}`,
           position: 'spider',
         },
         legend: {
