@@ -4,7 +4,7 @@ Port: 3001
 Mode: dev
 
 DB:
-  DataSource: postgres://seri037:20040113@localhost:5432/seri037?sslmode=disable&search_path=developer
+  DataSource: postgres://seri037:20040113@localhost:5432/seri037?sslmode=disable
 Cache:
   - Host: 127.0.0.1:6379
     Pass:
