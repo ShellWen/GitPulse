@@ -1,0 +1,20 @@
+Name: contribution.rpc
+ListenOn: 127.0.0.1:2004
+Mode: dev
+
+#Etcd:
+#  Hosts:
+#  - 127.0.0.1:2379
+#  Key: developer.rpc
+
+Redis:
+  Host: 127.0.0.1:6379
+  Type: node
+  Pass:
+  Key: contribution-rpc
+
+DB:
+  DataSource: postgres://seri037:20040113@localhost:5432/seri037?sslmode=disable
+Cache:
+  - Host: 127.0.0.1:6379
+    Pass:

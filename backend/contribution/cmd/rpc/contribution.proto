@@ -1,0 +1,116 @@
+syntax = "proto3";
+
+option go_package ="./pb";
+
+package pb;
+
+// ------------------------------------ 
+// Messages
+// ------------------------------------ 
+
+//--------------------------------contribution--------------------------------
+message Contribution {
+  int64 dataId = 1; //dataId
+  int64 dataCreateAt = 2; //dataCreateAt
+  int64 dataUpdateAt = 3; //dataUpdateAt
+  int64 userId = 4; //userId
+  int64 repoId = 5; //repoId
+  string category = 6; //category
+  string content = 7; //content
+  int64 createAt = 8; //createAt
+  int64 updateAt = 9; //updateAt
+  int64 contributionId = 10; //contributionId
+}
+
+message AddContributionReq {
+  int64 userId = 1; //userId
+  int64 repoId = 2; //repoId
+  string category = 3; //category
+  string content = 4; //content
+  int64 createAt = 5; //createAt
+  int64 updateAt = 6; //updateAt
+  int64 contributionId = 7; //contributionId
+}
+
+message AddContributionResp {
+}
+
+message UpdateContributionReq {
+  int64 userId = 1; //userId
+  int64 repoId = 2; //repoId
+  string category = 3; //category
+  string content = 4; //content
+  int64 createAt = 5; //createAt
+  int64 updateAt = 6; //updateAt
+  int64 contributionId = 7; //contributionId
+}
+
+message UpdateContributionResp {
+}
+
+message DelContributionReq {
+  int64 userId = 1; //userId
+  int64 repoId = 2; //repoId
+  string category = 3; //category
+  int64 contributionId = 4; //contributionId
+}
+
+message DelContributionResp {
+}
+
+message GetContributionReq {
+  int64 userId = 1; //userId
+  int64 repoId = 2; //repoId
+  string category = 3; //category
+  int64 contributionId = 4; //contributionId
+}
+
+message GetContributionResp {
+  Contribution contribution = 1; //contribution
+}
+
+message SearchByCategoryReq {
+  int64 page = 1; //page
+  int64 limit = 2; //limit
+  string category = 3; //category
+}
+
+message SearchByCategoryResp {
+  repeated Contribution contributions = 1; //contributions
+}
+
+message SearchByUserIdReq {
+  int64 page = 1; //page
+  int64 limit = 2; //limit
+  int64 userId = 3; //userId
+}
+
+message SearchByUserIdResp {
+  repeated Contribution contributions = 1; //contributions
+}
+
+message SearchByRepoIdReq {
+  int64 page = 1; //page
+  int64 limit = 2; //limit
+  int64 repoId = 3; //repoId
+}
+
+message SearchByRepoIdResp {
+  repeated Contribution contributions = 1; //contributions
+}
+
+// ------------------------------------ 
+// Rpc Func
+// ------------------------------------ 
+
+service contribution{ 
+
+	 //-----------------------contribution----------------------- 
+	 rpc AddContribution(AddContributionReq) returns (AddContributionResp); 
+	 rpc UpdateContribution(UpdateContributionReq) returns (UpdateContributionResp); 
+	 rpc DelContribution(DelContributionReq) returns (DelContributionResp); 
+	 rpc GetContribution(GetContributionReq) returns (GetContributionResp);
+   rpc SearchByCategory(SearchByCategoryReq) returns (SearchByCategoryResp);
+    rpc SearchByUserId(SearchByUserIdReq) returns (SearchByUserIdResp);
+    rpc SearchByRepoId(SearchByRepoIdReq) returns (SearchByRepoIdResp);
+}
