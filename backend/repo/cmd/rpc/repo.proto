@@ -10,10 +10,10 @@ package pb;
 
 //--------------------------------repo--------------------------------
 message Repo {
-  uint64 dataId = 1; //dataId
+  int64 dataId = 1; //dataId
   int64 dataCreateAt = 2; //dataCreateAt
   int64 dataUpdateAt = 3; //dataUpdateAt
-  uint64 id = 4; //id
+  int64 id = 4; //id
   string name = 5; //name
   bool gist = 6; //gist
   int64 starCount = 7; //starCount
@@ -27,7 +27,7 @@ message Repo {
 }
 
 message AddRepoReq {
-  uint64 id = 1; //id
+  int64 id = 1; //id
   string name = 2; //name
   bool gist = 3; //gist
   int64 starCount = 4; //starCount
@@ -44,7 +44,7 @@ message AddRepoResp {
 }
 
 message UpdateRepoReq {
-  uint64 id = 1; //id
+  int64 id = 1; //id
   string name = 2; //name
   bool gist = 3; //gist
   int64 starCount = 4; //starCount
@@ -61,14 +61,14 @@ message UpdateRepoResp {
 }
 
 message DelRepoByIdReq {
-  uint64 id = 1; //id
+  int64 id = 1; //id
 }
 
 message DelRepoByIdResp {
 }
 
 message GetRepoByIdReq {
-  uint64 id = 1; //id
+  int64 id = 1; //id
 }
 
 message GetRepoByIdResp {

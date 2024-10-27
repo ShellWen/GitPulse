@@ -19,22 +19,22 @@ import (
 )
 
 var (
-	repoFieldNames          = builder.RawFieldNames(&Repo{})
+	repoFieldNames          = builder.RawFieldNames(&Repo{}, true)
 	repoRows                = strings.Join(repoFieldNames, ",")
-	repoRowsExpectAutoSet   = strings.Join(stringx.Remove(repoFieldNames, "`data_id`", "`create_at`", "`create_time`", "`created_at`", "`update_at`", "`update_time`", "`updated_at`"), ",")
-	repoRowsWithPlaceHolder = strings.Join(stringx.Remove(repoFieldNames, "`data_id`", "`create_at`", "`create_time`", "`created_at`", "`update_at`", "`update_time`", "`updated_at`"), "=?,") + "=?"
+	repoRowsExpectAutoSet   = strings.Join(stringx.Remove(repoFieldNames, "data_id", "create_at", "create_time", "created_at", "update_at", "update_time", "updated_at"), ",")
+	repoRowsWithPlaceHolder = builder.PostgreSqlJoin(stringx.Remove(repoFieldNames, "data_id", "create_at", "create_time", "created_at", "update_at", "update_time", "updated_at"))
 
-	cacheRepoDataIdPrefix = "cache:repo:dataId:"
-	cacheRepoIdPrefix     = "cache:repo:id:"
+	cacheRepoRepoDataIdPrefix = "cache:repo:repo:dataId:"
+	cacheRepoRepoIdPrefix     = "cache:repo:repo:id:"
 )
 
 type (
 	repoModel interface {
 		Insert(ctx context.Context, data *Repo) (sql.Result, error)
-		FindOne(ctx context.Context, dataId uint64) (*Repo, error)
-		FindOneById(ctx context.Context, id uint64) (*Repo, error)
+		FindOne(ctx context.Context, dataId int64) (*Repo, error)
+		FindOneById(ctx context.Context, id int64) (*Repo, error)
 		Update(ctx context.Context, data *Repo) error
-		Delete(ctx context.Context, dataId uint64) error
+		Delete(ctx context.Context, dataId int64) error
 	}
 
 	defaultRepoModel struct {
@@ -43,12 +43,11 @@ type (
 	}
 
 	Repo struct {
-		DataId       uint64    `db:"data_id"`
+		DataId       int64     `db:"data_id"`
 		DataCreateAt time.Time `db:"data_create_at"`
 		DataUpdateAt time.Time `db:"data_update_at"`
-		Id           uint64    `db:"id"`
+		Id           int64     `db:"id"`
 		Name         string    `db:"name"`
-		Gist         bool      `db:"gist"`
 		StarCount    int64     `db:"star_count"`
 		ForkCount    int64     `db:"fork_count"`
 		IssueCount   int64     `db:"issue_count"`
@@ -57,36 +56,37 @@ type (
 		Language     string    `db:"language"`
 		Description  string    `db:"description"`
 		Readme       string    `db:"readme"`
+		Gist         bool      `db:"gist"`
 	}
 )
 
 func newRepoModel(conn sqlx.SqlConn, c cache.CacheConf, opts ...cache.Option) *defaultRepoModel {
 	return &defaultRepoModel{
 		CachedConn: sqlc.NewConn(conn, c, opts...),
-		table:      "`repo`",
+		table:      `"repo"."repo"`,
 	}
 }
 
-func (m *defaultRepoModel) Delete(ctx context.Context, dataId uint64) error {
+func (m *defaultRepoModel) Delete(ctx context.Context, dataId int64) error {
 	data, err := m.FindOne(ctx, dataId)
 	if err != nil {
 		return err
 	}
 
-	repoDataIdKey := fmt.Sprintf("%s%v", cacheRepoDataIdPrefix, dataId)
-	repoIdKey := fmt.Sprintf("%s%v", cacheRepoIdPrefix, data.Id)
+	repoRepoDataIdKey := fmt.Sprintf("%s%v", cacheRepoRepoDataIdPrefix, dataId)
+	repoRepoIdKey := fmt.Sprintf("%s%v", cacheRepoRepoIdPrefix, data.Id)
 	_, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("delete from %s where `data_id` = ?", m.table)
+		query := fmt.Sprintf("delete from %s where data_id = $1", m.table)
 		return conn.ExecCtx(ctx, query, dataId)
-	}, repoDataIdKey, repoIdKey)
+	}, repoRepoDataIdKey, repoRepoIdKey)
 	return err
 }
 
-func (m *defaultRepoModel) FindOne(ctx context.Context, dataId uint64) (*Repo, error) {
-	repoDataIdKey := fmt.Sprintf("%s%v", cacheRepoDataIdPrefix, dataId)
+func (m *defaultRepoModel) FindOne(ctx context.Context, dataId int64) (*Repo, error) {
+	repoRepoDataIdKey := fmt.Sprintf("%s%v", cacheRepoRepoDataIdPrefix, dataId)
 	var resp Repo
-	err := m.QueryRowCtx(ctx, &resp, repoDataIdKey, func(ctx context.Context, conn sqlx.SqlConn, v any) error {
-		query := fmt.Sprintf("select %s from %s where `data_id` = ? limit 1", repoRows, m.table)
+	err := m.QueryRowCtx(ctx, &resp, repoRepoDataIdKey, func(ctx context.Context, conn sqlx.SqlConn, v any) error {
+		query := fmt.Sprintf("select %s from %s where data_id = $1 limit 1", repoRows, m.table)
 		return conn.QueryRowCtx(ctx, v, query, dataId)
 	})
 	switch err {
@@ -99,11 +99,11 @@ func (m *defaultRepoModel) FindOne(ctx context.Context, dataId uint64) (*Repo, e
 	}
 }
 
-func (m *defaultRepoModel) FindOneById(ctx context.Context, id uint64) (*Repo, error) {
-	repoIdKey := fmt.Sprintf("%s%v", cacheRepoIdPrefix, id)
+func (m *defaultRepoModel) FindOneById(ctx context.Context, id int64) (*Repo, error) {
+	repoRepoIdKey := fmt.Sprintf("%s%v", cacheRepoRepoIdPrefix, id)
 	var resp Repo
-	err := m.QueryRowIndexCtx(ctx, &resp, repoIdKey, m.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v any) (i any, e error) {
-		query := fmt.Sprintf("select %s from %s where `id` = ? limit 1", repoRows, m.table)
+	err := m.QueryRowIndexCtx(ctx, &resp, repoRepoIdKey, m.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v any) (i any, e error) {
+		query := fmt.Sprintf("select %s from %s where id = $1 limit 1", repoRows, m.table)
 		if err := conn.QueryRowCtx(ctx, &resp, query, id); err != nil {
 			return nil, err
 		}
@@ -120,12 +120,12 @@ func (m *defaultRepoModel) FindOneById(ctx context.Context, id uint64) (*Repo, e
 }
 
 func (m *defaultRepoModel) Insert(ctx context.Context, data *Repo) (sql.Result, error) {
-	repoDataIdKey := fmt.Sprintf("%s%v", cacheRepoDataIdPrefix, data.DataId)
-	repoIdKey := fmt.Sprintf("%s%v", cacheRepoIdPrefix, data.Id)
+	repoRepoDataIdKey := fmt.Sprintf("%s%v", cacheRepoRepoDataIdPrefix, data.DataId)
+	repoRepoIdKey := fmt.Sprintf("%s%v", cacheRepoRepoIdPrefix, data.Id)
 	ret, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", m.table, repoRowsExpectAutoSet)
-		return conn.ExecCtx(ctx, query, data.DataCreateAt, data.DataUpdateAt, data.Id, data.Name, data.Gist, data.StarCount, data.ForkCount, data.IssueCount, data.CommitCount, data.PrCount, data.Language, data.Description, data.Readme)
-	}, repoDataIdKey, repoIdKey)
+		query := fmt.Sprintf("insert into %s (%s) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)", m.table, repoRowsExpectAutoSet)
+		return conn.ExecCtx(ctx, query, data.DataCreateAt, data.DataUpdateAt, data.Id, data.Name, data.StarCount, data.ForkCount, data.IssueCount, data.CommitCount, data.PrCount, data.Language, data.Description, data.Readme, data.Gist)
+	}, repoRepoDataIdKey, repoRepoIdKey)
 	return ret, err
 }
 
@@ -135,21 +135,21 @@ func (m *defaultRepoModel) Update(ctx context.Context, newData *Repo) error {
 		return err
 	}
 
-	repoDataIdKey := fmt.Sprintf("%s%v", cacheRepoDataIdPrefix, data.DataId)
-	repoIdKey := fmt.Sprintf("%s%v", cacheRepoIdPrefix, data.Id)
+	repoRepoDataIdKey := fmt.Sprintf("%s%v", cacheRepoRepoDataIdPrefix, data.DataId)
+	repoRepoIdKey := fmt.Sprintf("%s%v", cacheRepoRepoIdPrefix, data.Id)
 	_, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("update %s set %s where `data_id` = ?", m.table, repoRowsWithPlaceHolder)
-		return conn.ExecCtx(ctx, query, newData.DataCreateAt, newData.DataUpdateAt, newData.Id, newData.Name, newData.Gist, newData.StarCount, newData.ForkCount, newData.IssueCount, newData.CommitCount, newData.PrCount, newData.Language, newData.Description, newData.Readme, newData.DataId)
-	}, repoDataIdKey, repoIdKey)
+		query := fmt.Sprintf("update %s set %s where data_id = $1", m.table, repoRowsWithPlaceHolder)
+		return conn.ExecCtx(ctx, query, newData.DataId, newData.DataCreateAt, newData.DataUpdateAt, newData.Id, newData.Name, newData.StarCount, newData.ForkCount, newData.IssueCount, newData.CommitCount, newData.PrCount, newData.Language, newData.Description, newData.Readme, newData.Gist)
+	}, repoRepoDataIdKey, repoRepoIdKey)
 	return err
 }
 
 func (m *defaultRepoModel) formatPrimary(primary any) string {
-	return fmt.Sprintf("%s%v", cacheRepoDataIdPrefix, primary)
+	return fmt.Sprintf("%s%v", cacheRepoRepoDataIdPrefix, primary)
 }
 
 func (m *defaultRepoModel) queryPrimary(ctx context.Context, conn sqlx.SqlConn, v, primary any) error {
-	query := fmt.Sprintf("select %s from %s where `data_id` = ? limit 1", repoRows, m.table)
+	query := fmt.Sprintf("select %s from %s where data_id = $1 limit 1", repoRows, m.table)
 	return conn.QueryRowCtx(ctx, v, query, primary)
 }
 
