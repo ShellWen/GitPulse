@@ -30,7 +30,7 @@ const UserGlance = ({ user }: { user: User }) => {
   )
 
   return (
-    <section className="flex w-full max-w-4xl flex-col gap-2 md:flex-row md:gap-0">
+    <section className="flex w-full max-w-6xl flex-col gap-2 md:flex-row md:gap-0">
       <Divider horizontal />
       {items.map((item, index) => (
         <Fragment key={item.name + item.value}>

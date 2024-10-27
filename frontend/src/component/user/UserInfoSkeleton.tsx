@@ -2,7 +2,7 @@ import { Skeleton } from 'react-daisyui'
 
 const UserInfoSkeleton = () => {
   return (
-    <section className="flex w-full max-w-4xl flex-row flex-wrap gap-8">
+    <section className="flex w-full max-w-6xl flex-row flex-wrap gap-8">
       <Skeleton className="h-32 w-32" />
       <div className="flex flex-1 flex-col gap-2">
         <Skeleton className="h-8 w-3/4" />

@@ -72,7 +72,7 @@ const DemoPie = () => {
 
 const UserTable = () => {
   return (
-    <div className="flex w-full max-w-4xl flex-col">
+    <div className="flex w-full max-w-6xl flex-col">
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Suspense fallback={<Skeleton className="h-64 w-full rounded bg-base-200" />}>
           <section className="h-64 w-full rounded bg-base-200">
