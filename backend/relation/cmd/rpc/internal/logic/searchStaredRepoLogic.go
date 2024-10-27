@@ -31,7 +31,7 @@ func (l *SearchStaredRepoLogic) SearchStaredRepo(in *pb.SearchStaredRepoReq) (re
 		return nil, err
 	}
 
-	var staredRepoIds []uint64
+	var staredRepoIds []int64
 	for _, star := range *stars {
 		staredRepoIds = append(staredRepoIds, star.RepoId)
 	}

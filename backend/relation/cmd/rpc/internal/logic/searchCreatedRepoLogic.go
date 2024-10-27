@@ -31,7 +31,7 @@ func (l *SearchCreatedRepoLogic) SearchCreatedRepo(in *pb.SearchCreatedRepoReq) 
 		return nil, err
 	}
 
-	var repoIds []uint64
+	var repoIds []int64
 	for _, CreateRepo := range *CreateRepos {
 		repoIds = append(repoIds, CreateRepo.RepoId)
 	}

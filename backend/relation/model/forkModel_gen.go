@@ -19,22 +19,22 @@ import (
 )
 
 var (
-	forkFieldNames          = builder.RawFieldNames(&Fork{})
+	forkFieldNames          = builder.RawFieldNames(&Fork{}, true)
 	forkRows                = strings.Join(forkFieldNames, ",")
-	forkRowsExpectAutoSet   = strings.Join(stringx.Remove(forkFieldNames, "`data_id`", "`create_at`", "`create_time`", "`created_at`", "`update_at`", "`update_time`", "`updated_at`"), ",")
-	forkRowsWithPlaceHolder = strings.Join(stringx.Remove(forkFieldNames, "`data_id`", "`create_at`", "`create_time`", "`created_at`", "`update_at`", "`update_time`", "`updated_at`"), "=?,") + "=?"
+	forkRowsExpectAutoSet   = strings.Join(stringx.Remove(forkFieldNames, "data_id", "create_at", "create_time", "created_at", "update_at", "update_time", "updated_at"), ",")
+	forkRowsWithPlaceHolder = builder.PostgreSqlJoin(stringx.Remove(forkFieldNames, "data_id", "create_at", "create_time", "created_at", "update_at", "update_time", "updated_at"))
 
-	cacheForkDataIdPrefix     = "cache:fork:dataId:"
-	cacheForkForkRepoIdPrefix = "cache:fork:forkRepoId:"
+	cacheRelationForkDataIdPrefix     = "cache:relation:fork:dataId:"
+	cacheRelationForkForkRepoIdPrefix = "cache:relation:fork:forkRepoId:"
 )
 
 type (
 	forkModel interface {
 		Insert(ctx context.Context, data *Fork) (sql.Result, error)
-		FindOne(ctx context.Context, dataId uint64) (*Fork, error)
-		FindOneByForkRepoId(ctx context.Context, forkRepoId uint64) (*Fork, error)
+		FindOne(ctx context.Context, dataId int64) (*Fork, error)
+		FindOneByForkRepoId(ctx context.Context, forkRepoId int64) (*Fork, error)
 		Update(ctx context.Context, data *Fork) error
-		Delete(ctx context.Context, dataId uint64) error
+		Delete(ctx context.Context, dataId int64) error
 	}
 
 	defaultForkModel struct {
@@ -43,41 +43,41 @@ type (
 	}
 
 	Fork struct {
-		DataId         uint64    `db:"data_id"`
+		DataId         int64     `db:"data_id"`
 		DataCreateAt   time.Time `db:"data_create_at"`
 		DataUpdateAt   time.Time `db:"data_update_at"`
-		OriginalRepoId uint64    `db:"original_repo_id"`
-		ForkRepoId     uint64    `db:"fork_repo_id"`
+		OriginalRepoId int64     `db:"original_repo_id"`
+		ForkRepoId     int64     `db:"fork_repo_id"`
 	}
 )
 
 func newForkModel(conn sqlx.SqlConn, c cache.CacheConf, opts ...cache.Option) *defaultForkModel {
 	return &defaultForkModel{
 		CachedConn: sqlc.NewConn(conn, c, opts...),
-		table:      "`fork`",
+		table:      `"relation"."fork"`,
 	}
 }
 
-func (m *defaultForkModel) Delete(ctx context.Context, dataId uint64) error {
+func (m *defaultForkModel) Delete(ctx context.Context, dataId int64) error {
 	data, err := m.FindOne(ctx, dataId)
 	if err != nil {
 		return err
 	}
 
-	forkDataIdKey := fmt.Sprintf("%s%v", cacheForkDataIdPrefix, dataId)
-	forkForkRepoIdKey := fmt.Sprintf("%s%v", cacheForkForkRepoIdPrefix, data.ForkRepoId)
+	relationForkDataIdKey := fmt.Sprintf("%s%v", cacheRelationForkDataIdPrefix, dataId)
+	relationForkForkRepoIdKey := fmt.Sprintf("%s%v", cacheRelationForkForkRepoIdPrefix, data.ForkRepoId)
 	_, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("delete from %s where `data_id` = ?", m.table)
+		query := fmt.Sprintf("delete from %s where data_id = $1", m.table)
 		return conn.ExecCtx(ctx, query, dataId)
-	}, forkDataIdKey, forkForkRepoIdKey)
+	}, relationForkDataIdKey, relationForkForkRepoIdKey)
 	return err
 }
 
-func (m *defaultForkModel) FindOne(ctx context.Context, dataId uint64) (*Fork, error) {
-	forkDataIdKey := fmt.Sprintf("%s%v", cacheForkDataIdPrefix, dataId)
+func (m *defaultForkModel) FindOne(ctx context.Context, dataId int64) (*Fork, error) {
+	relationForkDataIdKey := fmt.Sprintf("%s%v", cacheRelationForkDataIdPrefix, dataId)
 	var resp Fork
-	err := m.QueryRowCtx(ctx, &resp, forkDataIdKey, func(ctx context.Context, conn sqlx.SqlConn, v any) error {
-		query := fmt.Sprintf("select %s from %s where `data_id` = ? limit 1", forkRows, m.table)
+	err := m.QueryRowCtx(ctx, &resp, relationForkDataIdKey, func(ctx context.Context, conn sqlx.SqlConn, v any) error {
+		query := fmt.Sprintf("select %s from %s where data_id = $1 limit 1", forkRows, m.table)
 		return conn.QueryRowCtx(ctx, v, query, dataId)
 	})
 	switch err {
@@ -90,11 +90,11 @@ func (m *defaultForkModel) FindOne(ctx context.Context, dataId uint64) (*Fork, e
 	}
 }
 
-func (m *defaultForkModel) FindOneByForkRepoId(ctx context.Context, forkRepoId uint64) (*Fork, error) {
-	forkForkRepoIdKey := fmt.Sprintf("%s%v", cacheForkForkRepoIdPrefix, forkRepoId)
+func (m *defaultForkModel) FindOneByForkRepoId(ctx context.Context, forkRepoId int64) (*Fork, error) {
+	relationForkForkRepoIdKey := fmt.Sprintf("%s%v", cacheRelationForkForkRepoIdPrefix, forkRepoId)
 	var resp Fork
-	err := m.QueryRowIndexCtx(ctx, &resp, forkForkRepoIdKey, m.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v any) (i any, e error) {
-		query := fmt.Sprintf("select %s from %s where `fork_repo_id` = ? limit 1", forkRows, m.table)
+	err := m.QueryRowIndexCtx(ctx, &resp, relationForkForkRepoIdKey, m.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v any) (i any, e error) {
+		query := fmt.Sprintf("select %s from %s where fork_repo_id = $1 limit 1", forkRows, m.table)
 		if err := conn.QueryRowCtx(ctx, &resp, query, forkRepoId); err != nil {
 			return nil, err
 		}
@@ -111,12 +111,12 @@ func (m *defaultForkModel) FindOneByForkRepoId(ctx context.Context, forkRepoId u
 }
 
 func (m *defaultForkModel) Insert(ctx context.Context, data *Fork) (sql.Result, error) {
-	forkDataIdKey := fmt.Sprintf("%s%v", cacheForkDataIdPrefix, data.DataId)
-	forkForkRepoIdKey := fmt.Sprintf("%s%v", cacheForkForkRepoIdPrefix, data.ForkRepoId)
+	relationForkDataIdKey := fmt.Sprintf("%s%v", cacheRelationForkDataIdPrefix, data.DataId)
+	relationForkForkRepoIdKey := fmt.Sprintf("%s%v", cacheRelationForkForkRepoIdPrefix, data.ForkRepoId)
 	ret, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?)", m.table, forkRowsExpectAutoSet)
+		query := fmt.Sprintf("insert into %s (%s) values ($1, $2, $3, $4)", m.table, forkRowsExpectAutoSet)
 		return conn.ExecCtx(ctx, query, data.DataCreateAt, data.DataUpdateAt, data.OriginalRepoId, data.ForkRepoId)
-	}, forkDataIdKey, forkForkRepoIdKey)
+	}, relationForkDataIdKey, relationForkForkRepoIdKey)
 	return ret, err
 }
 
@@ -126,21 +126,21 @@ func (m *defaultForkModel) Update(ctx context.Context, newData *Fork) error {
 		return err
 	}
 
-	forkDataIdKey := fmt.Sprintf("%s%v", cacheForkDataIdPrefix, data.DataId)
-	forkForkRepoIdKey := fmt.Sprintf("%s%v", cacheForkForkRepoIdPrefix, data.ForkRepoId)
+	relationForkDataIdKey := fmt.Sprintf("%s%v", cacheRelationForkDataIdPrefix, data.DataId)
+	relationForkForkRepoIdKey := fmt.Sprintf("%s%v", cacheRelationForkForkRepoIdPrefix, data.ForkRepoId)
 	_, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("update %s set %s where `data_id` = ?", m.table, forkRowsWithPlaceHolder)
-		return conn.ExecCtx(ctx, query, newData.DataCreateAt, newData.DataUpdateAt, newData.OriginalRepoId, newData.ForkRepoId, newData.DataId)
-	}, forkDataIdKey, forkForkRepoIdKey)
+		query := fmt.Sprintf("update %s set %s where data_id = $1", m.table, forkRowsWithPlaceHolder)
+		return conn.ExecCtx(ctx, query, newData.DataId, newData.DataCreateAt, newData.DataUpdateAt, newData.OriginalRepoId, newData.ForkRepoId)
+	}, relationForkDataIdKey, relationForkForkRepoIdKey)
 	return err
 }
 
 func (m *defaultForkModel) formatPrimary(primary any) string {
-	return fmt.Sprintf("%s%v", cacheForkDataIdPrefix, primary)
+	return fmt.Sprintf("%s%v", cacheRelationForkDataIdPrefix, primary)
 }
 
 func (m *defaultForkModel) queryPrimary(ctx context.Context, conn sqlx.SqlConn, v, primary any) error {
-	query := fmt.Sprintf("select %s from %s where `data_id` = ? limit 1", forkRows, m.table)
+	query := fmt.Sprintf("select %s from %s where data_id = $1 limit 1", forkRows, m.table)
 	return conn.QueryRowCtx(ctx, v, query, primary)
 }
 

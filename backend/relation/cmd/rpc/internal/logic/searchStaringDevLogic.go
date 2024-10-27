@@ -31,7 +31,7 @@ func (l *SearchStaringDevLogic) SearchStaringDev(in *pb.SearchStaringDevReq) (re
 		return nil, err
 	}
 
-	var staringDevIds []uint64
+	var staringDevIds []int64
 	for _, star := range *stars {
 		staringDevIds = append(staringDevIds, star.DeveloperId)
 	}

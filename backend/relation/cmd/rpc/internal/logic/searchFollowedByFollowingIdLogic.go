@@ -30,7 +30,7 @@ func (l *SearchFollowedByFollowingIdLogic) SearchFollowedByFollowingId(in *pb.Se
 		return nil, err
 	}
 
-	var followedIds []uint64
+	var followedIds []int64
 	for _, follow := range *follows {
 		followedIds = append(followedIds, follow.FollowedId)
 	}

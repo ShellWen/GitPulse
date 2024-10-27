@@ -14,7 +14,7 @@ Redis:
   Key: developer-rpc
 
 DB:
-  DataSource: root:password@tcp(127.0.0.1:3306)/relation?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+  DataSource: postgres://seri037:20040113@localhost:5432/seri037?sslmode=disable&search_path=developer
 Cache:
   - Host: 127.0.0.1:6379
     Pass:

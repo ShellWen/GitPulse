@@ -14,7 +14,7 @@ type (
 	// and implement the added methods in customCreateRepoModel.
 	CreateRepoModel interface {
 		createRepoModel
-		SearchCreatedRepo(ctx context.Context, developerId uint64, page int64, limit int64) (*[]*CreateRepo, error)
+		SearchCreatedRepo(ctx context.Context, developerId int64, page int64, limit int64) (*[]*CreateRepo, error)
 	}
 
 	customCreateRepoModel struct {
@@ -22,11 +22,11 @@ type (
 	}
 )
 
-func (m *customCreateRepoModel) SearchCreatedRepo(ctx context.Context, developerId uint64, page int64, limit int64) (*[]*CreateRepo, error) {
+func (m *customCreateRepoModel) SearchCreatedRepo(ctx context.Context, developerId int64, page int64, limit int64) (*[]*CreateRepo, error) {
 	var resp []*CreateRepo
 
-	query := fmt.Sprintf("select %s from %s where `developer_id` = ? limit ?,?", createRepoRows, m.table)
-	if err := m.QueryRowsNoCacheCtx(ctx, &resp, query, developerId, (page-1)*limit, limit); err != nil {
+	query := fmt.Sprintf("select %s from %s where developer_id = %d limit %d offset %d", createRepoRows, m.table, developerId, limit, (page-1)*limit)
+	if err := m.QueryRowsNoCacheCtx(ctx, &resp, query); err != nil {
 		return nil, err
 	}
 

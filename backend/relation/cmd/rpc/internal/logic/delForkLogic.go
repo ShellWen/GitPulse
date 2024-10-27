@@ -31,7 +31,7 @@ func (l *DelForkLogic) DelFork(in *pb.DelForkReq) (resp *pb.DelForkResp, err err
 		return nil, err
 	}
 
-	err = l.svcCtx.ForkModel.Delete(l.ctx, fork.ForkRepoId)
+	err = l.svcCtx.ForkModel.Delete(l.ctx, fork.DataId)
 	if err != nil {
 		return nil, err
 	}

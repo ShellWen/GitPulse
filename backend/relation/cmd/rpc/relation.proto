@@ -10,74 +10,74 @@ package pb;
 
 //--------------------------------createRepo--------------------------------
 message CreateRepo {
-  uint64 dataId = 1; //dataId
+  int64 dataId = 1; //dataId
   int64 dataCreateAt = 2; //dataCreateAt
   int64 dataUpdateAt = 3; //dataUpdateAt
-  uint64 developerId = 4; //developerId
-  uint64 repoId = 5; //repoId
+  int64 developerId = 4; //developerId
+  int64 repoId = 5; //repoId
 }
 
 message AddCreateRepoReq {
-  uint64 developerId = 1; //developerId
-  uint64 repoId = 2; //repoId
+  int64 developerId = 1; //developerId
+  int64 repoId = 2; //repoId
 }
 
 message AddCreateRepoResp {
 }
 
 message DelCreateRepoReq {
-  uint64 repoId = 1; //repoId
+  int64 repoId = 1; //repoId
 }
 
 message DelCreateRepoResp {
 }
 
 message GetCreatorIdReq {
-  uint64 repoId = 1; //repoId
+  int64 repoId = 1; //repoId
 }
 
 message GetCreatorIdResp {
-  uint64 developerId = 1; //developerId
+  int64 developerId = 1; //developerId
 }
 
 message SearchCreatedRepoReq {
   int64 page = 1; //page
   int64 limit = 2; //limit
-  uint64 developerId = 3; //developerId
+  int64 developerId = 3; //developerId
 }
 
 message SearchCreatedRepoResp {
-  repeated uint64 repoIds = 1; //repoId
+  repeated int64 repoIds = 1; //repoId
 }
 
 //--------------------------------follow--------------------------------
 message Follow {
-  uint64 dataId = 1; //dataId
+  int64 dataId = 1; //dataId
   int64 dataCreateAt = 2; //dataCreateAt
   int64 dataUpdateAt = 3; //dataUpdateAt
-  uint64 followingId = 4; //followingId
-  uint64 followedId = 5; //followedId
+  int64 followingId = 4; //followingId
+  int64 followedId = 5; //followedId
 }
 
 message AddFollowReq {
-  uint64 followingId = 1; //followingId
-  uint64 followedId = 2; //followedId
+  int64 followingId = 1; //followingId
+  int64 followedId = 2; //followedId
 }
 
 message AddFollowResp {
 }
 
 message DelFollowReq {
-  uint64 followingId = 1; //followingId
-  uint64 followedId = 2; //followedId
+  int64 followingId = 1; //followingId
+  int64 followedId = 2; //followedId
 }
 
 message DelFollowResp {
 }
 
 message CheckIfFollowReq {
-  uint64 followingId = 1; //followingId
-  uint64 followedId = 2; //followedId
+  int64 followingId = 1; //followingId
+  int64 followedId = 2; //followedId
 }
 
 message CheckFollowResp {
@@ -87,93 +87,93 @@ message CheckFollowResp {
 message SearchFollowedByFollowingIdReq {
   int64 page = 1; //page
   int64 limit = 2; //limit
-  uint64 followingId = 3; //followingId
+  int64 followingId = 3; //followingId
 }
 
 message SearchFollowByFollowingIdResp {
-  repeated uint64 followedIds = 1; //followedId
+  repeated int64 followedIds = 1; //followedId
 }
 
 message SearchFollowingByFollowedIdReq {
   int64 page = 1; //page
   int64 limit = 2; //limit
-  uint64 followedId = 3; //followedId
+  int64 followedId = 3; //followedId
 }
 
 message SearchFollowByFollowedIdResp {
-  repeated uint64 followingIds = 1; //followingId
+  repeated int64 followingIds = 1; //followingId
 }
 
 //--------------------------------fork--------------------------------
 message Fork {
-  uint64 dataId = 1; //dataId
+  int64 dataId = 1; //dataId
   int64 dataCreateAt = 2; //dataCreateAt
   int64 dataUpdateAt = 3; //dataUpdateAt
-  uint64 originalRepoId = 4; //originalRepoId
-  uint64 forkRepoId = 5; //forkRepoId
+  int64 originalRepoId = 4; //originalRepoId
+  int64 forkRepoId = 5; //forkRepoId
 }
 
 message AddForkReq {
-  uint64 originalRepoId = 1; //originalRepoId
-  uint64 forkRepoId = 2; //forkRepoId
+  int64 originalRepoId = 1; //originalRepoId
+  int64 forkRepoId = 2; //forkRepoId
 }
 
 message AddForkResp {
 }
 
 message DelForkReq {
-  uint64 forkRepoId = 1; //forkRepoId
+  int64 forkRepoId = 1; //forkRepoId
 }
 
 message DelForkResp {
 }
 
 message GetOriginReq {
-  uint64 forkRepoId = 1; //forkRepoId
+  int64 forkRepoId = 1; //forkRepoId
 }
 
 message GetOriginResp {
-  uint64 originalRepoId = 1; //originalRepoId
+  int64 originalRepoId = 1; //originalRepoId
 }
 
 message SearchForkReq {
   int64 page = 1; //page
   int64 limit = 2; //limit
-  uint64 originalRepoId = 3; //originalRepoId
+  int64 originalRepoId = 3; //originalRepoId
 }
 
 message SearchForkResp {
-  repeated uint64 forkRepoIds = 1; //forkRepoId
+  repeated int64 forkRepoIds = 1; //forkRepoId
 }
 
 //--------------------------------star--------------------------------
 message Star {
-  uint64 dataId = 1; //dataId
+  int64 dataId = 1; //dataId
   int64 dataCreateAt = 2; //dataCreateAt
   int64 dataUpdateAt = 3; //dataUpdateAt
-  uint64 developerId = 4; //developerId
-  uint64 repoId = 5; //repoId
+  int64 developerId = 4; //developerId
+  int64 repoId = 5; //repoId
 }
 
 message AddStarReq {
-  uint64 developerId = 1; //developerId
-  uint64 repoId = 2; //repoId
+  int64 developerId = 1; //developerId
+  int64 repoId = 2; //repoId
 }
 
 message AddStarResp {
 }
 
 message DelStarReq {
-  uint64 developerId = 1; //developerId
-  uint64 repoId = 2; //repoId
+  int64 developerId = 1; //developerId
+  int64 repoId = 2; //repoId
 }
 
 message DelStarResp {
 }
 
 message CheckIfStarReq {
-  uint64 developerId = 1; //developerId
-  uint64 repoId = 2; //repoId
+  int64 developerId = 1; //developerId
+  int64 repoId = 2; //repoId
 }
 
 message CheckIfStarResp {
@@ -183,21 +183,21 @@ message CheckIfStarResp {
 message SearchStaredRepoReq {
   int64 page = 1; //page
   int64 limit = 2; //limit
-  uint64 developerId = 3; //developerId
+  int64 developerId = 3; //developerId
 }
 
 message SearchStaredRepoResp {
-  repeated uint64 repoIds = 1; //repoId
+  repeated int64 repoIds = 1; //repoId
 }
 
 message SearchStaringDevReq {
   int64 page = 1; //page
   int64 limit = 2; //limit
-  uint64 repoId = 3; //repoId
+  int64 repoId = 3; //repoId
 }
 
 message SearchStaringDevResp {
-  repeated uint64 developerIds = 1; //developerId
+  repeated int64 developerIds = 1; //developerId
 }
 
 // ------------------------------------ 

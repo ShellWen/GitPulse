@@ -31,7 +31,7 @@ func (l *DelStarLogic) DelStar(in *pb.DelStarReq) (resp *pb.DelStarResp, err err
 		return nil, err
 	}
 
-	err = l.svcCtx.StarModel.Delete(l.ctx, star.RepoId)
+	err = l.svcCtx.StarModel.Delete(l.ctx, star.DataId)
 	if err != nil {
 		return nil, err
 	}

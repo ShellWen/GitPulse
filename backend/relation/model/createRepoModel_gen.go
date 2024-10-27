@@ -19,22 +19,22 @@ import (
 )
 
 var (
-	createRepoFieldNames          = builder.RawFieldNames(&CreateRepo{})
+	createRepoFieldNames          = builder.RawFieldNames(&CreateRepo{}, true)
 	createRepoRows                = strings.Join(createRepoFieldNames, ",")
-	createRepoRowsExpectAutoSet   = strings.Join(stringx.Remove(createRepoFieldNames, "`data_id`", "`create_at`", "`create_time`", "`created_at`", "`update_at`", "`update_time`", "`updated_at`"), ",")
-	createRepoRowsWithPlaceHolder = strings.Join(stringx.Remove(createRepoFieldNames, "`data_id`", "`create_at`", "`create_time`", "`created_at`", "`update_at`", "`update_time`", "`updated_at`"), "=?,") + "=?"
+	createRepoRowsExpectAutoSet   = strings.Join(stringx.Remove(createRepoFieldNames, "data_id", "create_at", "create_time", "created_at", "update_at", "update_time", "updated_at"), ",")
+	createRepoRowsWithPlaceHolder = builder.PostgreSqlJoin(stringx.Remove(createRepoFieldNames, "data_id", "create_at", "create_time", "created_at", "update_at", "update_time", "updated_at"))
 
-	cacheCreateRepoDataIdPrefix = "cache:createRepo:dataId:"
-	cacheCreateRepoRepoIdPrefix = "cache:createRepo:repoId:"
+	cacheRelationCreateRepoDataIdPrefix = "cache:relation:createRepo:dataId:"
+	cacheRelationCreateRepoRepoIdPrefix = "cache:relation:createRepo:repoId:"
 )
 
 type (
 	createRepoModel interface {
 		Insert(ctx context.Context, data *CreateRepo) (sql.Result, error)
-		FindOne(ctx context.Context, dataId uint64) (*CreateRepo, error)
-		FindOneByRepoId(ctx context.Context, repoId uint64) (*CreateRepo, error)
+		FindOne(ctx context.Context, dataId int64) (*CreateRepo, error)
+		FindOneByRepoId(ctx context.Context, repoId int64) (*CreateRepo, error)
 		Update(ctx context.Context, data *CreateRepo) error
-		Delete(ctx context.Context, dataId uint64) error
+		Delete(ctx context.Context, dataId int64) error
 	}
 
 	defaultCreateRepoModel struct {
@@ -43,41 +43,41 @@ type (
 	}
 
 	CreateRepo struct {
-		DataId       uint64    `db:"data_id"`
+		DataId       int64     `db:"data_id"`
 		DataCreateAt time.Time `db:"data_create_at"`
 		DataUpdateAt time.Time `db:"data_update_at"`
-		DeveloperId  uint64    `db:"developer_id"`
-		RepoId       uint64    `db:"repo_id"`
+		DeveloperId  int64     `db:"developer_id"`
+		RepoId       int64     `db:"repo_id"`
 	}
 )
 
 func newCreateRepoModel(conn sqlx.SqlConn, c cache.CacheConf, opts ...cache.Option) *defaultCreateRepoModel {
 	return &defaultCreateRepoModel{
 		CachedConn: sqlc.NewConn(conn, c, opts...),
-		table:      "`create_repo`",
+		table:      `"relation"."create_repo"`,
 	}
 }
 
-func (m *defaultCreateRepoModel) Delete(ctx context.Context, dataId uint64) error {
+func (m *defaultCreateRepoModel) Delete(ctx context.Context, dataId int64) error {
 	data, err := m.FindOne(ctx, dataId)
 	if err != nil {
 		return err
 	}
 
-	createRepoDataIdKey := fmt.Sprintf("%s%v", cacheCreateRepoDataIdPrefix, dataId)
-	createRepoRepoIdKey := fmt.Sprintf("%s%v", cacheCreateRepoRepoIdPrefix, data.RepoId)
+	relationCreateRepoDataIdKey := fmt.Sprintf("%s%v", cacheRelationCreateRepoDataIdPrefix, dataId)
+	relationCreateRepoRepoIdKey := fmt.Sprintf("%s%v", cacheRelationCreateRepoRepoIdPrefix, data.RepoId)
 	_, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("delete from %s where `data_id` = ?", m.table)
+		query := fmt.Sprintf("delete from %s where data_id = $1", m.table)
 		return conn.ExecCtx(ctx, query, dataId)
-	}, createRepoDataIdKey, createRepoRepoIdKey)
+	}, relationCreateRepoDataIdKey, relationCreateRepoRepoIdKey)
 	return err
 }
 
-func (m *defaultCreateRepoModel) FindOne(ctx context.Context, dataId uint64) (*CreateRepo, error) {
-	createRepoDataIdKey := fmt.Sprintf("%s%v", cacheCreateRepoDataIdPrefix, dataId)
+func (m *defaultCreateRepoModel) FindOne(ctx context.Context, dataId int64) (*CreateRepo, error) {
+	relationCreateRepoDataIdKey := fmt.Sprintf("%s%v", cacheRelationCreateRepoDataIdPrefix, dataId)
 	var resp CreateRepo
-	err := m.QueryRowCtx(ctx, &resp, createRepoDataIdKey, func(ctx context.Context, conn sqlx.SqlConn, v any) error {
-		query := fmt.Sprintf("select %s from %s where `data_id` = ? limit 1", createRepoRows, m.table)
+	err := m.QueryRowCtx(ctx, &resp, relationCreateRepoDataIdKey, func(ctx context.Context, conn sqlx.SqlConn, v any) error {
+		query := fmt.Sprintf("select %s from %s where data_id = $1 limit 1", createRepoRows, m.table)
 		return conn.QueryRowCtx(ctx, v, query, dataId)
 	})
 	switch err {
@@ -90,11 +90,11 @@ func (m *defaultCreateRepoModel) FindOne(ctx context.Context, dataId uint64) (*C
 	}
 }
 
-func (m *defaultCreateRepoModel) FindOneByRepoId(ctx context.Context, repoId uint64) (*CreateRepo, error) {
-	createRepoRepoIdKey := fmt.Sprintf("%s%v", cacheCreateRepoRepoIdPrefix, repoId)
+func (m *defaultCreateRepoModel) FindOneByRepoId(ctx context.Context, repoId int64) (*CreateRepo, error) {
+	relationCreateRepoRepoIdKey := fmt.Sprintf("%s%v", cacheRelationCreateRepoRepoIdPrefix, repoId)
 	var resp CreateRepo
-	err := m.QueryRowIndexCtx(ctx, &resp, createRepoRepoIdKey, m.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v any) (i any, e error) {
-		query := fmt.Sprintf("select %s from %s where `repo_id` = ? limit 1", createRepoRows, m.table)
+	err := m.QueryRowIndexCtx(ctx, &resp, relationCreateRepoRepoIdKey, m.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v any) (i any, e error) {
+		query := fmt.Sprintf("select %s from %s where repo_id = $1 limit 1", createRepoRows, m.table)
 		if err := conn.QueryRowCtx(ctx, &resp, query, repoId); err != nil {
 			return nil, err
 		}
@@ -111,12 +111,12 @@ func (m *defaultCreateRepoModel) FindOneByRepoId(ctx context.Context, repoId uin
 }
 
 func (m *defaultCreateRepoModel) Insert(ctx context.Context, data *CreateRepo) (sql.Result, error) {
-	createRepoDataIdKey := fmt.Sprintf("%s%v", cacheCreateRepoDataIdPrefix, data.DataId)
-	createRepoRepoIdKey := fmt.Sprintf("%s%v", cacheCreateRepoRepoIdPrefix, data.RepoId)
+	relationCreateRepoDataIdKey := fmt.Sprintf("%s%v", cacheRelationCreateRepoDataIdPrefix, data.DataId)
+	relationCreateRepoRepoIdKey := fmt.Sprintf("%s%v", cacheRelationCreateRepoRepoIdPrefix, data.RepoId)
 	ret, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?)", m.table, createRepoRowsExpectAutoSet)
+		query := fmt.Sprintf("insert into %s (%s) values ($1, $2, $3, $4)", m.table, createRepoRowsExpectAutoSet)
 		return conn.ExecCtx(ctx, query, data.DataCreateAt, data.DataUpdateAt, data.DeveloperId, data.RepoId)
-	}, createRepoDataIdKey, createRepoRepoIdKey)
+	}, relationCreateRepoDataIdKey, relationCreateRepoRepoIdKey)
 	return ret, err
 }
 
@@ -126,21 +126,21 @@ func (m *defaultCreateRepoModel) Update(ctx context.Context, newData *CreateRepo
 		return err
 	}
 
-	createRepoDataIdKey := fmt.Sprintf("%s%v", cacheCreateRepoDataIdPrefix, data.DataId)
-	createRepoRepoIdKey := fmt.Sprintf("%s%v", cacheCreateRepoRepoIdPrefix, data.RepoId)
+	relationCreateRepoDataIdKey := fmt.Sprintf("%s%v", cacheRelationCreateRepoDataIdPrefix, data.DataId)
+	relationCreateRepoRepoIdKey := fmt.Sprintf("%s%v", cacheRelationCreateRepoRepoIdPrefix, data.RepoId)
 	_, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("update %s set %s where `data_id` = ?", m.table, createRepoRowsWithPlaceHolder)
-		return conn.ExecCtx(ctx, query, newData.DataCreateAt, newData.DataUpdateAt, newData.DeveloperId, newData.RepoId, newData.DataId)
-	}, createRepoDataIdKey, createRepoRepoIdKey)
+		query := fmt.Sprintf("update %s set %s where data_id = $1", m.table, createRepoRowsWithPlaceHolder)
+		return conn.ExecCtx(ctx, query, newData.DataId, newData.DataCreateAt, newData.DataUpdateAt, newData.DeveloperId, newData.RepoId)
+	}, relationCreateRepoDataIdKey, relationCreateRepoRepoIdKey)
 	return err
 }
 
 func (m *defaultCreateRepoModel) formatPrimary(primary any) string {
-	return fmt.Sprintf("%s%v", cacheCreateRepoDataIdPrefix, primary)
+	return fmt.Sprintf("%s%v", cacheRelationCreateRepoDataIdPrefix, primary)
 }
 
 func (m *defaultCreateRepoModel) queryPrimary(ctx context.Context, conn sqlx.SqlConn, v, primary any) error {
-	query := fmt.Sprintf("select %s from %s where `data_id` = ? limit 1", createRepoRows, m.table)
+	query := fmt.Sprintf("select %s from %s where data_id = $1 limit 1", createRepoRows, m.table)
 	return conn.QueryRowCtx(ctx, v, query, primary)
 }
 

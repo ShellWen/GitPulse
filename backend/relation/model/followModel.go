@@ -14,8 +14,8 @@ type (
 	// and implement the added methods in customFollowModel.
 	FollowModel interface {
 		followModel
-		SearchFollowed(ctx context.Context, following uint64, page int64, limit int64) (*[]*Follow, error)
-		SearchFollowing(ctx context.Context, followed uint64, page int64, limit int64) (*[]*Follow, error)
+		SearchFollowed(ctx context.Context, following int64, page int64, limit int64) (*[]*Follow, error)
+		SearchFollowing(ctx context.Context, followed int64, page int64, limit int64) (*[]*Follow, error)
 	}
 
 	customFollowModel struct {
@@ -23,22 +23,22 @@ type (
 	}
 )
 
-func (m *customFollowModel) SearchFollowed(ctx context.Context, following uint64, page int64, limit int64) (*[]*Follow, error) {
+func (m *customFollowModel) SearchFollowed(ctx context.Context, following int64, page int64, limit int64) (*[]*Follow, error) {
 	var resp []*Follow
 
-	query := fmt.Sprintf("select %s from %s where `following` = ? limit ?,?", followRows, m.table)
-	if err := m.QueryRowsNoCacheCtx(ctx, &resp, query, following, (page-1)*limit, limit); err != nil {
+	query := fmt.Sprintf("select %s from %s where following_id = %d limit %d offset %d", followRows, m.table, following, limit, (page-1)*limit)
+	if err := m.QueryRowsNoCacheCtx(ctx, &resp, query); err != nil {
 		return nil, err
 	}
 
 	return &resp, nil
 }
 
-func (m *customFollowModel) SearchFollowing(ctx context.Context, followed uint64, page int64, limit int64) (*[]*Follow, error) {
+func (m *customFollowModel) SearchFollowing(ctx context.Context, followed int64, page int64, limit int64) (*[]*Follow, error) {
 	var resp []*Follow
 
-	query := fmt.Sprintf("select %s from %s where `followed` = ? limit ?,?", followRows, m.table)
-	if err := m.QueryRowsNoCacheCtx(ctx, &resp, query, followed, (page-1)*limit, limit); err != nil {
+	query := fmt.Sprintf("select %s from %s where followed_id = %d limit %d offset %d", followRows, m.table, followed, limit, (page-1)*limit)
+	if err := m.QueryRowsNoCacheCtx(ctx, &resp, query); err != nil {
 		return nil, err
 	}
 

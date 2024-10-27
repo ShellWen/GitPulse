@@ -14,8 +14,8 @@ type (
 	// and implement the added methods in customStarModel.
 	StarModel interface {
 		starModel
-		SearchStaredRepo(ctx context.Context, developerId uint64, page int64, limit int64) (*[]*Star, error)
-		SearchStaringDeveloper(ctx context.Context, repoId uint64, page int64, limit int64) (*[]*Star, error)
+		SearchStaredRepo(ctx context.Context, developerId int64, page int64, limit int64) (*[]*Star, error)
+		SearchStaringDeveloper(ctx context.Context, repoId int64, page int64, limit int64) (*[]*Star, error)
 	}
 
 	customStarModel struct {
@@ -23,22 +23,22 @@ type (
 	}
 )
 
-func (m *customStarModel) SearchStaredRepo(ctx context.Context, developerId uint64, page int64, limit int64) (*[]*Star, error) {
+func (m *customStarModel) SearchStaredRepo(ctx context.Context, developerId int64, page int64, limit int64) (*[]*Star, error) {
 	var resp []*Star
 
-	query := fmt.Sprintf("select %s from %s where `developer_id` = ? limit ?,?", starRows, m.table)
-	if err := m.QueryRowsNoCacheCtx(ctx, &resp, query, developerId, (page-1)*limit, limit); err != nil {
+	query := fmt.Sprintf("select %s from %s where developer_id = %d limit %d offset %d", starRows, m.table, developerId, limit, (page-1)*limit)
+	if err := m.QueryRowsNoCacheCtx(ctx, &resp, query); err != nil {
 		return nil, err
 	}
 
 	return &resp, nil
 }
 
-func (m *customStarModel) SearchStaringDeveloper(ctx context.Context, repoId uint64, page int64, limit int64) (*[]*Star, error) {
+func (m *customStarModel) SearchStaringDeveloper(ctx context.Context, repoId int64, page int64, limit int64) (*[]*Star, error) {
 	var resp []*Star
 
-	query := fmt.Sprintf("select %s from %s where `repo_id` = ? limit ?,?", starRows, m.table)
-	if err := m.QueryRowsNoCacheCtx(ctx, &resp, query, repoId, (page-1)*limit, limit); err != nil {
+	query := fmt.Sprintf("select %s from %s where repo_id = %d limit %d offset %d", starRows, m.table, repoId, limit, (page-1)*limit)
+	if err := m.QueryRowsNoCacheCtx(ctx, &resp, query); err != nil {
 		return nil, err
 	}
 

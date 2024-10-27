@@ -31,7 +31,7 @@ func (l *SearchFollowingByFollowedIdLogic) SearchFollowingByFollowedId(in *pb.Se
 		return nil, err
 	}
 
-	var followingIds []uint64
+	var followingIds []int64
 	for _, follow := range *follows {
 		followingIds = append(followingIds, follow.FollowingId)
 	}

@@ -31,7 +31,7 @@ func (l *DelCreateRepoLogic) DelCreateRepo(in *pb.DelCreateRepoReq) (resp *pb.De
 		return nil, err
 	}
 
-	err = l.svcCtx.CreateRepoModel.Delete(l.ctx, createRepo.RepoId)
+	err = l.svcCtx.CreateRepoModel.Delete(l.ctx, createRepo.DataId)
 	if err != nil {
 		return nil, err
 	}

@@ -19,22 +19,22 @@ import (
 )
 
 var (
-	followFieldNames          = builder.RawFieldNames(&Follow{})
+	followFieldNames          = builder.RawFieldNames(&Follow{}, true)
 	followRows                = strings.Join(followFieldNames, ",")
-	followRowsExpectAutoSet   = strings.Join(stringx.Remove(followFieldNames, "`data_id`", "`create_at`", "`create_time`", "`created_at`", "`update_at`", "`update_time`", "`updated_at`"), ",")
-	followRowsWithPlaceHolder = strings.Join(stringx.Remove(followFieldNames, "`data_id`", "`create_at`", "`create_time`", "`created_at`", "`update_at`", "`update_time`", "`updated_at`"), "=?,") + "=?"
+	followRowsExpectAutoSet   = strings.Join(stringx.Remove(followFieldNames, "data_id", "create_at", "create_time", "created_at", "update_at", "update_time", "updated_at"), ",")
+	followRowsWithPlaceHolder = builder.PostgreSqlJoin(stringx.Remove(followFieldNames, "data_id", "create_at", "create_time", "created_at", "update_at", "update_time", "updated_at"))
 
-	cacheFollowDataIdPrefix                = "cache:follow:dataId:"
-	cacheFollowFollowingIdFollowedIdPrefix = "cache:follow:followingId:followedId:"
+	cacheRelationFollowDataIdPrefix                = "cache:relation:follow:dataId:"
+	cacheRelationFollowFollowingIdFollowedIdPrefix = "cache:relation:follow:followingId:followedId:"
 )
 
 type (
 	followModel interface {
 		Insert(ctx context.Context, data *Follow) (sql.Result, error)
-		FindOne(ctx context.Context, dataId uint64) (*Follow, error)
-		FindOneByFollowingIdFollowedId(ctx context.Context, followingId uint64, followedId uint64) (*Follow, error)
+		FindOne(ctx context.Context, dataId int64) (*Follow, error)
+		FindOneByFollowingIdFollowedId(ctx context.Context, followingId int64, followedId int64) (*Follow, error)
 		Update(ctx context.Context, data *Follow) error
-		Delete(ctx context.Context, dataId uint64) error
+		Delete(ctx context.Context, dataId int64) error
 	}
 
 	defaultFollowModel struct {
@@ -43,41 +43,41 @@ type (
 	}
 
 	Follow struct {
-		DataId       uint64    `db:"data_id"`
+		DataId       int64     `db:"data_id"`
 		DataCreateAt time.Time `db:"data_create_at"`
 		DataUpdateAt time.Time `db:"data_update_at"`
-		FollowingId  uint64    `db:"following_id"`
-		FollowedId   uint64    `db:"followed_id"`
+		FollowingId  int64     `db:"following_id"`
+		FollowedId   int64     `db:"followed_id"`
 	}
 )
 
 func newFollowModel(conn sqlx.SqlConn, c cache.CacheConf, opts ...cache.Option) *defaultFollowModel {
 	return &defaultFollowModel{
 		CachedConn: sqlc.NewConn(conn, c, opts...),
-		table:      "`follow`",
+		table:      `"relation"."follow"`,
 	}
 }
 
-func (m *defaultFollowModel) Delete(ctx context.Context, dataId uint64) error {
+func (m *defaultFollowModel) Delete(ctx context.Context, dataId int64) error {
 	data, err := m.FindOne(ctx, dataId)
 	if err != nil {
 		return err
 	}
 
-	followDataIdKey := fmt.Sprintf("%s%v", cacheFollowDataIdPrefix, dataId)
-	followFollowingIdFollowedIdKey := fmt.Sprintf("%s%v:%v", cacheFollowFollowingIdFollowedIdPrefix, data.FollowingId, data.FollowedId)
+	relationFollowDataIdKey := fmt.Sprintf("%s%v", cacheRelationFollowDataIdPrefix, dataId)
+	relationFollowFollowingIdFollowedIdKey := fmt.Sprintf("%s%v:%v", cacheRelationFollowFollowingIdFollowedIdPrefix, data.FollowingId, data.FollowedId)
 	_, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("delete from %s where `data_id` = ?", m.table)
+		query := fmt.Sprintf("delete from %s where data_id = $1", m.table)
 		return conn.ExecCtx(ctx, query, dataId)
-	}, followDataIdKey, followFollowingIdFollowedIdKey)
+	}, relationFollowDataIdKey, relationFollowFollowingIdFollowedIdKey)
 	return err
 }
 
-func (m *defaultFollowModel) FindOne(ctx context.Context, dataId uint64) (*Follow, error) {
-	followDataIdKey := fmt.Sprintf("%s%v", cacheFollowDataIdPrefix, dataId)
+func (m *defaultFollowModel) FindOne(ctx context.Context, dataId int64) (*Follow, error) {
+	relationFollowDataIdKey := fmt.Sprintf("%s%v", cacheRelationFollowDataIdPrefix, dataId)
 	var resp Follow
-	err := m.QueryRowCtx(ctx, &resp, followDataIdKey, func(ctx context.Context, conn sqlx.SqlConn, v any) error {
-		query := fmt.Sprintf("select %s from %s where `data_id` = ? limit 1", followRows, m.table)
+	err := m.QueryRowCtx(ctx, &resp, relationFollowDataIdKey, func(ctx context.Context, conn sqlx.SqlConn, v any) error {
+		query := fmt.Sprintf("select %s from %s where data_id = $1 limit 1", followRows, m.table)
 		return conn.QueryRowCtx(ctx, v, query, dataId)
 	})
 	switch err {
@@ -90,11 +90,11 @@ func (m *defaultFollowModel) FindOne(ctx context.Context, dataId uint64) (*Follo
 	}
 }
 
-func (m *defaultFollowModel) FindOneByFollowingIdFollowedId(ctx context.Context, followingId uint64, followedId uint64) (*Follow, error) {
-	followFollowingIdFollowedIdKey := fmt.Sprintf("%s%v:%v", cacheFollowFollowingIdFollowedIdPrefix, followingId, followedId)
+func (m *defaultFollowModel) FindOneByFollowingIdFollowedId(ctx context.Context, followingId int64, followedId int64) (*Follow, error) {
+	relationFollowFollowingIdFollowedIdKey := fmt.Sprintf("%s%v:%v", cacheRelationFollowFollowingIdFollowedIdPrefix, followingId, followedId)
 	var resp Follow
-	err := m.QueryRowIndexCtx(ctx, &resp, followFollowingIdFollowedIdKey, m.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v any) (i any, e error) {
-		query := fmt.Sprintf("select %s from %s where `following_id` = ? and `followed_id` = ? limit 1", followRows, m.table)
+	err := m.QueryRowIndexCtx(ctx, &resp, relationFollowFollowingIdFollowedIdKey, m.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v any) (i any, e error) {
+		query := fmt.Sprintf("select %s from %s where following_id = $1 and followed_id = $2 limit 1", followRows, m.table)
 		if err := conn.QueryRowCtx(ctx, &resp, query, followingId, followedId); err != nil {
 			return nil, err
 		}
@@ -111,12 +111,12 @@ func (m *defaultFollowModel) FindOneByFollowingIdFollowedId(ctx context.Context,
 }
 
 func (m *defaultFollowModel) Insert(ctx context.Context, data *Follow) (sql.Result, error) {
-	followDataIdKey := fmt.Sprintf("%s%v", cacheFollowDataIdPrefix, data.DataId)
-	followFollowingIdFollowedIdKey := fmt.Sprintf("%s%v:%v", cacheFollowFollowingIdFollowedIdPrefix, data.FollowingId, data.FollowedId)
+	relationFollowDataIdKey := fmt.Sprintf("%s%v", cacheRelationFollowDataIdPrefix, data.DataId)
+	relationFollowFollowingIdFollowedIdKey := fmt.Sprintf("%s%v:%v", cacheRelationFollowFollowingIdFollowedIdPrefix, data.FollowingId, data.FollowedId)
 	ret, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?)", m.table, followRowsExpectAutoSet)
+		query := fmt.Sprintf("insert into %s (%s) values ($1, $2, $3, $4)", m.table, followRowsExpectAutoSet)
 		return conn.ExecCtx(ctx, query, data.DataCreateAt, data.DataUpdateAt, data.FollowingId, data.FollowedId)
-	}, followDataIdKey, followFollowingIdFollowedIdKey)
+	}, relationFollowDataIdKey, relationFollowFollowingIdFollowedIdKey)
 	return ret, err
 }
 
@@ -126,21 +126,21 @@ func (m *defaultFollowModel) Update(ctx context.Context, newData *Follow) error 
 		return err
 	}
 
-	followDataIdKey := fmt.Sprintf("%s%v", cacheFollowDataIdPrefix, data.DataId)
-	followFollowingIdFollowedIdKey := fmt.Sprintf("%s%v:%v", cacheFollowFollowingIdFollowedIdPrefix, data.FollowingId, data.FollowedId)
+	relationFollowDataIdKey := fmt.Sprintf("%s%v", cacheRelationFollowDataIdPrefix, data.DataId)
+	relationFollowFollowingIdFollowedIdKey := fmt.Sprintf("%s%v:%v", cacheRelationFollowFollowingIdFollowedIdPrefix, data.FollowingId, data.FollowedId)
 	_, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("update %s set %s where `data_id` = ?", m.table, followRowsWithPlaceHolder)
-		return conn.ExecCtx(ctx, query, newData.DataCreateAt, newData.DataUpdateAt, newData.FollowingId, newData.FollowedId, newData.DataId)
-	}, followDataIdKey, followFollowingIdFollowedIdKey)
+		query := fmt.Sprintf("update %s set %s where data_id = $1", m.table, followRowsWithPlaceHolder)
+		return conn.ExecCtx(ctx, query, newData.DataId, newData.DataCreateAt, newData.DataUpdateAt, newData.FollowingId, newData.FollowedId)
+	}, relationFollowDataIdKey, relationFollowFollowingIdFollowedIdKey)
 	return err
 }
 
 func (m *defaultFollowModel) formatPrimary(primary any) string {
-	return fmt.Sprintf("%s%v", cacheFollowDataIdPrefix, primary)
+	return fmt.Sprintf("%s%v", cacheRelationFollowDataIdPrefix, primary)
 }
 
 func (m *defaultFollowModel) queryPrimary(ctx context.Context, conn sqlx.SqlConn, v, primary any) error {
-	query := fmt.Sprintf("select %s from %s where `data_id` = ? limit 1", followRows, m.table)
+	query := fmt.Sprintf("select %s from %s where data_id = $1 limit 1", followRows, m.table)
 	return conn.QueryRowCtx(ctx, v, query, primary)
 }
 

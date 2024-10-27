@@ -31,7 +31,7 @@ func (l *SearchForkLogic) SearchFork(in *pb.SearchForkReq) (resp *pb.SearchForkR
 		return nil, err
 	}
 
-	var forkRepoIds []uint64
+	var forkRepoIds []int64
 	for _, fork := range *forks {
 		forkRepoIds = append(forkRepoIds, fork.ForkRepoId)
 	}
