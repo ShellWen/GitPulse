@@ -1,7 +1,7 @@
 import { QueryClient } from '@tanstack/react-query'
 import { HttpError } from '$/lib/query/error.ts'
 
-const MAX_RETRIES = 5
+const MAX_RETRIES = 3
 
 const queryClient = new QueryClient({
   defaultOptions: {
