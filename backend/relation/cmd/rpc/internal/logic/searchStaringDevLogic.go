@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"github.com/ShellWen/GitPulse/relation/model"
 
 	"github.com/ShellWen/GitPulse/relation/cmd/rpc/internal/svc"
 	"github.com/ShellWen/GitPulse/relation/cmd/rpc/pb"
@@ -23,8 +24,21 @@ func NewSearchStaringDevLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 	}
 }
 
-func (l *SearchStaringDevLogic) SearchStaringDev(in *pb.SearchStaringDevReq) (*pb.SearchStaringDevResp, error) {
-	// todo: add your logic here and delete this line
+func (l *SearchStaringDevLogic) SearchStaringDev(in *pb.SearchStaringDevReq) (resp *pb.SearchStaringDevResp, err error) {
+	var stars *[]*model.Star
 
-	return &pb.SearchStaringDevResp{}, nil
+	if stars, err = l.svcCtx.StarModel.SearchStaringDeveloper(l.ctx, in.RepoId, in.Page, in.Limit); err != nil {
+		return nil, err
+	}
+
+	var staringDevIds []uint64
+	for _, star := range *stars {
+		staringDevIds = append(staringDevIds, star.DeveloperId)
+	}
+
+	resp = &pb.SearchStaringDevResp{
+		DeveloperIds: staringDevIds,
+	}
+
+	return
 }

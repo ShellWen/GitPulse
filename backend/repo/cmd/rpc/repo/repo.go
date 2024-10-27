@@ -21,8 +21,6 @@ type (
 	GetRepoByIdReq  = pb.GetRepoByIdReq
 	GetRepoByIdResp = pb.GetRepoByIdResp
 	Repo            = pb.Repo
-	SearchRepoReq   = pb.SearchRepoReq
-	SearchRepoResp  = pb.SearchRepoResp
 	UpdateRepoReq   = pb.UpdateRepoReq
 	UpdateRepoResp  = pb.UpdateRepoResp
 
@@ -32,7 +30,6 @@ type (
 		UpdateRepo(ctx context.Context, in *UpdateRepoReq, opts ...grpc.CallOption) (*UpdateRepoResp, error)
 		DelRepoById(ctx context.Context, in *DelRepoByIdReq, opts ...grpc.CallOption) (*DelRepoByIdResp, error)
 		GetRepoById(ctx context.Context, in *GetRepoByIdReq, opts ...grpc.CallOption) (*GetRepoByIdResp, error)
-		SearchRepo(ctx context.Context, in *SearchRepoReq, opts ...grpc.CallOption) (*SearchRepoResp, error)
 	}
 
 	defaultRepoZrpcClient struct {
@@ -65,9 +62,4 @@ func (m *defaultRepoZrpcClient) DelRepoById(ctx context.Context, in *DelRepoById
 func (m *defaultRepoZrpcClient) GetRepoById(ctx context.Context, in *GetRepoByIdReq, opts ...grpc.CallOption) (*GetRepoByIdResp, error) {
 	client := pb.NewRepoClient(m.cli.Conn())
 	return client.GetRepoById(ctx, in, opts...)
-}
-
-func (m *defaultRepoZrpcClient) SearchRepo(ctx context.Context, in *SearchRepoReq, opts ...grpc.CallOption) (*SearchRepoResp, error) {
-	client := pb.NewRepoClient(m.cli.Conn())
-	return client.SearchRepo(ctx, in, opts...)
 }

@@ -53,8 +53,3 @@ func (s *DeveloperServer) GetDeveloperByUsername(ctx context.Context, in *pb.Get
 	l := logic.NewGetDeveloperByUsernameLogic(ctx, s.svcCtx)
 	return l.GetDeveloperByUsername(in)
 }
-
-func (s *DeveloperServer) SearchDeveloper(ctx context.Context, in *pb.SearchDeveloperReq) (*pb.SearchDeveloperResp, error) {
-	l := logic.NewSearchDeveloperLogic(ctx, s.svcCtx)
-	return l.SearchDeveloper(in)
-}

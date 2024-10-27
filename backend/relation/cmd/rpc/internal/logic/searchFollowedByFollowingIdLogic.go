@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"github.com/ShellWen/GitPulse/relation/model"
 
 	"github.com/ShellWen/GitPulse/relation/cmd/rpc/internal/svc"
 	"github.com/ShellWen/GitPulse/relation/cmd/rpc/pb"
@@ -23,8 +24,20 @@ func NewSearchFollowedByFollowingIdLogic(ctx context.Context, svcCtx *svc.Servic
 	}
 }
 
-func (l *SearchFollowedByFollowingIdLogic) SearchFollowedByFollowingId(in *pb.SearchFollowedByFollowingIdReq) (*pb.SearchFollowByFollowingIdResp, error) {
-	// todo: add your logic here and delete this line
+func (l *SearchFollowedByFollowingIdLogic) SearchFollowedByFollowingId(in *pb.SearchFollowedByFollowingIdReq) (resp *pb.SearchFollowByFollowingIdResp, err error) {
+	var follows *[]*model.Follow
+	if follows, err = l.svcCtx.FollowModel.SearchFollowed(l.ctx, in.FollowingId, in.Page, in.Limit); err != nil {
+		return nil, err
+	}
 
-	return &pb.SearchFollowByFollowingIdResp{}, nil
+	var followedIds []uint64
+	for _, follow := range *follows {
+		followedIds = append(followedIds, follow.FollowedId)
+	}
+
+	resp = &pb.SearchFollowByFollowingIdResp{
+		FollowedIds: followedIds,
+	}
+
+	return
 }

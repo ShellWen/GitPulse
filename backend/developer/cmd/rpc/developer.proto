@@ -90,31 +90,6 @@ message GetDeveloperByUsernameResp {
   Developer developer = 1; //developer
 }
 
-message SearchDeveloperReq {
-  int64 page = 1; //page
-  int64 limit = 2; //limit
-  int64 dataId = 3; //Generated primary key, MUST NOT be changed.
-  int64 dataCreateAt = 4; //dataCreateAt
-  int64 dataUpdateAt = 5; //dataUpdateAt
-  uint64 id = 6; //Unique id of GitHub user.
-  string name = 7; //name
-  string username = 8; //username
-  string avatarUrl = 9; //avatarUrl
-  string company = 10; //company
-  string location = 11; //location
-  string bio = 12; //bio
-  string blog = 13; //blog
-  string email = 14; //email
-  int64 createAt = 15; //createAt
-  int64 updateAt = 16; //updateAt
-}
-
-message SearchDeveloperResp {
-  repeated Developer developer = 1; //developer
-}
-
-
-
 // ------------------------------------ 
 // Rpc Func
 // ------------------------------------ 
@@ -127,5 +102,4 @@ service developer{
    rpc DelDeveloperByUsername(DelDeveloperByUsernameReq) returns (DelDeveloperByUsernameResp);
 	 rpc GetDeveloperById(GetDeveloperByIdReq) returns (GetDeveloperByIdResp);
    rpc GetDeveloperByUsername(GetDeveloperByUsernameReq) returns (GetDeveloperByUsernameResp);
-	 rpc SearchDeveloper(SearchDeveloperReq) returns (SearchDeveloperResp);
 }

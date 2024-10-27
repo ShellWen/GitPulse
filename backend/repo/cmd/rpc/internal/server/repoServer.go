@@ -43,8 +43,3 @@ func (s *RepoServer) GetRepoById(ctx context.Context, in *pb.GetRepoByIdReq) (*p
 	l := logic.NewGetRepoByIdLogic(ctx, s.svcCtx)
 	return l.GetRepoById(in)
 }
-
-func (s *RepoServer) SearchRepo(ctx context.Context, in *pb.SearchRepoReq) (*pb.SearchRepoResp, error) {
-	l := logic.NewSearchRepoLogic(ctx, s.svcCtx)
-	return l.SearchRepo(in)
-}

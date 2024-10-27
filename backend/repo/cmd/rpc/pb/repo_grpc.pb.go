@@ -23,7 +23,6 @@ const (
 	Repo_UpdateRepo_FullMethodName  = "/pb.repo/UpdateRepo"
 	Repo_DelRepoById_FullMethodName = "/pb.repo/DelRepoById"
 	Repo_GetRepoById_FullMethodName = "/pb.repo/GetRepoById"
-	Repo_SearchRepo_FullMethodName  = "/pb.repo/SearchRepo"
 )
 
 // RepoClient is the client API for Repo service.
@@ -35,7 +34,6 @@ type RepoClient interface {
 	UpdateRepo(ctx context.Context, in *UpdateRepoReq, opts ...grpc.CallOption) (*UpdateRepoResp, error)
 	DelRepoById(ctx context.Context, in *DelRepoByIdReq, opts ...grpc.CallOption) (*DelRepoByIdResp, error)
 	GetRepoById(ctx context.Context, in *GetRepoByIdReq, opts ...grpc.CallOption) (*GetRepoByIdResp, error)
-	SearchRepo(ctx context.Context, in *SearchRepoReq, opts ...grpc.CallOption) (*SearchRepoResp, error)
 }
 
 type repoClient struct {
@@ -86,16 +84,6 @@ func (c *repoClient) GetRepoById(ctx context.Context, in *GetRepoByIdReq, opts .
 	return out, nil
 }
 
-func (c *repoClient) SearchRepo(ctx context.Context, in *SearchRepoReq, opts ...grpc.CallOption) (*SearchRepoResp, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(SearchRepoResp)
-	err := c.cc.Invoke(ctx, Repo_SearchRepo_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // RepoServer is the server API for Repo service.
 // All implementations must embed UnimplementedRepoServer
 // for forward compatibility.
@@ -105,7 +93,6 @@ type RepoServer interface {
 	UpdateRepo(context.Context, *UpdateRepoReq) (*UpdateRepoResp, error)
 	DelRepoById(context.Context, *DelRepoByIdReq) (*DelRepoByIdResp, error)
 	GetRepoById(context.Context, *GetRepoByIdReq) (*GetRepoByIdResp, error)
-	SearchRepo(context.Context, *SearchRepoReq) (*SearchRepoResp, error)
 	mustEmbedUnimplementedRepoServer()
 }
 
@@ -127,9 +114,6 @@ func (UnimplementedRepoServer) DelRepoById(context.Context, *DelRepoByIdReq) (*D
 }
 func (UnimplementedRepoServer) GetRepoById(context.Context, *GetRepoByIdReq) (*GetRepoByIdResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetRepoById not implemented")
-}
-func (UnimplementedRepoServer) SearchRepo(context.Context, *SearchRepoReq) (*SearchRepoResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SearchRepo not implemented")
 }
 func (UnimplementedRepoServer) mustEmbedUnimplementedRepoServer() {}
 func (UnimplementedRepoServer) testEmbeddedByValue()              {}
@@ -224,24 +208,6 @@ func _Repo_GetRepoById_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Repo_SearchRepo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SearchRepoReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(RepoServer).SearchRepo(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Repo_SearchRepo_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RepoServer).SearchRepo(ctx, req.(*SearchRepoReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // Repo_ServiceDesc is the grpc.ServiceDesc for Repo service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -264,10 +230,6 @@ var Repo_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetRepoById",
 			Handler:    _Repo_GetRepoById_Handler,
-		},
-		{
-			MethodName: "SearchRepo",
-			Handler:    _Repo_SearchRepo_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

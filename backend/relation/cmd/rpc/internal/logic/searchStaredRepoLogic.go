@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"github.com/ShellWen/GitPulse/relation/model"
 
 	"github.com/ShellWen/GitPulse/relation/cmd/rpc/internal/svc"
 	"github.com/ShellWen/GitPulse/relation/cmd/rpc/pb"
@@ -23,8 +24,21 @@ func NewSearchStaredRepoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 	}
 }
 
-func (l *SearchStaredRepoLogic) SearchStaredRepo(in *pb.SearchStaredRepoReq) (*pb.SearchStaredRepoResp, error) {
-	// todo: add your logic here and delete this line
+func (l *SearchStaredRepoLogic) SearchStaredRepo(in *pb.SearchStaredRepoReq) (resp *pb.SearchStaredRepoResp, err error) {
+	var stars *[]*model.Star
 
-	return &pb.SearchStaredRepoResp{}, nil
+	if stars, err = l.svcCtx.StarModel.SearchStaredRepo(l.ctx, in.DeveloperId, in.Page, in.Limit); err != nil {
+		return nil, err
+	}
+
+	var staredRepoIds []uint64
+	for _, star := range *stars {
+		staredRepoIds = append(staredRepoIds, star.RepoId)
+	}
+
+	resp = &pb.SearchStaredRepoResp{
+		RepoIds: staredRepoIds,
+	}
+
+	return
 }

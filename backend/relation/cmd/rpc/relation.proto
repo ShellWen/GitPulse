@@ -41,11 +41,13 @@ message GetCreatorIdResp {
 }
 
 message SearchCreatedRepoReq {
-  uint64 developerId = 1; //developerId
+  int64 page = 1; //page
+  int64 limit = 2; //limit
+  uint64 developerId = 3; //developerId
 }
 
 message SearchCreatedRepoResp {
-  repeated uint64 repoId = 1; //repoId
+  repeated uint64 repoIds = 1; //repoId
 }
 
 //--------------------------------follow--------------------------------
@@ -89,7 +91,7 @@ message SearchFollowedByFollowingIdReq {
 }
 
 message SearchFollowByFollowingIdResp {
-  repeated uint64 followedId = 1; //followedId
+  repeated uint64 followedIds = 1; //followedId
 }
 
 message SearchFollowingByFollowedIdReq {
@@ -99,7 +101,7 @@ message SearchFollowingByFollowedIdReq {
 }
 
 message SearchFollowByFollowedIdResp {
-  repeated uint64 followingId = 1; //followingId
+  repeated uint64 followingIds = 1; //followingId
 }
 
 //--------------------------------fork--------------------------------
@@ -141,7 +143,7 @@ message SearchForkReq {
 }
 
 message SearchForkResp {
-  repeated uint64 forkRepoId = 1; //forkRepoId
+  repeated uint64 forkRepoIds = 1; //forkRepoId
 }
 
 //--------------------------------star--------------------------------
@@ -185,7 +187,7 @@ message SearchStaredRepoReq {
 }
 
 message SearchStaredRepoResp {
-  repeated uint64 repoId = 1; //repoId
+  repeated uint64 repoIds = 1; //repoId
 }
 
 message SearchStaringDevReq {
@@ -195,7 +197,7 @@ message SearchStaringDevReq {
 }
 
 message SearchStaringDevResp {
-  repeated uint64 developerId = 1; //developerId
+  repeated uint64 developerIds = 1; //developerId
 }
 
 // ------------------------------------ 

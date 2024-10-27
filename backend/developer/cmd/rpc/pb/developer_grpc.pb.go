@@ -25,7 +25,6 @@ const (
 	Developer_DelDeveloperByUsername_FullMethodName = "/pb.developer/DelDeveloperByUsername"
 	Developer_GetDeveloperById_FullMethodName       = "/pb.developer/GetDeveloperById"
 	Developer_GetDeveloperByUsername_FullMethodName = "/pb.developer/GetDeveloperByUsername"
-	Developer_SearchDeveloper_FullMethodName        = "/pb.developer/SearchDeveloper"
 )
 
 // DeveloperClient is the client API for Developer service.
@@ -39,7 +38,6 @@ type DeveloperClient interface {
 	DelDeveloperByUsername(ctx context.Context, in *DelDeveloperByUsernameReq, opts ...grpc.CallOption) (*DelDeveloperByUsernameResp, error)
 	GetDeveloperById(ctx context.Context, in *GetDeveloperByIdReq, opts ...grpc.CallOption) (*GetDeveloperByIdResp, error)
 	GetDeveloperByUsername(ctx context.Context, in *GetDeveloperByUsernameReq, opts ...grpc.CallOption) (*GetDeveloperByUsernameResp, error)
-	SearchDeveloper(ctx context.Context, in *SearchDeveloperReq, opts ...grpc.CallOption) (*SearchDeveloperResp, error)
 }
 
 type developerClient struct {
@@ -110,16 +108,6 @@ func (c *developerClient) GetDeveloperByUsername(ctx context.Context, in *GetDev
 	return out, nil
 }
 
-func (c *developerClient) SearchDeveloper(ctx context.Context, in *SearchDeveloperReq, opts ...grpc.CallOption) (*SearchDeveloperResp, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(SearchDeveloperResp)
-	err := c.cc.Invoke(ctx, Developer_SearchDeveloper_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // DeveloperServer is the server API for Developer service.
 // All implementations must embed UnimplementedDeveloperServer
 // for forward compatibility.
@@ -131,7 +119,6 @@ type DeveloperServer interface {
 	DelDeveloperByUsername(context.Context, *DelDeveloperByUsernameReq) (*DelDeveloperByUsernameResp, error)
 	GetDeveloperById(context.Context, *GetDeveloperByIdReq) (*GetDeveloperByIdResp, error)
 	GetDeveloperByUsername(context.Context, *GetDeveloperByUsernameReq) (*GetDeveloperByUsernameResp, error)
-	SearchDeveloper(context.Context, *SearchDeveloperReq) (*SearchDeveloperResp, error)
 	mustEmbedUnimplementedDeveloperServer()
 }
 
@@ -159,9 +146,6 @@ func (UnimplementedDeveloperServer) GetDeveloperById(context.Context, *GetDevelo
 }
 func (UnimplementedDeveloperServer) GetDeveloperByUsername(context.Context, *GetDeveloperByUsernameReq) (*GetDeveloperByUsernameResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetDeveloperByUsername not implemented")
-}
-func (UnimplementedDeveloperServer) SearchDeveloper(context.Context, *SearchDeveloperReq) (*SearchDeveloperResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SearchDeveloper not implemented")
 }
 func (UnimplementedDeveloperServer) mustEmbedUnimplementedDeveloperServer() {}
 func (UnimplementedDeveloperServer) testEmbeddedByValue()                   {}
@@ -292,24 +276,6 @@ func _Developer_GetDeveloperByUsername_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Developer_SearchDeveloper_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SearchDeveloperReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DeveloperServer).SearchDeveloper(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Developer_SearchDeveloper_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DeveloperServer).SearchDeveloper(ctx, req.(*SearchDeveloperReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // Developer_ServiceDesc is the grpc.ServiceDesc for Developer service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -340,10 +306,6 @@ var Developer_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetDeveloperByUsername",
 			Handler:    _Developer_GetDeveloperByUsername_Handler,
-		},
-		{
-			MethodName: "SearchDeveloper",
-			Handler:    _Developer_SearchDeveloper_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

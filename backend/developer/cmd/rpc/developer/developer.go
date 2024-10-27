@@ -25,8 +25,6 @@ type (
 	GetDeveloperByIdResp       = pb.GetDeveloperByIdResp
 	GetDeveloperByUsernameReq  = pb.GetDeveloperByUsernameReq
 	GetDeveloperByUsernameResp = pb.GetDeveloperByUsernameResp
-	SearchDeveloperReq         = pb.SearchDeveloperReq
-	SearchDeveloperResp        = pb.SearchDeveloperResp
 	UpdateDeveloperReq         = pb.UpdateDeveloperReq
 	UpdateDeveloperResp        = pb.UpdateDeveloperResp
 
@@ -38,7 +36,6 @@ type (
 		DelDeveloperByUsername(ctx context.Context, in *DelDeveloperByUsernameReq, opts ...grpc.CallOption) (*DelDeveloperByUsernameResp, error)
 		GetDeveloperById(ctx context.Context, in *GetDeveloperByIdReq, opts ...grpc.CallOption) (*GetDeveloperByIdResp, error)
 		GetDeveloperByUsername(ctx context.Context, in *GetDeveloperByUsernameReq, opts ...grpc.CallOption) (*GetDeveloperByUsernameResp, error)
-		SearchDeveloper(ctx context.Context, in *SearchDeveloperReq, opts ...grpc.CallOption) (*SearchDeveloperResp, error)
 	}
 
 	defaultDeveloperZrpcClient struct {
@@ -81,9 +78,4 @@ func (m *defaultDeveloperZrpcClient) GetDeveloperById(ctx context.Context, in *G
 func (m *defaultDeveloperZrpcClient) GetDeveloperByUsername(ctx context.Context, in *GetDeveloperByUsernameReq, opts ...grpc.CallOption) (*GetDeveloperByUsernameResp, error) {
 	client := pb.NewDeveloperClient(m.cli.Conn())
 	return client.GetDeveloperByUsername(ctx, in, opts...)
-}
-
-func (m *defaultDeveloperZrpcClient) SearchDeveloper(ctx context.Context, in *SearchDeveloperReq, opts ...grpc.CallOption) (*SearchDeveloperResp, error) {
-	client := pb.NewDeveloperClient(m.cli.Conn())
-	return client.SearchDeveloper(ctx, in, opts...)
 }

@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"github.com/ShellWen/GitPulse/relation/model"
 
 	"github.com/ShellWen/GitPulse/relation/cmd/rpc/internal/svc"
 	"github.com/ShellWen/GitPulse/relation/cmd/rpc/pb"
@@ -23,8 +24,21 @@ func NewSearchCreatedRepoLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 	}
 }
 
-func (l *SearchCreatedRepoLogic) SearchCreatedRepo(in *pb.SearchCreatedRepoReq) (*pb.SearchCreatedRepoResp, error) {
-	// todo: add your logic here and delete this line
+func (l *SearchCreatedRepoLogic) SearchCreatedRepo(in *pb.SearchCreatedRepoReq) (resp *pb.SearchCreatedRepoResp, err error) {
+	var CreateRepos *[]*model.CreateRepo
+	CreateRepos, err = l.svcCtx.CreateRepoModel.SearchCreatedRepo(l.ctx, in.DeveloperId, in.Page, in.Limit)
+	if err != nil {
+		return nil, err
+	}
 
-	return &pb.SearchCreatedRepoResp{}, nil
+	var repoIds []uint64
+	for _, CreateRepo := range *CreateRepos {
+		repoIds = append(repoIds, CreateRepo.RepoId)
+	}
+
+	resp = &pb.SearchCreatedRepoResp{
+		RepoIds: repoIds,
+	}
+
+	return
 }

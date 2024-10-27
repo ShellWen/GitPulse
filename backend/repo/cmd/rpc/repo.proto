@@ -75,28 +75,6 @@ message GetRepoByIdResp {
   Repo repo = 1; //repo
 }
 
-message SearchRepoReq {
-  int64 page = 1; //page
-  int64 limit = 2; //limit
-  uint64 id = 3; //id
-  string name = 4; //name
-  bool gist = 5; //gist
-  int64 starCount = 6; //starCount
-  int64 forkCount = 7; //forkCount
-  int64 issueCount = 8; //issueCount
-  int64 commitCount = 9; //commitCount
-  int64 prCount = 10; //prCount
-  string language = 11; //language
-  string description = 12; //description
-  string readme = 13; //readme
-}
-
-message SearchRepoResp {
-  repeated Repo repo = 1; //repo
-}
-
-
-
 // ------------------------------------ 
 // Rpc Func
 // ------------------------------------ 
@@ -107,7 +85,6 @@ service repo{
 	 rpc AddRepo(AddRepoReq) returns (AddRepoResp); 
 	 rpc UpdateRepo(UpdateRepoReq) returns (UpdateRepoResp); 
 	 rpc DelRepoById(DelRepoByIdReq) returns (DelRepoByIdResp);
-	 rpc GetRepoById(GetRepoByIdReq) returns (GetRepoByIdResp); 
-	 rpc SearchRepo(SearchRepoReq) returns (SearchRepoResp); 
+	 rpc GetRepoById(GetRepoByIdReq) returns (GetRepoByIdResp);
 
 }
