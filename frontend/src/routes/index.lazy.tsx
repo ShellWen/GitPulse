@@ -1,6 +1,6 @@
 import { createLazyFileRoute, getRouteApi } from '@tanstack/react-router'
 import { Button, Hero, Input } from 'react-daisyui'
-import { ChangeEvent, FormEvent, useCallback, useState } from 'react'
+import { type ChangeEvent, type FormEvent, useCallback, useState } from 'react'
 
 const route = getRouteApi('/')
 

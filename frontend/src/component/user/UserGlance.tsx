@@ -1,6 +1,6 @@
 import { Fragment, useMemo } from 'react'
 
-import { User } from '$/types/user.ts'
+import { type User } from '$/types/user.ts'
 import { Divider } from 'react-daisyui'
 
 interface UserGlanceItem {

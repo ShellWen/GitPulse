@@ -1,4 +1,4 @@
-import { ComponentProps, PropsWithChildren, Suspense, lazy, useCallback, useMemo } from 'react'
+import { type ComponentProps, type PropsWithChildren, Suspense, lazy, useCallback, useMemo } from 'react'
 
 import UserGlance from '$/component/user/UserGlance.tsx'
 import UserInfo from '$/component/user/UserInfo.tsx'
@@ -6,11 +6,11 @@ import UserInfoSkeleton from '$/component/user/UserInfoSkeleton.tsx'
 import { BusinessError } from '$/lib/query/error.ts'
 import { useSuspenseUser } from '$/lib/query/useUser.ts'
 import useDarkMode from '$/lib/useDarkMode.ts'
+import type { PieConfig } from '@ant-design/plots/es/components/pie'
 import { QueryErrorResetBoundary } from '@tanstack/react-query'
 import { createLazyFileRoute, getRouteApi } from '@tanstack/react-router'
 import { Button, Skeleton } from 'react-daisyui'
-import { ErrorBoundary, FallbackProps } from 'react-error-boundary'
-import { PieConfig } from '@ant-design/plots/es/components/pie'
+import { ErrorBoundary, type FallbackProps } from 'react-error-boundary'
 
 const route = getRouteApi('/u_/$userName')
 
@@ -51,10 +51,19 @@ const DemoPie = () => {
         data,
         angleField: 'value',
         colorField: 'type',
-        radius: 0.8,
+        radius: 0.6,
         label: {
           text: (d: DataItem) => `${d.type}\n ${d.value}`,
           position: 'spider',
+        },
+        tooltip: {
+          title: 'type',
+          items: [
+            {
+              name: '值',
+              field: 'value',
+            },
+          ],
         },
         legend: {
           color: {

@@ -1,4 +1,4 @@
-import { User } from '$/types/user.ts'
+import { type User } from '$/types/user.ts'
 import { Avatar } from 'react-daisyui'
 
 const UserInfo = ({ user }: { user: User }) => {
