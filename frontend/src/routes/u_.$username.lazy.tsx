@@ -1,10 +1,10 @@
 import { type ComponentProps, type PropsWithChildren, Suspense, lazy, useCallback, useMemo } from 'react'
 
-import UserGlance from '$/component/user/UserGlance.tsx'
-import UserInfo from '$/component/user/UserInfo.tsx'
-import UserInfoSkeleton from '$/component/user/UserInfoSkeleton.tsx'
+import DeveloperGlance from '$/component/developer/DeveloperGlance.tsx'
+import DeveloperInfo from '$/component/developer/DeveloperInfo.tsx'
+import DeveloperInfoSkeleton from '$/component/developer/DeveloperInfoSkeleton.tsx'
 import { BusinessError } from '$/lib/query/error.ts'
-import { useSuspenseUser } from '$/lib/query/useUser.ts'
+import { useSuspenseDeveloper } from '$/lib/query/useDeveloper.ts'
 import useDarkMode from '$/lib/useDarkMode.ts'
 import type { PieConfig } from '@ant-design/plots/es/components/pie'
 import { QueryErrorResetBoundary } from '@tanstack/react-query'
@@ -12,18 +12,18 @@ import { createLazyFileRoute, getRouteApi } from '@tanstack/react-router'
 import { Button, Skeleton } from 'react-daisyui'
 import { ErrorBoundary, type FallbackProps } from 'react-error-boundary'
 
-const route = getRouteApi('/u_/$userName')
+const route = getRouteApi('/u_/$username')
 
-const UserInfoWrapper = ({ userName }: { userName: string }) => {
-  const { data: user } = useSuspenseUser(userName)
+const DeveloperInfoWrapper = ({ username }: { username: string }) => {
+  const { data: user } = useSuspenseDeveloper(username)
 
-  return <UserInfo user={user} />
+  return <DeveloperInfo developer={user} />
 }
 
-const UserGlanceWrapper = ({ userName }: { userName: string }) => {
-  const { data: user } = useSuspenseUser(userName)
+const DeveloperGlanceWrapper = ({ username }: { username: string }) => {
+  const { data: user } = useSuspenseDeveloper(username)
 
-  return <UserGlance user={user} />
+  return <DeveloperGlance developer={user} />
 }
 
 interface DataItem {
@@ -79,7 +79,7 @@ const DemoPie = () => {
   return <Pie {...config} />
 }
 
-const UserTable = () => {
+const DeveloperTable = () => {
   return (
     <div className="flex w-full max-w-6xl flex-col">
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
@@ -97,7 +97,7 @@ const UserTable = () => {
     </div>
   )
 }
-const UserNotFoundErrorBoundary = ({ children }: PropsWithChildren) => {
+const DeveloperNotFoundErrorBoundary = ({ children }: PropsWithChildren) => {
   const renderer = useCallback(({ error }: FallbackProps) => {
     if (!(error instanceof BusinessError) || error.code !== 404) {
       // Only handle 404 error
@@ -109,16 +109,16 @@ const UserNotFoundErrorBoundary = ({ children }: PropsWithChildren) => {
   return <ErrorBoundary fallbackRender={renderer}>{children}</ErrorBoundary>
 }
 
-const UserInfoErrorBoundary = ({ children }: PropsWithChildren) => {
+const DeveloperInfoErrorBoundary = ({ children }: PropsWithChildren) => {
   const renderer = useCallback(({ resetErrorBoundary, error }: FallbackProps) => {
     if (error instanceof BusinessError && error.code === 404) {
-      // When user not found, the UserNotFoundErrorBoundary will handle it
+      // When the developer not found, the DeveloperNotFoundErrorBoundary will handle it
       throw error
     }
     const errorMsg = error instanceof Error ? error.message : '未知错误'
     return (
       <div>
-        请求用户信息失败：{errorMsg}
+        请求开发者信息失败：{errorMsg}
         <Button onClick={() => resetErrorBoundary()}>重试</Button>
       </div>
     )
@@ -134,29 +134,29 @@ const UserInfoErrorBoundary = ({ children }: PropsWithChildren) => {
   )
 }
 
-const UserPage = () => {
-  const { userName } = route.useParams()
+const DeveloperPage = () => {
+  const { username } = route.useParams()
 
   return (
     <section className="flex w-full flex-col items-center gap-8 px-4 pt-8">
-      <UserNotFoundErrorBoundary>
+      <DeveloperNotFoundErrorBoundary>
         <>
-          <UserInfoErrorBoundary>
-            <Suspense fallback={<UserInfoSkeleton />}>
-              <UserInfoWrapper userName={userName} />
-              <UserGlanceWrapper userName={userName} />
+          <DeveloperInfoErrorBoundary>
+            <Suspense fallback={<DeveloperInfoSkeleton />}>
+              <DeveloperInfoWrapper username={username} />
+              <DeveloperGlanceWrapper username={username} />
             </Suspense>
-          </UserInfoErrorBoundary>
+          </DeveloperInfoErrorBoundary>
           {/* TODO: Add ErrorBoundary */}
           <Suspense fallback={<>TODO</>}>
-            <UserTable />
+            <DeveloperTable />
           </Suspense>
         </>
-      </UserNotFoundErrorBoundary>
+      </DeveloperNotFoundErrorBoundary>
     </section>
   )
 }
 
-export const Route = createLazyFileRoute('/u_/$userName')({
-  component: UserPage,
+export const Route = createLazyFileRoute('/u_/$username')({
+  component: DeveloperPage,
 })

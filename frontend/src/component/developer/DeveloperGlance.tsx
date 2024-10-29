@@ -1,6 +1,6 @@
 import { Fragment, useMemo } from 'react'
 
-import { type User } from '$/types/user.ts'
+import { type Developer } from '$/types/developer.ts'
 import { Divider } from 'react-daisyui'
 
 interface UserGlanceItem {
@@ -17,16 +17,16 @@ const UserGlanceBlock = ({ item }: { item: UserGlanceItem }) => {
   )
 }
 
-const UserGlance = ({ user }: { user: User }) => {
+const DeveloperGlance = ({ developer }: { developer: Developer }) => {
   const items: UserGlanceItem[] = useMemo(
     () => [
-      { name: 'Repositories', value: user.repositories.toString() },
-      { name: 'Stars', value: user.stars.toString() },
-      { name: 'Followers', value: user.followers.toString() },
-      { name: 'Following', value: user.following.toString() },
-      { name: 'Gists', value: user.gists.toString() },
+      { name: 'Repositories', value: developer.repositories.toString() },
+      { name: 'Stars', value: developer.stars.toString() },
+      { name: 'Followers', value: developer.followers.toString() },
+      { name: 'Following', value: developer.following.toString() },
+      { name: 'Gists', value: developer.gists.toString() },
     ],
-    [user],
+    [developer],
   )
 
   return (
@@ -43,4 +43,4 @@ const UserGlance = ({ user }: { user: User }) => {
   )
 }
 
-export default UserGlance
+export default DeveloperGlance

@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
-export const user = z.object({
-  userId: z.number().nonnegative("User ID should be non-negative"),
+export const developer = z.object({
+  userId: z.number().nonnegative("Developer ID should be non-negative"),
   name: z.string().optional(),
   login: z.string().min(1, "Login should not be empty"),
   avatarUrl: z.string().url("Avatar URL should be a valid URL"),
@@ -19,4 +19,4 @@ export const user = z.object({
   updated_at: z.coerce.date(),
 })
 
-export type User = z.infer<typeof user>
+export type Developer = z.infer<typeof developer>

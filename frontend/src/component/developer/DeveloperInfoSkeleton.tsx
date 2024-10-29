@@ -1,6 +1,6 @@
 import { Skeleton } from 'react-daisyui'
 
-const UserInfoSkeleton = () => {
+const DeveloperInfoSkeleton = () => {
   return (
     <section className="flex w-full max-w-6xl flex-row flex-wrap gap-8">
       <Skeleton className="h-32 w-32" />
@@ -14,4 +14,4 @@ const UserInfoSkeleton = () => {
   )
 }
 
-export default UserInfoSkeleton
+export default DeveloperInfoSkeleton

@@ -1,5 +1,5 @@
 import { baseResponse } from '$/types/base.ts'
-import { user } from '$/types/user.ts'
+import { developer } from '$/types/developer.ts'
 import { HttpHandler, HttpResponse, delay, http } from 'msw'
 import { z } from 'zod'
 
@@ -7,23 +7,23 @@ import { BASE_URL } from './index.ts'
 
 // noinspection JSUnusedGlobalSymbols
 export const handlers = [
-  http.get(`${BASE_URL}/user/:userName`, async ({ params }) => {
+  http.get(`${BASE_URL}/developer/:username`, async ({ params }) => {
     await delay(1000)
 
-    if (params.userName !== 'shellwen') {
+    if (params.username !== 'shellwen') {
       return HttpResponse.json(baseResponse(z.null()).parse({
         code: 404,
-        message: 'User not found',
+        message: 'Developer not found',
         data: null,
       }), {
         status: 404,
       })
     }
 
-    const userResponse = baseResponse(user)
-    type UserResponse = z.infer<typeof userResponse>
+    const developerResponse = baseResponse(developer)
+    type DeveloperResponse = z.infer<typeof developerResponse>
 
-    const resp = userResponse.parse({
+    const resp = developerResponse.parse({
       code: 0,
       message: '',
       data: {
@@ -44,7 +44,7 @@ export const handlers = [
         created_at: new Date('2018-05-05T02:44:13Z'),
         updated_at: new Date('2024-10-24T01:14:19Z'),
       },
-    } satisfies UserResponse)
-    return HttpResponse.json<UserResponse>(resp)
+    } satisfies DeveloperResponse)
+    return HttpResponse.json<DeveloperResponse>(resp)
   }),
 ] satisfies Array<HttpHandler>
