@@ -15,7 +15,7 @@
     "application/json"
   ],
   "paths": {
-    "/developer/{username}": {
+    "/developer/{login}": {
       "get": {
         "operationId": "getDeveloper",
         "responses": {
@@ -28,7 +28,7 @@
         },
         "parameters": [
           {
-            "name": "username",
+            "name": "login",
             "in": "path",
             "required": true,
             "type": "string"
@@ -63,7 +63,7 @@
           "name": {
             "type": "string"
           },
-          "username": {
+          "login": {
             "type": "string"
           },
           "avatar_url": {
@@ -98,7 +98,7 @@
         "message",
         "id",
         "name",
-        "username",
+        "login",
         "avatar_url",
         "company",
         "location",

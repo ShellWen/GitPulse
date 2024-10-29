@@ -2,7 +2,7 @@ syntax = "v1"
 
 type (
 	GetDeveloperReq {
-		Username string `path:"username"`
+		Username string `path:"login"`
 	}
 	GetDeveloperResp {
 		Code    int32  `json:"code"`
@@ -10,15 +10,15 @@ type (
 		Data {
 			Id        int64  `json:"id"`
 			Name      string `json:"name"`
-			Username  string `json:"username"`
+			Username  string `json:"login"`
 			AvatarUrl string `json:"avatar_url"`
 			Company   string `json:"company"`
 			Location  string `json:"location"`
 			Bio       string `json:"bio"`
 			Blog      string `json:"blog"`
 			Email     string `json:"email"`
-			CreateAt  string `json:"create_at"`
-			UpdateAt  string `json:"update_at"`
+			CreateAt  string `json:"created_at"`
+			UpdateAt  string `json:"updated_at"`
 		} `json:"data"`
 	}
 )
@@ -29,6 +29,6 @@ type (
 )
 service Developer {
 	@handler getDeveloper
-	get /:username (GetDeveloperReq) returns (GetDeveloperResp)
+	get /:login (GetDeveloperReq) returns (GetDeveloperResp)
 }
 

@@ -4,7 +4,7 @@
 package types
 
 type GetDeveloperReq struct {
-	Username string `path:"username"`
+	Username string `path:"login"`
 }
 
 type GetDeveloperResp struct {
@@ -13,14 +13,14 @@ type GetDeveloperResp struct {
 	Data    struct {
 		Id        int64  `json:"id"`
 		Name      string `json:"name"`
-		Username  string `json:"username"`
+		Username  string `json:"login"`
 		AvatarUrl string `json:"avatar_url"`
 		Company   string `json:"company"`
 		Location  string `json:"location"`
 		Bio       string `json:"bio"`
 		Blog      string `json:"blog"`
 		Email     string `json:"email"`
-		CreateAt  string `json:"create_at"`
-		UpdateAt  string `json:"update_at"`
+		CreateAt  string `json:"created_at"`
+		UpdateAt  string `json:"updated_at"`
 	} `json:"data"`
 }
