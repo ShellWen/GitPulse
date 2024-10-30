@@ -2,7 +2,9 @@ package logic
 
 import (
 	"context"
+	"errors"
 	"github.com/ShellWen/GitPulse/relation/model"
+	"net/http"
 
 	"github.com/ShellWen/GitPulse/relation/cmd/rpc/internal/svc"
 	"github.com/ShellWen/GitPulse/relation/cmd/rpc/pb"
@@ -26,14 +28,27 @@ func NewGetCreatorIdLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetC
 
 func (l *GetCreatorIdLogic) GetCreatorId(in *pb.GetCreatorIdReq) (resp *pb.GetCreatorIdResp, err error) {
 	var createRepo *model.CreateRepo
-	createRepo, err = l.svcCtx.CreateRepoModel.FindOneByRepoId(l.ctx, in.RepoId)
-	if err != nil {
-		return nil, err
+	if createRepo, err = l.svcCtx.CreateRepoModel.FindOneByRepoId(l.ctx, in.RepoId); err != nil {
+		switch {
+		case errors.Is(err, model.ErrNotFound):
+			resp = &pb.GetCreatorIdResp{
+				Code:    http.StatusNotFound,
+				Message: err.Error(),
+			}
+		default:
+			resp = &pb.GetCreatorIdResp{
+				Code:    http.StatusInternalServerError,
+				Message: err.Error(),
+			}
+		}
+	} else {
+		resp = &pb.GetCreatorIdResp{
+			Code:        http.StatusOK,
+			Message:     http.StatusText(http.StatusOK),
+			DeveloperId: createRepo.DeveloperId,
+		}
 	}
 
-	resp = &pb.GetCreatorIdResp{
-		DeveloperId: createRepo.DeveloperId,
-	}
-
+	err = nil
 	return
 }

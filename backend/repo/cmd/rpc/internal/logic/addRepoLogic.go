@@ -3,6 +3,7 @@ package logic
 import (
 	"context"
 	"github.com/ShellWen/GitPulse/repo/model"
+	"net/http"
 	"time"
 
 	"github.com/ShellWen/GitPulse/repo/cmd/rpc/internal/svc"
@@ -43,12 +44,18 @@ func (l *AddRepoLogic) AddRepo(in *pb.AddRepoReq) (resp *pb.AddRepoResp, err err
 		Readme:       in.Readme,
 	}
 
-	_, err = l.svcCtx.RepoModel.Insert(l.ctx, repo)
-	if err != nil {
-		return nil, err
+	if _, err = l.svcCtx.RepoModel.Insert(l.ctx, repo); err != nil {
+		resp = &pb.AddRepoResp{
+			Code:    http.StatusInternalServerError,
+			Message: err.Error(),
+		}
+	} else {
+		resp = &pb.AddRepoResp{
+			Code:    http.StatusOK,
+			Message: http.StatusText(http.StatusOK),
+		}
 	}
 
-	resp = &pb.AddRepoResp{}
-
+	err = nil
 	return
 }

@@ -3,12 +3,11 @@ package logic
 import (
 	"context"
 	"errors"
-	"github.com/ShellWen/GitPulse/relation/model"
-
 	"github.com/ShellWen/GitPulse/relation/cmd/rpc/internal/svc"
 	"github.com/ShellWen/GitPulse/relation/cmd/rpc/pb"
-
+	"github.com/ShellWen/GitPulse/relation/model"
 	"github.com/zeromicro/go-zero/core/logx"
+	"net/http"
 )
 
 type CheckIfStarLogic struct {
@@ -26,18 +25,28 @@ func NewCheckIfStarLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Check
 }
 
 func (l *CheckIfStarLogic) CheckIfStar(in *pb.CheckIfStarReq) (resp *pb.CheckIfStarResp, err error) {
-	_, err = l.svcCtx.StarModel.FindOneByDeveloperIdRepoId(l.ctx, in.DeveloperId, in.RepoId)
-
-	if err == nil {
-		resp = &pb.CheckIfStarResp{
-			IsStar: true,
+	if _, err = l.svcCtx.StarModel.FindOneByDeveloperIdRepoId(l.ctx, in.DeveloperId, in.RepoId); err != nil {
+		switch {
+		case errors.Is(err, model.ErrNotFound):
+			resp = &pb.CheckIfStarResp{
+				Code:    http.StatusOK,
+				Message: http.StatusText(http.StatusOK),
+				IsStar:  false,
+			}
+		default:
+			resp = &pb.CheckIfStarResp{
+				Code:    http.StatusInternalServerError,
+				Message: err.Error(),
+			}
 		}
-	} else if errors.Is(err, model.ErrNotFound) {
+	} else {
 		resp = &pb.CheckIfStarResp{
-			IsStar: false,
+			Code:    http.StatusOK,
+			Message: http.StatusText(http.StatusOK),
+			IsStar:  true,
 		}
-		err = nil
 	}
 
+	err = nil
 	return
 }

@@ -27,6 +27,8 @@ message AddAnalysisReq {
 }
 
 message AddAnalysisResp {
+  int64 code = 1;
+  string message = 2;
 }
 
 message UpdateAnalysisReq {
@@ -37,6 +39,8 @@ message UpdateAnalysisReq {
 }
 
 message UpdateAnalysisResp {
+  int64 code = 1;
+  string message = 2;
 }
 
 message DelAnalysisReq {
@@ -44,6 +48,8 @@ message DelAnalysisReq {
 }
 
 message DelAnalysisResp {
+  int64 code = 1;
+  string message = 2;
 }
 
 message GetAnalysisReq {
@@ -51,7 +57,9 @@ message GetAnalysisReq {
 }
 
 message GetAnalysisResp {
-  Analysis analysis = 1; //analysis
+  int64 code = 1;
+  string message = 2;
+  Analysis analysis = 3; //analysis
 }
 
 

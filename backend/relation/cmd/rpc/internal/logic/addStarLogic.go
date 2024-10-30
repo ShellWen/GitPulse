@@ -3,6 +3,7 @@ package logic
 import (
 	"context"
 	"github.com/ShellWen/GitPulse/relation/model"
+	"net/http"
 	"time"
 
 	"github.com/ShellWen/GitPulse/relation/cmd/rpc/internal/svc"
@@ -34,12 +35,18 @@ func (l *AddStarLogic) AddStar(in *pb.AddStarReq) (resp *pb.AddStarResp, err err
 		RepoId:       in.RepoId,
 	}
 
-	_, err = l.svcCtx.StarModel.Insert(l.ctx, star)
-	if err != nil {
-		return nil, err
+	if _, err = l.svcCtx.StarModel.Insert(l.ctx, star); err != nil {
+		resp = &pb.AddStarResp{
+			Code:    http.StatusInternalServerError,
+			Message: err.Error(),
+		}
+	} else {
+		resp = &pb.AddStarResp{
+			Code:    http.StatusOK,
+			Message: http.StatusText(http.StatusOK),
+		}
 	}
 
-	resp = &pb.AddStarResp{}
-
+	err = nil
 	return
 }

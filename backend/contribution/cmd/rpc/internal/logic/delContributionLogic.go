@@ -2,7 +2,9 @@ package logic
 
 import (
 	"context"
+	"errors"
 	"github.com/ShellWen/GitPulse/contribution/model"
+	"net/http"
 
 	"github.com/ShellWen/GitPulse/contribution/cmd/rpc/internal/svc"
 	"github.com/ShellWen/GitPulse/contribution/cmd/rpc/pb"
@@ -28,14 +30,30 @@ func (l *DelContributionLogic) DelContribution(in *pb.DelContributionReq) (resp 
 	var contribution *model.Contribution
 
 	if contribution, err = l.svcCtx.ContributionModel.FindOneByCategoryRepoIdUserIdContributionId(l.ctx, in.Category, in.RepoId, in.UserId, in.ContributionId); err != nil {
-		return nil, err
+		switch {
+		case errors.Is(err, model.ErrNotFound):
+			resp = &pb.DelContributionResp{
+				Code:    http.StatusNotFound,
+				Message: err.Error(),
+			}
+		default:
+			resp = &pb.DelContributionResp{
+				Code:    http.StatusInternalServerError,
+				Message: err.Error(),
+			}
+		}
+	} else if err = l.svcCtx.ContributionModel.Delete(l.ctx, contribution.DataId); err != nil {
+		resp = &pb.DelContributionResp{
+			Code:    http.StatusInternalServerError,
+			Message: err.Error(),
+		}
+	} else {
+		resp = &pb.DelContributionResp{
+			Code:    http.StatusOK,
+			Message: http.StatusText(http.StatusOK),
+		}
 	}
 
-	if err = l.svcCtx.ContributionModel.Delete(l.ctx, contribution.DataId); err != nil {
-		return nil, err
-	}
-
-	resp = &pb.DelContributionResp{}
-
+	err = nil
 	return
 }

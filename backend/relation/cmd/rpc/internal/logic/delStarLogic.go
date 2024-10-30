@@ -2,7 +2,9 @@ package logic
 
 import (
 	"context"
+	"errors"
 	"github.com/ShellWen/GitPulse/relation/model"
+	"net/http"
 
 	"github.com/ShellWen/GitPulse/relation/cmd/rpc/internal/svc"
 	"github.com/ShellWen/GitPulse/relation/cmd/rpc/pb"
@@ -26,17 +28,31 @@ func NewDelStarLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DelStarLo
 
 func (l *DelStarLogic) DelStar(in *pb.DelStarReq) (resp *pb.DelStarResp, err error) {
 	var star *model.Star
-	star, err = l.svcCtx.StarModel.FindOneByDeveloperIdRepoId(l.ctx, in.DeveloperId, in.RepoId)
-	if err != nil {
-		return nil, err
+	if star, err = l.svcCtx.StarModel.FindOneByDeveloperIdRepoId(l.ctx, in.DeveloperId, in.RepoId); err != nil {
+		switch {
+		case errors.Is(err, model.ErrNotFound):
+			resp = &pb.DelStarResp{
+				Code:    http.StatusNotFound,
+				Message: err.Error(),
+			}
+		default:
+			resp = &pb.DelStarResp{
+				Code:    http.StatusInternalServerError,
+				Message: err.Error(),
+			}
+		}
+	} else if err = l.svcCtx.StarModel.Delete(l.ctx, star.DataId); err != nil {
+		resp = &pb.DelStarResp{
+			Code:    http.StatusInternalServerError,
+			Message: err.Error(),
+		}
+	} else {
+		resp = &pb.DelStarResp{
+			Code:    http.StatusOK,
+			Message: http.StatusText(http.StatusOK),
+		}
 	}
 
-	err = l.svcCtx.StarModel.Delete(l.ctx, star.DataId)
-	if err != nil {
-		return nil, err
-	}
-
-	resp = &pb.DelStarResp{}
-
+	err = nil
 	return
 }

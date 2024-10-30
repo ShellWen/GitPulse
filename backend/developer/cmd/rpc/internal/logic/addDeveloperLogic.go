@@ -3,6 +3,7 @@ package logic
 import (
 	"context"
 	"github.com/ShellWen/GitPulse/developer/model"
+	"net/http"
 	"time"
 
 	"github.com/ShellWen/GitPulse/developer/cmd/rpc/internal/svc"
@@ -43,12 +44,18 @@ func (l *AddDeveloperLogic) AddDeveloper(in *pb.AddDeveloperReq) (resp *pb.AddDe
 		UpdateAt:     time.Unix(in.UpdateAt, 0),
 	}
 
-	_, err = l.svcCtx.DeveloperModel.Insert(l.ctx, developer)
-	if err != nil {
-		return nil, err
+	if _, err = l.svcCtx.DeveloperModel.Insert(l.ctx, developer); err != nil {
+		resp = &pb.AddDeveloperResp{
+			Code:    http.StatusInternalServerError,
+			Message: err.Error(),
+		}
+	} else {
+		resp = &pb.AddDeveloperResp{
+			Code:    http.StatusOK,
+			Message: http.StatusText(http.StatusOK),
+		}
 	}
 
-	resp = &pb.AddDeveloperResp{}
-
+	err = nil
 	return
 }

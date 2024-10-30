@@ -3,6 +3,7 @@ package logic
 import (
 	"context"
 	"github.com/ShellWen/GitPulse/relation/model"
+	"net/http"
 	"time"
 
 	"github.com/ShellWen/GitPulse/relation/cmd/rpc/internal/svc"
@@ -34,12 +35,18 @@ func (l *AddFollowLogic) AddFollow(in *pb.AddFollowReq) (resp *pb.AddFollowResp,
 		FollowedId:   in.FollowedId,
 	}
 
-	_, err = l.svcCtx.FollowModel.Insert(l.ctx, follow)
-	if err != nil {
-		return nil, err
+	if _, err = l.svcCtx.FollowModel.Insert(l.ctx, follow); err != nil {
+		resp = &pb.AddFollowResp{
+			Code:    http.StatusInternalServerError,
+			Message: err.Error(),
+		}
+	} else {
+		resp = &pb.AddFollowResp{
+			Code:    http.StatusOK,
+			Message: http.StatusText(http.StatusOK),
+		}
 	}
 
-	resp = &pb.AddFollowResp{}
-
+	err = nil
 	return
 }

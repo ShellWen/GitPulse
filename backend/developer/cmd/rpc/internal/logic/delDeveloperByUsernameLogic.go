@@ -2,7 +2,9 @@ package logic
 
 import (
 	"context"
+	"errors"
 	"github.com/ShellWen/GitPulse/developer/model"
+	"net/http"
 
 	"github.com/ShellWen/GitPulse/developer/cmd/rpc/internal/svc"
 	"github.com/ShellWen/GitPulse/developer/cmd/rpc/pb"
@@ -28,18 +30,30 @@ func (l *DelDeveloperByUsernameLogic) DelDeveloperByUsername(in *pb.DelDeveloper
 	var developer *model.Developer
 
 	username := in.Username
-	developer, err = l.svcCtx.DeveloperModel.FindOneByUsername(l.ctx, username)
-	if err != nil {
-		return nil, err
+	if developer, err = l.svcCtx.DeveloperModel.FindOneByUsername(l.ctx, username); err != nil {
+		if errors.Is(err, model.ErrNotFound) {
+			resp = &pb.DelDeveloperByUsernameResp{
+				Code:    http.StatusNotFound,
+				Message: err.Error(),
+			}
+		} else {
+			resp = &pb.DelDeveloperByUsernameResp{
+				Code:    http.StatusInternalServerError,
+				Message: err.Error(),
+			}
+		}
+	} else if err = l.svcCtx.DeveloperModel.Delete(l.ctx, developer.DataId); err != nil {
+		resp = &pb.DelDeveloperByUsernameResp{
+			Code:    http.StatusInternalServerError,
+			Message: err.Error(),
+		}
+	} else {
+		resp = &pb.DelDeveloperByUsernameResp{
+			Code:    http.StatusOK,
+			Message: http.StatusText(http.StatusOK),
+		}
 	}
 
-	dataId := developer.DataId
-	err = l.svcCtx.DeveloperModel.Delete(l.ctx, dataId)
-	if err != nil {
-		return nil, err
-	}
-
-	resp = &pb.DelDeveloperByUsernameResp{}
-
+	err = nil
 	return
 }

@@ -2,7 +2,9 @@ package logic
 
 import (
 	"context"
+	"errors"
 	"github.com/ShellWen/GitPulse/analysis/model"
+	"net/http"
 
 	"github.com/ShellWen/GitPulse/analysis/cmd/rpc/internal/svc"
 	"github.com/ShellWen/GitPulse/analysis/cmd/rpc/pb"
@@ -27,18 +29,39 @@ func NewUpdateAnalysisLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Up
 func (l *UpdateAnalysisLogic) UpdateAnalysis(in *pb.UpdateAnalysisReq) (resp *pb.UpdateAnalysisResp, err error) {
 	var analysis *model.Analysis
 	if analysis, err = l.svcCtx.AnalysisModel.FindOneByDeveloperId(l.ctx, in.DeveloperId); err != nil {
-		return
+		switch {
+		case errors.Is(err, model.ErrNotFound):
+			resp = &pb.UpdateAnalysisResp{
+				Code:    http.StatusNotFound,
+				Message: err.Error(),
+			}
+		default:
+			resp = &pb.UpdateAnalysisResp{
+				Code:    http.StatusInternalServerError,
+				Message: err.Error(),
+			}
+		}
+	} else if err = l.doUpdateAnalysis(analysis, in); err != nil {
+		resp = &pb.UpdateAnalysisResp{
+			Code:    http.StatusInternalServerError,
+			Message: err.Error(),
+		}
+	} else {
+		resp = &pb.UpdateAnalysisResp{
+			Code:    http.StatusOK,
+			Message: http.StatusText(http.StatusOK),
+		}
 	}
 
+	err = nil
+	return
+}
+
+func (l *UpdateAnalysisLogic) doUpdateAnalysis(analysis *model.Analysis, in *pb.UpdateAnalysisReq) (err error) {
 	analysis.Languages = in.Languages
 	analysis.TalentRank = in.TalentRank
 	analysis.Nation = in.Nation
 
-	if err = l.svcCtx.AnalysisModel.Update(l.ctx, analysis); err != nil {
-		return
-	}
-
-	resp = &pb.UpdateAnalysisResp{}
-
+	err = l.svcCtx.AnalysisModel.Update(l.ctx, analysis)
 	return
 }

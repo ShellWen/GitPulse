@@ -3,6 +3,7 @@ package logic
 import (
 	"context"
 	"github.com/ShellWen/GitPulse/relation/model"
+	"net/http"
 
 	"github.com/ShellWen/GitPulse/relation/cmd/rpc/internal/svc"
 	"github.com/ShellWen/GitPulse/relation/cmd/rpc/pb"
@@ -26,18 +27,34 @@ func NewSearchForkLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Search
 
 func (l *SearchForkLogic) SearchFork(in *pb.SearchForkReq) (resp *pb.SearchForkResp, err error) {
 	var forks *[]*model.Fork
+	var forkRepoIds *[]int64
 
 	if forks, err = l.svcCtx.ForkModel.SearchFork(l.ctx, in.OriginalRepoId, in.Page, in.Limit); err != nil {
-		return nil, err
+		resp = &pb.SearchForkResp{
+			Code:    http.StatusInternalServerError,
+			Message: err.Error(),
+		}
+	} else if forkRepoIds = l.buildForkRepoIds(forks); len(*forkRepoIds) == 0 {
+		resp = &pb.SearchForkResp{
+			Code:    http.StatusNotFound,
+			Message: http.StatusText(http.StatusNotFound),
+		}
+	} else {
+		resp = &pb.SearchForkResp{
+			Code:        http.StatusOK,
+			Message:     http.StatusText(http.StatusOK),
+			ForkRepoIds: *forkRepoIds,
+		}
 	}
 
-	var forkRepoIds []int64
+	err = nil
+	return
+}
+
+func (l *SearchForkLogic) buildForkRepoIds(forks *[]*model.Fork) (forkRepoIds *[]int64) {
+	forkRepoIds = new([]int64)
 	for _, fork := range *forks {
-		forkRepoIds = append(forkRepoIds, fork.ForkRepoId)
-	}
-
-	resp = &pb.SearchForkResp{
-		ForkRepoIds: forkRepoIds,
+		*forkRepoIds = append(*forkRepoIds, fork.ForkRepoId)
 	}
 
 	return

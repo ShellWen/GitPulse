@@ -23,6 +23,8 @@ message AddCreateRepoReq {
 }
 
 message AddCreateRepoResp {
+  int64 code = 1;
+  string message = 2;
 }
 
 message DelCreateRepoReq {
@@ -30,6 +32,8 @@ message DelCreateRepoReq {
 }
 
 message DelCreateRepoResp {
+  int64 code = 1;
+  string message = 2;
 }
 
 message GetCreatorIdReq {
@@ -37,7 +41,9 @@ message GetCreatorIdReq {
 }
 
 message GetCreatorIdResp {
-  int64 developerId = 1; //developerId
+  int64 code = 1;
+  string message = 2;
+  int64 developerId = 3; //developerId
 }
 
 message SearchCreatedRepoReq {
@@ -47,7 +53,9 @@ message SearchCreatedRepoReq {
 }
 
 message SearchCreatedRepoResp {
-  repeated int64 repoIds = 1; //repoId
+  int64 code = 1;
+  string message = 2;
+  repeated int64 repoIds = 3; //repoId
 }
 
 //--------------------------------follow--------------------------------
@@ -65,6 +73,8 @@ message AddFollowReq {
 }
 
 message AddFollowResp {
+  int64 code = 1;
+  string message = 2;
 }
 
 message DelFollowReq {
@@ -73,6 +83,8 @@ message DelFollowReq {
 }
 
 message DelFollowResp {
+  int64 code = 1;
+  string message = 2;
 }
 
 message CheckIfFollowReq {
@@ -81,7 +93,9 @@ message CheckIfFollowReq {
 }
 
 message CheckFollowResp {
-  bool isFollow = 1; //isFollow
+  int64 code = 1;
+  string message = 2;
+  bool isFollow = 3; //isFollow
 }
 
 message SearchFollowedByFollowingIdReq {
@@ -91,7 +105,9 @@ message SearchFollowedByFollowingIdReq {
 }
 
 message SearchFollowByFollowingIdResp {
-  repeated int64 followedIds = 1; //followedId
+  int64 code = 1;
+  string message = 2;
+  repeated int64 followedIds = 3; //followedId
 }
 
 message SearchFollowingByFollowedIdReq {
@@ -101,7 +117,9 @@ message SearchFollowingByFollowedIdReq {
 }
 
 message SearchFollowByFollowedIdResp {
-  repeated int64 followingIds = 1; //followingId
+  int64 code = 1;
+  string message = 2;
+  repeated int64 followingIds = 3; //followingId
 }
 
 //--------------------------------fork--------------------------------
@@ -119,6 +137,8 @@ message AddForkReq {
 }
 
 message AddForkResp {
+  int64 code = 1;
+  string message = 2;
 }
 
 message DelForkReq {
@@ -126,6 +146,8 @@ message DelForkReq {
 }
 
 message DelForkResp {
+  int64 code = 1;
+  string message = 2;
 }
 
 message GetOriginReq {
@@ -133,7 +155,9 @@ message GetOriginReq {
 }
 
 message GetOriginResp {
-  int64 originalRepoId = 1; //originalRepoId
+  int64 code = 1;
+  string message = 2;
+  int64 originalRepoId = 3; //originalRepoId
 }
 
 message SearchForkReq {
@@ -143,7 +167,9 @@ message SearchForkReq {
 }
 
 message SearchForkResp {
-  repeated int64 forkRepoIds = 1; //forkRepoId
+  int64 code = 1;
+  string message = 2;
+  repeated int64 forkRepoIds = 3; //forkRepoId
 }
 
 //--------------------------------star--------------------------------
@@ -161,6 +187,8 @@ message AddStarReq {
 }
 
 message AddStarResp {
+  int64 code = 1;
+  string message = 2;
 }
 
 message DelStarReq {
@@ -169,6 +197,8 @@ message DelStarReq {
 }
 
 message DelStarResp {
+  int64 code = 1;
+  string message = 2;
 }
 
 message CheckIfStarReq {
@@ -177,7 +207,9 @@ message CheckIfStarReq {
 }
 
 message CheckIfStarResp {
-  bool isStar = 1; //isStar
+  int64 code = 1;
+  string message = 2;
+  bool isStar = 3; //isStar
 }
 
 message SearchStaredRepoReq {
@@ -187,7 +219,9 @@ message SearchStaredRepoReq {
 }
 
 message SearchStaredRepoResp {
-  repeated int64 repoIds = 1; //repoId
+  int64 code = 1;
+  string message = 2;
+  repeated int64 repoIds = 3; //repoId
 }
 
 message SearchStaringDevReq {
@@ -197,7 +231,9 @@ message SearchStaringDevReq {
 }
 
 message SearchStaringDevResp {
-  repeated int64 developerIds = 1; //developerId
+  int64 code = 1;
+  string message = 2;
+  repeated int64 developerIds = 3; //developerId
 }
 
 // ------------------------------------ 

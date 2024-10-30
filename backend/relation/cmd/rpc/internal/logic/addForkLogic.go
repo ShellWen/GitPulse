@@ -3,6 +3,7 @@ package logic
 import (
 	"context"
 	"github.com/ShellWen/GitPulse/relation/model"
+	"net/http"
 	"time"
 
 	"github.com/ShellWen/GitPulse/relation/cmd/rpc/internal/svc"
@@ -34,12 +35,18 @@ func (l *AddForkLogic) AddFork(in *pb.AddForkReq) (resp *pb.AddForkResp, err err
 		ForkRepoId:     in.ForkRepoId,
 	}
 
-	_, err = l.svcCtx.ForkModel.Insert(l.ctx, fork)
-	if err != nil {
-		return nil, err
+	if _, err = l.svcCtx.ForkModel.Insert(l.ctx, fork); err != nil {
+		resp = &pb.AddForkResp{
+			Code:    http.StatusInternalServerError,
+			Message: err.Error(),
+		}
+	} else {
+		resp = &pb.AddForkResp{
+			Code:    http.StatusOK,
+			Message: http.StatusText(http.StatusOK),
+		}
 	}
 
-	resp = &pb.AddForkResp{}
-
+	err = nil
 	return
 }

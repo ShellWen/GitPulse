@@ -2,12 +2,12 @@ package logic
 
 import (
 	"context"
-	"github.com/ShellWen/GitPulse/repo/model"
-
+	"errors"
 	"github.com/ShellWen/GitPulse/repo/cmd/rpc/internal/svc"
 	"github.com/ShellWen/GitPulse/repo/cmd/rpc/pb"
-
+	"github.com/ShellWen/GitPulse/repo/model"
 	"github.com/zeromicro/go-zero/core/logx"
+	"net/http"
 )
 
 type DelRepoByIdLogic struct {
@@ -28,18 +28,30 @@ func (l *DelRepoByIdLogic) DelRepoById(in *pb.DelRepoByIdReq) (resp *pb.DelRepoB
 	var repo *model.Repo
 
 	id := in.Id
-	repo, err = l.svcCtx.RepoModel.FindOneById(l.ctx, id)
-	if err != nil {
-		return nil, err
+	if repo, err = l.svcCtx.RepoModel.FindOneById(l.ctx, id); err != nil {
+		if errors.Is(err, model.ErrNotFound) {
+			resp = &pb.DelRepoByIdResp{
+				Code:    http.StatusNotFound,
+				Message: err.Error(),
+			}
+		} else {
+			resp = &pb.DelRepoByIdResp{
+				Code:    http.StatusInternalServerError,
+				Message: err.Error(),
+			}
+		}
+	} else if err = l.svcCtx.RepoModel.Delete(l.ctx, repo.DataId); err != nil {
+		resp = &pb.DelRepoByIdResp{
+			Code:    http.StatusInternalServerError,
+			Message: err.Error(),
+		}
+	} else {
+		resp = &pb.DelRepoByIdResp{
+			Code:    http.StatusOK,
+			Message: http.StatusText(http.StatusOK),
+		}
 	}
 
-	dataId := repo.DataId
-	err = l.svcCtx.RepoModel.Delete(l.ctx, dataId)
-	if err != nil {
-		return nil, err
-	}
-
-	resp = &pb.DelRepoByIdResp{}
-
+	err = nil
 	return
 }

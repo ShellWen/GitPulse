@@ -2,7 +2,9 @@ package logic
 
 import (
 	"context"
+	"errors"
 	"github.com/ShellWen/GitPulse/analysis/model"
+	"net/http"
 
 	"github.com/ShellWen/GitPulse/analysis/cmd/rpc/internal/svc"
 	"github.com/ShellWen/GitPulse/analysis/cmd/rpc/pb"
@@ -27,20 +29,34 @@ func NewGetAnalysisLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetAn
 func (l *GetAnalysisLogic) GetAnalysis(in *pb.GetAnalysisReq) (resp *pb.GetAnalysisResp, err error) {
 	var analysis *model.Analysis
 	if analysis, err = l.svcCtx.AnalysisModel.FindOneByDeveloperId(l.ctx, in.DeveloperId); err != nil {
-		return
+		switch {
+		case errors.Is(err, model.ErrNotFound):
+			resp = &pb.GetAnalysisResp{
+				Code:    http.StatusNotFound,
+				Message: err.Error(),
+			}
+		default:
+			resp = &pb.GetAnalysisResp{
+				Code:    http.StatusInternalServerError,
+				Message: err.Error(),
+			}
+		}
+	} else {
+		resp = &pb.GetAnalysisResp{
+			Code:    http.StatusOK,
+			Message: http.StatusText(http.StatusOK),
+			Analysis: &pb.Analysis{
+				DataId:       analysis.DataId,
+				DataCreateAt: analysis.DataCreateAt.Unix(),
+				DataUpdateAt: analysis.DataUpdateAt.Unix(),
+				DeveloperId:  analysis.DeveloperId,
+				Languages:    analysis.Languages,
+				TalentRank:   analysis.TalentRank,
+				Nation:       analysis.Nation,
+			},
+		}
 	}
 
-	resp = &pb.GetAnalysisResp{
-		Analysis: &pb.Analysis{
-			DataId:       analysis.DataId,
-			DataCreateAt: analysis.DataCreateAt.Unix(),
-			DataUpdateAt: analysis.DataUpdateAt.Unix(),
-			DeveloperId:  analysis.DeveloperId,
-			Languages:    analysis.Languages,
-			TalentRank:   analysis.TalentRank,
-			Nation:       analysis.Nation,
-		},
-	}
-
+	err = nil
 	return
 }

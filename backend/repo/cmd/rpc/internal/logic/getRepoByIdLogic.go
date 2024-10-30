@@ -2,7 +2,9 @@ package logic
 
 import (
 	"context"
+	"errors"
 	"github.com/ShellWen/GitPulse/repo/model"
+	"net/http"
 
 	"github.com/ShellWen/GitPulse/repo/cmd/rpc/internal/svc"
 	"github.com/ShellWen/GitPulse/repo/cmd/rpc/pb"
@@ -26,29 +28,42 @@ func NewGetRepoByIdLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetRe
 
 func (l *GetRepoByIdLogic) GetRepoById(in *pb.GetRepoByIdReq) (resp *pb.GetRepoByIdResp, err error) {
 	var repo *model.Repo
-	repo, err = l.svcCtx.RepoModel.FindOneById(l.ctx, in.Id)
-	if err != nil {
-		return nil, err
+	if repo, err = l.svcCtx.RepoModel.FindOneById(l.ctx, in.Id); err != nil {
+		switch {
+		case errors.Is(err, model.ErrNotFound):
+			resp = &pb.GetRepoByIdResp{
+				Code:    http.StatusNotFound,
+				Message: err.Error(),
+			}
+		default:
+			resp = &pb.GetRepoByIdResp{
+				Code:    http.StatusInternalServerError,
+				Message: err.Error(),
+			}
+		}
+	} else {
+		resp = &pb.GetRepoByIdResp{
+			Code:    http.StatusOK,
+			Message: http.StatusText(http.StatusOK),
+			Repo: &pb.Repo{
+				DataId:       repo.DataId,
+				DataCreateAt: repo.DataCreateAt.Unix(),
+				DataUpdateAt: repo.DataUpdateAt.Unix(),
+				Id:           repo.Id,
+				Name:         repo.Name,
+				Gist:         repo.Gist,
+				StarCount:    repo.StarCount,
+				ForkCount:    repo.ForkCount,
+				IssueCount:   repo.IssueCount,
+				CommitCount:  repo.CommitCount,
+				PrCount:      repo.PrCount,
+				Language:     repo.Language,
+				Description:  repo.Description,
+				Readme:       repo.Readme,
+			},
+		}
 	}
 
-	resp = &pb.GetRepoByIdResp{
-		Repo: &pb.Repo{
-			DataId:       repo.DataId,
-			DataCreateAt: repo.DataCreateAt.Unix(),
-			DataUpdateAt: repo.DataUpdateAt.Unix(),
-			Id:           repo.Id,
-			Name:         repo.Name,
-			Gist:         repo.Gist,
-			StarCount:    repo.StarCount,
-			ForkCount:    repo.ForkCount,
-			IssueCount:   repo.IssueCount,
-			CommitCount:  repo.CommitCount,
-			PrCount:      repo.PrCount,
-			Language:     repo.Language,
-			Description:  repo.Description,
-			Readme:       repo.Readme,
-		},
-	}
-
+	err = nil
 	return
 }

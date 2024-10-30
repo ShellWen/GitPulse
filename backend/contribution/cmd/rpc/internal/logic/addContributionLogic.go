@@ -3,6 +3,7 @@ package logic
 import (
 	"context"
 	"github.com/ShellWen/GitPulse/contribution/model"
+	"net/http"
 	"time"
 
 	"github.com/ShellWen/GitPulse/contribution/cmd/rpc/internal/svc"
@@ -40,10 +41,17 @@ func (l *AddContributionLogic) AddContribution(in *pb.AddContributionReq) (resp 
 	}
 
 	if _, err := l.svcCtx.ContributionModel.Insert(l.ctx, contribution); err != nil {
-		return nil, err
+		resp = &pb.AddContributionResp{
+			Code:    http.StatusInternalServerError,
+			Message: err.Error(),
+		}
+	} else {
+		resp = &pb.AddContributionResp{
+			Code:    http.StatusOK,
+			Message: http.StatusText(http.StatusOK),
+		}
 	}
 
-	resp = &pb.AddContributionResp{}
-
+	err = nil
 	return
 }

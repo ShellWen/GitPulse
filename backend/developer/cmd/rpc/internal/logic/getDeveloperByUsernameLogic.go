@@ -2,7 +2,9 @@ package logic
 
 import (
 	"context"
+	"errors"
 	"github.com/ShellWen/GitPulse/developer/model"
+	"net/http"
 
 	"github.com/ShellWen/GitPulse/developer/cmd/rpc/internal/svc"
 	"github.com/ShellWen/GitPulse/developer/cmd/rpc/pb"
@@ -26,29 +28,42 @@ func NewGetDeveloperByUsernameLogic(ctx context.Context, svcCtx *svc.ServiceCont
 
 func (l *GetDeveloperByUsernameLogic) GetDeveloperByUsername(in *pb.GetDeveloperByUsernameReq) (resp *pb.GetDeveloperByUsernameResp, err error) {
 	var developer *model.Developer
-	developer, err = l.svcCtx.DeveloperModel.FindOneByUsername(l.ctx, in.Username)
-	if err != nil {
-		return nil, err
+	if developer, err = l.svcCtx.DeveloperModel.FindOneByUsername(l.ctx, in.Username); err != nil {
+		switch {
+		case errors.Is(err, model.ErrNotFound):
+			resp = &pb.GetDeveloperByUsernameResp{
+				Code:    http.StatusNotFound,
+				Message: err.Error(),
+			}
+		default:
+			resp = &pb.GetDeveloperByUsernameResp{
+				Code:    http.StatusInternalServerError,
+				Message: err.Error(),
+			}
+		}
+	} else {
+		resp = &pb.GetDeveloperByUsernameResp{
+			Code:    http.StatusOK,
+			Message: http.StatusText(http.StatusOK),
+			Developer: &pb.Developer{
+				DataId:       developer.DataId,
+				DataCreateAt: developer.DataCreateAt.Unix(),
+				DataUpdateAt: developer.DataUpdateAt.Unix(),
+				Id:           developer.Id,
+				Name:         developer.Name,
+				Username:     developer.Username,
+				AvatarUrl:    developer.AvatarUrl,
+				Company:      developer.Company,
+				Location:     developer.Location,
+				Bio:          developer.Bio,
+				Blog:         developer.Blog,
+				Email:        developer.Email,
+				CreateAt:     developer.CreateAt.Unix(),
+				UpdateAt:     developer.UpdateAt.Unix(),
+			},
+		}
 	}
 
-	resp = &pb.GetDeveloperByUsernameResp{
-		Developer: &pb.Developer{
-			DataId:       developer.DataId,
-			DataCreateAt: developer.DataCreateAt.Unix(),
-			DataUpdateAt: developer.DataUpdateAt.Unix(),
-			Id:           developer.Id,
-			Name:         developer.Name,
-			Username:     developer.Username,
-			AvatarUrl:    developer.AvatarUrl,
-			Company:      developer.Company,
-			Location:     developer.Location,
-			Bio:          developer.Bio,
-			Blog:         developer.Blog,
-			Email:        developer.Email,
-			CreateAt:     developer.CreateAt.Unix(),
-			UpdateAt:     developer.UpdateAt.Unix(),
-		},
-	}
-
+	err = nil
 	return
 }

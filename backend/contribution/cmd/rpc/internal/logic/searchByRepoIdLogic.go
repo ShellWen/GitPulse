@@ -3,6 +3,7 @@ package logic
 import (
 	"context"
 	"github.com/ShellWen/GitPulse/contribution/model"
+	"net/http"
 
 	"github.com/ShellWen/GitPulse/contribution/cmd/rpc/internal/svc"
 	"github.com/ShellWen/GitPulse/contribution/cmd/rpc/pb"
@@ -26,10 +27,31 @@ func NewSearchByRepoIdLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Se
 
 func (l *SearchByRepoIdLogic) SearchByRepoId(in *pb.SearchByRepoIdReq) (resp *pb.SearchByRepoIdResp, err error) {
 	var contributions *[]*model.Contribution
+	var pbContributions *[]*pb.Contribution
+
 	if contributions, err = l.svcCtx.ContributionModel.SearchByRepoId(l.ctx, in.RepoId, in.Page, in.Limit); err != nil {
-		return nil, err
+		resp = &pb.SearchByRepoIdResp{
+			Code:    http.StatusInternalServerError,
+			Message: err.Error(),
+		}
+	} else if pbContributions = l.buildPBContributions(contributions); len(*pbContributions) == 0 {
+		resp = &pb.SearchByRepoIdResp{
+			Code:    http.StatusNotFound,
+			Message: http.StatusText(http.StatusNotFound),
+		}
+	} else {
+		resp = &pb.SearchByRepoIdResp{
+			Code:          http.StatusOK,
+			Message:       http.StatusText(http.StatusOK),
+			Contributions: *pbContributions,
+		}
 	}
 
+	err = nil
+	return
+}
+
+func (l *SearchByRepoIdLogic) buildPBContributions(contributions *[]*model.Contribution) *[]*pb.Contribution {
 	var pbContributions []*pb.Contribution
 	for _, contribution := range *contributions {
 		pbContributions = append(pbContributions, &pb.Contribution{
@@ -45,10 +67,5 @@ func (l *SearchByRepoIdLogic) SearchByRepoId(in *pb.SearchByRepoIdReq) (resp *pb
 			ContributionId: contribution.ContributionId,
 		})
 	}
-
-	resp = &pb.SearchByRepoIdResp{
-		Contributions: pbContributions,
-	}
-
-	return
+	return &pbContributions
 }
