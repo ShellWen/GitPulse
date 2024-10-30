@@ -10,7 +10,7 @@ ADD go.mod .
 ADD go.sum .
 RUN go mod download
 COPY ./contribution ./contribution
-COPY ./contribution/cmd/rpc/etc/contribution.yaml /app/etc/contribution.yaml
+COPY ./contribution/cmd/rpc/etc/contribution.yaml /app/contribution/cmd/rpc/etc/contribution.yaml
 RUN go build -ldflags="-s -w" -o /app/contribution_rpc ./contribution/cmd/rpc
 
 
@@ -20,7 +20,7 @@ COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certifi
 
 WORKDIR /app
 
-COPY --from=builder /app/etc/contribution.yaml /app/etc/contribution.yaml
+COPY --from=builder /app/contribution/cmd/rpc/etc/contribution.yaml /app/contribution/cmd/rpc/etc/contribution.yaml
 COPY --from=builder /app/contribution_rpc /app/contribution_rpc
 
 CMD ["./contribution_rpc"]

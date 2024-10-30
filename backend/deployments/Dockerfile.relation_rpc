@@ -10,7 +10,7 @@ ADD go.mod .
 ADD go.sum .
 RUN go mod download
 COPY ./relation ./relation
-COPY ./relation/cmd/rpc/etc/relation.yaml /app/etc/relation.yaml
+COPY ./relation/cmd/rpc/etc/relation.yaml /app/relation/cmd/rpc/etc/relation.yaml
 RUN go build -ldflags="-s -w" -o /app/relation_rpc ./relation/cmd/rpc
 
 
@@ -20,7 +20,7 @@ COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certifi
 
 WORKDIR /app
 
-COPY --from=builder /app/etc/relation.yaml /app/etc/relation.yaml
+COPY --from=builder /app/relation/cmd/rpc/etc/relation.yaml /app/relation/cmd/rpc/etc/relation.yaml
 COPY --from=builder /app/relation_rpc /app/relation_rpc
 
 CMD ["./relation_rpc"]

@@ -10,7 +10,7 @@ ADD go.mod .
 ADD go.sum .
 RUN go mod download
 COPY ./developer ./developer
-COPY ./developer/cmd/api/etc/developer.yaml /app/etc/developer.yaml
+COPY ./developer/cmd/api/etc/developer.yaml /app/developer/cmd/api/etc/developer.yaml
 RUN go build -ldflags="-s -w" -o /app/developer_api ./developer/cmd/api
 
 
@@ -20,7 +20,7 @@ COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certifi
 
 WORKDIR /app
 
-COPY --from=builder /app/etc/developer.yaml /app/etc/developer.yaml
+COPY --from=builder /app/developer/cmd/api/etc/developer.yaml /app/developer/cmd/api/etc/developer.yaml
 COPY --from=builder /app/developer_api /app/developer_api
 
 CMD ["./developer_api"]
