@@ -3,7 +3,7 @@ import { developer } from '$/types/developer.ts'
 import { HttpHandler, HttpResponse, delay, http } from 'msw'
 import { z } from 'zod'
 
-import { BASE_URL } from './index.ts'
+import { BASE_URL } from './constants.ts'
 
 // noinspection JSUnusedGlobalSymbols
 export const handlers = [
