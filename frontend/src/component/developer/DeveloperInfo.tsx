@@ -1,4 +1,4 @@
-import { type Developer } from '$/types/developer.ts'
+import { type Developer } from '$/lib/api/endpoint/developer.ts'
 import { Avatar } from 'react-daisyui'
 
 const UserInfo = ({ developer }: { developer: Developer }) => {

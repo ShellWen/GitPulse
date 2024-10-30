@@ -1,9 +1,9 @@
-import { baseResponse } from '$/types/base.ts'
-import { developer } from '$/types/developer.ts'
+import { baseResponse } from '$/lib/api/types.ts'
+import { developer } from '$/lib/api/endpoint/developer.ts'
 import { HttpHandler, HttpResponse, delay, http } from 'msw'
 import { z } from 'zod'
 
-import { BASE_URL } from './constants.ts'
+import { BASE_URL } from '../constants.ts'
 
 // noinspection JSUnusedGlobalSymbols
 export const handlers = [

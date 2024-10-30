@@ -1,11 +1,6 @@
-import { BusinessError, HttpError } from '$/lib/query/error.ts'
-import { baseResponse, baseResponseNull } from '$/types/base.ts'
+import { BusinessError, HttpError } from '$/lib/api/error.ts'
+import { baseResponse, baseResponseNull } from './types.ts'
 import { z } from 'zod'
-
-export const BASE_URL = import.meta.env.VITE_BACKEND_BASEURL
-if (!BASE_URL) {
-  throw new Error('VITE_BACKEND_BASEURL is not defined')
-}
 
 const parseResponse = async <T extends z.ZodType>(response: Response, respZodObject: T): Promise<z.infer<T>> => {
   let resp: unknown
@@ -40,3 +35,5 @@ export const fetchWrapped = async <T extends z.ZodType>(
   const response = await fetch(input, init)
   return parseResponse(response, respZodObject)
 }
+
+export default fetchWrapped
