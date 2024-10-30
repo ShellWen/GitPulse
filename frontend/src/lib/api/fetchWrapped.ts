@@ -1,6 +1,7 @@
 import { BusinessError, HttpError } from '$/lib/api/error.ts'
-import { baseResponse, baseResponseNull } from './types.ts'
 import { z } from 'zod'
+
+import { baseResponse, baseResponseNull } from './types.ts'
 
 const parseResponse = async <T extends z.ZodType>(response: Response, respZodObject: T): Promise<z.infer<T>> => {
   let resp: unknown

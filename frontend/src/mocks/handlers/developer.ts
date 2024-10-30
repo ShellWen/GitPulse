@@ -1,5 +1,5 @@
-import { baseResponse } from '$/lib/api/types.ts'
 import { developer } from '$/lib/api/endpoint/developer.ts'
+import { baseResponse } from '$/lib/api/types.ts'
 import { HttpHandler, HttpResponse, delay, http } from 'msw'
 import { z } from 'zod'
 
@@ -11,13 +11,16 @@ export const handlers = [
     await delay(1000)
 
     if (params.username !== 'shellwen') {
-      return HttpResponse.json(baseResponse(z.null()).parse({
-        code: 404,
-        message: 'Developer not found',
-        data: null,
-      }), {
-        status: 404,
-      })
+      return HttpResponse.json(
+        baseResponse(z.null()).parse({
+          code: 404,
+          message: 'Developer not found',
+          data: null,
+        }),
+        {
+          status: 404,
+        },
+      )
     }
 
     const developerResponse = baseResponse(developer)

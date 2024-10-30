@@ -1,6 +1,7 @@
+import { type ChangeEvent, type FormEvent, useCallback, useState } from 'react'
+
 import { createLazyFileRoute, getRouteApi } from '@tanstack/react-router'
 import { Button, Hero, Input } from 'react-daisyui'
-import { type ChangeEvent, type FormEvent, useCallback, useState } from 'react'
 
 const route = getRouteApi('/')
 
@@ -11,23 +12,29 @@ export const Route = createLazyFileRoute('/')({
 function Index() {
   const navigate = route.useNavigate()
   const [userName, setUserName] = useState('')
-  const onInputChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    setUserName(e.target.value)
-  }, [setUserName])
-  const onSubmit = useCallback((e: FormEvent) => {
-    e.preventDefault()
+  const onInputChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      setUserName(e.target.value)
+    },
+    [setUserName],
+  )
+  const onSubmit = useCallback(
+    (e: FormEvent) => {
+      e.preventDefault()
 
-    const processedUserName = userName.trim().toLowerCase()
-    if (!processedUserName) {
-      return
-    }
-    navigate({
-      to: `/u/${processedUserName}`,
-    })
-  }, [navigate, userName])
+      const processedUserName = userName.trim().toLowerCase()
+      if (!processedUserName) {
+        return
+      }
+      navigate({
+        to: `/u/${processedUserName}`,
+      })
+    },
+    [navigate, userName],
+  )
   // const redirectToUserPage = () => {}
   return (
-    <section className="w-full h-screen flex flex-col items-center justify-center">
+    <section className="flex h-screen w-full flex-col items-center justify-center">
       <Hero>
         <Hero.Content className="text-center">
           <div className="max-w-md">
@@ -37,7 +44,7 @@ function Index() {
               TalentRank，并推测开发者的地域和专长，助您轻松发现全球优秀开发者与技术专家。
             </p>
 
-            <form onSubmit={onSubmit} className="flex flex-col md:flex-row md:justify-center gap-4">
+            <form onSubmit={onSubmit} className="flex flex-col gap-4 md:flex-row md:justify-center">
               <Input bordered placeholder="GitHub 用户名" onInput={onInputChange} />
               <Button>提交</Button>
             </form>

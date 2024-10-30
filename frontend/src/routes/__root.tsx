@@ -1,10 +1,10 @@
 import { Suspense, lazy, useEffect } from 'react'
 
 import AppBar from '$/component/AppBar.tsx'
+import AppFooter from '$/component/AppFooter.tsx'
 import useDarkMode from '$/lib/useDarkMode.ts'
 import { Outlet, createRootRoute } from '@tanstack/react-router'
 import { useTheme } from 'react-daisyui'
-import AppFooter from '$/component/AppFooter.tsx'
 
 const TanStackRouterDevtools = import.meta.env.PROD
   ? () => null // Render nothing in production

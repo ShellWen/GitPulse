@@ -1,5 +1,5 @@
-import { QueryClient } from '@tanstack/react-query'
 import { HttpError } from '$/lib/api/error.ts'
+import { QueryClient } from '@tanstack/react-query'
 
 const MAX_RETRIES = 3
 
@@ -15,9 +15,7 @@ const queryClient = new QueryClient({
           return false
         }
 
-        if (
-          error instanceof HttpError && !!error.response
-        ) {
+        if (error instanceof HttpError && !!error.response) {
           // don't retry on 4xx errors
           if (error.response.status >= 400 && error.response.status < 500) {
             return false
