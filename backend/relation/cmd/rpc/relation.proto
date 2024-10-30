@@ -36,6 +36,15 @@ message DelCreateRepoResp {
   string message = 2;
 }
 
+message DelAllCreatedRepoReq {
+  int64 developerId = 1; //developerId
+}
+
+message DelAllCreatedRepoResp {
+  int64 code = 1;
+  string message = 2;
+}
+
 message GetCreatorIdReq {
   int64 repoId = 1; //repoId
 }
@@ -83,6 +92,24 @@ message DelFollowReq {
 }
 
 message DelFollowResp {
+  int64 code = 1;
+  string message = 2;
+}
+
+message DelAllFollowingReq {
+  int64 developerId = 1; //developerId
+}
+
+message DelAllFollowingResp {
+  int64 code = 1;
+  string message = 2;
+}
+
+message DelAllFollowedReq {
+  int64 developerId = 1; //developerId
+}
+
+message DelAllFollowedResp {
   int64 code = 1;
   string message = 2;
 }
@@ -150,6 +177,15 @@ message DelForkResp {
   string message = 2;
 }
 
+message DelAllForkReq {
+  int64 originalRepoId = 1; //originalRepoId
+}
+
+message DelAllForkResp {
+  int64 code = 1;
+  string message = 2;
+}
+
 message GetOriginReq {
   int64 forkRepoId = 1; //forkRepoId
 }
@@ -201,6 +237,24 @@ message DelStarResp {
   string message = 2;
 }
 
+message DelAllStaredRepoReq {
+  int64 developerId = 1; //developerId
+}
+
+message DelAllStaredRepoResp {
+  int64 code = 1;
+  string message = 2;
+}
+
+message DelAllStaringDevReq {
+  int64 repoId = 1; //repoId
+}
+
+message DelAllStaringDevResp {
+  int64 code = 1;
+  string message = 2;
+}
+
 message CheckIfStarReq {
   int64 developerId = 1; //developerId
   int64 repoId = 2; //repoId
@@ -245,22 +299,28 @@ service relation{
 	  //-----------------------createRepo-----------------------
 	  rpc AddCreateRepo(AddCreateRepoReq) returns (AddCreateRepoResp);
 	  rpc DelCreateRepo(DelCreateRepoReq) returns (DelCreateRepoResp);
+    rpc DelAllCreatedRepo(DelAllCreatedRepoReq) returns (DelAllCreatedRepoResp);
     rpc GetCreatorId(GetCreatorIdReq) returns (GetCreatorIdResp);
     rpc SearchCreatedRepo(SearchCreatedRepoReq) returns (SearchCreatedRepoResp);
     //-----------------------follow-----------------------
 	  rpc AddFollow(AddFollowReq) returns (AddFollowResp);
     rpc DelFollow(DelFollowReq) returns (DelFollowResp);
+    rpc DelAllFollowing(DelAllFollowingReq) returns (DelAllFollowingResp);
+    rpc DelAllFollowed(DelAllFollowedReq) returns (DelAllFollowedResp);
     rpc CheckIfFollow(CheckIfFollowReq) returns (CheckFollowResp);
     rpc SearchFollowedByFollowingId(SearchFollowedByFollowingIdReq) returns (SearchFollowByFollowingIdResp);
     rpc SearchFollowingByFollowedId(SearchFollowingByFollowedIdReq) returns (SearchFollowByFollowedIdResp);
 	  //-----------------------fork-----------------------
 	  rpc AddFork(AddForkReq) returns (AddForkResp);
     rpc DelFork(DelForkReq) returns (DelForkResp);
+    rpc DelAllFork(DelAllForkReq) returns (DelAllForkResp);
     rpc GetOrigin(GetOriginReq) returns (GetOriginResp);
     rpc SearchFork(SearchForkReq) returns (SearchForkResp);
 	  //-----------------------star-----------------------
 	  rpc AddStar(AddStarReq) returns (AddStarResp);
     rpc DelStar(DelStarReq) returns (DelStarResp);
+    rpc DelAllStaredRepo(DelAllStaredRepoReq) returns (DelAllStaredRepoResp);
+    rpc DelAllStaringDev(DelAllStaringDevReq) returns (DelAllStaringDevResp);
     rpc CheckIfStar(CheckIfStarReq) returns (CheckIfStarResp);
     rpc SearchStaredRepo(SearchStaredRepoReq) returns (SearchStaredRepoResp);
     rpc SearchStaringDev(SearchStaringDevReq) returns (SearchStaringDevResp);

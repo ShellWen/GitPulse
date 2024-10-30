@@ -27,6 +27,18 @@ type (
 	CheckIfStarReq                 = pb.CheckIfStarReq
 	CheckIfStarResp                = pb.CheckIfStarResp
 	CreateRepo                     = pb.CreateRepo
+	DelAllCreatedRepoReq           = pb.DelAllCreatedRepoReq
+	DelAllCreatedRepoResp          = pb.DelAllCreatedRepoResp
+	DelAllFollowedReq              = pb.DelAllFollowedReq
+	DelAllFollowedResp             = pb.DelAllFollowedResp
+	DelAllFollowingReq             = pb.DelAllFollowingReq
+	DelAllFollowingResp            = pb.DelAllFollowingResp
+	DelAllForkReq                  = pb.DelAllForkReq
+	DelAllForkResp                 = pb.DelAllForkResp
+	DelAllStaredRepoReq            = pb.DelAllStaredRepoReq
+	DelAllStaredRepoResp           = pb.DelAllStaredRepoResp
+	DelAllStaringDevReq            = pb.DelAllStaringDevReq
+	DelAllStaringDevResp           = pb.DelAllStaringDevResp
 	DelCreateRepoReq               = pb.DelCreateRepoReq
 	DelCreateRepoResp              = pb.DelCreateRepoResp
 	DelFollowReq                   = pb.DelFollowReq
@@ -59,22 +71,28 @@ type (
 		// -----------------------createRepo-----------------------
 		AddCreateRepo(ctx context.Context, in *AddCreateRepoReq, opts ...grpc.CallOption) (*AddCreateRepoResp, error)
 		DelCreateRepo(ctx context.Context, in *DelCreateRepoReq, opts ...grpc.CallOption) (*DelCreateRepoResp, error)
+		DelAllCreatedRepo(ctx context.Context, in *DelAllCreatedRepoReq, opts ...grpc.CallOption) (*DelAllCreatedRepoResp, error)
 		GetCreatorId(ctx context.Context, in *GetCreatorIdReq, opts ...grpc.CallOption) (*GetCreatorIdResp, error)
 		SearchCreatedRepo(ctx context.Context, in *SearchCreatedRepoReq, opts ...grpc.CallOption) (*SearchCreatedRepoResp, error)
 		// -----------------------follow-----------------------
 		AddFollow(ctx context.Context, in *AddFollowReq, opts ...grpc.CallOption) (*AddFollowResp, error)
 		DelFollow(ctx context.Context, in *DelFollowReq, opts ...grpc.CallOption) (*DelFollowResp, error)
+		DelAllFollowing(ctx context.Context, in *DelAllFollowingReq, opts ...grpc.CallOption) (*DelAllFollowingResp, error)
+		DelAllFollowed(ctx context.Context, in *DelAllFollowedReq, opts ...grpc.CallOption) (*DelAllFollowedResp, error)
 		CheckIfFollow(ctx context.Context, in *CheckIfFollowReq, opts ...grpc.CallOption) (*CheckFollowResp, error)
 		SearchFollowedByFollowingId(ctx context.Context, in *SearchFollowedByFollowingIdReq, opts ...grpc.CallOption) (*SearchFollowByFollowingIdResp, error)
 		SearchFollowingByFollowedId(ctx context.Context, in *SearchFollowingByFollowedIdReq, opts ...grpc.CallOption) (*SearchFollowByFollowedIdResp, error)
 		// -----------------------fork-----------------------
 		AddFork(ctx context.Context, in *AddForkReq, opts ...grpc.CallOption) (*AddForkResp, error)
 		DelFork(ctx context.Context, in *DelForkReq, opts ...grpc.CallOption) (*DelForkResp, error)
+		DelAllFork(ctx context.Context, in *DelAllForkReq, opts ...grpc.CallOption) (*DelAllForkResp, error)
 		GetOrigin(ctx context.Context, in *GetOriginReq, opts ...grpc.CallOption) (*GetOriginResp, error)
 		SearchFork(ctx context.Context, in *SearchForkReq, opts ...grpc.CallOption) (*SearchForkResp, error)
 		// -----------------------star-----------------------
 		AddStar(ctx context.Context, in *AddStarReq, opts ...grpc.CallOption) (*AddStarResp, error)
 		DelStar(ctx context.Context, in *DelStarReq, opts ...grpc.CallOption) (*DelStarResp, error)
+		DelAllStaredRepo(ctx context.Context, in *DelAllStaredRepoReq, opts ...grpc.CallOption) (*DelAllStaredRepoResp, error)
+		DelAllStaringDev(ctx context.Context, in *DelAllStaringDevReq, opts ...grpc.CallOption) (*DelAllStaringDevResp, error)
 		CheckIfStar(ctx context.Context, in *CheckIfStarReq, opts ...grpc.CallOption) (*CheckIfStarResp, error)
 		SearchStaredRepo(ctx context.Context, in *SearchStaredRepoReq, opts ...grpc.CallOption) (*SearchStaredRepoResp, error)
 		SearchStaringDev(ctx context.Context, in *SearchStaringDevReq, opts ...grpc.CallOption) (*SearchStaringDevResp, error)
@@ -102,6 +120,11 @@ func (m *defaultRelation) DelCreateRepo(ctx context.Context, in *DelCreateRepoRe
 	return client.DelCreateRepo(ctx, in, opts...)
 }
 
+func (m *defaultRelation) DelAllCreatedRepo(ctx context.Context, in *DelAllCreatedRepoReq, opts ...grpc.CallOption) (*DelAllCreatedRepoResp, error) {
+	client := pb.NewRelationClient(m.cli.Conn())
+	return client.DelAllCreatedRepo(ctx, in, opts...)
+}
+
 func (m *defaultRelation) GetCreatorId(ctx context.Context, in *GetCreatorIdReq, opts ...grpc.CallOption) (*GetCreatorIdResp, error) {
 	client := pb.NewRelationClient(m.cli.Conn())
 	return client.GetCreatorId(ctx, in, opts...)
@@ -121,6 +144,16 @@ func (m *defaultRelation) AddFollow(ctx context.Context, in *AddFollowReq, opts 
 func (m *defaultRelation) DelFollow(ctx context.Context, in *DelFollowReq, opts ...grpc.CallOption) (*DelFollowResp, error) {
 	client := pb.NewRelationClient(m.cli.Conn())
 	return client.DelFollow(ctx, in, opts...)
+}
+
+func (m *defaultRelation) DelAllFollowing(ctx context.Context, in *DelAllFollowingReq, opts ...grpc.CallOption) (*DelAllFollowingResp, error) {
+	client := pb.NewRelationClient(m.cli.Conn())
+	return client.DelAllFollowing(ctx, in, opts...)
+}
+
+func (m *defaultRelation) DelAllFollowed(ctx context.Context, in *DelAllFollowedReq, opts ...grpc.CallOption) (*DelAllFollowedResp, error) {
+	client := pb.NewRelationClient(m.cli.Conn())
+	return client.DelAllFollowed(ctx, in, opts...)
 }
 
 func (m *defaultRelation) CheckIfFollow(ctx context.Context, in *CheckIfFollowReq, opts ...grpc.CallOption) (*CheckFollowResp, error) {
@@ -149,6 +182,11 @@ func (m *defaultRelation) DelFork(ctx context.Context, in *DelForkReq, opts ...g
 	return client.DelFork(ctx, in, opts...)
 }
 
+func (m *defaultRelation) DelAllFork(ctx context.Context, in *DelAllForkReq, opts ...grpc.CallOption) (*DelAllForkResp, error) {
+	client := pb.NewRelationClient(m.cli.Conn())
+	return client.DelAllFork(ctx, in, opts...)
+}
+
 func (m *defaultRelation) GetOrigin(ctx context.Context, in *GetOriginReq, opts ...grpc.CallOption) (*GetOriginResp, error) {
 	client := pb.NewRelationClient(m.cli.Conn())
 	return client.GetOrigin(ctx, in, opts...)
@@ -168,6 +206,16 @@ func (m *defaultRelation) AddStar(ctx context.Context, in *AddStarReq, opts ...g
 func (m *defaultRelation) DelStar(ctx context.Context, in *DelStarReq, opts ...grpc.CallOption) (*DelStarResp, error) {
 	client := pb.NewRelationClient(m.cli.Conn())
 	return client.DelStar(ctx, in, opts...)
+}
+
+func (m *defaultRelation) DelAllStaredRepo(ctx context.Context, in *DelAllStaredRepoReq, opts ...grpc.CallOption) (*DelAllStaredRepoResp, error) {
+	client := pb.NewRelationClient(m.cli.Conn())
+	return client.DelAllStaredRepo(ctx, in, opts...)
+}
+
+func (m *defaultRelation) DelAllStaringDev(ctx context.Context, in *DelAllStaringDevReq, opts ...grpc.CallOption) (*DelAllStaringDevResp, error) {
+	client := pb.NewRelationClient(m.cli.Conn())
+	return client.DelAllStaringDev(ctx, in, opts...)
 }
 
 func (m *defaultRelation) CheckIfStar(ctx context.Context, in *CheckIfStarReq, opts ...grpc.CallOption) (*CheckIfStarResp, error) {

@@ -34,6 +34,11 @@ func (s *RelationServer) DelCreateRepo(ctx context.Context, in *pb.DelCreateRepo
 	return l.DelCreateRepo(in)
 }
 
+func (s *RelationServer) DelAllCreatedRepo(ctx context.Context, in *pb.DelAllCreatedRepoReq) (*pb.DelAllCreatedRepoResp, error) {
+	l := logic.NewDelAllCreatedRepoLogic(ctx, s.svcCtx)
+	return l.DelAllCreatedRepo(in)
+}
+
 func (s *RelationServer) GetCreatorId(ctx context.Context, in *pb.GetCreatorIdReq) (*pb.GetCreatorIdResp, error) {
 	l := logic.NewGetCreatorIdLogic(ctx, s.svcCtx)
 	return l.GetCreatorId(in)
@@ -53,6 +58,16 @@ func (s *RelationServer) AddFollow(ctx context.Context, in *pb.AddFollowReq) (*p
 func (s *RelationServer) DelFollow(ctx context.Context, in *pb.DelFollowReq) (*pb.DelFollowResp, error) {
 	l := logic.NewDelFollowLogic(ctx, s.svcCtx)
 	return l.DelFollow(in)
+}
+
+func (s *RelationServer) DelAllFollowing(ctx context.Context, in *pb.DelAllFollowingReq) (*pb.DelAllFollowingResp, error) {
+	l := logic.NewDelAllFollowingLogic(ctx, s.svcCtx)
+	return l.DelAllFollowing(in)
+}
+
+func (s *RelationServer) DelAllFollowed(ctx context.Context, in *pb.DelAllFollowedReq) (*pb.DelAllFollowedResp, error) {
+	l := logic.NewDelAllFollowedLogic(ctx, s.svcCtx)
+	return l.DelAllFollowed(in)
 }
 
 func (s *RelationServer) CheckIfFollow(ctx context.Context, in *pb.CheckIfFollowReq) (*pb.CheckFollowResp, error) {
@@ -81,6 +96,11 @@ func (s *RelationServer) DelFork(ctx context.Context, in *pb.DelForkReq) (*pb.De
 	return l.DelFork(in)
 }
 
+func (s *RelationServer) DelAllFork(ctx context.Context, in *pb.DelAllForkReq) (*pb.DelAllForkResp, error) {
+	l := logic.NewDelAllForkLogic(ctx, s.svcCtx)
+	return l.DelAllFork(in)
+}
+
 func (s *RelationServer) GetOrigin(ctx context.Context, in *pb.GetOriginReq) (*pb.GetOriginResp, error) {
 	l := logic.NewGetOriginLogic(ctx, s.svcCtx)
 	return l.GetOrigin(in)
@@ -100,6 +120,16 @@ func (s *RelationServer) AddStar(ctx context.Context, in *pb.AddStarReq) (*pb.Ad
 func (s *RelationServer) DelStar(ctx context.Context, in *pb.DelStarReq) (*pb.DelStarResp, error) {
 	l := logic.NewDelStarLogic(ctx, s.svcCtx)
 	return l.DelStar(in)
+}
+
+func (s *RelationServer) DelAllStaredRepo(ctx context.Context, in *pb.DelAllStaredRepoReq) (*pb.DelAllStaredRepoResp, error) {
+	l := logic.NewDelAllStaredRepoLogic(ctx, s.svcCtx)
+	return l.DelAllStaredRepo(in)
+}
+
+func (s *RelationServer) DelAllStaringDev(ctx context.Context, in *pb.DelAllStaringDevReq) (*pb.DelAllStaringDevResp, error) {
+	l := logic.NewDelAllStaringDevLogic(ctx, s.svcCtx)
+	return l.DelAllStaringDev(in)
 }
 
 func (s *RelationServer) CheckIfStar(ctx context.Context, in *pb.CheckIfStarReq) (*pb.CheckIfStarResp, error) {
