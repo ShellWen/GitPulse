@@ -14,12 +14,13 @@ COPY ./developer/cmd/rpc/etc/developer.yaml /app/developer/cmd/rpc/etc/developer
 RUN go build -ldflags="-s -w" -o /app/developer_rpc ./developer/cmd/rpc
 
 
-FROM scratch
+FROM alpine:latest
 
-COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+RUN apk add --no-cache ca-certificates tzdata
 
 WORKDIR /app
 
+VOLUME /app/developer/cmd/rpc/etc
 COPY --from=builder /app/developer/cmd/rpc/etc/developer.yaml /app/developer/cmd/rpc/etc/developer.yaml
 COPY --from=builder /app/developer_rpc /app/developer_rpc
 

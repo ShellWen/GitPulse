@@ -14,12 +14,13 @@ COPY ./relation/cmd/rpc/etc/relation.yaml /app/relation/cmd/rpc/etc/relation.yam
 RUN go build -ldflags="-s -w" -o /app/relation_rpc ./relation/cmd/rpc
 
 
-FROM scratch
+FROM alpine:latest
 
-COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+RUN apk add --no-cache ca-certificates tzdata
 
 WORKDIR /app
 
+VOLUME /app/relation/cmd/rpc/etc
 COPY --from=builder /app/relation/cmd/rpc/etc/relation.yaml /app/relation/cmd/rpc/etc/relation.yaml
 COPY --from=builder /app/relation_rpc /app/relation_rpc
 
