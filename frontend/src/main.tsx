@@ -9,7 +9,7 @@ import { QueryClientProvider } from '@tanstack/react-query'
 import queryClient from '$/lib/query/client.ts'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
-async function enableMocking() {
+async function enableMockingIfEnabled() {
   // Tree-shake
   if (import.meta.env.VITE_ENABLE_MOCK) {
     const { worker } = await import('./mocks/browser')
@@ -27,7 +27,7 @@ declare module '@tanstack/react-router' {
   }
 }
 
-enableMocking().then(() => {
+enableMockingIfEnabled().then(() => {
   ReactDOM.createRoot(document.getElementById('root')!).render(
     <StrictMode>
       <QueryClientProvider client={queryClient}>
