@@ -39,9 +39,9 @@ func (s *DeveloperServer) DelDeveloperById(ctx context.Context, in *pb.DelDevelo
 	return l.DelDeveloperById(in)
 }
 
-func (s *DeveloperServer) DelDeveloperByUsername(ctx context.Context, in *pb.DelDeveloperByUsernameReq) (*pb.DelDeveloperByUsernameResp, error) {
-	l := logic.NewDelDeveloperByUsernameLogic(ctx, s.svcCtx)
-	return l.DelDeveloperByUsername(in)
+func (s *DeveloperServer) DelDeveloperByLogin(ctx context.Context, in *pb.DelDeveloperByLoginReq) (*pb.DelDeveloperByLoginResp, error) {
+	l := logic.NewDelDeveloperByLoginLogic(ctx, s.svcCtx)
+	return l.DelDeveloperByLogin(in)
 }
 
 func (s *DeveloperServer) GetDeveloperById(ctx context.Context, in *pb.GetDeveloperByIdReq) (*pb.GetDeveloperByIdResp, error) {
@@ -49,7 +49,7 @@ func (s *DeveloperServer) GetDeveloperById(ctx context.Context, in *pb.GetDevelo
 	return l.GetDeveloperById(in)
 }
 
-func (s *DeveloperServer) GetDeveloperByUsername(ctx context.Context, in *pb.GetDeveloperByUsernameReq) (*pb.GetDeveloperByUsernameResp, error) {
-	l := logic.NewGetDeveloperByUsernameLogic(ctx, s.svcCtx)
-	return l.GetDeveloperByUsername(in)
+func (s *DeveloperServer) GetDeveloperByLogin(ctx context.Context, in *pb.GetDeveloperByLoginReq) (*pb.GetDeveloperByLoginResp, error) {
+	l := logic.NewGetDeveloperByLoginLogic(ctx, s.svcCtx)
+	return l.GetDeveloperByLogin(in)
 }

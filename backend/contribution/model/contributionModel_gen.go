@@ -44,14 +44,14 @@ type (
 
 	Contribution struct {
 		DataId         int64     `db:"data_id"`
-		DataCreateAt   time.Time `db:"data_create_at"`
-		DataUpdateAt   time.Time `db:"data_update_at"`
+		DataCreatedAt  time.Time `db:"data_created_at"`
+		DataUpdatedAt  time.Time `db:"data_updated_at"`
 		UserId         int64     `db:"user_id"`
 		RepoId         int64     `db:"repo_id"`
 		Category       string    `db:"category"`
 		Content        string    `db:"content"`
-		CreateAt       time.Time `db:"create_at"`
-		UpdateAt       time.Time `db:"update_at"`
+		CreatedAt      time.Time `db:"created_at"`
+		UpdatedAt      time.Time `db:"updated_at"`
 		ContributionId int64     `db:"contribution_id"`
 	}
 )
@@ -120,7 +120,7 @@ func (m *defaultContributionModel) Insert(ctx context.Context, data *Contributio
 	contributionContributionDataIdKey := fmt.Sprintf("%s%v", cacheContributionContributionDataIdPrefix, data.DataId)
 	ret, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("insert into %s (%s) values ($1, $2, $3, $4, $5, $6, $7)", m.table, contributionRowsExpectAutoSet)
-		return conn.ExecCtx(ctx, query, data.DataCreateAt, data.DataUpdateAt, data.UserId, data.RepoId, data.Category, data.Content, data.ContributionId)
+		return conn.ExecCtx(ctx, query, data.DataCreatedAt, data.DataUpdatedAt, data.UserId, data.RepoId, data.Category, data.Content, data.ContributionId)
 	}, contributionContributionCategoryRepoIdContributionIdKey, contributionContributionDataIdKey)
 	return ret, err
 }
@@ -135,7 +135,7 @@ func (m *defaultContributionModel) Update(ctx context.Context, newData *Contribu
 	contributionContributionDataIdKey := fmt.Sprintf("%s%v", cacheContributionContributionDataIdPrefix, data.DataId)
 	_, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("update %s set %s where data_id = $1", m.table, contributionRowsWithPlaceHolder)
-		return conn.ExecCtx(ctx, query, newData.DataId, newData.DataCreateAt, newData.DataUpdateAt, newData.UserId, newData.RepoId, newData.Category, newData.Content, newData.ContributionId)
+		return conn.ExecCtx(ctx, query, newData.DataId, newData.DataCreatedAt, newData.DataUpdatedAt, newData.UserId, newData.RepoId, newData.Category, newData.Content, newData.ContributionId)
 	}, contributionContributionCategoryRepoIdContributionIdKey, contributionContributionDataIdKey)
 	return err
 }

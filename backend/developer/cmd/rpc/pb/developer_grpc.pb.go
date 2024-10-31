@@ -19,12 +19,12 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Developer_AddDeveloper_FullMethodName           = "/pb.developer/AddDeveloper"
-	Developer_UpdateDeveloper_FullMethodName        = "/pb.developer/UpdateDeveloper"
-	Developer_DelDeveloperById_FullMethodName       = "/pb.developer/DelDeveloperById"
-	Developer_DelDeveloperByUsername_FullMethodName = "/pb.developer/DelDeveloperByUsername"
-	Developer_GetDeveloperById_FullMethodName       = "/pb.developer/GetDeveloperById"
-	Developer_GetDeveloperByUsername_FullMethodName = "/pb.developer/GetDeveloperByUsername"
+	Developer_AddDeveloper_FullMethodName        = "/pb.developer/AddDeveloper"
+	Developer_UpdateDeveloper_FullMethodName     = "/pb.developer/UpdateDeveloper"
+	Developer_DelDeveloperById_FullMethodName    = "/pb.developer/DelDeveloperById"
+	Developer_DelDeveloperByLogin_FullMethodName = "/pb.developer/DelDeveloperByLogin"
+	Developer_GetDeveloperById_FullMethodName    = "/pb.developer/GetDeveloperById"
+	Developer_GetDeveloperByLogin_FullMethodName = "/pb.developer/GetDeveloperByLogin"
 )
 
 // DeveloperClient is the client API for Developer service.
@@ -35,9 +35,9 @@ type DeveloperClient interface {
 	AddDeveloper(ctx context.Context, in *AddDeveloperReq, opts ...grpc.CallOption) (*AddDeveloperResp, error)
 	UpdateDeveloper(ctx context.Context, in *UpdateDeveloperReq, opts ...grpc.CallOption) (*UpdateDeveloperResp, error)
 	DelDeveloperById(ctx context.Context, in *DelDeveloperByIdReq, opts ...grpc.CallOption) (*DelDeveloperByIdResp, error)
-	DelDeveloperByUsername(ctx context.Context, in *DelDeveloperByUsernameReq, opts ...grpc.CallOption) (*DelDeveloperByUsernameResp, error)
+	DelDeveloperByLogin(ctx context.Context, in *DelDeveloperByLoginReq, opts ...grpc.CallOption) (*DelDeveloperByLoginResp, error)
 	GetDeveloperById(ctx context.Context, in *GetDeveloperByIdReq, opts ...grpc.CallOption) (*GetDeveloperByIdResp, error)
-	GetDeveloperByUsername(ctx context.Context, in *GetDeveloperByUsernameReq, opts ...grpc.CallOption) (*GetDeveloperByUsernameResp, error)
+	GetDeveloperByLogin(ctx context.Context, in *GetDeveloperByLoginReq, opts ...grpc.CallOption) (*GetDeveloperByLoginResp, error)
 }
 
 type developerClient struct {
@@ -78,10 +78,10 @@ func (c *developerClient) DelDeveloperById(ctx context.Context, in *DelDeveloper
 	return out, nil
 }
 
-func (c *developerClient) DelDeveloperByUsername(ctx context.Context, in *DelDeveloperByUsernameReq, opts ...grpc.CallOption) (*DelDeveloperByUsernameResp, error) {
+func (c *developerClient) DelDeveloperByLogin(ctx context.Context, in *DelDeveloperByLoginReq, opts ...grpc.CallOption) (*DelDeveloperByLoginResp, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(DelDeveloperByUsernameResp)
-	err := c.cc.Invoke(ctx, Developer_DelDeveloperByUsername_FullMethodName, in, out, cOpts...)
+	out := new(DelDeveloperByLoginResp)
+	err := c.cc.Invoke(ctx, Developer_DelDeveloperByLogin_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -98,10 +98,10 @@ func (c *developerClient) GetDeveloperById(ctx context.Context, in *GetDeveloper
 	return out, nil
 }
 
-func (c *developerClient) GetDeveloperByUsername(ctx context.Context, in *GetDeveloperByUsernameReq, opts ...grpc.CallOption) (*GetDeveloperByUsernameResp, error) {
+func (c *developerClient) GetDeveloperByLogin(ctx context.Context, in *GetDeveloperByLoginReq, opts ...grpc.CallOption) (*GetDeveloperByLoginResp, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(GetDeveloperByUsernameResp)
-	err := c.cc.Invoke(ctx, Developer_GetDeveloperByUsername_FullMethodName, in, out, cOpts...)
+	out := new(GetDeveloperByLoginResp)
+	err := c.cc.Invoke(ctx, Developer_GetDeveloperByLogin_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -116,9 +116,9 @@ type DeveloperServer interface {
 	AddDeveloper(context.Context, *AddDeveloperReq) (*AddDeveloperResp, error)
 	UpdateDeveloper(context.Context, *UpdateDeveloperReq) (*UpdateDeveloperResp, error)
 	DelDeveloperById(context.Context, *DelDeveloperByIdReq) (*DelDeveloperByIdResp, error)
-	DelDeveloperByUsername(context.Context, *DelDeveloperByUsernameReq) (*DelDeveloperByUsernameResp, error)
+	DelDeveloperByLogin(context.Context, *DelDeveloperByLoginReq) (*DelDeveloperByLoginResp, error)
 	GetDeveloperById(context.Context, *GetDeveloperByIdReq) (*GetDeveloperByIdResp, error)
-	GetDeveloperByUsername(context.Context, *GetDeveloperByUsernameReq) (*GetDeveloperByUsernameResp, error)
+	GetDeveloperByLogin(context.Context, *GetDeveloperByLoginReq) (*GetDeveloperByLoginResp, error)
 	mustEmbedUnimplementedDeveloperServer()
 }
 
@@ -138,14 +138,14 @@ func (UnimplementedDeveloperServer) UpdateDeveloper(context.Context, *UpdateDeve
 func (UnimplementedDeveloperServer) DelDeveloperById(context.Context, *DelDeveloperByIdReq) (*DelDeveloperByIdResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DelDeveloperById not implemented")
 }
-func (UnimplementedDeveloperServer) DelDeveloperByUsername(context.Context, *DelDeveloperByUsernameReq) (*DelDeveloperByUsernameResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DelDeveloperByUsername not implemented")
+func (UnimplementedDeveloperServer) DelDeveloperByLogin(context.Context, *DelDeveloperByLoginReq) (*DelDeveloperByLoginResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DelDeveloperByLogin not implemented")
 }
 func (UnimplementedDeveloperServer) GetDeveloperById(context.Context, *GetDeveloperByIdReq) (*GetDeveloperByIdResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetDeveloperById not implemented")
 }
-func (UnimplementedDeveloperServer) GetDeveloperByUsername(context.Context, *GetDeveloperByUsernameReq) (*GetDeveloperByUsernameResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetDeveloperByUsername not implemented")
+func (UnimplementedDeveloperServer) GetDeveloperByLogin(context.Context, *GetDeveloperByLoginReq) (*GetDeveloperByLoginResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetDeveloperByLogin not implemented")
 }
 func (UnimplementedDeveloperServer) mustEmbedUnimplementedDeveloperServer() {}
 func (UnimplementedDeveloperServer) testEmbeddedByValue()                   {}
@@ -222,20 +222,20 @@ func _Developer_DelDeveloperById_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Developer_DelDeveloperByUsername_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DelDeveloperByUsernameReq)
+func _Developer_DelDeveloperByLogin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DelDeveloperByLoginReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(DeveloperServer).DelDeveloperByUsername(ctx, in)
+		return srv.(DeveloperServer).DelDeveloperByLogin(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Developer_DelDeveloperByUsername_FullMethodName,
+		FullMethod: Developer_DelDeveloperByLogin_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DeveloperServer).DelDeveloperByUsername(ctx, req.(*DelDeveloperByUsernameReq))
+		return srv.(DeveloperServer).DelDeveloperByLogin(ctx, req.(*DelDeveloperByLoginReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -258,20 +258,20 @@ func _Developer_GetDeveloperById_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Developer_GetDeveloperByUsername_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetDeveloperByUsernameReq)
+func _Developer_GetDeveloperByLogin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetDeveloperByLoginReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(DeveloperServer).GetDeveloperByUsername(ctx, in)
+		return srv.(DeveloperServer).GetDeveloperByLogin(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Developer_GetDeveloperByUsername_FullMethodName,
+		FullMethod: Developer_GetDeveloperByLogin_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DeveloperServer).GetDeveloperByUsername(ctx, req.(*GetDeveloperByUsernameReq))
+		return srv.(DeveloperServer).GetDeveloperByLogin(ctx, req.(*GetDeveloperByLoginReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -296,16 +296,16 @@ var Developer_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Developer_DelDeveloperById_Handler,
 		},
 		{
-			MethodName: "DelDeveloperByUsername",
-			Handler:    _Developer_DelDeveloperByUsername_Handler,
+			MethodName: "DelDeveloperByLogin",
+			Handler:    _Developer_DelDeveloperByLogin_Handler,
 		},
 		{
 			MethodName: "GetDeveloperById",
 			Handler:    _Developer_GetDeveloperById_Handler,
 		},
 		{
-			MethodName: "GetDeveloperByUsername",
-			Handler:    _Developer_GetDeveloperByUsername_Handler,
+			MethodName: "GetDeveloperByLogin",
+			Handler:    _Developer_GetDeveloperByLogin_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

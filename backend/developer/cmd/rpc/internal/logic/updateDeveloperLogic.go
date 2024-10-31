@@ -59,7 +59,7 @@ func (l *UpdateDeveloperLogic) UpdateDeveloper(in *pb.UpdateDeveloperReq) (resp 
 
 func (l *UpdateDeveloperLogic) doUpdateDeveloper(developer *model.Developer, in *pb.UpdateDeveloperReq) (err error) {
 	developer.Name = in.Name
-	developer.Username = in.Username
+	developer.Login = in.Login
 	developer.AvatarUrl = in.AvatarUrl
 	developer.Company = in.Company
 	developer.Location = in.Location
@@ -72,8 +72,8 @@ func (l *UpdateDeveloperLogic) doUpdateDeveloper(developer *model.Developer, in 
 	developer.Repos = in.Repos
 	developer.Stars = in.Stars
 	developer.Gists = in.Gists
-	developer.CreateAt = time.Unix(in.CreateAt, 0)
-	developer.UpdateAt = time.Unix(in.UpdateAt, 0)
+	developer.CreatedAt = time.Unix(in.CreatedAt, 0)
+	developer.UpdatedAt = time.Unix(in.UpdatedAt, 0)
 	developer.LastFetchCreateRepoAt = time.Unix(in.LastFetchCreateRepoAt, 0)
 	developer.LastFetchFollowAt = time.Unix(in.LastFetchFollowAt, 0)
 	developer.LastFetchStarAt = time.Unix(in.LastFetchStarAt, 0)

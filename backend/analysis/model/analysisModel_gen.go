@@ -43,13 +43,13 @@ type (
 	}
 
 	Analysis struct {
-		DataId       int64     `db:"data_id"`
-		DataCreateAt time.Time `db:"data_create_at"`
-		DataUpdateAt time.Time `db:"data_update_at"`
-		DeveloperId  int64     `db:"developer_id"`
-		Languages    string    `db:"languages"`
-		TalentRank   float64   `db:"talent_rank"`
-		Nation       string    `db:"nation"`
+		DataId        int64     `db:"data_id"`
+		DataCreatedAt time.Time `db:"data_created_at"`
+		DataUpdatedAt time.Time `db:"data_updated_at"`
+		DeveloperId   int64     `db:"developer_id"`
+		Languages     string    `db:"languages"`
+		TalentRank    float64   `db:"talent_rank"`
+		Nation        string    `db:"nation"`
 	}
 )
 
@@ -117,7 +117,7 @@ func (m *defaultAnalysisModel) Insert(ctx context.Context, data *Analysis) (sql.
 	analysisAnalysisDeveloperIdKey := fmt.Sprintf("%s%v", cacheAnalysisAnalysisDeveloperIdPrefix, data.DeveloperId)
 	ret, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("insert into %s (%s) values ($1, $2, $3, $4, $5, $6)", m.table, analysisRowsExpectAutoSet)
-		return conn.ExecCtx(ctx, query, data.DataCreateAt, data.DataUpdateAt, data.DeveloperId, data.Languages, data.TalentRank, data.Nation)
+		return conn.ExecCtx(ctx, query, data.DataCreatedAt, data.DataUpdatedAt, data.DeveloperId, data.Languages, data.TalentRank, data.Nation)
 	}, analysisAnalysisDataIdKey, analysisAnalysisDeveloperIdKey)
 	return ret, err
 }
@@ -132,7 +132,7 @@ func (m *defaultAnalysisModel) Update(ctx context.Context, newData *Analysis) er
 	analysisAnalysisDeveloperIdKey := fmt.Sprintf("%s%v", cacheAnalysisAnalysisDeveloperIdPrefix, data.DeveloperId)
 	_, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("update %s set %s where data_id = $1", m.table, analysisRowsWithPlaceHolder)
-		return conn.ExecCtx(ctx, query, newData.DataId, newData.DataCreateAt, newData.DataUpdateAt, newData.DeveloperId, newData.Languages, newData.TalentRank, newData.Nation)
+		return conn.ExecCtx(ctx, query, newData.DataId, newData.DataCreatedAt, newData.DataUpdatedAt, newData.DeveloperId, newData.Languages, newData.TalentRank, newData.Nation)
 	}, analysisAnalysisDataIdKey, analysisAnalysisDeveloperIdKey)
 	return err
 }

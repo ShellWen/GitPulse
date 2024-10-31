@@ -60,8 +60,8 @@ func (l *UpdateContributionLogic) UpdateContribution(in *pb.UpdateContributionRe
 
 func (l *UpdateContributionLogic) doUpdateContribution(contribution *model.Contribution, in *pb.UpdateContributionReq) (err error) {
 	contribution.Content = in.Content
-	contribution.UpdateAt = time.Unix(in.UpdateAt, 0)
-	contribution.CreateAt = time.Unix(in.CreateAt, 0)
+	contribution.UpdatedAt = time.Unix(in.UpdatedAt, 0)
+	contribution.CreatedAt = time.Unix(in.CreatedAt, 0)
 
 	err = l.svcCtx.ContributionModel.Update(l.ctx, contribution)
 	return

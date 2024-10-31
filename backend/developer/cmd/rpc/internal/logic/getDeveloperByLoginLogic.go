@@ -12,46 +12,46 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type GetDeveloperByUsernameLogic struct {
+type GetDeveloperByLoginLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
 }
 
-func NewGetDeveloperByUsernameLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetDeveloperByUsernameLogic {
-	return &GetDeveloperByUsernameLogic{
+func NewGetDeveloperByLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetDeveloperByLoginLogic {
+	return &GetDeveloperByLoginLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
 	}
 }
 
-func (l *GetDeveloperByUsernameLogic) GetDeveloperByUsername(in *pb.GetDeveloperByUsernameReq) (resp *pb.GetDeveloperByUsernameResp, err error) {
+func (l *GetDeveloperByLoginLogic) GetDeveloperByLogin(in *pb.GetDeveloperByLoginReq) (resp *pb.GetDeveloperByLoginResp, err error) {
 	var developer *model.Developer
-	if developer, err = l.svcCtx.DeveloperModel.FindOneByUsername(l.ctx, in.Username); err != nil {
+	if developer, err = l.svcCtx.DeveloperModel.FindOneByLogin(l.ctx, in.Login); err != nil {
 		switch {
 		case errors.Is(err, model.ErrNotFound):
-			resp = &pb.GetDeveloperByUsernameResp{
+			resp = &pb.GetDeveloperByLoginResp{
 				Code:    http.StatusNotFound,
 				Message: err.Error(),
 			}
 		default:
-			resp = &pb.GetDeveloperByUsernameResp{
+			resp = &pb.GetDeveloperByLoginResp{
 				Code:    http.StatusInternalServerError,
 				Message: err.Error(),
 			}
 		}
 	} else {
-		resp = &pb.GetDeveloperByUsernameResp{
+		resp = &pb.GetDeveloperByLoginResp{
 			Code:    http.StatusOK,
 			Message: http.StatusText(http.StatusOK),
 			Developer: &pb.Developer{
 				DataId:                  developer.DataId,
-				DataCreateAt:            developer.DataCreateAt.Unix(),
-				DataUpdateAt:            developer.DataUpdateAt.Unix(),
+				DataCreatedAt:           developer.DataCreatedAt.Unix(),
+				DataUpdatedAt:           developer.DataUpdatedAt.Unix(),
 				Id:                      developer.Id,
 				Name:                    developer.Name,
-				Username:                developer.Username,
+				Login:                   developer.Login,
 				AvatarUrl:               developer.AvatarUrl,
 				Company:                 developer.Company,
 				Location:                developer.Location,
@@ -64,8 +64,8 @@ func (l *GetDeveloperByUsernameLogic) GetDeveloperByUsername(in *pb.GetDeveloper
 				Repos:                   developer.Repos,
 				Stars:                   developer.Stars,
 				Gists:                   developer.Gists,
-				CreateAt:                developer.CreateAt.Unix(),
-				UpdateAt:                developer.UpdateAt.Unix(),
+				CreatedAt:               developer.CreatedAt.Unix(),
+				UpdatedAt:               developer.UpdatedAt.Unix(),
 				LastFetchCreateRepoAt:   developer.LastFetchCreateRepoAt.Unix(),
 				LastFetchFollowAt:       developer.LastFetchFollowAt.Unix(),
 				LastFetchStarAt:         developer.LastFetchStarAt.Unix(),

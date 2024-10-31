@@ -24,9 +24,9 @@ var (
 	developerRowsExpectAutoSet   = strings.Join(stringx.Remove(developerFieldNames, "data_id", "create_at", "create_time", "created_at", "update_at", "update_time", "updated_at"), ",")
 	developerRowsWithPlaceHolder = builder.PostgreSqlJoin(stringx.Remove(developerFieldNames, "data_id", "create_at", "create_time", "created_at", "update_at", "update_time", "updated_at"))
 
-	cacheDeveloperDeveloperDataIdPrefix   = "cache:developer:developer:dataId:"
-	cacheDeveloperDeveloperIdPrefix       = "cache:developer:developer:id:"
-	cacheDeveloperDeveloperUsernamePrefix = "cache:developer:developer:username:"
+	cacheDeveloperDeveloperDataIdPrefix = "cache:developer:developer:dataId:"
+	cacheDeveloperDeveloperIdPrefix     = "cache:developer:developer:id:"
+	cacheDeveloperDeveloperLoginPrefix  = "cache:developer:developer:login:"
 )
 
 type (
@@ -34,7 +34,7 @@ type (
 		Insert(ctx context.Context, data *Developer) (sql.Result, error)
 		FindOne(ctx context.Context, dataId int64) (*Developer, error)
 		FindOneById(ctx context.Context, id int64) (*Developer, error)
-		FindOneByUsername(ctx context.Context, username string) (*Developer, error)
+		FindOneByLogin(ctx context.Context, login string) (*Developer, error)
 		Update(ctx context.Context, data *Developer) error
 		Delete(ctx context.Context, dataId int64) error
 	}
@@ -46,19 +46,19 @@ type (
 
 	Developer struct {
 		DataId                  int64     `db:"data_id"`
-		DataCreateAt            time.Time `db:"data_create_at"`
-		DataUpdateAt            time.Time `db:"data_update_at"`
+		DataCreatedAt           time.Time `db:"data_created_at"`
+		DataUpdatedAt           time.Time `db:"data_updated_at"`
 		Id                      int64     `db:"id"`
 		Name                    string    `db:"name"`
-		Username                string    `db:"username"`
+		Login                   string    `db:"login"`
 		AvatarUrl               string    `db:"avatar_url"`
 		Company                 string    `db:"company"`
 		Location                string    `db:"location"`
 		Bio                     string    `db:"bio"`
 		Blog                    string    `db:"blog"`
 		Email                   string    `db:"email"`
-		CreateAt                time.Time `db:"create_at"`
-		UpdateAt                time.Time `db:"update_at"`
+		CreatedAt               time.Time `db:"created_at"`
+		UpdatedAt               time.Time `db:"updated_at"`
 		TwitterUsername         string    `db:"twitter_username"`
 		Repos                   int64     `db:"repos"`
 		Following               int64     `db:"following"`
@@ -87,11 +87,11 @@ func (m *defaultDeveloperModel) Delete(ctx context.Context, dataId int64) error 
 
 	developerDeveloperDataIdKey := fmt.Sprintf("%s%v", cacheDeveloperDeveloperDataIdPrefix, dataId)
 	developerDeveloperIdKey := fmt.Sprintf("%s%v", cacheDeveloperDeveloperIdPrefix, data.Id)
-	developerDeveloperUsernameKey := fmt.Sprintf("%s%v", cacheDeveloperDeveloperUsernamePrefix, data.Username)
+	developerDeveloperLoginKey := fmt.Sprintf("%s%v", cacheDeveloperDeveloperLoginPrefix, data.Login)
 	_, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("delete from %s where data_id = $1", m.table)
 		return conn.ExecCtx(ctx, query, dataId)
-	}, developerDeveloperDataIdKey, developerDeveloperIdKey, developerDeveloperUsernameKey)
+	}, developerDeveloperDataIdKey, developerDeveloperIdKey, developerDeveloperLoginKey)
 	return err
 }
 
@@ -132,12 +132,12 @@ func (m *defaultDeveloperModel) FindOneById(ctx context.Context, id int64) (*Dev
 	}
 }
 
-func (m *defaultDeveloperModel) FindOneByUsername(ctx context.Context, username string) (*Developer, error) {
-	developerDeveloperUsernameKey := fmt.Sprintf("%s%v", cacheDeveloperDeveloperUsernamePrefix, username)
+func (m *defaultDeveloperModel) FindOneByLogin(ctx context.Context, login string) (*Developer, error) {
+	developerDeveloperLoginKey := fmt.Sprintf("%s%v", cacheDeveloperDeveloperLoginPrefix, login)
 	var resp Developer
-	err := m.QueryRowIndexCtx(ctx, &resp, developerDeveloperUsernameKey, m.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v any) (i any, e error) {
-		query := fmt.Sprintf("select %s from %s where username = $1 limit 1", developerRows, m.table)
-		if err := conn.QueryRowCtx(ctx, &resp, query, username); err != nil {
+	err := m.QueryRowIndexCtx(ctx, &resp, developerDeveloperLoginKey, m.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v any) (i any, e error) {
+		query := fmt.Sprintf("select %s from %s where login = $1 limit 1", developerRows, m.table)
+		if err := conn.QueryRowCtx(ctx, &resp, query, login); err != nil {
 			return nil, err
 		}
 		return resp.DataId, nil
@@ -155,11 +155,11 @@ func (m *defaultDeveloperModel) FindOneByUsername(ctx context.Context, username 
 func (m *defaultDeveloperModel) Insert(ctx context.Context, data *Developer) (sql.Result, error) {
 	developerDeveloperDataIdKey := fmt.Sprintf("%s%v", cacheDeveloperDeveloperDataIdPrefix, data.DataId)
 	developerDeveloperIdKey := fmt.Sprintf("%s%v", cacheDeveloperDeveloperIdPrefix, data.Id)
-	developerDeveloperUsernameKey := fmt.Sprintf("%s%v", cacheDeveloperDeveloperUsernamePrefix, data.Username)
+	developerDeveloperLoginKey := fmt.Sprintf("%s%v", cacheDeveloperDeveloperLoginPrefix, data.Login)
 	ret, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("insert into %s (%s) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21)", m.table, developerRowsExpectAutoSet)
-		return conn.ExecCtx(ctx, query, data.DataCreateAt, data.DataUpdateAt, data.Id, data.Name, data.Username, data.AvatarUrl, data.Company, data.Location, data.Bio, data.Blog, data.Email, data.TwitterUsername, data.Repos, data.Following, data.Followers, data.Gists, data.Stars, data.LastFetchCreateRepoAt, data.LastFetchFollowAt, data.LastFetchStarAt, data.LastFetchContributionAt)
-	}, developerDeveloperDataIdKey, developerDeveloperIdKey, developerDeveloperUsernameKey)
+		return conn.ExecCtx(ctx, query, data.DataCreatedAt, data.DataUpdatedAt, data.Id, data.Name, data.Login, data.AvatarUrl, data.Company, data.Location, data.Bio, data.Blog, data.Email, data.TwitterUsername, data.Repos, data.Following, data.Followers, data.Gists, data.Stars, data.LastFetchCreateRepoAt, data.LastFetchFollowAt, data.LastFetchStarAt, data.LastFetchContributionAt)
+	}, developerDeveloperDataIdKey, developerDeveloperIdKey, developerDeveloperLoginKey)
 	return ret, err
 }
 
@@ -171,11 +171,11 @@ func (m *defaultDeveloperModel) Update(ctx context.Context, newData *Developer) 
 
 	developerDeveloperDataIdKey := fmt.Sprintf("%s%v", cacheDeveloperDeveloperDataIdPrefix, data.DataId)
 	developerDeveloperIdKey := fmt.Sprintf("%s%v", cacheDeveloperDeveloperIdPrefix, data.Id)
-	developerDeveloperUsernameKey := fmt.Sprintf("%s%v", cacheDeveloperDeveloperUsernamePrefix, data.Username)
+	developerDeveloperLoginKey := fmt.Sprintf("%s%v", cacheDeveloperDeveloperLoginPrefix, data.Login)
 	_, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("update %s set %s where data_id = $1", m.table, developerRowsWithPlaceHolder)
-		return conn.ExecCtx(ctx, query, newData.DataId, newData.DataCreateAt, newData.DataUpdateAt, newData.Id, newData.Name, newData.Username, newData.AvatarUrl, newData.Company, newData.Location, newData.Bio, newData.Blog, newData.Email, newData.TwitterUsername, newData.Repos, newData.Following, newData.Followers, newData.Gists, newData.Stars, newData.LastFetchCreateRepoAt, newData.LastFetchFollowAt, newData.LastFetchStarAt, newData.LastFetchContributionAt)
-	}, developerDeveloperDataIdKey, developerDeveloperIdKey, developerDeveloperUsernameKey)
+		return conn.ExecCtx(ctx, query, newData.DataId, newData.DataCreatedAt, newData.DataUpdatedAt, newData.Id, newData.Name, newData.Login, newData.AvatarUrl, newData.Company, newData.Location, newData.Bio, newData.Blog, newData.Email, newData.TwitterUsername, newData.Repos, newData.Following, newData.Followers, newData.Gists, newData.Stars, newData.LastFetchCreateRepoAt, newData.LastFetchFollowAt, newData.LastFetchStarAt, newData.LastFetchContributionAt)
+	}, developerDeveloperDataIdKey, developerDeveloperIdKey, developerDeveloperLoginKey)
 	return err
 }
 

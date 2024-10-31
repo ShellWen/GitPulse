@@ -47,8 +47,8 @@ func (l *GetRepoByIdLogic) GetRepoById(in *pb.GetRepoByIdReq) (resp *pb.GetRepoB
 			Message: http.StatusText(http.StatusOK),
 			Repo: &pb.Repo{
 				DataId:                  repo.DataId,
-				DataCreateAt:            repo.DataCreateAt.Unix(),
-				DataUpdateAt:            repo.DataUpdateAt.Unix(),
+				DataCreatedAt:           repo.DataCreatedAt.Unix(),
+				DataUpdatedAt:           repo.DataUpdatedAt.Unix(),
 				Id:                      repo.Id,
 				Name:                    repo.Name,
 				StarCount:               repo.StarCount,

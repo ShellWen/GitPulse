@@ -11,8 +11,8 @@ package pb;
 //--------------------------------analysis--------------------------------
 message Analysis {
   int64 dataId = 1; //dataId
-  int64 dataCreateAt = 2; //dataCreateAt
-  int64 dataUpdateAt = 3; //dataUpdateAt
+  int64 dataCreatedAt = 2; //dataCreatedAt
+  int64 dataUpdatedAt = 3; //dataUpdatedAt
   string languages = 4; //languages
   double talentRank = 5; //talentRank
   int64 developerId = 6; //developerId

@@ -29,11 +29,11 @@ func NewAddDeveloperLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AddD
 // -----------------------developer-----------------------
 func (l *AddDeveloperLogic) AddDeveloper(in *pb.AddDeveloperReq) (resp *pb.AddDeveloperResp, err error) {
 	developer := &model.Developer{
-		DataCreateAt:            time.Now(),
-		DataUpdateAt:            time.Now(),
+		DataCreatedAt:           time.Now(),
+		DataUpdatedAt:           time.Now(),
 		Id:                      in.Id,
 		Name:                    in.Name,
-		Username:                in.Username,
+		Login:                   in.Login,
 		AvatarUrl:               in.AvatarUrl,
 		Company:                 in.Company,
 		Location:                in.Location,
@@ -46,8 +46,8 @@ func (l *AddDeveloperLogic) AddDeveloper(in *pb.AddDeveloperReq) (resp *pb.AddDe
 		Repos:                   in.Repos,
 		Stars:                   in.Stars,
 		Gists:                   in.Gists,
-		CreateAt:                time.Unix(in.CreateAt, 0),
-		UpdateAt:                time.Unix(in.UpdateAt, 0),
+		CreatedAt:               time.Unix(in.CreatedAt, 0),
+		UpdatedAt:               time.Unix(in.UpdatedAt, 0),
 		LastFetchCreateRepoAt:   time.Unix(0, 0),
 		LastFetchFollowAt:       time.Unix(0, 0),
 		LastFetchStarAt:         time.Unix(0, 0),

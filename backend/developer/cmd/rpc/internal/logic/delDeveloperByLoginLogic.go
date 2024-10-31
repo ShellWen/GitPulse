@@ -12,43 +12,42 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type DelDeveloperByUsernameLogic struct {
+type DelDeveloperByLoginLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
 }
 
-func NewDelDeveloperByUsernameLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DelDeveloperByUsernameLogic {
-	return &DelDeveloperByUsernameLogic{
+func NewDelDeveloperByLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DelDeveloperByLoginLogic {
+	return &DelDeveloperByLoginLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
 	}
 }
 
-func (l *DelDeveloperByUsernameLogic) DelDeveloperByUsername(in *pb.DelDeveloperByUsernameReq) (resp *pb.DelDeveloperByUsernameResp, err error) {
+func (l *DelDeveloperByLoginLogic) DelDeveloperByLogin(in *pb.DelDeveloperByLoginReq) (resp *pb.DelDeveloperByLoginResp, err error) {
 	var developer *model.Developer
 
-	username := in.Username
-	if developer, err = l.svcCtx.DeveloperModel.FindOneByUsername(l.ctx, username); err != nil {
+	if developer, err = l.svcCtx.DeveloperModel.FindOneByLogin(l.ctx, in.Login); err != nil {
 		if errors.Is(err, model.ErrNotFound) {
-			resp = &pb.DelDeveloperByUsernameResp{
+			resp = &pb.DelDeveloperByLoginResp{
 				Code:    http.StatusNotFound,
 				Message: err.Error(),
 			}
 		} else {
-			resp = &pb.DelDeveloperByUsernameResp{
+			resp = &pb.DelDeveloperByLoginResp{
 				Code:    http.StatusInternalServerError,
 				Message: err.Error(),
 			}
 		}
 	} else if err = l.svcCtx.DeveloperModel.Delete(l.ctx, developer.DataId); err != nil {
-		resp = &pb.DelDeveloperByUsernameResp{
+		resp = &pb.DelDeveloperByLoginResp{
 			Code:    http.StatusInternalServerError,
 			Message: err.Error(),
 		}
 	} else {
-		resp = &pb.DelDeveloperByUsernameResp{
+		resp = &pb.DelDeveloperByLoginResp{
 			Code:    http.StatusOK,
 			Message: http.StatusText(http.StatusOK),
 		}

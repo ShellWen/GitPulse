@@ -29,8 +29,8 @@ func NewAddRepoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AddRepoLo
 // -----------------------repo-----------------------
 func (l *AddRepoLogic) AddRepo(in *pb.AddRepoReq) (resp *pb.AddRepoResp, err error) {
 	repo := &model.Repo{
-		DataCreateAt:            time.Now(),
-		DataUpdateAt:            time.Now(),
+		DataCreatedAt:           time.Now(),
+		DataUpdatedAt:           time.Now(),
 		Id:                      in.Id,
 		Name:                    in.Name,
 		StarCount:               in.StarCount,

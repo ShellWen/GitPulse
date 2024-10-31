@@ -11,11 +11,11 @@ package pb;
 //--------------------------------developer--------------------------------
 message Developer {
   int64 dataId = 1; //Generated primary key, MUST NOT be changed.
-  int64 dataCreateAt = 2; //dataCreateAt
-  int64 dataUpdateAt = 3; //dataUpdateAt
+  int64 dataCreatedAt = 2; //dataCreatedAt
+  int64 dataUpdatedAt = 3; //dataUpdatedAt
   int64 id = 4; //Unique id of GitHub user.
   string name = 5; //name
-  string username = 6; //username
+  string login = 6; //login
   string avatarUrl = 7; //avatarUrl
   string company = 8; //company
   string location = 9; //location
@@ -28,8 +28,8 @@ message Developer {
   int64 followers = 16; //followers_count
   int64 stars = 17; //star_count
   int64 gists = 18; //gists_count
-  int64 createAt = 19; //createAt
-  int64 updateAt = 20; //updateAt
+  int64 createdAt = 19; //createdAt
+  int64 updatedAt = 20; //updatedAt
   int64 lastFetchCreateRepoAt = 21; //lastFetchCreateRepoAt
   int64 lastFetchFollowAt = 22; //lastFetchFollowAt
   int64 lastFetchStarAt = 23; //lastFetchStarAt
@@ -39,7 +39,7 @@ message Developer {
 message AddDeveloperReq {
   int64 id = 1; //Unique id of GitHub user.
   string name = 2; //name
-  string username = 3; //username
+  string login = 3; //login
   string avatarUrl = 4; //avatarUrl
   string company = 5; //company
   string location = 6; //location
@@ -52,8 +52,8 @@ message AddDeveloperReq {
   int64 followers = 13; //followers_count
   int64 stars = 14; //star_count
   int64 gists = 15; //gists_c
-  int64 createAt = 16; //createAt
-  int64 updateAt = 17; //updateAt
+  int64 createdAt = 16; //createdAt
+  int64 updatedAt = 17; //updatedAt
 }
 
 message AddDeveloperResp {
@@ -64,7 +64,7 @@ message AddDeveloperResp {
 message UpdateDeveloperReq {
   int64 id = 1; //Unique id of GitHub user.
   string name = 2; //name
-  string username = 3; //username
+  string login = 3; //login
   string avatarUrl = 4; //avatarUrl
   string company = 5; //company
   string location = 6; //location
@@ -77,8 +77,8 @@ message UpdateDeveloperReq {
   int64 followers = 13; //followers_count
   int64 stars = 14; //star_count
   int64 gists = 15; //gists_c
-  int64 createAt = 16; //createAt
-  int64 updateAt = 17; //updateAt
+  int64 createdAt = 16; //createdAt
+  int64 updatedAt = 17; //updatedAt
   int64 lastFetchCreateRepoAt = 18; //lastFetchCreateRepoAt
   int64 lastFetchFollowAt = 19; //lastFetchFollowAt
   int64 lastFetchStarAt = 20; //lastFetchStarAt
@@ -99,11 +99,11 @@ message DelDeveloperByIdResp {
   string message = 2;
 }
 
-message DelDeveloperByUsernameReq {
-  string username = 1; //username
+message DelDeveloperByLoginReq {
+  string login = 1; //login
 }
 
-message DelDeveloperByUsernameResp {
+message DelDeveloperByLoginResp {
   int64 code = 1;
   string message = 2;
 }
@@ -118,11 +118,11 @@ message GetDeveloperByIdResp {
   Developer developer = 3; //developer
 }
 
-message GetDeveloperByUsernameReq {
-  string username = 1; //username
+message GetDeveloperByLoginReq {
+  string login = 1; //login
 }
 
-message GetDeveloperByUsernameResp {
+message GetDeveloperByLoginResp {
   int64 code = 1;
   string message = 2;
   Developer developer = 3; //developer
@@ -137,7 +137,7 @@ service developer{
   rpc AddDeveloper(AddDeveloperReq) returns (AddDeveloperResp);
   rpc UpdateDeveloper(UpdateDeveloperReq) returns (UpdateDeveloperResp);
   rpc DelDeveloperById(DelDeveloperByIdReq) returns (DelDeveloperByIdResp);
-  rpc DelDeveloperByUsername(DelDeveloperByUsernameReq) returns (DelDeveloperByUsernameResp);
+  rpc DelDeveloperByLogin(DelDeveloperByLoginReq) returns (DelDeveloperByLoginResp);
   rpc GetDeveloperById(GetDeveloperByIdReq) returns (GetDeveloperByIdResp);
-  rpc GetDeveloperByUsername(GetDeveloperByUsernameReq) returns (GetDeveloperByUsernameResp);
+  rpc GetDeveloperByLogin(GetDeveloperByLoginReq) returns (GetDeveloperByLoginResp);
 }

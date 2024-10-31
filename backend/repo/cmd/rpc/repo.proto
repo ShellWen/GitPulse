@@ -11,8 +11,8 @@ package pb;
 //--------------------------------repo--------------------------------
 message Repo {
   int64 dataId = 1; //dataId
-  int64 dataCreateAt = 2; //dataCreateAt
-  int64 dataUpdateAt = 3; //dataUpdateAt
+  int64 dataCreatedAt = 2; //dataCreatedAt
+  int64 dataUpdatedAt = 3; //dataUpdatedAt
   int64 id = 4; //id
   string name = 5; //name
   int64 starCount = 6; //starCount

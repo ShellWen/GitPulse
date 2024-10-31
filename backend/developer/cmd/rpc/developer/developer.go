@@ -14,28 +14,28 @@ import (
 )
 
 type (
-	AddDeveloperReq            = pb.AddDeveloperReq
-	AddDeveloperResp           = pb.AddDeveloperResp
-	DelDeveloperByIdReq        = pb.DelDeveloperByIdReq
-	DelDeveloperByIdResp       = pb.DelDeveloperByIdResp
-	DelDeveloperByUsernameReq  = pb.DelDeveloperByUsernameReq
-	DelDeveloperByUsernameResp = pb.DelDeveloperByUsernameResp
-	Developer                  = pb.Developer
-	GetDeveloperByIdReq        = pb.GetDeveloperByIdReq
-	GetDeveloperByIdResp       = pb.GetDeveloperByIdResp
-	GetDeveloperByUsernameReq  = pb.GetDeveloperByUsernameReq
-	GetDeveloperByUsernameResp = pb.GetDeveloperByUsernameResp
-	UpdateDeveloperReq         = pb.UpdateDeveloperReq
-	UpdateDeveloperResp        = pb.UpdateDeveloperResp
+	AddDeveloperReq         = pb.AddDeveloperReq
+	AddDeveloperResp        = pb.AddDeveloperResp
+	DelDeveloperByIdReq     = pb.DelDeveloperByIdReq
+	DelDeveloperByIdResp    = pb.DelDeveloperByIdResp
+	DelDeveloperByLoginReq  = pb.DelDeveloperByLoginReq
+	DelDeveloperByLoginResp = pb.DelDeveloperByLoginResp
+	Developer               = pb.Developer
+	GetDeveloperByIdReq     = pb.GetDeveloperByIdReq
+	GetDeveloperByIdResp    = pb.GetDeveloperByIdResp
+	GetDeveloperByLoginReq  = pb.GetDeveloperByLoginReq
+	GetDeveloperByLoginResp = pb.GetDeveloperByLoginResp
+	UpdateDeveloperReq      = pb.UpdateDeveloperReq
+	UpdateDeveloperResp     = pb.UpdateDeveloperResp
 
 	DeveloperZrpcClient interface {
 		// -----------------------developer-----------------------
 		AddDeveloper(ctx context.Context, in *AddDeveloperReq, opts ...grpc.CallOption) (*AddDeveloperResp, error)
 		UpdateDeveloper(ctx context.Context, in *UpdateDeveloperReq, opts ...grpc.CallOption) (*UpdateDeveloperResp, error)
 		DelDeveloperById(ctx context.Context, in *DelDeveloperByIdReq, opts ...grpc.CallOption) (*DelDeveloperByIdResp, error)
-		DelDeveloperByUsername(ctx context.Context, in *DelDeveloperByUsernameReq, opts ...grpc.CallOption) (*DelDeveloperByUsernameResp, error)
+		DelDeveloperByLogin(ctx context.Context, in *DelDeveloperByLoginReq, opts ...grpc.CallOption) (*DelDeveloperByLoginResp, error)
 		GetDeveloperById(ctx context.Context, in *GetDeveloperByIdReq, opts ...grpc.CallOption) (*GetDeveloperByIdResp, error)
-		GetDeveloperByUsername(ctx context.Context, in *GetDeveloperByUsernameReq, opts ...grpc.CallOption) (*GetDeveloperByUsernameResp, error)
+		GetDeveloperByLogin(ctx context.Context, in *GetDeveloperByLoginReq, opts ...grpc.CallOption) (*GetDeveloperByLoginResp, error)
 	}
 
 	defaultDeveloperZrpcClient struct {
@@ -65,9 +65,9 @@ func (m *defaultDeveloperZrpcClient) DelDeveloperById(ctx context.Context, in *D
 	return client.DelDeveloperById(ctx, in, opts...)
 }
 
-func (m *defaultDeveloperZrpcClient) DelDeveloperByUsername(ctx context.Context, in *DelDeveloperByUsernameReq, opts ...grpc.CallOption) (*DelDeveloperByUsernameResp, error) {
+func (m *defaultDeveloperZrpcClient) DelDeveloperByLogin(ctx context.Context, in *DelDeveloperByLoginReq, opts ...grpc.CallOption) (*DelDeveloperByLoginResp, error) {
 	client := pb.NewDeveloperClient(m.cli.Conn())
-	return client.DelDeveloperByUsername(ctx, in, opts...)
+	return client.DelDeveloperByLogin(ctx, in, opts...)
 }
 
 func (m *defaultDeveloperZrpcClient) GetDeveloperById(ctx context.Context, in *GetDeveloperByIdReq, opts ...grpc.CallOption) (*GetDeveloperByIdResp, error) {
@@ -75,7 +75,7 @@ func (m *defaultDeveloperZrpcClient) GetDeveloperById(ctx context.Context, in *G
 	return client.GetDeveloperById(ctx, in, opts...)
 }
 
-func (m *defaultDeveloperZrpcClient) GetDeveloperByUsername(ctx context.Context, in *GetDeveloperByUsernameReq, opts ...grpc.CallOption) (*GetDeveloperByUsernameResp, error) {
+func (m *defaultDeveloperZrpcClient) GetDeveloperByLogin(ctx context.Context, in *GetDeveloperByLoginReq, opts ...grpc.CallOption) (*GetDeveloperByLoginResp, error) {
 	client := pb.NewDeveloperClient(m.cli.Conn())
-	return client.GetDeveloperByUsername(ctx, in, opts...)
+	return client.GetDeveloperByLogin(ctx, in, opts...)
 }

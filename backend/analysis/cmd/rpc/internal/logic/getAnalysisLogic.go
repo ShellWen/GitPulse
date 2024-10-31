@@ -47,8 +47,8 @@ func (l *GetAnalysisLogic) GetAnalysis(in *pb.GetAnalysisReq) (resp *pb.GetAnaly
 			Message: http.StatusText(http.StatusOK),
 			Analysis: &pb.Analysis{
 				DataId:       analysis.DataId,
-				DataCreateAt: analysis.DataCreateAt.Unix(),
-				DataUpdateAt: analysis.DataUpdateAt.Unix(),
+				DataCreateAt: analysis.DataCreatedAt.Unix(),
+				DataUpdateAt: analysis.DataUpdatedAt.Unix(),
 				DeveloperId:  analysis.DeveloperId,
 				Languages:    analysis.Languages,
 				TalentRank:   analysis.TalentRank,

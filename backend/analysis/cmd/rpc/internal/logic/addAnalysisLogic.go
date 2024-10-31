@@ -28,12 +28,12 @@ func NewAddAnalysisLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AddAn
 // -----------------------analysis-----------------------
 func (l *AddAnalysisLogic) AddAnalysis(in *pb.AddAnalysisReq) (resp *pb.AddAnalysisResp, err error) {
 	analysis := &model.Analysis{
-		DataCreateAt: time.Now(),
-		DataUpdateAt: time.Now(),
-		DeveloperId:  in.DeveloperId,
-		Languages:    in.Languages,
-		TalentRank:   in.TalentRank,
-		Nation:       in.Nation,
+		DataCreatedAt: time.Now(),
+		DataUpdatedAt: time.Now(),
+		DeveloperId:   in.DeveloperId,
+		Languages:     in.Languages,
+		TalentRank:    in.TalentRank,
+		Nation:        in.Nation,
 	}
 
 	if _, err = l.svcCtx.AnalysisModel.Insert(l.ctx, analysis); err != nil {

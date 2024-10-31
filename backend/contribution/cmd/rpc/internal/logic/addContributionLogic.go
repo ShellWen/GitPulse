@@ -29,14 +29,14 @@ func NewAddContributionLogic(ctx context.Context, svcCtx *svc.ServiceContext) *A
 // -----------------------contribution-----------------------
 func (l *AddContributionLogic) AddContribution(in *pb.AddContributionReq) (resp *pb.AddContributionResp, err error) {
 	contribution := &model.Contribution{
-		DataCreateAt:   time.Now(),
-		DataUpdateAt:   time.Now(),
+		DataCreatedAt:  time.Now(),
+		DataUpdatedAt:  time.Now(),
 		UserId:         in.UserId,
 		RepoId:         in.RepoId,
 		Category:       in.Category,
 		Content:        in.Content,
-		CreateAt:       time.Unix(in.CreateAt, 0),
-		UpdateAt:       time.Unix(in.UpdateAt, 0),
+		CreatedAt:      time.Unix(in.CreatedAt, 0),
+		UpdatedAt:      time.Unix(in.UpdatedAt, 0),
 		ContributionId: in.ContributionId,
 	}
 

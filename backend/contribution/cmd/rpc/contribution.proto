@@ -11,14 +11,14 @@ package pb;
 //--------------------------------contribution--------------------------------
 message Contribution {
   int64 dataId = 1; //dataId
-  int64 dataCreateAt = 2; //dataCreateAt
-  int64 dataUpdateAt = 3; //dataUpdateAt
+  int64 dataCreatedAt = 2; //dataCreatedAt
+  int64 dataUpdatedAt = 3; //dataUpdatedAt
   int64 userId = 4; //userId
   int64 repoId = 5; //repoId
   string category = 6; //category
   string content = 7; //content
-  int64 createAt = 8; //createAt
-  int64 updateAt = 9; //updateAt
+  int64 createdAt = 8; //createdAt
+  int64 updatedAt = 9; //updatedAt
   int64 contributionId = 10; //contributionId
 }
 
@@ -27,8 +27,8 @@ message AddContributionReq {
   int64 repoId = 2; //repoId
   string category = 3; //category
   string content = 4; //content
-  int64 createAt = 5; //createAt
-  int64 updateAt = 6; //updateAt
+  int64 createdAt = 5; //createdAt
+  int64 updatedAt = 6; //updatedAt
   int64 contributionId = 7; //contributionId
 }
 
@@ -42,8 +42,8 @@ message UpdateContributionReq {
   int64 repoId = 2; //repoId
   string category = 3; //category
   string content = 4; //content
-  int64 createAt = 5; //createAt
-  int64 updateAt = 6; //updateAt
+  int64 createdAt = 5; //createdAt
+  int64 updatedAt = 6; //updatedAt
   int64 contributionId = 7; //contributionId
 }
 

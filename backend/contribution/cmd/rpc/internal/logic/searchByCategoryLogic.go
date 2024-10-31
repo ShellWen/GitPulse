@@ -56,14 +56,14 @@ func (l *SearchByCategoryLogic) buildPBContributions(contributions *[]*model.Con
 	for _, contribution := range *contributions {
 		pbContributions = append(pbContributions, &pb.Contribution{
 			DataId:         contribution.DataId,
-			DataCreateAt:   contribution.DataCreateAt.Unix(),
-			DataUpdateAt:   contribution.DataUpdateAt.Unix(),
+			DataCreatedAt:  contribution.DataCreatedAt.Unix(),
+			DataUpdatedAt:  contribution.DataUpdatedAt.Unix(),
 			UserId:         contribution.UserId,
 			RepoId:         contribution.RepoId,
 			Category:       contribution.Category,
 			Content:        contribution.Content,
-			CreateAt:       contribution.CreateAt.Unix(),
-			UpdateAt:       contribution.UpdateAt.Unix(),
+			CreatedAt:      contribution.CreatedAt.Unix(),
+			UpdatedAt:      contribution.UpdatedAt.Unix(),
 			ContributionId: contribution.ContributionId,
 		})
 	}
