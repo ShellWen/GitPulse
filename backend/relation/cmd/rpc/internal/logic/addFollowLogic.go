@@ -27,8 +27,8 @@ func NewAddFollowLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AddFoll
 // -----------------------follow-----------------------
 func (l *AddFollowLogic) AddFollow(in *pb.AddFollowReq) (resp *pb.AddFollowResp, err error) {
 	follow := &model.Follow{
+		FollowerId:  in.FollowerId,
 		FollowingId: in.FollowingId,
-		FollowedId:  in.FollowedId,
 	}
 
 	if _, err = l.svcCtx.FollowModel.Insert(l.ctx, follow); err != nil {

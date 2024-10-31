@@ -19,30 +19,30 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Relation_AddCreateRepo_FullMethodName               = "/pb.relation/AddCreateRepo"
-	Relation_DelCreateRepo_FullMethodName               = "/pb.relation/DelCreateRepo"
-	Relation_DelAllCreatedRepo_FullMethodName           = "/pb.relation/DelAllCreatedRepo"
-	Relation_GetCreatorId_FullMethodName                = "/pb.relation/GetCreatorId"
-	Relation_SearchCreatedRepo_FullMethodName           = "/pb.relation/SearchCreatedRepo"
-	Relation_AddFollow_FullMethodName                   = "/pb.relation/AddFollow"
-	Relation_DelFollow_FullMethodName                   = "/pb.relation/DelFollow"
-	Relation_DelAllFollowing_FullMethodName             = "/pb.relation/DelAllFollowing"
-	Relation_DelAllFollowed_FullMethodName              = "/pb.relation/DelAllFollowed"
-	Relation_CheckIfFollow_FullMethodName               = "/pb.relation/CheckIfFollow"
-	Relation_SearchFollowedByFollowingId_FullMethodName = "/pb.relation/SearchFollowedByFollowingId"
-	Relation_SearchFollowingByFollowedId_FullMethodName = "/pb.relation/SearchFollowingByFollowedId"
-	Relation_AddFork_FullMethodName                     = "/pb.relation/AddFork"
-	Relation_DelFork_FullMethodName                     = "/pb.relation/DelFork"
-	Relation_DelAllFork_FullMethodName                  = "/pb.relation/DelAllFork"
-	Relation_GetOrigin_FullMethodName                   = "/pb.relation/GetOrigin"
-	Relation_SearchFork_FullMethodName                  = "/pb.relation/SearchFork"
-	Relation_AddStar_FullMethodName                     = "/pb.relation/AddStar"
-	Relation_DelStar_FullMethodName                     = "/pb.relation/DelStar"
-	Relation_DelAllStarredRepo_FullMethodName           = "/pb.relation/DelAllStarredRepo"
-	Relation_DelAllStaringDev_FullMethodName            = "/pb.relation/DelAllStaringDev"
-	Relation_CheckIfStar_FullMethodName                 = "/pb.relation/CheckIfStar"
-	Relation_SearchStarredRepo_FullMethodName           = "/pb.relation/SearchStarredRepo"
-	Relation_SearchStaringDev_FullMethodName            = "/pb.relation/SearchStaringDev"
+	Relation_AddCreateRepo_FullMethodName                = "/pb.relation/AddCreateRepo"
+	Relation_DelCreateRepo_FullMethodName                = "/pb.relation/DelCreateRepo"
+	Relation_DelAllCreatedRepo_FullMethodName            = "/pb.relation/DelAllCreatedRepo"
+	Relation_GetCreatorId_FullMethodName                 = "/pb.relation/GetCreatorId"
+	Relation_SearchCreatedRepo_FullMethodName            = "/pb.relation/SearchCreatedRepo"
+	Relation_AddFollow_FullMethodName                    = "/pb.relation/AddFollow"
+	Relation_DelFollow_FullMethodName                    = "/pb.relation/DelFollow"
+	Relation_DelAllFollower_FullMethodName               = "/pb.relation/DelAllFollower"
+	Relation_DelAllFollowing_FullMethodName              = "/pb.relation/DelAllFollowing"
+	Relation_CheckIfFollow_FullMethodName                = "/pb.relation/CheckIfFollow"
+	Relation_SearchFollowingByDeveloperId_FullMethodName = "/pb.relation/SearchFollowingByDeveloperId"
+	Relation_SearchFollowerByDeveloperId_FullMethodName  = "/pb.relation/SearchFollowerByDeveloperId"
+	Relation_AddFork_FullMethodName                      = "/pb.relation/AddFork"
+	Relation_DelFork_FullMethodName                      = "/pb.relation/DelFork"
+	Relation_DelAllFork_FullMethodName                   = "/pb.relation/DelAllFork"
+	Relation_GetOrigin_FullMethodName                    = "/pb.relation/GetOrigin"
+	Relation_SearchFork_FullMethodName                   = "/pb.relation/SearchFork"
+	Relation_AddStar_FullMethodName                      = "/pb.relation/AddStar"
+	Relation_DelStar_FullMethodName                      = "/pb.relation/DelStar"
+	Relation_DelAllStarredRepo_FullMethodName            = "/pb.relation/DelAllStarredRepo"
+	Relation_DelAllStaringDev_FullMethodName             = "/pb.relation/DelAllStaringDev"
+	Relation_CheckIfStar_FullMethodName                  = "/pb.relation/CheckIfStar"
+	Relation_SearchStarredRepo_FullMethodName            = "/pb.relation/SearchStarredRepo"
+	Relation_SearchStaringDev_FullMethodName             = "/pb.relation/SearchStaringDev"
 )
 
 // RelationClient is the client API for Relation service.
@@ -58,11 +58,11 @@ type RelationClient interface {
 	// -----------------------follow-----------------------
 	AddFollow(ctx context.Context, in *AddFollowReq, opts ...grpc.CallOption) (*AddFollowResp, error)
 	DelFollow(ctx context.Context, in *DelFollowReq, opts ...grpc.CallOption) (*DelFollowResp, error)
+	DelAllFollower(ctx context.Context, in *DelAllFollowerReq, opts ...grpc.CallOption) (*DelAllFollowerResp, error)
 	DelAllFollowing(ctx context.Context, in *DelAllFollowingReq, opts ...grpc.CallOption) (*DelAllFollowingResp, error)
-	DelAllFollowed(ctx context.Context, in *DelAllFollowedReq, opts ...grpc.CallOption) (*DelAllFollowedResp, error)
 	CheckIfFollow(ctx context.Context, in *CheckIfFollowReq, opts ...grpc.CallOption) (*CheckFollowResp, error)
-	SearchFollowedByFollowingId(ctx context.Context, in *SearchFollowedByFollowingIdReq, opts ...grpc.CallOption) (*SearchFollowByFollowingIdResp, error)
-	SearchFollowingByFollowedId(ctx context.Context, in *SearchFollowingByFollowedIdReq, opts ...grpc.CallOption) (*SearchFollowByFollowedIdResp, error)
+	SearchFollowingByDeveloperId(ctx context.Context, in *SearchFollowingByDeveloperIdReq, opts ...grpc.CallOption) (*SearchFollowingByDeveloperIdResp, error)
+	SearchFollowerByDeveloperId(ctx context.Context, in *SearchFollowerByDeveloperIdReq, opts ...grpc.CallOption) (*SearchFollowerByDeveloperIdResp, error)
 	// -----------------------fork-----------------------
 	AddFork(ctx context.Context, in *AddForkReq, opts ...grpc.CallOption) (*AddForkResp, error)
 	DelFork(ctx context.Context, in *DelForkReq, opts ...grpc.CallOption) (*DelForkResp, error)
@@ -157,20 +157,20 @@ func (c *relationClient) DelFollow(ctx context.Context, in *DelFollowReq, opts .
 	return out, nil
 }
 
-func (c *relationClient) DelAllFollowing(ctx context.Context, in *DelAllFollowingReq, opts ...grpc.CallOption) (*DelAllFollowingResp, error) {
+func (c *relationClient) DelAllFollower(ctx context.Context, in *DelAllFollowerReq, opts ...grpc.CallOption) (*DelAllFollowerResp, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(DelAllFollowingResp)
-	err := c.cc.Invoke(ctx, Relation_DelAllFollowing_FullMethodName, in, out, cOpts...)
+	out := new(DelAllFollowerResp)
+	err := c.cc.Invoke(ctx, Relation_DelAllFollower_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *relationClient) DelAllFollowed(ctx context.Context, in *DelAllFollowedReq, opts ...grpc.CallOption) (*DelAllFollowedResp, error) {
+func (c *relationClient) DelAllFollowing(ctx context.Context, in *DelAllFollowingReq, opts ...grpc.CallOption) (*DelAllFollowingResp, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(DelAllFollowedResp)
-	err := c.cc.Invoke(ctx, Relation_DelAllFollowed_FullMethodName, in, out, cOpts...)
+	out := new(DelAllFollowingResp)
+	err := c.cc.Invoke(ctx, Relation_DelAllFollowing_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -187,20 +187,20 @@ func (c *relationClient) CheckIfFollow(ctx context.Context, in *CheckIfFollowReq
 	return out, nil
 }
 
-func (c *relationClient) SearchFollowedByFollowingId(ctx context.Context, in *SearchFollowedByFollowingIdReq, opts ...grpc.CallOption) (*SearchFollowByFollowingIdResp, error) {
+func (c *relationClient) SearchFollowingByDeveloperId(ctx context.Context, in *SearchFollowingByDeveloperIdReq, opts ...grpc.CallOption) (*SearchFollowingByDeveloperIdResp, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(SearchFollowByFollowingIdResp)
-	err := c.cc.Invoke(ctx, Relation_SearchFollowedByFollowingId_FullMethodName, in, out, cOpts...)
+	out := new(SearchFollowingByDeveloperIdResp)
+	err := c.cc.Invoke(ctx, Relation_SearchFollowingByDeveloperId_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *relationClient) SearchFollowingByFollowedId(ctx context.Context, in *SearchFollowingByFollowedIdReq, opts ...grpc.CallOption) (*SearchFollowByFollowedIdResp, error) {
+func (c *relationClient) SearchFollowerByDeveloperId(ctx context.Context, in *SearchFollowerByDeveloperIdReq, opts ...grpc.CallOption) (*SearchFollowerByDeveloperIdResp, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(SearchFollowByFollowedIdResp)
-	err := c.cc.Invoke(ctx, Relation_SearchFollowingByFollowedId_FullMethodName, in, out, cOpts...)
+	out := new(SearchFollowerByDeveloperIdResp)
+	err := c.cc.Invoke(ctx, Relation_SearchFollowerByDeveloperId_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -340,11 +340,11 @@ type RelationServer interface {
 	// -----------------------follow-----------------------
 	AddFollow(context.Context, *AddFollowReq) (*AddFollowResp, error)
 	DelFollow(context.Context, *DelFollowReq) (*DelFollowResp, error)
+	DelAllFollower(context.Context, *DelAllFollowerReq) (*DelAllFollowerResp, error)
 	DelAllFollowing(context.Context, *DelAllFollowingReq) (*DelAllFollowingResp, error)
-	DelAllFollowed(context.Context, *DelAllFollowedReq) (*DelAllFollowedResp, error)
 	CheckIfFollow(context.Context, *CheckIfFollowReq) (*CheckFollowResp, error)
-	SearchFollowedByFollowingId(context.Context, *SearchFollowedByFollowingIdReq) (*SearchFollowByFollowingIdResp, error)
-	SearchFollowingByFollowedId(context.Context, *SearchFollowingByFollowedIdReq) (*SearchFollowByFollowedIdResp, error)
+	SearchFollowingByDeveloperId(context.Context, *SearchFollowingByDeveloperIdReq) (*SearchFollowingByDeveloperIdResp, error)
+	SearchFollowerByDeveloperId(context.Context, *SearchFollowerByDeveloperIdReq) (*SearchFollowerByDeveloperIdResp, error)
 	// -----------------------fork-----------------------
 	AddFork(context.Context, *AddForkReq) (*AddForkResp, error)
 	DelFork(context.Context, *DelForkReq) (*DelForkResp, error)
@@ -390,20 +390,20 @@ func (UnimplementedRelationServer) AddFollow(context.Context, *AddFollowReq) (*A
 func (UnimplementedRelationServer) DelFollow(context.Context, *DelFollowReq) (*DelFollowResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DelFollow not implemented")
 }
+func (UnimplementedRelationServer) DelAllFollower(context.Context, *DelAllFollowerReq) (*DelAllFollowerResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DelAllFollower not implemented")
+}
 func (UnimplementedRelationServer) DelAllFollowing(context.Context, *DelAllFollowingReq) (*DelAllFollowingResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DelAllFollowing not implemented")
-}
-func (UnimplementedRelationServer) DelAllFollowed(context.Context, *DelAllFollowedReq) (*DelAllFollowedResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DelAllFollowed not implemented")
 }
 func (UnimplementedRelationServer) CheckIfFollow(context.Context, *CheckIfFollowReq) (*CheckFollowResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CheckIfFollow not implemented")
 }
-func (UnimplementedRelationServer) SearchFollowedByFollowingId(context.Context, *SearchFollowedByFollowingIdReq) (*SearchFollowByFollowingIdResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SearchFollowedByFollowingId not implemented")
+func (UnimplementedRelationServer) SearchFollowingByDeveloperId(context.Context, *SearchFollowingByDeveloperIdReq) (*SearchFollowingByDeveloperIdResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SearchFollowingByDeveloperId not implemented")
 }
-func (UnimplementedRelationServer) SearchFollowingByFollowedId(context.Context, *SearchFollowingByFollowedIdReq) (*SearchFollowByFollowedIdResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SearchFollowingByFollowedId not implemented")
+func (UnimplementedRelationServer) SearchFollowerByDeveloperId(context.Context, *SearchFollowerByDeveloperIdReq) (*SearchFollowerByDeveloperIdResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SearchFollowerByDeveloperId not implemented")
 }
 func (UnimplementedRelationServer) AddFork(context.Context, *AddForkReq) (*AddForkResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddFork not implemented")
@@ -588,6 +588,24 @@ func _Relation_DelFollow_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Relation_DelAllFollower_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DelAllFollowerReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RelationServer).DelAllFollower(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Relation_DelAllFollower_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RelationServer).DelAllFollower(ctx, req.(*DelAllFollowerReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Relation_DelAllFollowing_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DelAllFollowingReq)
 	if err := dec(in); err != nil {
@@ -602,24 +620,6 @@ func _Relation_DelAllFollowing_Handler(srv interface{}, ctx context.Context, dec
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(RelationServer).DelAllFollowing(ctx, req.(*DelAllFollowingReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Relation_DelAllFollowed_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DelAllFollowedReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(RelationServer).DelAllFollowed(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Relation_DelAllFollowed_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RelationServer).DelAllFollowed(ctx, req.(*DelAllFollowedReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -642,38 +642,38 @@ func _Relation_CheckIfFollow_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Relation_SearchFollowedByFollowingId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SearchFollowedByFollowingIdReq)
+func _Relation_SearchFollowingByDeveloperId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SearchFollowingByDeveloperIdReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(RelationServer).SearchFollowedByFollowingId(ctx, in)
+		return srv.(RelationServer).SearchFollowingByDeveloperId(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Relation_SearchFollowedByFollowingId_FullMethodName,
+		FullMethod: Relation_SearchFollowingByDeveloperId_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RelationServer).SearchFollowedByFollowingId(ctx, req.(*SearchFollowedByFollowingIdReq))
+		return srv.(RelationServer).SearchFollowingByDeveloperId(ctx, req.(*SearchFollowingByDeveloperIdReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Relation_SearchFollowingByFollowedId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SearchFollowingByFollowedIdReq)
+func _Relation_SearchFollowerByDeveloperId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SearchFollowerByDeveloperIdReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(RelationServer).SearchFollowingByFollowedId(ctx, in)
+		return srv.(RelationServer).SearchFollowerByDeveloperId(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Relation_SearchFollowingByFollowedId_FullMethodName,
+		FullMethod: Relation_SearchFollowerByDeveloperId_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RelationServer).SearchFollowingByFollowedId(ctx, req.(*SearchFollowingByFollowedIdReq))
+		return srv.(RelationServer).SearchFollowerByDeveloperId(ctx, req.(*SearchFollowerByDeveloperIdReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -930,24 +930,24 @@ var Relation_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Relation_DelFollow_Handler,
 		},
 		{
-			MethodName: "DelAllFollowing",
-			Handler:    _Relation_DelAllFollowing_Handler,
+			MethodName: "DelAllFollower",
+			Handler:    _Relation_DelAllFollower_Handler,
 		},
 		{
-			MethodName: "DelAllFollowed",
-			Handler:    _Relation_DelAllFollowed_Handler,
+			MethodName: "DelAllFollowing",
+			Handler:    _Relation_DelAllFollowing_Handler,
 		},
 		{
 			MethodName: "CheckIfFollow",
 			Handler:    _Relation_CheckIfFollow_Handler,
 		},
 		{
-			MethodName: "SearchFollowedByFollowingId",
-			Handler:    _Relation_SearchFollowedByFollowingId_Handler,
+			MethodName: "SearchFollowingByDeveloperId",
+			Handler:    _Relation_SearchFollowingByDeveloperId_Handler,
 		},
 		{
-			MethodName: "SearchFollowingByFollowedId",
-			Handler:    _Relation_SearchFollowingByFollowedId_Handler,
+			MethodName: "SearchFollowerByDeveloperId",
+			Handler:    _Relation_SearchFollowerByDeveloperId_Handler,
 		},
 		{
 			MethodName: "AddFork",

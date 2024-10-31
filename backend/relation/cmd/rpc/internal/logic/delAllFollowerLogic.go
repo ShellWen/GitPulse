@@ -11,36 +11,36 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type DelAllFollowedLogic struct {
+type DelAllFollowerLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
 }
 
-func NewDelAllFollowedLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DelAllFollowedLogic {
-	return &DelAllFollowedLogic{
+func NewDelAllFollowerLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DelAllFollowerLogic {
+	return &DelAllFollowerLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
 	}
 }
 
-func (l *DelAllFollowedLogic) DelAllFollowed(in *pb.DelAllFollowedReq) (resp *pb.DelAllFollowedResp, err error) {
-	var followed *[]*model.Follow
-	if followed, err = l.svcCtx.FollowModel.SearchFollowed(l.ctx, in.DeveloperId, 1, 9223372036854775807); err != nil {
-		resp = &pb.DelAllFollowedResp{
+func (l *DelAllFollowerLogic) DelAllFollower(in *pb.DelAllFollowerReq) (resp *pb.DelAllFollowerResp, err error) {
+	var follower *[]*model.Follow
+	if follower, err = l.svcCtx.FollowModel.SearchFollowerByDeveloperId(l.ctx, in.DeveloperId, 1, 9223372036854775807); err != nil {
+		resp = &pb.DelAllFollowerResp{
 			Code:    http.StatusInternalServerError,
 			Message: err.Error(),
 		}
-	} else if len(*followed) == 0 {
-		resp = &pb.DelAllFollowedResp{
+	} else if len(*follower) == 0 {
+		resp = &pb.DelAllFollowerResp{
 			Code:    http.StatusNotFound,
 			Message: http.StatusText(http.StatusNotFound),
 		}
 	} else {
-		for _, follow := range *followed {
+		for _, follow := range *follower {
 			if err = l.svcCtx.FollowModel.Delete(l.ctx, follow.DataId); err != nil {
-				resp = &pb.DelAllFollowedResp{
+				resp = &pb.DelAllFollowerResp{
 					Code:    http.StatusInternalServerError,
 					Message: err.Error(),
 				}
@@ -48,7 +48,7 @@ func (l *DelAllFollowedLogic) DelAllFollowed(in *pb.DelAllFollowedReq) (resp *pb
 			}
 		}
 		if err == nil {
-			resp = &pb.DelAllFollowedResp{
+			resp = &pb.DelAllFollowerResp{
 				Code:    http.StatusOK,
 				Message: http.StatusText(http.StatusOK),
 			}

@@ -28,7 +28,7 @@ func NewDelFollowLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DelFoll
 
 func (l *DelFollowLogic) DelFollow(in *pb.DelFollowReq) (resp *pb.DelFollowResp, err error) {
 	var follow *model.Follow
-	if follow, err = l.svcCtx.FollowModel.FindOneByFollowingIdFollowedId(l.ctx, in.FollowingId, in.FollowedId); err != nil {
+	if follow, err = l.svcCtx.FollowModel.FindOneByFollowerIdFollowingId(l.ctx, in.FollowerId, in.FollowingId); err != nil {
 		switch {
 		case errors.Is(err, model.ErrNotFound):
 			resp = &pb.DelFollowResp{

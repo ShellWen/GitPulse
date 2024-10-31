@@ -60,14 +60,14 @@ func (s *RelationServer) DelFollow(ctx context.Context, in *pb.DelFollowReq) (*p
 	return l.DelFollow(in)
 }
 
+func (s *RelationServer) DelAllFollower(ctx context.Context, in *pb.DelAllFollowerReq) (*pb.DelAllFollowerResp, error) {
+	l := logic.NewDelAllFollowerLogic(ctx, s.svcCtx)
+	return l.DelAllFollower(in)
+}
+
 func (s *RelationServer) DelAllFollowing(ctx context.Context, in *pb.DelAllFollowingReq) (*pb.DelAllFollowingResp, error) {
 	l := logic.NewDelAllFollowingLogic(ctx, s.svcCtx)
 	return l.DelAllFollowing(in)
-}
-
-func (s *RelationServer) DelAllFollowed(ctx context.Context, in *pb.DelAllFollowedReq) (*pb.DelAllFollowedResp, error) {
-	l := logic.NewDelAllFollowedLogic(ctx, s.svcCtx)
-	return l.DelAllFollowed(in)
 }
 
 func (s *RelationServer) CheckIfFollow(ctx context.Context, in *pb.CheckIfFollowReq) (*pb.CheckFollowResp, error) {
@@ -75,14 +75,14 @@ func (s *RelationServer) CheckIfFollow(ctx context.Context, in *pb.CheckIfFollow
 	return l.CheckIfFollow(in)
 }
 
-func (s *RelationServer) SearchFollowedByFollowingId(ctx context.Context, in *pb.SearchFollowedByFollowingIdReq) (*pb.SearchFollowByFollowingIdResp, error) {
-	l := logic.NewSearchFollowedByFollowingIdLogic(ctx, s.svcCtx)
-	return l.SearchFollowedByFollowingId(in)
+func (s *RelationServer) SearchFollowingByDeveloperId(ctx context.Context, in *pb.SearchFollowingByDeveloperIdReq) (*pb.SearchFollowingByDeveloperIdResp, error) {
+	l := logic.NewSearchFollowingByDeveloperIdLogic(ctx, s.svcCtx)
+	return l.SearchFollowingByDeveloperId(in)
 }
 
-func (s *RelationServer) SearchFollowingByFollowedId(ctx context.Context, in *pb.SearchFollowingByFollowedIdReq) (*pb.SearchFollowByFollowedIdResp, error) {
-	l := logic.NewSearchFollowingByFollowedIdLogic(ctx, s.svcCtx)
-	return l.SearchFollowingByFollowedId(in)
+func (s *RelationServer) SearchFollowerByDeveloperId(ctx context.Context, in *pb.SearchFollowerByDeveloperIdReq) (*pb.SearchFollowerByDeveloperIdResp, error) {
+	l := logic.NewSearchFollowerByDeveloperIdLogic(ctx, s.svcCtx)
+	return l.SearchFollowerByDeveloperId(in)
 }
 
 // -----------------------fork-----------------------

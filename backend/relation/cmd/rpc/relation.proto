@@ -68,13 +68,13 @@ message SearchCreatedRepoResp {
 //--------------------------------follow--------------------------------
 message Follow {
   int64 dataId = 1; //dataId
-  int64 followingId = 2; //followingId
-  int64 followedId = 3; //followedId
+  int64 followerId = 2; //followerId
+  int64 followingId = 3; //followingId
 }
 
 message AddFollowReq {
-  int64 followingId = 1; //followingId
-  int64 followedId = 2; //followedId
+  int64 followerId = 1; //followerId
+  int64 followingId = 2; //followingId
 }
 
 message AddFollowResp {
@@ -83,11 +83,20 @@ message AddFollowResp {
 }
 
 message DelFollowReq {
-  int64 followingId = 1; //followingId
-  int64 followedId = 2; //followedId
+  int64 followerId = 1; //followerId
+  int64 followingId = 2; //followingId
 }
 
 message DelFollowResp {
+  int64 code = 1;
+  string message = 2;
+}
+
+message DelAllFollowerReq {
+  int64 developerId = 1; //developerId
+}
+
+message DelAllFollowerResp {
   int64 code = 1;
   string message = 2;
 }
@@ -101,18 +110,9 @@ message DelAllFollowingResp {
   string message = 2;
 }
 
-message DelAllFollowedReq {
-  int64 developerId = 1; //developerId
-}
-
-message DelAllFollowedResp {
-  int64 code = 1;
-  string message = 2;
-}
-
 message CheckIfFollowReq {
-  int64 followingId = 1; //followingId
-  int64 followedId = 2; //followedId
+  int64 followerId = 1; //followerId
+  int64 followingId = 2; //followingId
 }
 
 message CheckFollowResp {
@@ -121,28 +121,28 @@ message CheckFollowResp {
   bool isFollow = 3; //isFollow
 }
 
-message SearchFollowedByFollowingIdReq {
+message SearchFollowingByDeveloperIdReq {
   int64 page = 1; //page
   int64 limit = 2; //limit
-  int64 followingId = 3; //followingId
+  int64 developerId = 3; //followerId
 }
 
-message SearchFollowByFollowingIdResp {
-  int64 code = 1;
-  string message = 2;
-  repeated int64 followedIds = 3; //followedId
-}
-
-message SearchFollowingByFollowedIdReq {
-  int64 page = 1; //page
-  int64 limit = 2; //limit
-  int64 followedId = 3; //followedId
-}
-
-message SearchFollowByFollowedIdResp {
+message SearchFollowingByDeveloperIdResp {
   int64 code = 1;
   string message = 2;
   repeated int64 followingIds = 3; //followingId
+}
+
+message SearchFollowerByDeveloperIdReq {
+  int64 page = 1; //page
+  int64 limit = 2; //limit
+  int64 developerId = 3; //followingId
+}
+
+message SearchFollowerByDeveloperIdResp {
+  int64 code = 1;
+  string message = 2;
+  repeated int64 followerIds = 3; //followerId
 }
 
 //--------------------------------fork--------------------------------
@@ -297,11 +297,11 @@ service relation{
     //-----------------------follow-----------------------
 	  rpc AddFollow(AddFollowReq) returns (AddFollowResp);
     rpc DelFollow(DelFollowReq) returns (DelFollowResp);
+    rpc DelAllFollower(DelAllFollowerReq) returns (DelAllFollowerResp);
     rpc DelAllFollowing(DelAllFollowingReq) returns (DelAllFollowingResp);
-    rpc DelAllFollowed(DelAllFollowedReq) returns (DelAllFollowedResp);
     rpc CheckIfFollow(CheckIfFollowReq) returns (CheckFollowResp);
-    rpc SearchFollowedByFollowingId(SearchFollowedByFollowingIdReq) returns (SearchFollowByFollowingIdResp);
-    rpc SearchFollowingByFollowedId(SearchFollowingByFollowedIdReq) returns (SearchFollowByFollowedIdResp);
+    rpc SearchFollowingByDeveloperId(SearchFollowingByDeveloperIdReq) returns (SearchFollowingByDeveloperIdResp);
+    rpc SearchFollowerByDeveloperId(SearchFollowerByDeveloperIdReq) returns (SearchFollowerByDeveloperIdResp);
 	  //-----------------------fork-----------------------
 	  rpc AddFork(AddForkReq) returns (AddForkResp);
     rpc DelFork(DelForkReq) returns (DelForkResp);

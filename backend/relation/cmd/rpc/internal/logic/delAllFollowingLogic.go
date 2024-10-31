@@ -27,7 +27,7 @@ func NewDelAllFollowingLogic(ctx context.Context, svcCtx *svc.ServiceContext) *D
 
 func (l *DelAllFollowingLogic) DelAllFollowing(in *pb.DelAllFollowingReq) (resp *pb.DelAllFollowingResp, err error) {
 	var following *[]*model.Follow
-	if following, err = l.svcCtx.FollowModel.SearchFollowing(l.ctx, in.DeveloperId, 1, 9223372036854775807); err != nil {
+	if following, err = l.svcCtx.FollowModel.SearchFollowingByDeveloperId(l.ctx, in.DeveloperId, 1, 9223372036854775807); err != nil {
 		resp = &pb.DelAllFollowingResp{
 			Code:    http.StatusInternalServerError,
 			Message: err.Error(),

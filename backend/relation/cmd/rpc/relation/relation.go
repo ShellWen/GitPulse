@@ -14,58 +14,58 @@ import (
 )
 
 type (
-	AddCreateRepoReq               = pb.AddCreateRepoReq
-	AddCreateRepoResp              = pb.AddCreateRepoResp
-	AddFollowReq                   = pb.AddFollowReq
-	AddFollowResp                  = pb.AddFollowResp
-	AddForkReq                     = pb.AddForkReq
-	AddForkResp                    = pb.AddForkResp
-	AddStarReq                     = pb.AddStarReq
-	AddStarResp                    = pb.AddStarResp
-	CheckFollowResp                = pb.CheckFollowResp
-	CheckIfFollowReq               = pb.CheckIfFollowReq
-	CheckIfStarReq                 = pb.CheckIfStarReq
-	CheckIfStarResp                = pb.CheckIfStarResp
-	CreateRepo                     = pb.CreateRepo
-	DelAllCreatedRepoReq           = pb.DelAllCreatedRepoReq
-	DelAllCreatedRepoResp          = pb.DelAllCreatedRepoResp
-	DelAllFollowedReq              = pb.DelAllFollowedReq
-	DelAllFollowedResp             = pb.DelAllFollowedResp
-	DelAllFollowingReq             = pb.DelAllFollowingReq
-	DelAllFollowingResp            = pb.DelAllFollowingResp
-	DelAllForkReq                  = pb.DelAllForkReq
-	DelAllForkResp                 = pb.DelAllForkResp
-	DelAllStaringDevReq            = pb.DelAllStaringDevReq
-	DelAllStaringDevResp           = pb.DelAllStaringDevResp
-	DelAllStarredRepoReq           = pb.DelAllStarredRepoReq
-	DelAllStarredRepoResp          = pb.DelAllStarredRepoResp
-	DelCreateRepoReq               = pb.DelCreateRepoReq
-	DelCreateRepoResp              = pb.DelCreateRepoResp
-	DelFollowReq                   = pb.DelFollowReq
-	DelFollowResp                  = pb.DelFollowResp
-	DelForkReq                     = pb.DelForkReq
-	DelForkResp                    = pb.DelForkResp
-	DelStarReq                     = pb.DelStarReq
-	DelStarResp                    = pb.DelStarResp
-	Follow                         = pb.Follow
-	Fork                           = pb.Fork
-	GetCreatorIdReq                = pb.GetCreatorIdReq
-	GetCreatorIdResp               = pb.GetCreatorIdResp
-	GetOriginReq                   = pb.GetOriginReq
-	GetOriginResp                  = pb.GetOriginResp
-	SearchCreatedRepoReq           = pb.SearchCreatedRepoReq
-	SearchCreatedRepoResp          = pb.SearchCreatedRepoResp
-	SearchFollowByFollowedIdResp   = pb.SearchFollowByFollowedIdResp
-	SearchFollowByFollowingIdResp  = pb.SearchFollowByFollowingIdResp
-	SearchFollowedByFollowingIdReq = pb.SearchFollowedByFollowingIdReq
-	SearchFollowingByFollowedIdReq = pb.SearchFollowingByFollowedIdReq
-	SearchForkReq                  = pb.SearchForkReq
-	SearchForkResp                 = pb.SearchForkResp
-	SearchStaringDevReq            = pb.SearchStaringDevReq
-	SearchStaringDevResp           = pb.SearchStaringDevResp
-	SearchStarredRepoReq           = pb.SearchStarredRepoReq
-	SearchStarredRepoResp          = pb.SearchStarredRepoResp
-	Star                           = pb.Star
+	AddCreateRepoReq                 = pb.AddCreateRepoReq
+	AddCreateRepoResp                = pb.AddCreateRepoResp
+	AddFollowReq                     = pb.AddFollowReq
+	AddFollowResp                    = pb.AddFollowResp
+	AddForkReq                       = pb.AddForkReq
+	AddForkResp                      = pb.AddForkResp
+	AddStarReq                       = pb.AddStarReq
+	AddStarResp                      = pb.AddStarResp
+	CheckFollowResp                  = pb.CheckFollowResp
+	CheckIfFollowReq                 = pb.CheckIfFollowReq
+	CheckIfStarReq                   = pb.CheckIfStarReq
+	CheckIfStarResp                  = pb.CheckIfStarResp
+	CreateRepo                       = pb.CreateRepo
+	DelAllCreatedRepoReq             = pb.DelAllCreatedRepoReq
+	DelAllCreatedRepoResp            = pb.DelAllCreatedRepoResp
+	DelAllFollowerReq                = pb.DelAllFollowerReq
+	DelAllFollowerResp               = pb.DelAllFollowerResp
+	DelAllFollowingReq               = pb.DelAllFollowingReq
+	DelAllFollowingResp              = pb.DelAllFollowingResp
+	DelAllForkReq                    = pb.DelAllForkReq
+	DelAllForkResp                   = pb.DelAllForkResp
+	DelAllStaringDevReq              = pb.DelAllStaringDevReq
+	DelAllStaringDevResp             = pb.DelAllStaringDevResp
+	DelAllStarredRepoReq             = pb.DelAllStarredRepoReq
+	DelAllStarredRepoResp            = pb.DelAllStarredRepoResp
+	DelCreateRepoReq                 = pb.DelCreateRepoReq
+	DelCreateRepoResp                = pb.DelCreateRepoResp
+	DelFollowReq                     = pb.DelFollowReq
+	DelFollowResp                    = pb.DelFollowResp
+	DelForkReq                       = pb.DelForkReq
+	DelForkResp                      = pb.DelForkResp
+	DelStarReq                       = pb.DelStarReq
+	DelStarResp                      = pb.DelStarResp
+	Follow                           = pb.Follow
+	Fork                             = pb.Fork
+	GetCreatorIdReq                  = pb.GetCreatorIdReq
+	GetCreatorIdResp                 = pb.GetCreatorIdResp
+	GetOriginReq                     = pb.GetOriginReq
+	GetOriginResp                    = pb.GetOriginResp
+	SearchCreatedRepoReq             = pb.SearchCreatedRepoReq
+	SearchCreatedRepoResp            = pb.SearchCreatedRepoResp
+	SearchFollowerByDeveloperIdReq   = pb.SearchFollowerByDeveloperIdReq
+	SearchFollowerByDeveloperIdResp  = pb.SearchFollowerByDeveloperIdResp
+	SearchFollowingByDeveloperIdReq  = pb.SearchFollowingByDeveloperIdReq
+	SearchFollowingByDeveloperIdResp = pb.SearchFollowingByDeveloperIdResp
+	SearchForkReq                    = pb.SearchForkReq
+	SearchForkResp                   = pb.SearchForkResp
+	SearchStaringDevReq              = pb.SearchStaringDevReq
+	SearchStaringDevResp             = pb.SearchStaringDevResp
+	SearchStarredRepoReq             = pb.SearchStarredRepoReq
+	SearchStarredRepoResp            = pb.SearchStarredRepoResp
+	Star                             = pb.Star
 
 	Relation interface {
 		// -----------------------createRepo-----------------------
@@ -77,11 +77,11 @@ type (
 		// -----------------------follow-----------------------
 		AddFollow(ctx context.Context, in *AddFollowReq, opts ...grpc.CallOption) (*AddFollowResp, error)
 		DelFollow(ctx context.Context, in *DelFollowReq, opts ...grpc.CallOption) (*DelFollowResp, error)
+		DelAllFollower(ctx context.Context, in *DelAllFollowerReq, opts ...grpc.CallOption) (*DelAllFollowerResp, error)
 		DelAllFollowing(ctx context.Context, in *DelAllFollowingReq, opts ...grpc.CallOption) (*DelAllFollowingResp, error)
-		DelAllFollowed(ctx context.Context, in *DelAllFollowedReq, opts ...grpc.CallOption) (*DelAllFollowedResp, error)
 		CheckIfFollow(ctx context.Context, in *CheckIfFollowReq, opts ...grpc.CallOption) (*CheckFollowResp, error)
-		SearchFollowedByFollowingId(ctx context.Context, in *SearchFollowedByFollowingIdReq, opts ...grpc.CallOption) (*SearchFollowByFollowingIdResp, error)
-		SearchFollowingByFollowedId(ctx context.Context, in *SearchFollowingByFollowedIdReq, opts ...grpc.CallOption) (*SearchFollowByFollowedIdResp, error)
+		SearchFollowingByDeveloperId(ctx context.Context, in *SearchFollowingByDeveloperIdReq, opts ...grpc.CallOption) (*SearchFollowingByDeveloperIdResp, error)
+		SearchFollowerByDeveloperId(ctx context.Context, in *SearchFollowerByDeveloperIdReq, opts ...grpc.CallOption) (*SearchFollowerByDeveloperIdResp, error)
 		// -----------------------fork-----------------------
 		AddFork(ctx context.Context, in *AddForkReq, opts ...grpc.CallOption) (*AddForkResp, error)
 		DelFork(ctx context.Context, in *DelForkReq, opts ...grpc.CallOption) (*DelForkResp, error)
@@ -146,14 +146,14 @@ func (m *defaultRelation) DelFollow(ctx context.Context, in *DelFollowReq, opts 
 	return client.DelFollow(ctx, in, opts...)
 }
 
+func (m *defaultRelation) DelAllFollower(ctx context.Context, in *DelAllFollowerReq, opts ...grpc.CallOption) (*DelAllFollowerResp, error) {
+	client := pb.NewRelationClient(m.cli.Conn())
+	return client.DelAllFollower(ctx, in, opts...)
+}
+
 func (m *defaultRelation) DelAllFollowing(ctx context.Context, in *DelAllFollowingReq, opts ...grpc.CallOption) (*DelAllFollowingResp, error) {
 	client := pb.NewRelationClient(m.cli.Conn())
 	return client.DelAllFollowing(ctx, in, opts...)
-}
-
-func (m *defaultRelation) DelAllFollowed(ctx context.Context, in *DelAllFollowedReq, opts ...grpc.CallOption) (*DelAllFollowedResp, error) {
-	client := pb.NewRelationClient(m.cli.Conn())
-	return client.DelAllFollowed(ctx, in, opts...)
 }
 
 func (m *defaultRelation) CheckIfFollow(ctx context.Context, in *CheckIfFollowReq, opts ...grpc.CallOption) (*CheckFollowResp, error) {
@@ -161,14 +161,14 @@ func (m *defaultRelation) CheckIfFollow(ctx context.Context, in *CheckIfFollowRe
 	return client.CheckIfFollow(ctx, in, opts...)
 }
 
-func (m *defaultRelation) SearchFollowedByFollowingId(ctx context.Context, in *SearchFollowedByFollowingIdReq, opts ...grpc.CallOption) (*SearchFollowByFollowingIdResp, error) {
+func (m *defaultRelation) SearchFollowingByDeveloperId(ctx context.Context, in *SearchFollowingByDeveloperIdReq, opts ...grpc.CallOption) (*SearchFollowingByDeveloperIdResp, error) {
 	client := pb.NewRelationClient(m.cli.Conn())
-	return client.SearchFollowedByFollowingId(ctx, in, opts...)
+	return client.SearchFollowingByDeveloperId(ctx, in, opts...)
 }
 
-func (m *defaultRelation) SearchFollowingByFollowedId(ctx context.Context, in *SearchFollowingByFollowedIdReq, opts ...grpc.CallOption) (*SearchFollowByFollowedIdResp, error) {
+func (m *defaultRelation) SearchFollowerByDeveloperId(ctx context.Context, in *SearchFollowerByDeveloperIdReq, opts ...grpc.CallOption) (*SearchFollowerByDeveloperIdResp, error) {
 	client := pb.NewRelationClient(m.cli.Conn())
-	return client.SearchFollowingByFollowedId(ctx, in, opts...)
+	return client.SearchFollowerByDeveloperId(ctx, in, opts...)
 }
 
 // -----------------------fork-----------------------

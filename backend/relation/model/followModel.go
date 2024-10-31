@@ -14,8 +14,8 @@ type (
 	// and implement the added methods in customFollowModel.
 	FollowModel interface {
 		followModel
-		SearchFollowed(ctx context.Context, following int64, page int64, limit int64) (*[]*Follow, error)
-		SearchFollowing(ctx context.Context, followed int64, page int64, limit int64) (*[]*Follow, error)
+		SearchFollowingByDeveloperId(ctx context.Context, developerId int64, page int64, limit int64) (*[]*Follow, error)
+		SearchFollowerByDeveloperId(ctx context.Context, developerId int64, page int64, limit int64) (*[]*Follow, error)
 	}
 
 	customFollowModel struct {
@@ -23,10 +23,10 @@ type (
 	}
 )
 
-func (m *customFollowModel) SearchFollowed(ctx context.Context, following int64, page int64, limit int64) (*[]*Follow, error) {
+func (m *customFollowModel) SearchFollowingByDeveloperId(ctx context.Context, developerId int64, page int64, limit int64) (*[]*Follow, error) {
 	var resp []*Follow
 
-	query := fmt.Sprintf("select %s from %s where following_id = %d limit %d offset %d", followRows, m.table, following, limit, (page-1)*limit)
+	query := fmt.Sprintf("select %s from %s where following_id = %d limit %d offset %d", followRows, m.table, developerId, limit, (page-1)*limit)
 	if err := m.QueryRowsNoCacheCtx(ctx, &resp, query); err != nil {
 		return nil, err
 	}
@@ -34,10 +34,10 @@ func (m *customFollowModel) SearchFollowed(ctx context.Context, following int64,
 	return &resp, nil
 }
 
-func (m *customFollowModel) SearchFollowing(ctx context.Context, followed int64, page int64, limit int64) (*[]*Follow, error) {
+func (m *customFollowModel) SearchFollowerByDeveloperId(ctx context.Context, developerId int64, page int64, limit int64) (*[]*Follow, error) {
 	var resp []*Follow
 
-	query := fmt.Sprintf("select %s from %s where followed_id = %d limit %d offset %d", followRows, m.table, followed, limit, (page-1)*limit)
+	query := fmt.Sprintf("select %s from %s where followed_id = %d limit %d offset %d", followRows, m.table, developerId, limit, (page-1)*limit)
 	if err := m.QueryRowsNoCacheCtx(ctx, &resp, query); err != nil {
 		return nil, err
 	}

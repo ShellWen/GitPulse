@@ -25,7 +25,7 @@ func NewCheckIfFollowLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Che
 }
 
 func (l *CheckIfFollowLogic) CheckIfFollow(in *pb.CheckIfFollowReq) (resp *pb.CheckFollowResp, err error) {
-	if _, err = l.svcCtx.FollowModel.FindOneByFollowingIdFollowedId(l.ctx, in.FollowingId, in.FollowedId); err != nil {
+	if _, err = l.svcCtx.FollowModel.FindOneByFollowerIdFollowingId(l.ctx, in.FollowerId, in.FollowingId); err != nil {
 		switch {
 		case errors.Is(err, model.ErrNotFound):
 			resp = &pb.CheckFollowResp{

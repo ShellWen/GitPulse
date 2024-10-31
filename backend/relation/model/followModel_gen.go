@@ -24,14 +24,14 @@ var (
 	followRowsWithPlaceHolder = builder.PostgreSqlJoin(stringx.Remove(followFieldNames, "data_id", "create_at", "create_time", "created_at", "update_at", "update_time", "updated_at"))
 
 	cacheRelationFollowDataIdPrefix                = "cache:relation:follow:dataId:"
-	cacheRelationFollowFollowingIdFollowedIdPrefix = "cache:relation:follow:followingId:followedId:"
+	cacheRelationFollowFollowerIdFollowingIdPrefix = "cache:relation:follow:followerId:followingId:"
 )
 
 type (
 	followModel interface {
 		Insert(ctx context.Context, data *Follow) (sql.Result, error)
 		FindOne(ctx context.Context, dataId int64) (*Follow, error)
-		FindOneByFollowingIdFollowedId(ctx context.Context, followingId int64, followedId int64) (*Follow, error)
+		FindOneByFollowerIdFollowingId(ctx context.Context, followerId int64, followingId int64) (*Follow, error)
 		Update(ctx context.Context, data *Follow) error
 		Delete(ctx context.Context, dataId int64) error
 	}
@@ -43,8 +43,8 @@ type (
 
 	Follow struct {
 		DataId      int64 `db:"data_id"`
+		FollowerId  int64 `db:"follower_id"`
 		FollowingId int64 `db:"following_id"`
-		FollowedId  int64 `db:"followed_id"`
 	}
 )
 
@@ -62,11 +62,11 @@ func (m *defaultFollowModel) Delete(ctx context.Context, dataId int64) error {
 	}
 
 	relationFollowDataIdKey := fmt.Sprintf("%s%v", cacheRelationFollowDataIdPrefix, dataId)
-	relationFollowFollowingIdFollowedIdKey := fmt.Sprintf("%s%v:%v", cacheRelationFollowFollowingIdFollowedIdPrefix, data.FollowingId, data.FollowedId)
+	relationFollowFollowerIdFollowingIdKey := fmt.Sprintf("%s%v:%v", cacheRelationFollowFollowerIdFollowingIdPrefix, data.FollowerId, data.FollowingId)
 	_, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("delete from %s where data_id = $1", m.table)
 		return conn.ExecCtx(ctx, query, dataId)
-	}, relationFollowDataIdKey, relationFollowFollowingIdFollowedIdKey)
+	}, relationFollowDataIdKey, relationFollowFollowerIdFollowingIdKey)
 	return err
 }
 
@@ -87,12 +87,12 @@ func (m *defaultFollowModel) FindOne(ctx context.Context, dataId int64) (*Follow
 	}
 }
 
-func (m *defaultFollowModel) FindOneByFollowingIdFollowedId(ctx context.Context, followingId int64, followedId int64) (*Follow, error) {
-	relationFollowFollowingIdFollowedIdKey := fmt.Sprintf("%s%v:%v", cacheRelationFollowFollowingIdFollowedIdPrefix, followingId, followedId)
+func (m *defaultFollowModel) FindOneByFollowerIdFollowingId(ctx context.Context, followerId int64, followingId int64) (*Follow, error) {
+	relationFollowFollowerIdFollowingIdKey := fmt.Sprintf("%s%v:%v", cacheRelationFollowFollowerIdFollowingIdPrefix, followerId, followingId)
 	var resp Follow
-	err := m.QueryRowIndexCtx(ctx, &resp, relationFollowFollowingIdFollowedIdKey, m.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v any) (i any, e error) {
-		query := fmt.Sprintf("select %s from %s where following_id = $1 and followed_id = $2 limit 1", followRows, m.table)
-		if err := conn.QueryRowCtx(ctx, &resp, query, followingId, followedId); err != nil {
+	err := m.QueryRowIndexCtx(ctx, &resp, relationFollowFollowerIdFollowingIdKey, m.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v any) (i any, e error) {
+		query := fmt.Sprintf("select %s from %s where follower_id = $1 and following_id = $2 limit 1", followRows, m.table)
+		if err := conn.QueryRowCtx(ctx, &resp, query, followerId, followingId); err != nil {
 			return nil, err
 		}
 		return resp.DataId, nil
@@ -109,11 +109,11 @@ func (m *defaultFollowModel) FindOneByFollowingIdFollowedId(ctx context.Context,
 
 func (m *defaultFollowModel) Insert(ctx context.Context, data *Follow) (sql.Result, error) {
 	relationFollowDataIdKey := fmt.Sprintf("%s%v", cacheRelationFollowDataIdPrefix, data.DataId)
-	relationFollowFollowingIdFollowedIdKey := fmt.Sprintf("%s%v:%v", cacheRelationFollowFollowingIdFollowedIdPrefix, data.FollowingId, data.FollowedId)
+	relationFollowFollowerIdFollowingIdKey := fmt.Sprintf("%s%v:%v", cacheRelationFollowFollowerIdFollowingIdPrefix, data.FollowerId, data.FollowingId)
 	ret, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("insert into %s (%s) values ($1, $2)", m.table, followRowsExpectAutoSet)
-		return conn.ExecCtx(ctx, query, data.FollowingId, data.FollowedId)
-	}, relationFollowDataIdKey, relationFollowFollowingIdFollowedIdKey)
+		return conn.ExecCtx(ctx, query, data.FollowerId, data.FollowingId)
+	}, relationFollowDataIdKey, relationFollowFollowerIdFollowingIdKey)
 	return ret, err
 }
 
@@ -124,11 +124,11 @@ func (m *defaultFollowModel) Update(ctx context.Context, newData *Follow) error 
 	}
 
 	relationFollowDataIdKey := fmt.Sprintf("%s%v", cacheRelationFollowDataIdPrefix, data.DataId)
-	relationFollowFollowingIdFollowedIdKey := fmt.Sprintf("%s%v:%v", cacheRelationFollowFollowingIdFollowedIdPrefix, data.FollowingId, data.FollowedId)
+	relationFollowFollowerIdFollowingIdKey := fmt.Sprintf("%s%v:%v", cacheRelationFollowFollowerIdFollowingIdPrefix, data.FollowerId, data.FollowingId)
 	_, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("update %s set %s where data_id = $1", m.table, followRowsWithPlaceHolder)
-		return conn.ExecCtx(ctx, query, newData.DataId, newData.FollowingId, newData.FollowedId)
-	}, relationFollowDataIdKey, relationFollowFollowingIdFollowedIdKey)
+		return conn.ExecCtx(ctx, query, newData.DataId, newData.FollowerId, newData.FollowingId)
+	}, relationFollowDataIdKey, relationFollowFollowerIdFollowingIdKey)
 	return err
 }
 
