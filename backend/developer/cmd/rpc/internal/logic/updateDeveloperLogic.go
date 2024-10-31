@@ -66,6 +66,12 @@ func (l *UpdateDeveloperLogic) doUpdateDeveloper(developer *model.Developer, in 
 	developer.Bio = in.Bio
 	developer.Blog = in.Blog
 	developer.Email = in.Email
+	developer.TwitterUsername = in.TwitterUsername
+	developer.Followers = in.Followers
+	developer.Following = in.Following
+	developer.Repos = in.Repos
+	developer.Stars = in.Stars
+	developer.Gists = in.Gists
 	developer.CreateAt = time.Unix(in.CreateAt, 0)
 	developer.UpdateAt = time.Unix(in.UpdateAt, 0)
 

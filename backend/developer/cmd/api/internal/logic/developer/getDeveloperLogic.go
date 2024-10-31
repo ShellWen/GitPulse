@@ -44,6 +44,11 @@ func (l *GetDeveloperLogic) GetDeveloper(req *types.GetDeveloperReq) (resp *type
 			Bio       string `json:"bio"`
 			Blog      string `json:"blog"`
 			Email     string `json:"email"`
+			Followers int64  `json:"followers"`
+			Following int64  `json:"following"`
+			Stars     int64  `json:"stars"`
+			Repos     int64  `json:"repos"`
+			Gists     int64  `json:"gists"`
 			CreateAt  string `json:"created_at"`
 			UpdateAt  string `json:"updated_at"`
 		}{
@@ -56,6 +61,11 @@ func (l *GetDeveloperLogic) GetDeveloper(req *types.GetDeveloperReq) (resp *type
 			rpcResp.Developer.Bio,
 			rpcResp.Developer.Blog,
 			rpcResp.Developer.Email,
+			rpcResp.Developer.Followers,
+			rpcResp.Developer.Following,
+			rpcResp.Developer.Stars,
+			rpcResp.Developer.Repos,
+			rpcResp.Developer.Gists,
 			time.Unix(rpcResp.Developer.CreateAt, 0).Format(time.RFC3339),
 			time.Unix(rpcResp.Developer.UpdateAt, 0).Format(time.RFC3339),
 		},

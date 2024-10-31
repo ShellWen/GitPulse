@@ -22,8 +22,14 @@ message Developer {
   string bio = 10; //bio
   string blog = 11; //blog
   string email = 12; //email
-  int64 createAt = 13; //createAt
-  int64 updateAt = 14; //updateAt
+  string twitterUsername = 13; //twitterUsername
+  int64 repos = 14; //repo_count
+  int64 following = 15; //following_count
+  int64 followers = 16; //followers_count
+  int64 stars = 17; //star_count
+  int64 gists = 18; //gists_count
+  int64 createAt = 19; //createAt
+  int64 updateAt = 20; //updateAt
 }
 
 message AddDeveloperReq {
@@ -36,8 +42,14 @@ message AddDeveloperReq {
   string bio = 7; //bio
   string blog = 8; //blog
   string email = 9; //email
-  int64 createAt = 10; //createAt
-  int64 updateAt = 11; //updateAt
+  string twitterUsername = 10; //twitterUsername
+  int64 repos = 11; //repo_count
+  int64 following = 12; //following_count
+  int64 followers = 13; //followers_count
+  int64 stars = 14; //star_count
+  int64 gists = 15; //gists_c
+  int64 createAt = 16; //createAt
+  int64 updateAt = 17; //updateAt
 }
 
 message AddDeveloperResp {
@@ -55,8 +67,14 @@ message UpdateDeveloperReq {
   string bio = 7; //bio
   string blog = 8; //blog
   string email = 9; //email
-  int64 createAt = 10; //createAt
-  int64 updateAt = 11; //updateAt
+  string twitterUsername = 10; //twitterUsername
+  int64 repos = 11; //repo_count
+  int64 following = 12; //following_count
+  int64 followers = 13; //followers_count
+  int64 stars = 14; //star_count
+  int64 gists = 15; //gists_c
+  int64 createAt = 16; //createAt
+  int64 updateAt = 17; //updateAt
 }
 
 message UpdateDeveloperResp {

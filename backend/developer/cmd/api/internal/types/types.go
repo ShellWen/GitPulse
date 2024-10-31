@@ -20,6 +20,11 @@ type GetDeveloperResp struct {
 		Bio       string `json:"bio"`
 		Blog      string `json:"blog"`
 		Email     string `json:"email"`
+		Followers int64  `json:"followers"`
+		Following int64  `json:"following"`
+		Stars     int64  `json:"stars"`
+		Repos     int64  `json:"repos"`
+		Gists     int64  `json:"gists"`
 		CreateAt  string `json:"created_at"`
 		UpdateAt  string `json:"updated_at"`
 	} `json:"data"`

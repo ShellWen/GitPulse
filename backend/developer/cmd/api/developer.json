@@ -84,10 +84,30 @@
           "email": {
             "type": "string"
           },
-          "create_at": {
+          "followers" : {
+            "type": "integer",
+            "format": "int64"
+          },
+          "following" : {
+            "type": "integer",
+            "format": "int64"
+          },
+            "stars" : {
+                "type": "integer",
+                "format": "int64"
+            },
+            "repos" : {
+                "type": "integer",
+                "format": "int64"
+            },
+            "gists" : {
+                "type": "integer",
+                "format": "int64"
+            },
+          "created_at": {
             "type": "string"
           },
-          "update_at": {
+          "updated_at": {
             "type": "string"
           }
         }
@@ -105,6 +125,11 @@
         "bio",
         "blog",
         "email",
+        "followers",
+        "following",
+        "stars",
+        "repos",
+        "gists",
         "create_at",
         "update_at"
       ]
