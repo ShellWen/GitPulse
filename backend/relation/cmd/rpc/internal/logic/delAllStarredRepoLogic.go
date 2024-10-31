@@ -11,36 +11,36 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type DelAllStaredRepoLogic struct {
+type DelAllStarredRepoLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
 }
 
-func NewDelAllStaredRepoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DelAllStaredRepoLogic {
-	return &DelAllStaredRepoLogic{
+func NewDelAllStarredRepoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DelAllStarredRepoLogic {
+	return &DelAllStarredRepoLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
 	}
 }
 
-func (l *DelAllStaredRepoLogic) DelAllStaredRepo(in *pb.DelAllStaredRepoReq) (resp *pb.DelAllStaredRepoResp, err error) {
+func (l *DelAllStarredRepoLogic) DelAllStarredRepo(in *pb.DelAllStarredRepoReq) (resp *pb.DelAllStarredRepoResp, err error) {
 	var stars *[]*model.Star
-	if stars, err = l.svcCtx.StarModel.SearchStaredRepo(l.ctx, in.DeveloperId, 1, 9223372036854775807); err != nil {
-		resp = &pb.DelAllStaredRepoResp{
+	if stars, err = l.svcCtx.StarModel.SearchStarredRepo(l.ctx, in.DeveloperId, 1, 9223372036854775807); err != nil {
+		resp = &pb.DelAllStarredRepoResp{
 			Code:    http.StatusInternalServerError,
 			Message: err.Error(),
 		}
 	} else if len(*stars) == 0 {
-		resp = &pb.DelAllStaredRepoResp{
+		resp = &pb.DelAllStarredRepoResp{
 			Code:    http.StatusNotFound,
 			Message: http.StatusText(http.StatusNotFound),
 		}
 	} else {
 		for _, star := range *stars {
 			if err = l.svcCtx.StarModel.Delete(l.ctx, star.DataId); err != nil {
-				resp = &pb.DelAllStaredRepoResp{
+				resp = &pb.DelAllStarredRepoResp{
 					Code:    http.StatusInternalServerError,
 					Message: err.Error(),
 				}
@@ -48,7 +48,7 @@ func (l *DelAllStaredRepoLogic) DelAllStaredRepo(in *pb.DelAllStaredRepoReq) (re
 			}
 		}
 		if err == nil {
-			resp = &pb.DelAllStaredRepoResp{
+			resp = &pb.DelAllStarredRepoResp{
 				Code:    http.StatusOK,
 				Message: http.StatusText(http.StatusOK),
 			}

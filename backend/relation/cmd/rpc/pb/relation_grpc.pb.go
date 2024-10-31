@@ -38,10 +38,10 @@ const (
 	Relation_SearchFork_FullMethodName                  = "/pb.relation/SearchFork"
 	Relation_AddStar_FullMethodName                     = "/pb.relation/AddStar"
 	Relation_DelStar_FullMethodName                     = "/pb.relation/DelStar"
-	Relation_DelAllStaredRepo_FullMethodName            = "/pb.relation/DelAllStaredRepo"
+	Relation_DelAllStarredRepo_FullMethodName           = "/pb.relation/DelAllStarredRepo"
 	Relation_DelAllStaringDev_FullMethodName            = "/pb.relation/DelAllStaringDev"
 	Relation_CheckIfStar_FullMethodName                 = "/pb.relation/CheckIfStar"
-	Relation_SearchStaredRepo_FullMethodName            = "/pb.relation/SearchStaredRepo"
+	Relation_SearchStarredRepo_FullMethodName           = "/pb.relation/SearchStarredRepo"
 	Relation_SearchStaringDev_FullMethodName            = "/pb.relation/SearchStaringDev"
 )
 
@@ -72,10 +72,10 @@ type RelationClient interface {
 	// -----------------------star-----------------------
 	AddStar(ctx context.Context, in *AddStarReq, opts ...grpc.CallOption) (*AddStarResp, error)
 	DelStar(ctx context.Context, in *DelStarReq, opts ...grpc.CallOption) (*DelStarResp, error)
-	DelAllStaredRepo(ctx context.Context, in *DelAllStaredRepoReq, opts ...grpc.CallOption) (*DelAllStaredRepoResp, error)
+	DelAllStarredRepo(ctx context.Context, in *DelAllStarredRepoReq, opts ...grpc.CallOption) (*DelAllStarredRepoResp, error)
 	DelAllStaringDev(ctx context.Context, in *DelAllStaringDevReq, opts ...grpc.CallOption) (*DelAllStaringDevResp, error)
 	CheckIfStar(ctx context.Context, in *CheckIfStarReq, opts ...grpc.CallOption) (*CheckIfStarResp, error)
-	SearchStaredRepo(ctx context.Context, in *SearchStaredRepoReq, opts ...grpc.CallOption) (*SearchStaredRepoResp, error)
+	SearchStarredRepo(ctx context.Context, in *SearchStarredRepoReq, opts ...grpc.CallOption) (*SearchStarredRepoResp, error)
 	SearchStaringDev(ctx context.Context, in *SearchStaringDevReq, opts ...grpc.CallOption) (*SearchStaringDevResp, error)
 }
 
@@ -277,10 +277,10 @@ func (c *relationClient) DelStar(ctx context.Context, in *DelStarReq, opts ...gr
 	return out, nil
 }
 
-func (c *relationClient) DelAllStaredRepo(ctx context.Context, in *DelAllStaredRepoReq, opts ...grpc.CallOption) (*DelAllStaredRepoResp, error) {
+func (c *relationClient) DelAllStarredRepo(ctx context.Context, in *DelAllStarredRepoReq, opts ...grpc.CallOption) (*DelAllStarredRepoResp, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(DelAllStaredRepoResp)
-	err := c.cc.Invoke(ctx, Relation_DelAllStaredRepo_FullMethodName, in, out, cOpts...)
+	out := new(DelAllStarredRepoResp)
+	err := c.cc.Invoke(ctx, Relation_DelAllStarredRepo_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -307,10 +307,10 @@ func (c *relationClient) CheckIfStar(ctx context.Context, in *CheckIfStarReq, op
 	return out, nil
 }
 
-func (c *relationClient) SearchStaredRepo(ctx context.Context, in *SearchStaredRepoReq, opts ...grpc.CallOption) (*SearchStaredRepoResp, error) {
+func (c *relationClient) SearchStarredRepo(ctx context.Context, in *SearchStarredRepoReq, opts ...grpc.CallOption) (*SearchStarredRepoResp, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(SearchStaredRepoResp)
-	err := c.cc.Invoke(ctx, Relation_SearchStaredRepo_FullMethodName, in, out, cOpts...)
+	out := new(SearchStarredRepoResp)
+	err := c.cc.Invoke(ctx, Relation_SearchStarredRepo_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -354,10 +354,10 @@ type RelationServer interface {
 	// -----------------------star-----------------------
 	AddStar(context.Context, *AddStarReq) (*AddStarResp, error)
 	DelStar(context.Context, *DelStarReq) (*DelStarResp, error)
-	DelAllStaredRepo(context.Context, *DelAllStaredRepoReq) (*DelAllStaredRepoResp, error)
+	DelAllStarredRepo(context.Context, *DelAllStarredRepoReq) (*DelAllStarredRepoResp, error)
 	DelAllStaringDev(context.Context, *DelAllStaringDevReq) (*DelAllStaringDevResp, error)
 	CheckIfStar(context.Context, *CheckIfStarReq) (*CheckIfStarResp, error)
-	SearchStaredRepo(context.Context, *SearchStaredRepoReq) (*SearchStaredRepoResp, error)
+	SearchStarredRepo(context.Context, *SearchStarredRepoReq) (*SearchStarredRepoResp, error)
 	SearchStaringDev(context.Context, *SearchStaringDevReq) (*SearchStaringDevResp, error)
 	mustEmbedUnimplementedRelationServer()
 }
@@ -426,8 +426,8 @@ func (UnimplementedRelationServer) AddStar(context.Context, *AddStarReq) (*AddSt
 func (UnimplementedRelationServer) DelStar(context.Context, *DelStarReq) (*DelStarResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DelStar not implemented")
 }
-func (UnimplementedRelationServer) DelAllStaredRepo(context.Context, *DelAllStaredRepoReq) (*DelAllStaredRepoResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DelAllStaredRepo not implemented")
+func (UnimplementedRelationServer) DelAllStarredRepo(context.Context, *DelAllStarredRepoReq) (*DelAllStarredRepoResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DelAllStarredRepo not implemented")
 }
 func (UnimplementedRelationServer) DelAllStaringDev(context.Context, *DelAllStaringDevReq) (*DelAllStaringDevResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DelAllStaringDev not implemented")
@@ -435,8 +435,8 @@ func (UnimplementedRelationServer) DelAllStaringDev(context.Context, *DelAllStar
 func (UnimplementedRelationServer) CheckIfStar(context.Context, *CheckIfStarReq) (*CheckIfStarResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CheckIfStar not implemented")
 }
-func (UnimplementedRelationServer) SearchStaredRepo(context.Context, *SearchStaredRepoReq) (*SearchStaredRepoResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SearchStaredRepo not implemented")
+func (UnimplementedRelationServer) SearchStarredRepo(context.Context, *SearchStarredRepoReq) (*SearchStarredRepoResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SearchStarredRepo not implemented")
 }
 func (UnimplementedRelationServer) SearchStaringDev(context.Context, *SearchStaringDevReq) (*SearchStaringDevResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SearchStaringDev not implemented")
@@ -804,20 +804,20 @@ func _Relation_DelStar_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Relation_DelAllStaredRepo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DelAllStaredRepoReq)
+func _Relation_DelAllStarredRepo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DelAllStarredRepoReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(RelationServer).DelAllStaredRepo(ctx, in)
+		return srv.(RelationServer).DelAllStarredRepo(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Relation_DelAllStaredRepo_FullMethodName,
+		FullMethod: Relation_DelAllStarredRepo_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RelationServer).DelAllStaredRepo(ctx, req.(*DelAllStaredRepoReq))
+		return srv.(RelationServer).DelAllStarredRepo(ctx, req.(*DelAllStarredRepoReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -858,20 +858,20 @@ func _Relation_CheckIfStar_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Relation_SearchStaredRepo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SearchStaredRepoReq)
+func _Relation_SearchStarredRepo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SearchStarredRepoReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(RelationServer).SearchStaredRepo(ctx, in)
+		return srv.(RelationServer).SearchStarredRepo(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Relation_SearchStaredRepo_FullMethodName,
+		FullMethod: Relation_SearchStarredRepo_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RelationServer).SearchStaredRepo(ctx, req.(*SearchStaredRepoReq))
+		return srv.(RelationServer).SearchStarredRepo(ctx, req.(*SearchStarredRepoReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -978,8 +978,8 @@ var Relation_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Relation_DelStar_Handler,
 		},
 		{
-			MethodName: "DelAllStaredRepo",
-			Handler:    _Relation_DelAllStaredRepo_Handler,
+			MethodName: "DelAllStarredRepo",
+			Handler:    _Relation_DelAllStarredRepo_Handler,
 		},
 		{
 			MethodName: "DelAllStaringDev",
@@ -990,8 +990,8 @@ var Relation_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Relation_CheckIfStar_Handler,
 		},
 		{
-			MethodName: "SearchStaredRepo",
-			Handler:    _Relation_SearchStaredRepo_Handler,
+			MethodName: "SearchStarredRepo",
+			Handler:    _Relation_SearchStarredRepo_Handler,
 		},
 		{
 			MethodName: "SearchStaringDev",

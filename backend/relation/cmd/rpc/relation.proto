@@ -229,11 +229,11 @@ message DelStarResp {
   string message = 2;
 }
 
-message DelAllStaredRepoReq {
+message DelAllStarredRepoReq {
   int64 developerId = 1; //developerId
 }
 
-message DelAllStaredRepoResp {
+message DelAllStarredRepoResp {
   int64 code = 1;
   string message = 2;
 }
@@ -258,13 +258,13 @@ message CheckIfStarResp {
   bool isStar = 3; //isStar
 }
 
-message SearchStaredRepoReq {
+message SearchStarredRepoReq {
   int64 page = 1; //page
   int64 limit = 2; //limit
   int64 developerId = 3; //developerId
 }
 
-message SearchStaredRepoResp {
+message SearchStarredRepoResp {
   int64 code = 1;
   string message = 2;
   repeated int64 repoIds = 3; //repoId
@@ -311,9 +311,9 @@ service relation{
 	  //-----------------------star-----------------------
 	  rpc AddStar(AddStarReq) returns (AddStarResp);
     rpc DelStar(DelStarReq) returns (DelStarResp);
-    rpc DelAllStaredRepo(DelAllStaredRepoReq) returns (DelAllStaredRepoResp);
+    rpc DelAllStarredRepo(DelAllStarredRepoReq) returns (DelAllStarredRepoResp);
     rpc DelAllStaringDev(DelAllStaringDevReq) returns (DelAllStaringDevResp);
     rpc CheckIfStar(CheckIfStarReq) returns (CheckIfStarResp);
-    rpc SearchStaredRepo(SearchStaredRepoReq) returns (SearchStaredRepoResp);
+    rpc SearchStarredRepo(SearchStarredRepoReq) returns (SearchStarredRepoResp);
     rpc SearchStaringDev(SearchStaringDevReq) returns (SearchStaringDevResp);
 }

@@ -122,9 +122,9 @@ func (s *RelationServer) DelStar(ctx context.Context, in *pb.DelStarReq) (*pb.De
 	return l.DelStar(in)
 }
 
-func (s *RelationServer) DelAllStaredRepo(ctx context.Context, in *pb.DelAllStaredRepoReq) (*pb.DelAllStaredRepoResp, error) {
-	l := logic.NewDelAllStaredRepoLogic(ctx, s.svcCtx)
-	return l.DelAllStaredRepo(in)
+func (s *RelationServer) DelAllStarredRepo(ctx context.Context, in *pb.DelAllStarredRepoReq) (*pb.DelAllStarredRepoResp, error) {
+	l := logic.NewDelAllStarredRepoLogic(ctx, s.svcCtx)
+	return l.DelAllStarredRepo(in)
 }
 
 func (s *RelationServer) DelAllStaringDev(ctx context.Context, in *pb.DelAllStaringDevReq) (*pb.DelAllStaringDevResp, error) {
@@ -137,9 +137,9 @@ func (s *RelationServer) CheckIfStar(ctx context.Context, in *pb.CheckIfStarReq)
 	return l.CheckIfStar(in)
 }
 
-func (s *RelationServer) SearchStaredRepo(ctx context.Context, in *pb.SearchStaredRepoReq) (*pb.SearchStaredRepoResp, error) {
-	l := logic.NewSearchStaredRepoLogic(ctx, s.svcCtx)
-	return l.SearchStaredRepo(in)
+func (s *RelationServer) SearchStarredRepo(ctx context.Context, in *pb.SearchStarredRepoReq) (*pb.SearchStarredRepoResp, error) {
+	l := logic.NewSearchStarredRepoLogic(ctx, s.svcCtx)
+	return l.SearchStarredRepo(in)
 }
 
 func (s *RelationServer) SearchStaringDev(ctx context.Context, in *pb.SearchStaringDevReq) (*pb.SearchStaringDevResp, error) {

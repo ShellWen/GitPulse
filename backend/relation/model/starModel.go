@@ -14,7 +14,7 @@ type (
 	// and implement the added methods in customStarModel.
 	StarModel interface {
 		starModel
-		SearchStaredRepo(ctx context.Context, developerId int64, page int64, limit int64) (*[]*Star, error)
+		SearchStarredRepo(ctx context.Context, developerId int64, page int64, limit int64) (*[]*Star, error)
 		SearchStaringDeveloper(ctx context.Context, repoId int64, page int64, limit int64) (*[]*Star, error)
 	}
 
@@ -23,7 +23,7 @@ type (
 	}
 )
 
-func (m *customStarModel) SearchStaredRepo(ctx context.Context, developerId int64, page int64, limit int64) (*[]*Star, error) {
+func (m *customStarModel) SearchStarredRepo(ctx context.Context, developerId int64, page int64, limit int64) (*[]*Star, error) {
 	var resp []*Star
 
 	query := fmt.Sprintf("select %s from %s where developer_id = %d limit %d offset %d", starRows, m.table, developerId, limit, (page-1)*limit)

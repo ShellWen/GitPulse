@@ -35,10 +35,10 @@ type (
 	DelAllFollowingResp            = pb.DelAllFollowingResp
 	DelAllForkReq                  = pb.DelAllForkReq
 	DelAllForkResp                 = pb.DelAllForkResp
-	DelAllStaredRepoReq            = pb.DelAllStaredRepoReq
-	DelAllStaredRepoResp           = pb.DelAllStaredRepoResp
 	DelAllStaringDevReq            = pb.DelAllStaringDevReq
 	DelAllStaringDevResp           = pb.DelAllStaringDevResp
+	DelAllStarredRepoReq           = pb.DelAllStarredRepoReq
+	DelAllStarredRepoResp          = pb.DelAllStarredRepoResp
 	DelCreateRepoReq               = pb.DelCreateRepoReq
 	DelCreateRepoResp              = pb.DelCreateRepoResp
 	DelFollowReq                   = pb.DelFollowReq
@@ -61,10 +61,10 @@ type (
 	SearchFollowingByFollowedIdReq = pb.SearchFollowingByFollowedIdReq
 	SearchForkReq                  = pb.SearchForkReq
 	SearchForkResp                 = pb.SearchForkResp
-	SearchStaredRepoReq            = pb.SearchStaredRepoReq
-	SearchStaredRepoResp           = pb.SearchStaredRepoResp
 	SearchStaringDevReq            = pb.SearchStaringDevReq
 	SearchStaringDevResp           = pb.SearchStaringDevResp
+	SearchStarredRepoReq           = pb.SearchStarredRepoReq
+	SearchStarredRepoResp          = pb.SearchStarredRepoResp
 	Star                           = pb.Star
 
 	Relation interface {
@@ -91,10 +91,10 @@ type (
 		// -----------------------star-----------------------
 		AddStar(ctx context.Context, in *AddStarReq, opts ...grpc.CallOption) (*AddStarResp, error)
 		DelStar(ctx context.Context, in *DelStarReq, opts ...grpc.CallOption) (*DelStarResp, error)
-		DelAllStaredRepo(ctx context.Context, in *DelAllStaredRepoReq, opts ...grpc.CallOption) (*DelAllStaredRepoResp, error)
+		DelAllStarredRepo(ctx context.Context, in *DelAllStarredRepoReq, opts ...grpc.CallOption) (*DelAllStarredRepoResp, error)
 		DelAllStaringDev(ctx context.Context, in *DelAllStaringDevReq, opts ...grpc.CallOption) (*DelAllStaringDevResp, error)
 		CheckIfStar(ctx context.Context, in *CheckIfStarReq, opts ...grpc.CallOption) (*CheckIfStarResp, error)
-		SearchStaredRepo(ctx context.Context, in *SearchStaredRepoReq, opts ...grpc.CallOption) (*SearchStaredRepoResp, error)
+		SearchStarredRepo(ctx context.Context, in *SearchStarredRepoReq, opts ...grpc.CallOption) (*SearchStarredRepoResp, error)
 		SearchStaringDev(ctx context.Context, in *SearchStaringDevReq, opts ...grpc.CallOption) (*SearchStaringDevResp, error)
 	}
 
@@ -208,9 +208,9 @@ func (m *defaultRelation) DelStar(ctx context.Context, in *DelStarReq, opts ...g
 	return client.DelStar(ctx, in, opts...)
 }
 
-func (m *defaultRelation) DelAllStaredRepo(ctx context.Context, in *DelAllStaredRepoReq, opts ...grpc.CallOption) (*DelAllStaredRepoResp, error) {
+func (m *defaultRelation) DelAllStarredRepo(ctx context.Context, in *DelAllStarredRepoReq, opts ...grpc.CallOption) (*DelAllStarredRepoResp, error) {
 	client := pb.NewRelationClient(m.cli.Conn())
-	return client.DelAllStaredRepo(ctx, in, opts...)
+	return client.DelAllStarredRepo(ctx, in, opts...)
 }
 
 func (m *defaultRelation) DelAllStaringDev(ctx context.Context, in *DelAllStaringDevReq, opts ...grpc.CallOption) (*DelAllStaringDevResp, error) {
@@ -223,9 +223,9 @@ func (m *defaultRelation) CheckIfStar(ctx context.Context, in *CheckIfStarReq, o
 	return client.CheckIfStar(ctx, in, opts...)
 }
 
-func (m *defaultRelation) SearchStaredRepo(ctx context.Context, in *SearchStaredRepoReq, opts ...grpc.CallOption) (*SearchStaredRepoResp, error) {
+func (m *defaultRelation) SearchStarredRepo(ctx context.Context, in *SearchStarredRepoReq, opts ...grpc.CallOption) (*SearchStarredRepoResp, error) {
 	client := pb.NewRelationClient(m.cli.Conn())
-	return client.SearchStaredRepo(ctx, in, opts...)
+	return client.SearchStarredRepo(ctx, in, opts...)
 }
 
 func (m *defaultRelation) SearchStaringDev(ctx context.Context, in *SearchStaringDevReq, opts ...grpc.CallOption) (*SearchStaringDevResp, error) {
