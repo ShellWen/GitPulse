@@ -30,18 +30,21 @@ export const handlers = [
       code: 0,
       message: '',
       data: {
-        userId: 38996248,
+        id: 38996248,
         name: 'ShellWen | 颉文',
         login: 'ShellWen',
         avatarUrl: 'https://avatars.githubusercontent.com/u/38996248?v=4',
+        company: 'ShellWen Company',
+        location: 'Utopia',
         bio: 'Another Furry/🌈/Coder/Student',
+        blog: 'https://shellwen.com',
+        email: 'me@shellwen.com',
 
         followers: 114514,
         following: 1919810,
 
         stars: 2333,
-
-        repositories: 233,
+        repos: 233,
         gists: 233,
 
         created_at: new Date('2018-05-05T02:44:13Z'),

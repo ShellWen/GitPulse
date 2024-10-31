@@ -20,7 +20,7 @@ const UserGlanceBlock = ({ item }: { item: UserGlanceItem }) => {
 const DeveloperGlance = ({ developer }: { developer: Developer }) => {
   const items: UserGlanceItem[] = useMemo(
     () => [
-      { name: 'Repositories', value: developer.repositories.toString() },
+      { name: 'Repositories', value: developer.repos.toString() },
       { name: 'Stars', value: developer.stars.toString() },
       { name: 'Followers', value: developer.followers.toString() },
       { name: 'Following', value: developer.following.toString() },
