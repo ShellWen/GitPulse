@@ -29,7 +29,7 @@ func NewUpdateContributionLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 
 func (l *UpdateContributionLogic) UpdateContribution(in *pb.UpdateContributionReq) (resp *pb.UpdateContributionResp, err error) {
 	var contribution *model.Contribution
-	if contribution, err = l.svcCtx.ContributionModel.FindOneByCategoryRepoIdUserIdContributionId(l.ctx, in.Category, in.RepoId, in.UserId, in.ContributionId); err != nil {
+	if contribution, err = l.svcCtx.ContributionModel.FindOneByCategoryRepoIdContributionId(l.ctx, in.Category, in.RepoId, in.ContributionId); err != nil {
 		switch {
 		case errors.Is(err, model.ErrNotFound):
 			resp = &pb.UpdateContributionResp{

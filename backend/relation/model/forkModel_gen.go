@@ -9,7 +9,6 @@ import (
 	"database/sql"
 	"fmt"
 	"strings"
-	"time"
 
 	"github.com/zeromicro/go-zero/core/stores/builder"
 	"github.com/zeromicro/go-zero/core/stores/cache"
@@ -43,11 +42,9 @@ type (
 	}
 
 	Fork struct {
-		DataId         int64     `db:"data_id"`
-		DataCreateAt   time.Time `db:"data_create_at"`
-		DataUpdateAt   time.Time `db:"data_update_at"`
-		OriginalRepoId int64     `db:"original_repo_id"`
-		ForkRepoId     int64     `db:"fork_repo_id"`
+		DataId         int64 `db:"data_id"`
+		OriginalRepoId int64 `db:"original_repo_id"`
+		ForkRepoId     int64 `db:"fork_repo_id"`
 	}
 )
 
@@ -114,8 +111,8 @@ func (m *defaultForkModel) Insert(ctx context.Context, data *Fork) (sql.Result, 
 	relationForkDataIdKey := fmt.Sprintf("%s%v", cacheRelationForkDataIdPrefix, data.DataId)
 	relationForkForkRepoIdKey := fmt.Sprintf("%s%v", cacheRelationForkForkRepoIdPrefix, data.ForkRepoId)
 	ret, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("insert into %s (%s) values ($1, $2, $3, $4)", m.table, forkRowsExpectAutoSet)
-		return conn.ExecCtx(ctx, query, data.DataCreateAt, data.DataUpdateAt, data.OriginalRepoId, data.ForkRepoId)
+		query := fmt.Sprintf("insert into %s (%s) values ($1, $2)", m.table, forkRowsExpectAutoSet)
+		return conn.ExecCtx(ctx, query, data.OriginalRepoId, data.ForkRepoId)
 	}, relationForkDataIdKey, relationForkForkRepoIdKey)
 	return ret, err
 }
@@ -130,7 +127,7 @@ func (m *defaultForkModel) Update(ctx context.Context, newData *Fork) error {
 	relationForkForkRepoIdKey := fmt.Sprintf("%s%v", cacheRelationForkForkRepoIdPrefix, data.ForkRepoId)
 	_, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("update %s set %s where data_id = $1", m.table, forkRowsWithPlaceHolder)
-		return conn.ExecCtx(ctx, query, newData.DataId, newData.DataCreateAt, newData.DataUpdateAt, newData.OriginalRepoId, newData.ForkRepoId)
+		return conn.ExecCtx(ctx, query, newData.DataId, newData.OriginalRepoId, newData.ForkRepoId)
 	}, relationForkDataIdKey, relationForkForkRepoIdKey)
 	return err
 }

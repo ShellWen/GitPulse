@@ -24,15 +24,15 @@ var (
 	contributionRowsExpectAutoSet   = strings.Join(stringx.Remove(contributionFieldNames, "data_id", "create_at", "create_time", "created_at", "update_at", "update_time", "updated_at"), ",")
 	contributionRowsWithPlaceHolder = builder.PostgreSqlJoin(stringx.Remove(contributionFieldNames, "data_id", "create_at", "create_time", "created_at", "update_at", "update_time", "updated_at"))
 
-	cacheContributionContributionDataIdPrefix                             = "cache:contribution:contribution:dataId:"
-	cacheContributionContributionCategoryRepoIdUserIdContributionIdPrefix = "cache:contribution:contribution:category:repoId:userId:contributionId:"
+	cacheContributionContributionDataIdPrefix                       = "cache:contribution:contribution:dataId:"
+	cacheContributionContributionCategoryRepoIdContributionIdPrefix = "cache:contribution:contribution:category:repoId:contributionId:"
 )
 
 type (
 	contributionModel interface {
 		Insert(ctx context.Context, data *Contribution) (sql.Result, error)
 		FindOne(ctx context.Context, dataId int64) (*Contribution, error)
-		FindOneByCategoryRepoIdUserIdContributionId(ctx context.Context, category string, repoId int64, userId int64, contributionId int64) (*Contribution, error)
+		FindOneByCategoryRepoIdContributionId(ctx context.Context, category string, repoId int64, contributionId int64) (*Contribution, error)
 		Update(ctx context.Context, data *Contribution) error
 		Delete(ctx context.Context, dataId int64) error
 	}
@@ -69,12 +69,12 @@ func (m *defaultContributionModel) Delete(ctx context.Context, dataId int64) err
 		return err
 	}
 
-	contributionContributionCategoryRepoIdUserIdContributionIdKey := fmt.Sprintf("%s%v:%v:%v:%v", cacheContributionContributionCategoryRepoIdUserIdContributionIdPrefix, data.Category, data.RepoId, data.UserId, data.ContributionId)
+	contributionContributionCategoryRepoIdContributionIdKey := fmt.Sprintf("%s%v:%v:%v", cacheContributionContributionCategoryRepoIdContributionIdPrefix, data.Category, data.RepoId, data.ContributionId)
 	contributionContributionDataIdKey := fmt.Sprintf("%s%v", cacheContributionContributionDataIdPrefix, dataId)
 	_, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("delete from %s where data_id = $1", m.table)
 		return conn.ExecCtx(ctx, query, dataId)
-	}, contributionContributionCategoryRepoIdUserIdContributionIdKey, contributionContributionDataIdKey)
+	}, contributionContributionCategoryRepoIdContributionIdKey, contributionContributionDataIdKey)
 	return err
 }
 
@@ -95,12 +95,12 @@ func (m *defaultContributionModel) FindOne(ctx context.Context, dataId int64) (*
 	}
 }
 
-func (m *defaultContributionModel) FindOneByCategoryRepoIdUserIdContributionId(ctx context.Context, category string, repoId int64, userId int64, contributionId int64) (*Contribution, error) {
-	contributionContributionCategoryRepoIdUserIdContributionIdKey := fmt.Sprintf("%s%v:%v:%v:%v", cacheContributionContributionCategoryRepoIdUserIdContributionIdPrefix, category, repoId, userId, contributionId)
+func (m *defaultContributionModel) FindOneByCategoryRepoIdContributionId(ctx context.Context, category string, repoId int64, contributionId int64) (*Contribution, error) {
+	contributionContributionCategoryRepoIdContributionIdKey := fmt.Sprintf("%s%v:%v:%v", cacheContributionContributionCategoryRepoIdContributionIdPrefix, category, repoId, contributionId)
 	var resp Contribution
-	err := m.QueryRowIndexCtx(ctx, &resp, contributionContributionCategoryRepoIdUserIdContributionIdKey, m.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v any) (i any, e error) {
-		query := fmt.Sprintf("select %s from %s where category = $1 and repo_id = $2 and user_id = $3 and contribution_id = $4 limit 1", contributionRows, m.table)
-		if err := conn.QueryRowCtx(ctx, &resp, query, category, repoId, userId, contributionId); err != nil {
+	err := m.QueryRowIndexCtx(ctx, &resp, contributionContributionCategoryRepoIdContributionIdKey, m.formatPrimary, func(ctx context.Context, conn sqlx.SqlConn, v any) (i any, e error) {
+		query := fmt.Sprintf("select %s from %s where category = $1 and repo_id = $2 and contribution_id = $3 limit 1", contributionRows, m.table)
+		if err := conn.QueryRowCtx(ctx, &resp, query, category, repoId, contributionId); err != nil {
 			return nil, err
 		}
 		return resp.DataId, nil
@@ -116,12 +116,12 @@ func (m *defaultContributionModel) FindOneByCategoryRepoIdUserIdContributionId(c
 }
 
 func (m *defaultContributionModel) Insert(ctx context.Context, data *Contribution) (sql.Result, error) {
-	contributionContributionCategoryRepoIdUserIdContributionIdKey := fmt.Sprintf("%s%v:%v:%v:%v", cacheContributionContributionCategoryRepoIdUserIdContributionIdPrefix, data.Category, data.RepoId, data.UserId, data.ContributionId)
+	contributionContributionCategoryRepoIdContributionIdKey := fmt.Sprintf("%s%v:%v:%v", cacheContributionContributionCategoryRepoIdContributionIdPrefix, data.Category, data.RepoId, data.ContributionId)
 	contributionContributionDataIdKey := fmt.Sprintf("%s%v", cacheContributionContributionDataIdPrefix, data.DataId)
 	ret, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("insert into %s (%s) values ($1, $2, $3, $4, $5, $6, $7)", m.table, contributionRowsExpectAutoSet)
 		return conn.ExecCtx(ctx, query, data.DataCreateAt, data.DataUpdateAt, data.UserId, data.RepoId, data.Category, data.Content, data.ContributionId)
-	}, contributionContributionCategoryRepoIdUserIdContributionIdKey, contributionContributionDataIdKey)
+	}, contributionContributionCategoryRepoIdContributionIdKey, contributionContributionDataIdKey)
 	return ret, err
 }
 
@@ -131,12 +131,12 @@ func (m *defaultContributionModel) Update(ctx context.Context, newData *Contribu
 		return err
 	}
 
-	contributionContributionCategoryRepoIdUserIdContributionIdKey := fmt.Sprintf("%s%v:%v:%v:%v", cacheContributionContributionCategoryRepoIdUserIdContributionIdPrefix, data.Category, data.RepoId, data.UserId, data.ContributionId)
+	contributionContributionCategoryRepoIdContributionIdKey := fmt.Sprintf("%s%v:%v:%v", cacheContributionContributionCategoryRepoIdContributionIdPrefix, data.Category, data.RepoId, data.ContributionId)
 	contributionContributionDataIdKey := fmt.Sprintf("%s%v", cacheContributionContributionDataIdPrefix, data.DataId)
 	_, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("update %s set %s where data_id = $1", m.table, contributionRowsWithPlaceHolder)
 		return conn.ExecCtx(ctx, query, newData.DataId, newData.DataCreateAt, newData.DataUpdateAt, newData.UserId, newData.RepoId, newData.Category, newData.Content, newData.ContributionId)
-	}, contributionContributionCategoryRepoIdUserIdContributionIdKey, contributionContributionDataIdKey)
+	}, contributionContributionCategoryRepoIdContributionIdKey, contributionContributionDataIdKey)
 	return err
 }
 

@@ -2,12 +2,10 @@ package logic
 
 import (
 	"context"
-	"github.com/ShellWen/GitPulse/relation/model"
-	"net/http"
-	"time"
-
 	"github.com/ShellWen/GitPulse/relation/cmd/rpc/internal/svc"
 	"github.com/ShellWen/GitPulse/relation/cmd/rpc/pb"
+	"github.com/ShellWen/GitPulse/relation/model"
+	"net/http"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -29,10 +27,8 @@ func NewAddStarLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AddStarLo
 // -----------------------star-----------------------
 func (l *AddStarLogic) AddStar(in *pb.AddStarReq) (resp *pb.AddStarResp, err error) {
 	star := &model.Star{
-		DataCreateAt: time.Now(),
-		DataUpdateAt: time.Now(),
-		DeveloperId:  in.DeveloperId,
-		RepoId:       in.RepoId,
+		DeveloperId: in.DeveloperId,
+		RepoId:      in.RepoId,
 	}
 
 	if _, err = l.svcCtx.StarModel.Insert(l.ctx, star); err != nil {

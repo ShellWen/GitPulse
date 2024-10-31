@@ -74,6 +74,10 @@ func (l *UpdateDeveloperLogic) doUpdateDeveloper(developer *model.Developer, in 
 	developer.Gists = in.Gists
 	developer.CreateAt = time.Unix(in.CreateAt, 0)
 	developer.UpdateAt = time.Unix(in.UpdateAt, 0)
+	developer.LastFetchCreateRepoAt = time.Unix(in.LastFetchCreateRepoAt, 0)
+	developer.LastFetchFollowAt = time.Unix(in.LastFetchFollowAt, 0)
+	developer.LastFetchStarAt = time.Unix(in.LastFetchStarAt, 0)
+	developer.LastFetchContributionAt = time.Unix(in.LastFetchContributionAt, 0)
 
 	err = l.svcCtx.DeveloperModel.Update(l.ctx, developer)
 	return

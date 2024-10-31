@@ -53,10 +53,9 @@ message UpdateContributionResp {
 }
 
 message DelContributionReq {
-  int64 userId = 1; //userId
-  int64 repoId = 2; //repoId
-  string category = 3; //category
-  int64 contributionId = 4; //contributionId
+  int64 repoId = 1; //repoId
+  string category = 2; //category
+  int64 contributionId = 3; //contributionId
 }
 
 message DelContributionResp {
@@ -65,10 +64,9 @@ message DelContributionResp {
 }
 
 message GetContributionReq {
-  int64 userId = 1; //userId
-  int64 repoId = 2; //repoId
-  string category = 3; //category
-  int64 contributionId = 4; //contributionId
+  int64 repoId = 1; //repoId
+  string category = 2; //category
+  int64 contributionId = 3; //contributionId
 }
 
 message GetContributionResp {

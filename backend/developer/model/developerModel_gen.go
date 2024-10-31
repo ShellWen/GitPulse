@@ -45,26 +45,30 @@ type (
 	}
 
 	Developer struct {
-		DataId          int64     `db:"data_id"`
-		DataCreateAt    time.Time `db:"data_create_at"`
-		DataUpdateAt    time.Time `db:"data_update_at"`
-		Id              int64     `db:"id"`
-		Name            string    `db:"name"`
-		Username        string    `db:"username"`
-		AvatarUrl       string    `db:"avatar_url"`
-		Company         string    `db:"company"`
-		Location        string    `db:"location"`
-		Bio             string    `db:"bio"`
-		Blog            string    `db:"blog"`
-		Email           string    `db:"email"`
-		CreateAt        time.Time `db:"create_at"`
-		UpdateAt        time.Time `db:"update_at"`
-		TwitterUsername string    `db:"twitter_username"`
-		Repos           int64     `db:"repos"`
-		Following       int64     `db:"following"`
-		Followers       int64     `db:"followers"`
-		Gists           int64     `db:"gists"`
-		Stars           int64     `db:"stars"`
+		DataId                  int64     `db:"data_id"`
+		DataCreateAt            time.Time `db:"data_create_at"`
+		DataUpdateAt            time.Time `db:"data_update_at"`
+		Id                      int64     `db:"id"`
+		Name                    string    `db:"name"`
+		Username                string    `db:"username"`
+		AvatarUrl               string    `db:"avatar_url"`
+		Company                 string    `db:"company"`
+		Location                string    `db:"location"`
+		Bio                     string    `db:"bio"`
+		Blog                    string    `db:"blog"`
+		Email                   string    `db:"email"`
+		CreateAt                time.Time `db:"create_at"`
+		UpdateAt                time.Time `db:"update_at"`
+		TwitterUsername         string    `db:"twitter_username"`
+		Repos                   int64     `db:"repos"`
+		Following               int64     `db:"following"`
+		Followers               int64     `db:"followers"`
+		Gists                   int64     `db:"gists"`
+		Stars                   int64     `db:"stars"`
+		LastFetchCreateRepoAt   time.Time `db:"last_fetch_create_repo_at"`
+		LastFetchFollowAt       time.Time `db:"last_fetch_follow_at"`
+		LastFetchStarAt         time.Time `db:"last_fetch_star_at"`
+		LastFetchContributionAt time.Time `db:"last_fetch_contribution_at"`
 	}
 )
 
@@ -153,8 +157,8 @@ func (m *defaultDeveloperModel) Insert(ctx context.Context, data *Developer) (sq
 	developerDeveloperIdKey := fmt.Sprintf("%s%v", cacheDeveloperDeveloperIdPrefix, data.Id)
 	developerDeveloperUsernameKey := fmt.Sprintf("%s%v", cacheDeveloperDeveloperUsernamePrefix, data.Username)
 	ret, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("insert into %s (%s) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)", m.table, developerRowsExpectAutoSet)
-		return conn.ExecCtx(ctx, query, data.DataCreateAt, data.DataUpdateAt, data.Id, data.Name, data.Username, data.AvatarUrl, data.Company, data.Location, data.Bio, data.Blog, data.Email, data.TwitterUsername, data.Repos, data.Following, data.Followers, data.Gists, data.Stars)
+		query := fmt.Sprintf("insert into %s (%s) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21)", m.table, developerRowsExpectAutoSet)
+		return conn.ExecCtx(ctx, query, data.DataCreateAt, data.DataUpdateAt, data.Id, data.Name, data.Username, data.AvatarUrl, data.Company, data.Location, data.Bio, data.Blog, data.Email, data.TwitterUsername, data.Repos, data.Following, data.Followers, data.Gists, data.Stars, data.LastFetchCreateRepoAt, data.LastFetchFollowAt, data.LastFetchStarAt, data.LastFetchContributionAt)
 	}, developerDeveloperDataIdKey, developerDeveloperIdKey, developerDeveloperUsernameKey)
 	return ret, err
 }
@@ -170,7 +174,7 @@ func (m *defaultDeveloperModel) Update(ctx context.Context, newData *Developer) 
 	developerDeveloperUsernameKey := fmt.Sprintf("%s%v", cacheDeveloperDeveloperUsernamePrefix, data.Username)
 	_, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("update %s set %s where data_id = $1", m.table, developerRowsWithPlaceHolder)
-		return conn.ExecCtx(ctx, query, newData.DataId, newData.DataCreateAt, newData.DataUpdateAt, newData.Id, newData.Name, newData.Username, newData.AvatarUrl, newData.Company, newData.Location, newData.Bio, newData.Blog, newData.Email, newData.TwitterUsername, newData.Repos, newData.Following, newData.Followers, newData.Gists, newData.Stars)
+		return conn.ExecCtx(ctx, query, newData.DataId, newData.DataCreateAt, newData.DataUpdateAt, newData.Id, newData.Name, newData.Username, newData.AvatarUrl, newData.Company, newData.Location, newData.Bio, newData.Blog, newData.Email, newData.TwitterUsername, newData.Repos, newData.Following, newData.Followers, newData.Gists, newData.Stars, newData.LastFetchCreateRepoAt, newData.LastFetchFollowAt, newData.LastFetchStarAt, newData.LastFetchContributionAt)
 	}, developerDeveloperDataIdKey, developerDeveloperIdKey, developerDeveloperUsernameKey)
 	return err
 }

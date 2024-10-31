@@ -9,7 +9,6 @@ import (
 	"database/sql"
 	"fmt"
 	"strings"
-	"time"
 
 	"github.com/zeromicro/go-zero/core/stores/builder"
 	"github.com/zeromicro/go-zero/core/stores/cache"
@@ -43,11 +42,9 @@ type (
 	}
 
 	Star struct {
-		DataId       int64     `db:"data_id"`
-		DataCreateAt time.Time `db:"data_create_at"`
-		DataUpdateAt time.Time `db:"data_update_at"`
-		DeveloperId  int64     `db:"developer_id"`
-		RepoId       int64     `db:"repo_id"`
+		DataId      int64 `db:"data_id"`
+		DeveloperId int64 `db:"developer_id"`
+		RepoId      int64 `db:"repo_id"`
 	}
 )
 
@@ -114,8 +111,8 @@ func (m *defaultStarModel) Insert(ctx context.Context, data *Star) (sql.Result, 
 	relationStarDataIdKey := fmt.Sprintf("%s%v", cacheRelationStarDataIdPrefix, data.DataId)
 	relationStarDeveloperIdRepoIdKey := fmt.Sprintf("%s%v:%v", cacheRelationStarDeveloperIdRepoIdPrefix, data.DeveloperId, data.RepoId)
 	ret, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("insert into %s (%s) values ($1, $2, $3, $4)", m.table, starRowsExpectAutoSet)
-		return conn.ExecCtx(ctx, query, data.DataCreateAt, data.DataUpdateAt, data.DeveloperId, data.RepoId)
+		query := fmt.Sprintf("insert into %s (%s) values ($1, $2)", m.table, starRowsExpectAutoSet)
+		return conn.ExecCtx(ctx, query, data.DeveloperId, data.RepoId)
 	}, relationStarDataIdKey, relationStarDeveloperIdRepoIdKey)
 	return ret, err
 }
@@ -130,7 +127,7 @@ func (m *defaultStarModel) Update(ctx context.Context, newData *Star) error {
 	relationStarDeveloperIdRepoIdKey := fmt.Sprintf("%s%v:%v", cacheRelationStarDeveloperIdRepoIdPrefix, data.DeveloperId, data.RepoId)
 	_, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("update %s set %s where data_id = $1", m.table, starRowsWithPlaceHolder)
-		return conn.ExecCtx(ctx, query, newData.DataId, newData.DataCreateAt, newData.DataUpdateAt, newData.DeveloperId, newData.RepoId)
+		return conn.ExecCtx(ctx, query, newData.DataId, newData.DeveloperId, newData.RepoId)
 	}, relationStarDataIdKey, relationStarDeveloperIdRepoIdKey)
 	return err
 }

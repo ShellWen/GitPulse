@@ -29,19 +29,19 @@ func NewAddRepoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AddRepoLo
 // -----------------------repo-----------------------
 func (l *AddRepoLogic) AddRepo(in *pb.AddRepoReq) (resp *pb.AddRepoResp, err error) {
 	repo := &model.Repo{
-		DataCreateAt: time.Now(),
-		DataUpdateAt: time.Now(),
-		Id:           in.Id,
-		Name:         in.Name,
-		Gist:         in.Gist,
-		StarCount:    in.StarCount,
-		ForkCount:    in.ForkCount,
-		IssueCount:   in.IssueCount,
-		CommitCount:  in.CommitCount,
-		PrCount:      in.PrCount,
-		Language:     in.Language,
-		Description:  in.Description,
-		Readme:       in.Readme,
+		DataCreateAt:            time.Now(),
+		DataUpdateAt:            time.Now(),
+		Id:                      in.Id,
+		Name:                    in.Name,
+		StarCount:               in.StarCount,
+		ForkCount:               in.ForkCount,
+		IssueCount:              in.IssueCount,
+		CommitCount:             in.CommitCount,
+		PrCount:                 in.PrCount,
+		Language:                in.Language,
+		Description:             in.Description,
+		LastFetchForkAt:         time.Unix(in.LastFetchForkAt, 0),
+		LastFetchContributionAt: time.Unix(in.LastFetchContributionAt, 0),
 	}
 
 	if _, err = l.svcCtx.RepoModel.Insert(l.ctx, repo); err != nil {

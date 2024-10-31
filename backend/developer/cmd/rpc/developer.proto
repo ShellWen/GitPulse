@@ -30,6 +30,10 @@ message Developer {
   int64 gists = 18; //gists_count
   int64 createAt = 19; //createAt
   int64 updateAt = 20; //updateAt
+  int64 lastFetchCreateRepoAt = 21; //lastFetchCreateRepoAt
+  int64 lastFetchFollowAt = 22; //lastFetchFollowAt
+  int64 lastFetchStarAt = 23; //lastFetchStarAt
+  int64 lastFetchContributionAt = 24; //lastFetchContributionAt
 }
 
 message AddDeveloperReq {
@@ -75,6 +79,10 @@ message UpdateDeveloperReq {
   int64 gists = 15; //gists_c
   int64 createAt = 16; //createAt
   int64 updateAt = 17; //updateAt
+  int64 lastFetchCreateRepoAt = 18; //lastFetchCreateRepoAt
+  int64 lastFetchFollowAt = 19; //lastFetchFollowAt
+  int64 lastFetchStarAt = 20; //lastFetchStarAt
+  int64 lastFetchContributionAt = 21; //lastFetchContributionAt
 }
 
 message UpdateDeveloperResp {

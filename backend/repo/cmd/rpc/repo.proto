@@ -15,29 +15,29 @@ message Repo {
   int64 dataUpdateAt = 3; //dataUpdateAt
   int64 id = 4; //id
   string name = 5; //name
-  bool gist = 6; //gist
-  int64 starCount = 7; //starCount
-  int64 forkCount = 8; //forkCount
-  int64 issueCount = 9; //issueCount
-  int64 commitCount = 10; //commitCount
-  int64 prCount = 11; //prCount
-  string language = 12; //language
-  string description = 13; //description
-  string readme = 14; //readme
+  int64 starCount = 6; //starCount
+  int64 forkCount = 7; //forkCount
+  int64 issueCount = 8; //issueCount
+  int64 commitCount = 9; //commitCount
+  int64 prCount = 10; //prCount
+  string language = 11; //language
+  string description = 12; //description
+  int64 lastFetchForkAt = 13; //lastFetchForkAt
+  int64 lastFetchContributionAt = 14; //lastFetchContributionAt
 }
 
 message AddRepoReq {
   int64 id = 1; //id
   string name = 2; //name
-  bool gist = 3; //gist
-  int64 starCount = 4; //starCount
-  int64 forkCount = 5; //forkCount
-  int64 issueCount = 6; //issueCount
-  int64 commitCount = 7; //commitCount
-  int64 prCount = 8; //prCount
-  string language = 9; //language
-  string description = 10; //description
-  string readme = 11; //readme
+  int64 starCount = 3; //starCount
+  int64 forkCount = 4; //forkCount
+  int64 issueCount = 5; //issueCount
+  int64 commitCount = 6; //commitCount
+  int64 prCount = 7; //prCount
+  string language = 8; //language
+  string description = 9; //description
+  int64 lastFetchForkAt = 10; //lastFetchForkAt
+  int64 lastFetchContributionAt = 11; //lastFetchContributionAt
 }
 
 message AddRepoResp {
@@ -48,15 +48,15 @@ message AddRepoResp {
 message UpdateRepoReq {
   int64 id = 1; //id
   string name = 2; //name
-  bool gist = 3; //gist
-  int64 starCount = 4; //starCount
-  int64 forkCount = 5; //forkCount
-  int64 issueCount = 6; //issueCount
-  int64 commitCount = 7; //commitCount
-  int64 prCount = 8; //prCount
-  string language = 9; //language
-  string description = 10; //description
-  string readme = 11; //readme
+  int64 starCount = 3; //starCount
+  int64 forkCount = 4; //forkCount
+  int64 issueCount = 5; //issueCount
+  int64 commitCount = 6; //commitCount
+  int64 prCount = 7; //prCount
+  string language = 8; //language
+  string description = 9; //description
+  int64 lastFetchForkAt = 10; //lastFetchForkAt
+  int64 lastFetchContributionAt = 11; //lastFetchContributionAt
 }
 
 message UpdateRepoResp {

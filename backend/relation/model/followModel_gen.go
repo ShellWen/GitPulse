@@ -9,7 +9,6 @@ import (
 	"database/sql"
 	"fmt"
 	"strings"
-	"time"
 
 	"github.com/zeromicro/go-zero/core/stores/builder"
 	"github.com/zeromicro/go-zero/core/stores/cache"
@@ -43,11 +42,9 @@ type (
 	}
 
 	Follow struct {
-		DataId       int64     `db:"data_id"`
-		DataCreateAt time.Time `db:"data_create_at"`
-		DataUpdateAt time.Time `db:"data_update_at"`
-		FollowingId  int64     `db:"following_id"`
-		FollowedId   int64     `db:"followed_id"`
+		DataId      int64 `db:"data_id"`
+		FollowingId int64 `db:"following_id"`
+		FollowedId  int64 `db:"followed_id"`
 	}
 )
 
@@ -114,8 +111,8 @@ func (m *defaultFollowModel) Insert(ctx context.Context, data *Follow) (sql.Resu
 	relationFollowDataIdKey := fmt.Sprintf("%s%v", cacheRelationFollowDataIdPrefix, data.DataId)
 	relationFollowFollowingIdFollowedIdKey := fmt.Sprintf("%s%v:%v", cacheRelationFollowFollowingIdFollowedIdPrefix, data.FollowingId, data.FollowedId)
 	ret, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("insert into %s (%s) values ($1, $2, $3, $4)", m.table, followRowsExpectAutoSet)
-		return conn.ExecCtx(ctx, query, data.DataCreateAt, data.DataUpdateAt, data.FollowingId, data.FollowedId)
+		query := fmt.Sprintf("insert into %s (%s) values ($1, $2)", m.table, followRowsExpectAutoSet)
+		return conn.ExecCtx(ctx, query, data.FollowingId, data.FollowedId)
 	}, relationFollowDataIdKey, relationFollowFollowingIdFollowedIdKey)
 	return ret, err
 }
@@ -130,7 +127,7 @@ func (m *defaultFollowModel) Update(ctx context.Context, newData *Follow) error 
 	relationFollowFollowingIdFollowedIdKey := fmt.Sprintf("%s%v:%v", cacheRelationFollowFollowingIdFollowedIdPrefix, data.FollowingId, data.FollowedId)
 	_, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("update %s set %s where data_id = $1", m.table, followRowsWithPlaceHolder)
-		return conn.ExecCtx(ctx, query, newData.DataId, newData.DataCreateAt, newData.DataUpdateAt, newData.FollowingId, newData.FollowedId)
+		return conn.ExecCtx(ctx, query, newData.DataId, newData.FollowingId, newData.FollowedId)
 	}, relationFollowDataIdKey, relationFollowFollowingIdFollowedIdKey)
 	return err
 }

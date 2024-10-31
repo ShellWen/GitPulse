@@ -29,7 +29,7 @@ func NewDelContributionLogic(ctx context.Context, svcCtx *svc.ServiceContext) *D
 func (l *DelContributionLogic) DelContribution(in *pb.DelContributionReq) (resp *pb.DelContributionResp, err error) {
 	var contribution *model.Contribution
 
-	if contribution, err = l.svcCtx.ContributionModel.FindOneByCategoryRepoIdUserIdContributionId(l.ctx, in.Category, in.RepoId, in.UserId, in.ContributionId); err != nil {
+	if contribution, err = l.svcCtx.ContributionModel.FindOneByCategoryRepoIdContributionId(l.ctx, in.Category, in.RepoId, in.ContributionId); err != nil {
 		switch {
 		case errors.Is(err, model.ErrNotFound):
 			resp = &pb.DelContributionResp{

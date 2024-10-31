@@ -11,10 +11,8 @@ package pb;
 //--------------------------------createRepo--------------------------------
 message CreateRepo {
   int64 dataId = 1; //dataId
-  int64 dataCreateAt = 2; //dataCreateAt
-  int64 dataUpdateAt = 3; //dataUpdateAt
-  int64 developerId = 4; //developerId
-  int64 repoId = 5; //repoId
+  int64 developerId = 2; //developerId
+  int64 repoId = 3; //repoId
 }
 
 message AddCreateRepoReq {
@@ -70,10 +68,8 @@ message SearchCreatedRepoResp {
 //--------------------------------follow--------------------------------
 message Follow {
   int64 dataId = 1; //dataId
-  int64 dataCreateAt = 2; //dataCreateAt
-  int64 dataUpdateAt = 3; //dataUpdateAt
-  int64 followingId = 4; //followingId
-  int64 followedId = 5; //followedId
+  int64 followingId = 2; //followingId
+  int64 followedId = 3; //followedId
 }
 
 message AddFollowReq {
@@ -152,10 +148,8 @@ message SearchFollowByFollowedIdResp {
 //--------------------------------fork--------------------------------
 message Fork {
   int64 dataId = 1; //dataId
-  int64 dataCreateAt = 2; //dataCreateAt
-  int64 dataUpdateAt = 3; //dataUpdateAt
-  int64 originalRepoId = 4; //originalRepoId
-  int64 forkRepoId = 5; //forkRepoId
+  int64 originalRepoId = 2; //originalRepoId
+  int64 forkRepoId = 3; //forkRepoId
 }
 
 message AddForkReq {
@@ -211,10 +205,8 @@ message SearchForkResp {
 //--------------------------------star--------------------------------
 message Star {
   int64 dataId = 1; //dataId
-  int64 dataCreateAt = 2; //dataCreateAt
-  int64 dataUpdateAt = 3; //dataUpdateAt
-  int64 developerId = 4; //developerId
-  int64 repoId = 5; //repoId
+  int64 developerId = 2; //developerId
+  int64 repoId = 3; //repoId
 }
 
 message AddStarReq {

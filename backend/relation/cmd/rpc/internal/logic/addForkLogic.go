@@ -2,12 +2,10 @@ package logic
 
 import (
 	"context"
-	"github.com/ShellWen/GitPulse/relation/model"
-	"net/http"
-	"time"
-
 	"github.com/ShellWen/GitPulse/relation/cmd/rpc/internal/svc"
 	"github.com/ShellWen/GitPulse/relation/cmd/rpc/pb"
+	"github.com/ShellWen/GitPulse/relation/model"
+	"net/http"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -29,8 +27,6 @@ func NewAddForkLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AddForkLo
 // -----------------------fork-----------------------
 func (l *AddForkLogic) AddFork(in *pb.AddForkReq) (resp *pb.AddForkResp, err error) {
 	fork := &model.Fork{
-		DataCreateAt:   time.Now(),
-		DataUpdateAt:   time.Now(),
 		OriginalRepoId: in.OriginalRepoId,
 		ForkRepoId:     in.ForkRepoId,
 	}

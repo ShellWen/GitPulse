@@ -7,6 +7,7 @@ import (
 	"github.com/ShellWen/GitPulse/repo/cmd/rpc/pb"
 	"github.com/ShellWen/GitPulse/repo/model"
 	"net/http"
+	"time"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -58,7 +59,6 @@ func (l *UpdateRepoLogic) UpdateRepo(in *pb.UpdateRepoReq) (resp *pb.UpdateRepoR
 
 func (l *UpdateRepoLogic) doUpdateRepo(repo *model.Repo, in *pb.UpdateRepoReq) (err error) {
 	repo.Name = in.Name
-	repo.Gist = in.Gist
 	repo.StarCount = in.StarCount
 	repo.ForkCount = in.ForkCount
 	repo.IssueCount = in.IssueCount
@@ -66,7 +66,8 @@ func (l *UpdateRepoLogic) doUpdateRepo(repo *model.Repo, in *pb.UpdateRepoReq) (
 	repo.PrCount = in.PrCount
 	repo.Language = in.Language
 	repo.Description = in.Description
-	repo.Readme = in.Readme
+	repo.LastFetchForkAt = time.Unix(in.LastFetchForkAt, 0)
+	repo.LastFetchContributionAt = time.Unix(in.LastFetchContributionAt, 0)
 
 	err = l.svcCtx.RepoModel.Update(l.ctx, repo)
 	return

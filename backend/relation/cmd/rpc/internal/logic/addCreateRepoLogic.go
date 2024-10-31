@@ -2,12 +2,10 @@ package logic
 
 import (
 	"context"
-	"github.com/ShellWen/GitPulse/relation/model"
-	"net/http"
-	"time"
-
 	"github.com/ShellWen/GitPulse/relation/cmd/rpc/internal/svc"
 	"github.com/ShellWen/GitPulse/relation/cmd/rpc/pb"
+	"github.com/ShellWen/GitPulse/relation/model"
+	"net/http"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -29,10 +27,8 @@ func NewAddCreateRepoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Add
 // -----------------------createRepo-----------------------
 func (l *AddCreateRepoLogic) AddCreateRepo(in *pb.AddCreateRepoReq) (resp *pb.AddCreateRepoResp, err error) {
 	createRepo := &model.CreateRepo{
-		DataCreateAt: time.Now(),
-		DataUpdateAt: time.Now(),
-		DeveloperId:  in.DeveloperId,
-		RepoId:       in.RepoId,
+		DeveloperId: in.DeveloperId,
+		RepoId:      in.RepoId,
 	}
 
 	if _, err = l.svcCtx.CreateRepoModel.Insert(l.ctx, createRepo); err != nil {

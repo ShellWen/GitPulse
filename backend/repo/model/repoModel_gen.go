@@ -43,20 +43,20 @@ type (
 	}
 
 	Repo struct {
-		DataId       int64     `db:"data_id"`
-		DataCreateAt time.Time `db:"data_create_at"`
-		DataUpdateAt time.Time `db:"data_update_at"`
-		Id           int64     `db:"id"`
-		Name         string    `db:"name"`
-		StarCount    int64     `db:"star_count"`
-		ForkCount    int64     `db:"fork_count"`
-		IssueCount   int64     `db:"issue_count"`
-		CommitCount  int64     `db:"commit_count"`
-		PrCount      int64     `db:"pr_count"`
-		Language     string    `db:"language"`
-		Description  string    `db:"description"`
-		Readme       string    `db:"readme"`
-		Gist         bool      `db:"gist"`
+		DataId                  int64     `db:"data_id"`
+		DataCreateAt            time.Time `db:"data_create_at"`
+		DataUpdateAt            time.Time `db:"data_update_at"`
+		Id                      int64     `db:"id"`
+		Name                    string    `db:"name"`
+		StarCount               int64     `db:"star_count"`
+		ForkCount               int64     `db:"fork_count"`
+		IssueCount              int64     `db:"issue_count"`
+		CommitCount             int64     `db:"commit_count"`
+		PrCount                 int64     `db:"pr_count"`
+		Language                string    `db:"language"`
+		Description             string    `db:"description"`
+		LastFetchForkAt         time.Time `db:"last_fetch_fork_at"`
+		LastFetchContributionAt time.Time `db:"last_fetch_contribution_at"`
 	}
 )
 
@@ -124,7 +124,7 @@ func (m *defaultRepoModel) Insert(ctx context.Context, data *Repo) (sql.Result, 
 	repoRepoIdKey := fmt.Sprintf("%s%v", cacheRepoRepoIdPrefix, data.Id)
 	ret, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("insert into %s (%s) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)", m.table, repoRowsExpectAutoSet)
-		return conn.ExecCtx(ctx, query, data.DataCreateAt, data.DataUpdateAt, data.Id, data.Name, data.StarCount, data.ForkCount, data.IssueCount, data.CommitCount, data.PrCount, data.Language, data.Description, data.Readme, data.Gist)
+		return conn.ExecCtx(ctx, query, data.DataCreateAt, data.DataUpdateAt, data.Id, data.Name, data.StarCount, data.ForkCount, data.IssueCount, data.CommitCount, data.PrCount, data.Language, data.Description, data.LastFetchForkAt, data.LastFetchContributionAt)
 	}, repoRepoDataIdKey, repoRepoIdKey)
 	return ret, err
 }
@@ -139,7 +139,7 @@ func (m *defaultRepoModel) Update(ctx context.Context, newData *Repo) error {
 	repoRepoIdKey := fmt.Sprintf("%s%v", cacheRepoRepoIdPrefix, data.Id)
 	_, err = m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
 		query := fmt.Sprintf("update %s set %s where data_id = $1", m.table, repoRowsWithPlaceHolder)
-		return conn.ExecCtx(ctx, query, newData.DataId, newData.DataCreateAt, newData.DataUpdateAt, newData.Id, newData.Name, newData.StarCount, newData.ForkCount, newData.IssueCount, newData.CommitCount, newData.PrCount, newData.Language, newData.Description, newData.Readme, newData.Gist)
+		return conn.ExecCtx(ctx, query, newData.DataId, newData.DataCreateAt, newData.DataUpdateAt, newData.Id, newData.Name, newData.StarCount, newData.ForkCount, newData.IssueCount, newData.CommitCount, newData.PrCount, newData.Language, newData.Description, newData.LastFetchForkAt, newData.LastFetchContributionAt)
 	}, repoRepoDataIdKey, repoRepoIdKey)
 	return err
 }

@@ -2,12 +2,10 @@ package logic
 
 import (
 	"context"
-	"github.com/ShellWen/GitPulse/relation/model"
-	"net/http"
-	"time"
-
 	"github.com/ShellWen/GitPulse/relation/cmd/rpc/internal/svc"
 	"github.com/ShellWen/GitPulse/relation/cmd/rpc/pb"
+	"github.com/ShellWen/GitPulse/relation/model"
+	"net/http"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -29,10 +27,8 @@ func NewAddFollowLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AddFoll
 // -----------------------follow-----------------------
 func (l *AddFollowLogic) AddFollow(in *pb.AddFollowReq) (resp *pb.AddFollowResp, err error) {
 	follow := &model.Follow{
-		DataCreateAt: time.Now(),
-		DataUpdateAt: time.Now(),
-		FollowingId:  in.FollowingId,
-		FollowedId:   in.FollowedId,
+		FollowingId: in.FollowingId,
+		FollowedId:  in.FollowedId,
 	}
 
 	if _, err = l.svcCtx.FollowModel.Insert(l.ctx, follow); err != nil {
