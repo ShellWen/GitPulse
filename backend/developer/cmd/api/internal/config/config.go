@@ -1,6 +1,7 @@
 package config
 
 import (
+	"github.com/ShellWen/GitPulse/common/config"
 	"github.com/zeromicro/go-zero/core/stores/cache"
 	"github.com/zeromicro/go-zero/rest"
 	"github.com/zeromicro/go-zero/zrpc"
@@ -11,6 +12,7 @@ type Config struct {
 	DB struct {
 		DataSource string
 	}
-	Cache            cache.CacheConf
-	DeveloperRpcConf zrpc.RpcClientConf
+	Cache                   cache.CacheConf
+	DeveloperRpcConf        zrpc.RpcClientConf
+	KqFetcherTaskPusherConf config.KqPusherConf
 }

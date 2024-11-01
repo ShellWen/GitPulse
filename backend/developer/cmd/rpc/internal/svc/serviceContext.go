@@ -9,14 +9,16 @@ import (
 )
 
 type ServiceContext struct {
-	Config         config.Config
-	RedisClient    *redis.Redis
-	DeveloperModel model.DeveloperModel
+	Config               config.Config
+	RedisClient          *redis.Redis
+	DeveloperModel       model.DeveloperModel
+	DeveloperUpdatedChan map[int64]chan struct{}
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
 	return &ServiceContext{
-		Config:         c,
-		DeveloperModel: model.NewDeveloperModel(sqlx.NewSqlConn("pgx", c.DB.DataSource), c.Cache),
+		Config:               c,
+		DeveloperModel:       model.NewDeveloperModel(sqlx.NewSqlConn("pgx", c.DB.DataSource), c.Cache),
+		DeveloperUpdatedChan: make(map[int64]chan struct{}),
 	}
 }

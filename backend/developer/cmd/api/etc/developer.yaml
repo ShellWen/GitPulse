@@ -13,3 +13,10 @@ DeveloperRpcConf:
   Endpoints:
     - 127.0.0.1:2001
   NonBlock: true
+  Timeout: 10000
+
+KqFetcherTaskPusherConf:
+  Name: fetcher-task-pusher
+  Brokers:
+    - 127.0.0.1:9092
+  Topic: fetcher-task

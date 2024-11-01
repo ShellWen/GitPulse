@@ -3,6 +3,8 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/joho/godotenv"
+	"github.com/zeromicro/go-zero/core/logx"
 
 	"github.com/ShellWen/GitPulse/developer/cmd/api/internal/config"
 	"github.com/ShellWen/GitPulse/developer/cmd/api/internal/handler"
@@ -16,6 +18,10 @@ var configFile = flag.String("f", "developer/cmd/api/etc/developer.yaml", "the c
 
 func main() {
 	flag.Parse()
+
+	if err := godotenv.Load(); err != nil {
+		logx.Error("load .env file failed: %v", err)
+	}
 
 	var c config.Config
 	conf.MustLoad(*configFile, &c)

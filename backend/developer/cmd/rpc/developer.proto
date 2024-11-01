@@ -128,6 +128,15 @@ message GetDeveloperByLoginResp {
   Developer developer = 3; //developer
 }
 
+message BlockUntilDeveloperUpdatedReq {
+  int64 id = 1; //id
+}
+
+message BlockUntilDeveloperUpdatedResp {
+  int64 code = 1;
+  string message = 2;
+}
+
 // ------------------------------------ 
 // Rpc Func
 // ------------------------------------ 
@@ -140,4 +149,5 @@ service developer{
   rpc DelDeveloperByLogin(DelDeveloperByLoginReq) returns (DelDeveloperByLoginResp);
   rpc GetDeveloperById(GetDeveloperByIdReq) returns (GetDeveloperByIdResp);
   rpc GetDeveloperByLogin(GetDeveloperByLoginReq) returns (GetDeveloperByLoginResp);
+  rpc BlockUntilDeveloperUpdated(BlockUntilDeveloperUpdatedReq) returns (BlockUntilDeveloperUpdatedResp);
 }

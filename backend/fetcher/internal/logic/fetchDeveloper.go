@@ -9,6 +9,7 @@ import (
 	"github.com/zeromicro/go-zero/core/jsonx"
 	"github.com/zeromicro/go-zero/core/logx"
 	"os"
+	"time"
 )
 
 const developerProfileFetcherTopic = "developer profile"
@@ -66,12 +67,15 @@ func getGithubStarredRepoCountByLogin(ctx context.Context, githubClient *github.
 		return
 	}
 
+	logx.Info("Successfully get starred repo count: " + login)
 	starredRepoCount = int64(githubStarredRepoResp.LastPage)
 	return
 }
 
 func buildDeveloperProfile(ctx context.Context, svcContext *svc.ServiceContext, githubUser *github.User, starredRepoCount int64) (newDeveloper *model.Developer) {
 	newDeveloper = &model.Developer{
+		DataCreatedAt:   time.Now(),
+		DataUpdatedAt:   time.Now(),
 		Id:              githubUser.GetID(),
 		Name:            githubUser.GetName(),
 		Login:           githubUser.GetLogin(),

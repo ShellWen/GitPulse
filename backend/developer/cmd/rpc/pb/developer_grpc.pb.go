@@ -19,12 +19,13 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Developer_AddDeveloper_FullMethodName        = "/pb.developer/AddDeveloper"
-	Developer_UpdateDeveloper_FullMethodName     = "/pb.developer/UpdateDeveloper"
-	Developer_DelDeveloperById_FullMethodName    = "/pb.developer/DelDeveloperById"
-	Developer_DelDeveloperByLogin_FullMethodName = "/pb.developer/DelDeveloperByLogin"
-	Developer_GetDeveloperById_FullMethodName    = "/pb.developer/GetDeveloperById"
-	Developer_GetDeveloperByLogin_FullMethodName = "/pb.developer/GetDeveloperByLogin"
+	Developer_AddDeveloper_FullMethodName               = "/pb.developer/AddDeveloper"
+	Developer_UpdateDeveloper_FullMethodName            = "/pb.developer/UpdateDeveloper"
+	Developer_DelDeveloperById_FullMethodName           = "/pb.developer/DelDeveloperById"
+	Developer_DelDeveloperByLogin_FullMethodName        = "/pb.developer/DelDeveloperByLogin"
+	Developer_GetDeveloperById_FullMethodName           = "/pb.developer/GetDeveloperById"
+	Developer_GetDeveloperByLogin_FullMethodName        = "/pb.developer/GetDeveloperByLogin"
+	Developer_BlockUntilDeveloperUpdated_FullMethodName = "/pb.developer/BlockUntilDeveloperUpdated"
 )
 
 // DeveloperClient is the client API for Developer service.
@@ -38,6 +39,7 @@ type DeveloperClient interface {
 	DelDeveloperByLogin(ctx context.Context, in *DelDeveloperByLoginReq, opts ...grpc.CallOption) (*DelDeveloperByLoginResp, error)
 	GetDeveloperById(ctx context.Context, in *GetDeveloperByIdReq, opts ...grpc.CallOption) (*GetDeveloperByIdResp, error)
 	GetDeveloperByLogin(ctx context.Context, in *GetDeveloperByLoginReq, opts ...grpc.CallOption) (*GetDeveloperByLoginResp, error)
+	BlockUntilDeveloperUpdated(ctx context.Context, in *BlockUntilDeveloperUpdatedReq, opts ...grpc.CallOption) (*BlockUntilDeveloperUpdatedResp, error)
 }
 
 type developerClient struct {
@@ -108,6 +110,16 @@ func (c *developerClient) GetDeveloperByLogin(ctx context.Context, in *GetDevelo
 	return out, nil
 }
 
+func (c *developerClient) BlockUntilDeveloperUpdated(ctx context.Context, in *BlockUntilDeveloperUpdatedReq, opts ...grpc.CallOption) (*BlockUntilDeveloperUpdatedResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(BlockUntilDeveloperUpdatedResp)
+	err := c.cc.Invoke(ctx, Developer_BlockUntilDeveloperUpdated_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // DeveloperServer is the server API for Developer service.
 // All implementations must embed UnimplementedDeveloperServer
 // for forward compatibility.
@@ -119,6 +131,7 @@ type DeveloperServer interface {
 	DelDeveloperByLogin(context.Context, *DelDeveloperByLoginReq) (*DelDeveloperByLoginResp, error)
 	GetDeveloperById(context.Context, *GetDeveloperByIdReq) (*GetDeveloperByIdResp, error)
 	GetDeveloperByLogin(context.Context, *GetDeveloperByLoginReq) (*GetDeveloperByLoginResp, error)
+	BlockUntilDeveloperUpdated(context.Context, *BlockUntilDeveloperUpdatedReq) (*BlockUntilDeveloperUpdatedResp, error)
 	mustEmbedUnimplementedDeveloperServer()
 }
 
@@ -146,6 +159,9 @@ func (UnimplementedDeveloperServer) GetDeveloperById(context.Context, *GetDevelo
 }
 func (UnimplementedDeveloperServer) GetDeveloperByLogin(context.Context, *GetDeveloperByLoginReq) (*GetDeveloperByLoginResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetDeveloperByLogin not implemented")
+}
+func (UnimplementedDeveloperServer) BlockUntilDeveloperUpdated(context.Context, *BlockUntilDeveloperUpdatedReq) (*BlockUntilDeveloperUpdatedResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method BlockUntilDeveloperUpdated not implemented")
 }
 func (UnimplementedDeveloperServer) mustEmbedUnimplementedDeveloperServer() {}
 func (UnimplementedDeveloperServer) testEmbeddedByValue()                   {}
@@ -276,6 +292,24 @@ func _Developer_GetDeveloperByLogin_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Developer_BlockUntilDeveloperUpdated_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(BlockUntilDeveloperUpdatedReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeveloperServer).BlockUntilDeveloperUpdated(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Developer_BlockUntilDeveloperUpdated_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeveloperServer).BlockUntilDeveloperUpdated(ctx, req.(*BlockUntilDeveloperUpdatedReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Developer_ServiceDesc is the grpc.ServiceDesc for Developer service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -306,6 +340,10 @@ var Developer_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetDeveloperByLogin",
 			Handler:    _Developer_GetDeveloperByLogin_Handler,
+		},
+		{
+			MethodName: "BlockUntilDeveloperUpdated",
+			Handler:    _Developer_BlockUntilDeveloperUpdated_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

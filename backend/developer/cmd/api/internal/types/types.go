@@ -4,7 +4,7 @@
 package types
 
 type GetDeveloperReq struct {
-	Username string `path:"login"`
+	Login string `path:"login"`
 }
 
 type GetDeveloperResp struct {
@@ -13,7 +13,7 @@ type GetDeveloperResp struct {
 	Data    struct {
 		Id        int64  `json:"id"`
 		Name      string `json:"name"`
-		Username  string `json:"login"`
+		Login     string `json:"login"`
 		AvatarUrl string `json:"avatar_url"`
 		Company   string `json:"company"`
 		Location  string `json:"location"`
@@ -25,7 +25,7 @@ type GetDeveloperResp struct {
 		Stars     int64  `json:"stars"`
 		Repos     int64  `json:"repos"`
 		Gists     int64  `json:"gists"`
-		CreateAt  string `json:"created_at"`
-		UpdateAt  string `json:"updated_at"`
+		CreatedAt string `json:"created_at"`
+		UpdatedAt string `json:"updated_at"`
 	} `json:"data"`
 }

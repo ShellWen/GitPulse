@@ -3,7 +3,7 @@ package logic
 import (
 	"context"
 	"errors"
-	consts "github.com/ShellWen/GitPulse/common"
+	"github.com/ShellWen/GitPulse/common/consts"
 	"github.com/ShellWen/GitPulse/fetcher/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
 	"strconv"

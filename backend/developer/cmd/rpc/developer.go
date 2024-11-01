@@ -1,8 +1,10 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
+	"github.com/ShellWen/GitPulse/developer/cmd/rpc/internal/consumer"
 
 	"github.com/ShellWen/GitPulse/developer/cmd/rpc/internal/config"
 	"github.com/ShellWen/GitPulse/developer/cmd/rpc/internal/server"
@@ -25,6 +27,9 @@ func main() {
 	conf.MustLoad(*configFile, &c)
 	ctx := svc.NewServiceContext(c)
 
+	serviceGroup := service.NewServiceGroup()
+	defer serviceGroup.Stop()
+
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
 		pb.RegisterDeveloperServer(grpcServer, server.NewDeveloperServer(ctx))
 
@@ -32,8 +37,12 @@ func main() {
 			reflection.Register(grpcServer)
 		}
 	})
-	defer s.Stop()
+	serviceGroup.Add(s)
+
+	for _, s := range consumer.Consumers(c, context.Background(), ctx) {
+		serviceGroup.Add(s)
+	}
 
 	fmt.Printf("Starting rpc server at %s...\n", c.ListenOn)
-	s.Start()
+	serviceGroup.Start()
 }
