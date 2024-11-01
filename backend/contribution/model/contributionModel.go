@@ -9,6 +9,14 @@ import (
 
 var _ ContributionModel = (*customContributionModel)(nil)
 
+const (
+	CategoryOpenIssue       = "OpenIssue"
+	CategoryOpenPullRequest = "OpenPullRequest"
+	CategoryComment         = "Comment"
+	CategoryReview          = "Review"
+	CategoryMerge           = "Merge"
+)
+
 type (
 	// ContributionModel is an interface to be customized, add more methods here,
 	// and implement the added methods in customContributionModel.

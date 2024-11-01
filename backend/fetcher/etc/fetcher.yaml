@@ -1,0 +1,65 @@
+Endpoints:
+  - 127.0.0.1:2001
+  - 127.0.0.1:2002
+  - 127.0.0.1:2003
+  - 127.0.0.1:2004
+  - 127.0.0.1:2005
+
+Log:
+  Mode: console
+  Encoding: plain
+
+KqFetcherTaskConsumerConf:
+  Name: fetcher-task-consumer
+  Brokers:
+    - 127.0.0.1:9092
+  Group: fetchers
+  Topic: fetcher-task
+
+KqDeveloperPusherConf:
+  Name: developer-pusher
+  Brokers:
+    - 127.0.0.1:9092
+  Topic: developer-update
+
+KqContributionPusherConf:
+  Name: contribution-pusher
+  Brokers:
+    - 127.0.0.1:9092
+  Topic: contribution-update
+
+KqCreateRepoPusherConf:
+  Name: create-repo-pusher
+  Brokers:
+    - 127.0.0.1:9092
+  Topic: create-repo-update
+
+KqForkPusherConf:
+  Name: fork-pusher
+  Brokers:
+    - 127.0.0.1:9092
+  Topic: fork-update
+
+KqStarPusherConf:
+  Name: star-pusher
+  Brokers:
+    - 127.0.0.1:9092
+  Topic: star-update
+
+KqFollowPusherConf:
+  Name: follow-pusher
+  Brokers:
+    - 127.0.0.1:9092
+  Topic: follow-update
+
+KqRepoPusherConf:
+  Name: repo-pusher
+  Brokers:
+    - 127.0.0.1:9092
+  Topic: repo-update
+
+RedisClient:
+  Host: 127.0.0.1:6379
+  Type: node
+  Pass:
+  Key: fetcher
