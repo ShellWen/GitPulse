@@ -6,7 +6,7 @@ export const developer = z.object({
   id: z.number().nonnegative('Developer ID should be non-negative'),
   name: z.string().optional(),
   login: z.string().min(1, 'Login should not be empty'),
-  avatarUrl: z.string().url('Avatar URL should be a valid URL'),
+  avatar_url: z.string().url('Avatar URL should be a valid URL'),
   company: z.string().nullable(),
   location: z.string().nullable(),
   bio: z.string().nullable(),
