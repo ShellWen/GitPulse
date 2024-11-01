@@ -33,7 +33,7 @@ export const handlers = [
         id: 38996248,
         name: 'ShellWen | 颉文',
         login: 'ShellWen',
-        avatarUrl: 'https://avatars.githubusercontent.com/u/38996248?v=4',
+        avatar_url: 'https://avatars.githubusercontent.com/u/38996248?v=4',
         company: 'ShellWen Company',
         location: 'Utopia',
         bio: 'Another Furry/🌈/Coder/Student',
