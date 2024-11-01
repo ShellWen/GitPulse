@@ -14,27 +14,30 @@ import (
 )
 
 type (
-	AddContributionReq     = pb.AddContributionReq
-	AddContributionResp    = pb.AddContributionResp
-	Contribution           = pb.Contribution
-	DelContributionReq     = pb.DelContributionReq
-	DelContributionResp    = pb.DelContributionResp
-	GetContributionReq     = pb.GetContributionReq
-	GetContributionResp    = pb.GetContributionResp
-	SearchByCategoryReq    = pb.SearchByCategoryReq
-	SearchByCategoryResp   = pb.SearchByCategoryResp
-	SearchByRepoIdReq      = pb.SearchByRepoIdReq
-	SearchByRepoIdResp     = pb.SearchByRepoIdResp
-	SearchByUserIdReq      = pb.SearchByUserIdReq
-	SearchByUserIdResp     = pb.SearchByUserIdResp
-	UpdateContributionReq  = pb.UpdateContributionReq
-	UpdateContributionResp = pb.UpdateContributionResp
+	AddContributionReq                       = pb.AddContributionReq
+	AddContributionResp                      = pb.AddContributionResp
+	Contribution                             = pb.Contribution
+	DelAllContributionInCategoryByUserIdReq  = pb.DelAllContributionInCategoryByUserIdReq
+	DelAllContributionInCategoryByUserIdResp = pb.DelAllContributionInCategoryByUserIdResp
+	DelContributionReq                       = pb.DelContributionReq
+	DelContributionResp                      = pb.DelContributionResp
+	GetContributionReq                       = pb.GetContributionReq
+	GetContributionResp                      = pb.GetContributionResp
+	SearchByCategoryReq                      = pb.SearchByCategoryReq
+	SearchByCategoryResp                     = pb.SearchByCategoryResp
+	SearchByRepoIdReq                        = pb.SearchByRepoIdReq
+	SearchByRepoIdResp                       = pb.SearchByRepoIdResp
+	SearchByUserIdReq                        = pb.SearchByUserIdReq
+	SearchByUserIdResp                       = pb.SearchByUserIdResp
+	UpdateContributionReq                    = pb.UpdateContributionReq
+	UpdateContributionResp                   = pb.UpdateContributionResp
 
 	ContributionZrpcClient interface {
 		// -----------------------contribution-----------------------
 		AddContribution(ctx context.Context, in *AddContributionReq, opts ...grpc.CallOption) (*AddContributionResp, error)
 		UpdateContribution(ctx context.Context, in *UpdateContributionReq, opts ...grpc.CallOption) (*UpdateContributionResp, error)
 		DelContribution(ctx context.Context, in *DelContributionReq, opts ...grpc.CallOption) (*DelContributionResp, error)
+		DelAllContributionInCategoryByUserId(ctx context.Context, in *DelAllContributionInCategoryByUserIdReq, opts ...grpc.CallOption) (*DelAllContributionInCategoryByUserIdResp, error)
 		GetContribution(ctx context.Context, in *GetContributionReq, opts ...grpc.CallOption) (*GetContributionResp, error)
 		SearchByCategory(ctx context.Context, in *SearchByCategoryReq, opts ...grpc.CallOption) (*SearchByCategoryResp, error)
 		SearchByUserId(ctx context.Context, in *SearchByUserIdReq, opts ...grpc.CallOption) (*SearchByUserIdResp, error)
@@ -66,6 +69,11 @@ func (m *defaultContributionZrpcClient) UpdateContribution(ctx context.Context, 
 func (m *defaultContributionZrpcClient) DelContribution(ctx context.Context, in *DelContributionReq, opts ...grpc.CallOption) (*DelContributionResp, error) {
 	client := pb.NewContributionClient(m.cli.Conn())
 	return client.DelContribution(ctx, in, opts...)
+}
+
+func (m *defaultContributionZrpcClient) DelAllContributionInCategoryByUserId(ctx context.Context, in *DelAllContributionInCategoryByUserIdReq, opts ...grpc.CallOption) (*DelAllContributionInCategoryByUserIdResp, error) {
+	client := pb.NewContributionClient(m.cli.Conn())
+	return client.DelAllContributionInCategoryByUserId(ctx, in, opts...)
 }
 
 func (m *defaultContributionZrpcClient) GetContribution(ctx context.Context, in *GetContributionReq, opts ...grpc.CallOption) (*GetContributionResp, error) {

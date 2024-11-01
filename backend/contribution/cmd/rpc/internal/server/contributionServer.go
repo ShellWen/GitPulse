@@ -39,6 +39,11 @@ func (s *ContributionServer) DelContribution(ctx context.Context, in *pb.DelCont
 	return l.DelContribution(in)
 }
 
+func (s *ContributionServer) DelAllContributionInCategoryByUserId(ctx context.Context, in *pb.DelAllContributionInCategoryByUserIdReq) (*pb.DelAllContributionInCategoryByUserIdResp, error) {
+	l := logic.NewDelAllContributionInCategoryByUserIdLogic(ctx, s.svcCtx)
+	return l.DelAllContributionInCategoryByUserId(in)
+}
+
 func (s *ContributionServer) GetContribution(ctx context.Context, in *pb.GetContributionReq) (*pb.GetContributionResp, error) {
 	l := logic.NewGetContributionLogic(ctx, s.svcCtx)
 	return l.GetContribution(in)

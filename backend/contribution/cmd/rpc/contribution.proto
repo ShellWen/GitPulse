@@ -63,6 +63,16 @@ message DelContributionResp {
   string message = 2;
 }
 
+message DelAllContributionInCategoryByUserIdReq {
+  string category = 1; //category
+  int64 userId = 2; //userId
+}
+
+message DelAllContributionInCategoryByUserIdResp {
+  int64 code = 1;
+  string message = 2;
+}
+
 message GetContributionReq {
   int64 repoId = 1; //repoId
   string category = 2; //category
@@ -117,12 +127,13 @@ message SearchByRepoIdResp {
 
 service contribution{ 
 
-	 //-----------------------contribution----------------------- 
-	 rpc AddContribution(AddContributionReq) returns (AddContributionResp); 
-	 rpc UpdateContribution(UpdateContributionReq) returns (UpdateContributionResp); 
-	 rpc DelContribution(DelContributionReq) returns (DelContributionResp); 
-	 rpc GetContribution(GetContributionReq) returns (GetContributionResp);
-   rpc SearchByCategory(SearchByCategoryReq) returns (SearchByCategoryResp);
+	  //-----------------------contribution-----------------------
+	  rpc AddContribution(AddContributionReq) returns (AddContributionResp);
+	  rpc UpdateContribution(UpdateContributionReq) returns (UpdateContributionResp);
+	  rpc DelContribution(DelContributionReq) returns (DelContributionResp);
+    rpc DelAllContributionInCategoryByUserId(DelAllContributionInCategoryByUserIdReq) returns (DelAllContributionInCategoryByUserIdResp);
+	  rpc GetContribution(GetContributionReq) returns (GetContributionResp);
+    rpc SearchByCategory(SearchByCategoryReq) returns (SearchByCategoryResp);
     rpc SearchByUserId(SearchByUserIdReq) returns (SearchByUserIdResp);
     rpc SearchByRepoId(SearchByRepoIdReq) returns (SearchByRepoIdResp);
 }
