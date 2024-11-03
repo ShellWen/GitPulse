@@ -60,6 +60,10 @@ func (l *GetRepoByIdLogic) GetRepoById(in *pb.GetRepoByIdReq) (resp *pb.GetRepoB
 				Description:             repo.Description,
 				LastFetchForkAt:         repo.LastFetchForkAt.Unix(),
 				LastFetchContributionAt: repo.LastFetchContributionAt.Unix(),
+				MergedPrCount:           repo.MergedPrCount,
+				OpenPrCount:             repo.OpenPrCount,
+				CommentCount:            repo.CommentCount,
+				ReviewCount:             repo.ReviewCount,
 			},
 		}
 	}

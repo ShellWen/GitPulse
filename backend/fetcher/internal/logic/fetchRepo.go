@@ -36,9 +36,13 @@ func doFetchRepo(ctx context.Context, svcContext *svc.ServiceContext, repoId int
 
 func buildAndPushRepoByGithubRepo(ctx context.Context, svcContext *svc.ServiceContext, githubClient *github.Client, githubRepo *github.Repository) (err error) {
 	var (
-		issueCount  int64
-		prCount     int64
-		commitCount int64
+		issueCount    int64
+		prCount       int64
+		commitCount   int64
+		mergedPrCount int64
+		openPrCount   int64
+		commentCount  int64
+		reviewCount   int64
 	)
 
 	if issueCount, prCount, err = getGithubIssuePrCountByRepo(ctx, githubClient, githubRepo.GetOwner().GetLogin(), githubRepo.GetName()); err != nil {
@@ -49,7 +53,23 @@ func buildAndPushRepoByGithubRepo(ctx context.Context, svcContext *svc.ServiceCo
 		return
 	}
 
-	if err = pushRepo(ctx, svcContext, buildRepo(ctx, svcContext, githubRepo, issueCount, prCount, commitCount)); err != nil {
+	if mergedPrCount, err = getGithubMergedPrCountByRepo(ctx, githubClient, githubRepo.GetOwner().GetLogin(), githubRepo.GetName()); err != nil {
+		return
+	}
+
+	if openPrCount, err = getGithubOpenPrCountByRepo(ctx, githubClient, githubRepo.GetOwner().GetLogin(), githubRepo.GetName()); err != nil {
+		return
+	}
+
+	if commentCount, err = getGithubCommentCountByRepo(ctx, githubClient, githubRepo.GetOwner().GetLogin(), githubRepo.GetName()); err != nil {
+		return
+	}
+
+	if reviewCount, err = getGithubReviewCountByRepo(ctx, githubClient, githubRepo.GetOwner().GetLogin(), githubRepo.GetName()); err != nil {
+		return
+	}
+
+	if err = pushRepo(ctx, svcContext, buildRepo(ctx, svcContext, githubRepo, issueCount, prCount, commitCount, mergedPrCount, openPrCount, commentCount, reviewCount)); err != nil {
 		return
 	}
 
@@ -76,6 +96,84 @@ func getGithubIssuePrCountByRepo(ctx context.Context, githubClient *github.Clien
 	return
 }
 
+func getGithubOpenPrCountByRepo(ctx context.Context, githubClient *github.Client, owner string, name string) (openMergePrCount int64, err error) {
+	var githubPrResp *github.Response
+
+	if _, githubPrResp, err = githubClient.PullRequests.List(ctx, owner, name, &github.PullRequestListOptions{State: "open", ListOptions: github.ListOptions{PerPage: 1}}); err != nil {
+		logx.Error(errors.New("Unexpected error when fetching open merge pr count: " + err.Error()))
+		return
+	}
+
+	openMergePrCount = int64(githubPrResp.LastPage)
+
+	return
+}
+
+func getGithubMergedPrCountByRepo(ctx context.Context, githubClient *github.Client, owner string, name string) (mergedPrCount int64, err error) {
+	var githubPrResp *github.Response
+
+	if _, githubPrResp, err = githubClient.Search.Issues(ctx, "repo:"+owner+"/"+name+" is:pr is:merged", &github.SearchOptions{ListOptions: github.ListOptions{PerPage: 1}}); err != nil {
+		logx.Error(errors.New("Unexpected error when fetching merged pr count: " + err.Error()))
+		return
+	}
+
+	mergedPrCount = int64(githubPrResp.LastPage)
+
+	return
+}
+
+func getGithubCommentCountByRepo(ctx context.Context, githubClient *github.Client, owner string, name string) (commentCount int64, err error) {
+	var githubIssueResp *github.Response
+	var githubPrResp *github.Response
+
+	if _, githubIssueResp, err = githubClient.Issues.ListComments(ctx, owner, name, 0, &github.IssueListCommentsOptions{ListOptions: github.ListOptions{PerPage: 1}}); err != nil {
+		logx.Error(errors.New("Unexpected error when fetching comment count: " + err.Error()))
+		return
+	}
+
+	if _, githubPrResp, err = githubClient.PullRequests.ListComments(ctx, owner, name, 0, &github.PullRequestListCommentsOptions{ListOptions: github.ListOptions{PerPage: 1}}); err != nil {
+		logx.Error(errors.New("Unexpected error when fetching comment count: " + err.Error()))
+		return
+	}
+
+	commentCount = int64(githubIssueResp.LastPage) + int64(githubPrResp.LastPage)
+
+	return
+}
+
+func getGithubReviewCountByRepo(ctx context.Context, githubClient *github.Client, owner string, name string) (reviewCount int64, err error) {
+	var (
+		allPr []*github.PullRequest
+		resp  *github.Response
+	)
+
+	opt := &github.PullRequestListOptions{ListOptions: github.ListOptions{PerPage: 100}}
+	for {
+		var prs []*github.PullRequest
+		prs, resp, err = githubClient.PullRequests.List(ctx, owner, name, opt)
+		if err != nil {
+			logx.Error("Unexpected error when getting all prs: " + err.Error())
+			return
+		}
+		allPr = append(allPr, prs...)
+		if resp.NextPage == 0 {
+			break
+		}
+		opt.Page = resp.NextPage
+	}
+
+	for _, pr := range allPr {
+		if _, resp, err = githubClient.PullRequests.ListReviews(ctx, owner, name, pr.GetNumber(), &github.ListOptions{PerPage: 1}); err != nil {
+			logx.Error(errors.New("Unexpected error when fetching review count: " + err.Error()))
+			return
+		}
+
+		reviewCount += int64(resp.LastPage)
+	}
+
+	return
+}
+
 func getGithubCommitCountByRepo(ctx context.Context, githubClient *github.Client, owner string, name string) (commitCount int64, err error) {
 	var githubCommitResp *github.Response
 
@@ -89,17 +187,21 @@ func getGithubCommitCountByRepo(ctx context.Context, githubClient *github.Client
 	return
 }
 
-func buildRepo(ctx context.Context, svcContext *svc.ServiceContext, githubRepo *github.Repository, issueCount int64, prCount int64, commitCount int64) (newRepo *model.Repo) {
+func buildRepo(ctx context.Context, svcContext *svc.ServiceContext, githubRepo *github.Repository, issueCount int64, prCount int64, commitCount int64, mergedPrCount int64, openPrCount int64, commentCount int64, reviewCount int64) (newRepo *model.Repo) {
 	newRepo = &model.Repo{
-		Id:          githubRepo.GetID(),
-		Name:        githubRepo.GetName(),
-		StarCount:   int64(githubRepo.GetStargazersCount()),
-		ForkCount:   int64(githubRepo.GetForksCount()),
-		IssueCount:  issueCount,
-		PrCount:     prCount,
-		CommitCount: commitCount,
-		Language:    githubRepo.GetLanguage(),
-		Description: githubRepo.GetDescription(),
+		Id:            githubRepo.GetID(),
+		Name:          githubRepo.GetName(),
+		StarCount:     int64(githubRepo.GetStargazersCount()),
+		ForkCount:     int64(githubRepo.GetForksCount()),
+		IssueCount:    issueCount,
+		PrCount:       prCount,
+		CommitCount:   commitCount,
+		Language:      githubRepo.GetLanguage(),
+		Description:   githubRepo.GetDescription(),
+		MergedPrCount: mergedPrCount,
+		OpenPrCount:   openPrCount,
+		CommentCount:  commentCount,
+		ReviewCount:   reviewCount,
 	}
 	return
 }

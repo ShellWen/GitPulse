@@ -121,8 +121,7 @@ CREATE TABLE analysis.analysis (
     developer_id bigint DEFAULT 0 NOT NULL,
     languages json DEFAULT '{}'::json NOT NULL,
     talent_rank double precision DEFAULT 0 NOT NULL,
-    nation character varying(255) DEFAULT ''::character varying NOT NULL,
-    pulse_point double precision DEFAULT 0 NOT NULL
+    nation character varying(255) DEFAULT ''::character varying NOT NULL
 );
 
 
@@ -347,11 +346,14 @@ CREATE TABLE repo.repo (
     fork_count bigint DEFAULT 0 NOT NULL,
     issue_count bigint DEFAULT 0 NOT NULL,
     commit_count bigint DEFAULT 0 NOT NULL,
-    pr_count bigint DEFAULT 0 NOT NULL,
     language json DEFAULT '{}'::json NOT NULL,
     description character varying(255) DEFAULT ''::character varying NOT NULL,
     last_fetch_fork_at timestamp with time zone DEFAULT to_timestamp((0)::double precision) NOT NULL,
-    last_fetch_contribution_at timestamp with time zone DEFAULT to_timestamp((0)::double precision) NOT NULL
+    last_fetch_contribution_at timestamp with time zone DEFAULT to_timestamp((0)::double precision) NOT NULL,
+    merged_pr_count bigint DEFAULT 0 NOT NULL,
+    open_pr_count bigint DEFAULT 0 NOT NULL,
+    comment_count bigint DEFAULT 0 NOT NULL,
+    review_count bigint DEFAULT 0 NOT NULL
 );
 
 
@@ -375,9 +377,9 @@ ALTER TABLE repo.repo ALTER COLUMN data_id ADD GENERATED ALWAYS AS IDENTITY (
 -- Data for Name: analysis; Type: TABLE DATA; Schema: analysis; Owner: general_user
 --
 
-COPY analysis.analysis (data_id, data_created_at, data_updated_at, developer_id, languages, talent_rank, nation, pulse_point) FROM stdin;
-1	2024-10-27 23:05:03.138255+08	2024-10-27 23:05:03.138257+08	-5859999829173043	{}	90	adipisicing proident quis esse elit	0
-3	2024-10-27 23:05:49.482043+08	2024-10-27 23:08:29.323881+08	7479059541506461	{}	4	aute	0
+COPY analysis.analysis (data_id, data_created_at, data_updated_at, developer_id, languages, talent_rank, nation) FROM stdin;
+1	2024-10-27 23:05:03.138255+08	2024-10-27 23:05:03.138257+08	-5859999829173043	{}	90	adipisicing proident quis esse elit
+3	2024-10-27 23:05:49.482043+08	2024-10-27 23:08:29.323881+08	7479059541506461	{}	4	aute
 \.
 
 
@@ -505,12 +507,12 @@ COPY relation.star (data_id, developer_id, repo_id) FROM stdin;
 -- Data for Name: repo; Type: TABLE DATA; Schema: repo; Owner: general_user
 --
 
-COPY repo.repo (data_id, data_created_at, data_updated_at, id, name, star_count, fork_count, issue_count, commit_count, pr_count, language, description, last_fetch_fork_at, last_fetch_contribution_at) FROM stdin;
-5	2024-10-27 15:37:02.212148+08	2024-10-27 15:37:02.21215+08	3523632283650764	纵国琴	-1289752196028791	-1210269439784199	-8598683384517927	-2293580815825747	1289819019356761	{}	人广都精没。满新反报带理。感信用表非所反感路。员间意民好。经效他还华还水带长。强安前。	1970-01-01 08:00:00+08	1970-01-01 08:00:00+08
-7	2024-10-27 15:37:12.567671+08	2024-10-27 15:37:12.567673+08	3067809241010708	钦诚	1821866848122965	-6071622107913391	-2014352923821635	164733007140365	5819365439908217	{}	需她格新立少。再何支如建话么再王。准离组证示资始片。计生料证北。特形口。文率亲南将。	1970-01-01 08:00:00+08	1970-01-01 08:00:00+08
-9	2024-10-27 15:38:38.809677+08	2024-10-27 15:38:59.39244+08	6249417936809650	湛磊	-3250057335001851	6393638176137649	-4375831238569531	-7513812163244219	-6137185102164223	{}	去数红又装商劳数组者。部万进做学称。住接大看济马理除。	1970-01-01 08:00:00+08	1970-01-01 08:00:00+08
-4	2024-10-27 12:58:06.857896+08	2024-10-28 22:01:17.674521+08	123132	腾万佳	-8530808456505775	1331975846439665	7816573501139929	-740602614358191	-3478036959738907	{}	性应看号候行表发几没。型上却价后华。电农百据六。引什非。们外如角认据见外手。切外以酸解说位次听。却这以过。切情该些了万学用道最。	1970-01-01 08:00:00+08	1970-01-01 08:00:00+08
-8	2024-10-27 15:37:16.269004+08	2024-10-30 16:25:05.59473+08	8545238099456102	铎文韬	2586743306437733	5523854433059365	5926289815197205	-2076770298075035	2125876007232625	{"java": 123}	动还专越精观如位消。包业者克除八不但。被强低需提照连。自影听。何民达造特求反于斗。完分行。非面非约新效明上向先。	1970-01-01 08:00:00+08	1970-01-01 08:00:00+08
+COPY repo.repo (data_id, data_created_at, data_updated_at, id, name, star_count, fork_count, issue_count, commit_count, language, description, last_fetch_fork_at, last_fetch_contribution_at, merged_pr_count, open_pr_count, comment_count, review_count) FROM stdin;
+5	2024-10-27 15:37:02.212148+08	2024-10-27 15:37:02.21215+08	3523632283650764	纵国琴	-1289752196028791	-1210269439784199	-8598683384517927	-2293580815825747	{}	人广都精没。满新反报带理。感信用表非所反感路。员间意民好。经效他还华还水带长。强安前。	1970-01-01 08:00:00+08	1970-01-01 08:00:00+08	0	0	0	0
+7	2024-10-27 15:37:12.567671+08	2024-10-27 15:37:12.567673+08	3067809241010708	钦诚	1821866848122965	-6071622107913391	-2014352923821635	164733007140365	{}	需她格新立少。再何支如建话么再王。准离组证示资始片。计生料证北。特形口。文率亲南将。	1970-01-01 08:00:00+08	1970-01-01 08:00:00+08	0	0	0	0
+9	2024-10-27 15:38:38.809677+08	2024-10-27 15:38:59.39244+08	6249417936809650	湛磊	-3250057335001851	6393638176137649	-4375831238569531	-7513812163244219	{}	去数红又装商劳数组者。部万进做学称。住接大看济马理除。	1970-01-01 08:00:00+08	1970-01-01 08:00:00+08	0	0	0	0
+4	2024-10-27 12:58:06.857896+08	2024-10-28 22:01:17.674521+08	123132	腾万佳	-8530808456505775	1331975846439665	7816573501139929	-740602614358191	{}	性应看号候行表发几没。型上却价后华。电农百据六。引什非。们外如角认据见外手。切外以酸解说位次听。却这以过。切情该些了万学用道最。	1970-01-01 08:00:00+08	1970-01-01 08:00:00+08	0	0	0	0
+8	2024-10-27 15:37:16.269004+08	2024-10-30 16:25:05.59473+08	8545238099456102	铎文韬	2586743306437733	5523854433059365	5926289815197205	-2076770298075035	{"java": 123}	动还专越精观如位消。包业者克除八不但。被强低需提照连。自影听。何民达造特求反于斗。完分行。非面非约新效明上向先。	1970-01-01 08:00:00+08	1970-01-01 08:00:00+08	0	0	0	0
 \.
 
 

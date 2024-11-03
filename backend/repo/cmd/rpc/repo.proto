@@ -24,6 +24,10 @@ message Repo {
   string description = 12; //description
   int64 lastFetchForkAt = 13; //lastFetchForkAt
   int64 lastFetchContributionAt = 14; //lastFetchContributionAt
+  int64 mergedPrCount = 15; //mergedPrCount
+  int64 openPrCount = 16; //openPrCount
+  int64 commentCount = 17; //commentCount
+  int64 reviewCount = 18; //reviewCount
 }
 
 message AddRepoReq {
@@ -38,6 +42,10 @@ message AddRepoReq {
   string description = 9; //description
   int64 lastFetchForkAt = 10; //lastFetchForkAt
   int64 lastFetchContributionAt = 11; //lastFetchContributionAt
+  int64 mergedPrCount = 12; //mergedPrCount
+  int64 openPrCount = 13; //openPrCount
+  int64 commentCount = 14; //commentCount
+  int64 reviewCount = 15; //reviewCount
 }
 
 message AddRepoResp {
@@ -57,6 +65,10 @@ message UpdateRepoReq {
   string description = 9; //description
   int64 lastFetchForkAt = 10; //lastFetchForkAt
   int64 lastFetchContributionAt = 11; //lastFetchContributionAt
+  int64 mergedPrCount = 12; //mergedPrCount
+  int64 openPrCount = 13; //openPrCount
+  int64 commentCount = 14; //commentCount
+  int64 reviewCount = 15; //reviewCount
 }
 
 message UpdateRepoResp {

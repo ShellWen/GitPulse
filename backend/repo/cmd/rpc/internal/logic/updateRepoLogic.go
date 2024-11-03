@@ -68,6 +68,10 @@ func (l *UpdateRepoLogic) doUpdateRepo(repo *model.Repo, in *pb.UpdateRepoReq) (
 	repo.Description = in.Description
 	repo.LastFetchForkAt = time.Unix(in.LastFetchForkAt, 0)
 	repo.LastFetchContributionAt = time.Unix(in.LastFetchContributionAt, 0)
+	repo.MergedPrCount = in.MergedPrCount
+	repo.OpenPrCount = in.OpenPrCount
+	repo.CommentCount = in.CommentCount
+	repo.ReviewCount = in.ReviewCount
 
 	err = l.svcCtx.RepoModel.Update(l.ctx, repo)
 	return

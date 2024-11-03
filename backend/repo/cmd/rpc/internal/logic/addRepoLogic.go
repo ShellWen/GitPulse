@@ -42,6 +42,10 @@ func (l *AddRepoLogic) AddRepo(in *pb.AddRepoReq) (resp *pb.AddRepoResp, err err
 		Description:             in.Description,
 		LastFetchForkAt:         time.Unix(in.LastFetchForkAt, 0),
 		LastFetchContributionAt: time.Unix(in.LastFetchContributionAt, 0),
+		MergedPrCount:           in.MergedPrCount,
+		OpenPrCount:             in.OpenPrCount,
+		CommentCount:            in.CommentCount,
+		ReviewCount:             in.ReviewCount,
 	}
 
 	if _, err = l.svcCtx.RepoModel.Insert(l.ctx, repo); err != nil {
