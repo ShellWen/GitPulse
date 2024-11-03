@@ -32,11 +32,6 @@ func (l *DelAllFollowingLogic) DelAllFollowing(in *pb.DelAllFollowingReq) (resp 
 			Code:    http.StatusInternalServerError,
 			Message: err.Error(),
 		}
-	} else if len(*following) == 0 {
-		resp = &pb.DelAllFollowingResp{
-			Code:    http.StatusNotFound,
-			Message: http.StatusText(http.StatusNotFound),
-		}
 	} else {
 		for _, follow := range *following {
 			if err = l.svcCtx.FollowModel.Delete(l.ctx, follow.DataId); err != nil {

@@ -32,11 +32,6 @@ func (l *DelAllStaringDevLogic) DelAllStaringDev(in *pb.DelAllStaringDevReq) (re
 			Code:    http.StatusInternalServerError,
 			Message: err.Error(),
 		}
-	} else if len(*star) == 0 {
-		resp = &pb.DelAllStaringDevResp{
-			Code:    http.StatusNotFound,
-			Message: http.StatusText(http.StatusNotFound),
-		}
 	} else {
 		for _, s := range *star {
 			if err = l.svcCtx.StarModel.Delete(l.ctx, s.DataId); err != nil {

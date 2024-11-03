@@ -32,11 +32,6 @@ func (l *DelAllForkLogic) DelAllFork(in *pb.DelAllForkReq) (resp *pb.DelAllForkR
 			Code:    http.StatusInternalServerError,
 			Message: err.Error(),
 		}
-	} else if len(*forks) == 0 {
-		resp = &pb.DelAllForkResp{
-			Code:    http.StatusNotFound,
-			Message: http.StatusText(http.StatusNotFound),
-		}
 	} else {
 		for _, fork := range *forks {
 			if err = l.svcCtx.ForkModel.Delete(l.ctx, fork.DataId); err != nil {

@@ -31,11 +31,6 @@ func (l *DelAllCreatedRepoLogic) DelAllCreatedRepo(in *pb.DelAllCreatedRepoReq) 
 			Code:    http.StatusInternalServerError,
 			Message: err.Error(),
 		}
-	} else if len(*createdRepos) == 0 {
-		resp = &pb.DelAllCreatedRepoResp{
-			Code:    http.StatusNotFound,
-			Message: http.StatusText(http.StatusNotFound),
-		}
 	} else {
 		for _, createdRepo := range *createdRepos {
 			if err = l.svcCtx.CreateRepoModel.Delete(l.ctx, createdRepo.DataId); err != nil {

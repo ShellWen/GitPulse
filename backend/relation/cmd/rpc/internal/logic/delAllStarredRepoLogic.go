@@ -32,11 +32,6 @@ func (l *DelAllStarredRepoLogic) DelAllStarredRepo(in *pb.DelAllStarredRepoReq) 
 			Code:    http.StatusInternalServerError,
 			Message: err.Error(),
 		}
-	} else if len(*stars) == 0 {
-		resp = &pb.DelAllStarredRepoResp{
-			Code:    http.StatusNotFound,
-			Message: http.StatusText(http.StatusNotFound),
-		}
 	} else {
 		for _, star := range *stars {
 			if err = l.svcCtx.StarModel.Delete(l.ctx, star.DataId); err != nil {
