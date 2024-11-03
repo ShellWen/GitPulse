@@ -7,7 +7,7 @@ WORKDIR /app
 
 FROM base AS build
 
-ARG BACKEND_BASEURL="https://api.gitpulse.shellwen.com"
+ARG BACKEND_BASEURL="https://api-pulse.shellwen.com"
 # Use any value except "" to enable mocks
 ARG ENABLE_MOCK=""
 
