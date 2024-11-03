@@ -26,7 +26,7 @@ type (
 func (m *customFollowModel) SearchFollowingByDeveloperId(ctx context.Context, developerId int64, page int64, limit int64) (*[]*Follow, error) {
 	var resp []*Follow
 
-	query := fmt.Sprintf("select %s from %s where following_id = %d limit %d offset %d", followRows, m.table, developerId, limit, (page-1)*limit)
+	query := fmt.Sprintf("select %s from %s where follower_id = %d limit %d offset %d", followRows, m.table, developerId, limit, (page-1)*limit)
 	if err := m.QueryRowsNoCacheCtx(ctx, &resp, query); err != nil {
 		return nil, err
 	}
@@ -37,7 +37,7 @@ func (m *customFollowModel) SearchFollowingByDeveloperId(ctx context.Context, de
 func (m *customFollowModel) SearchFollowerByDeveloperId(ctx context.Context, developerId int64, page int64, limit int64) (*[]*Follow, error) {
 	var resp []*Follow
 
-	query := fmt.Sprintf("select %s from %s where followed_id = %d limit %d offset %d", followRows, m.table, developerId, limit, (page-1)*limit)
+	query := fmt.Sprintf("select %s from %s where following_id = %d limit %d offset %d", followRows, m.table, developerId, limit, (page-1)*limit)
 	if err := m.QueryRowsNoCacheCtx(ctx, &resp, query); err != nil {
 		return nil, err
 	}
