@@ -30,15 +30,13 @@ const DeveloperGlance = ({ developer }: { developer: Developer }) => {
   )
 
   return (
-    <section className="flex w-full max-w-6xl flex-col gap-2 md:flex-row md:gap-0">
-      <Divider horizontal />
+    <section className="rounded bg-base-200 p-8 flex w-full max-w-6xl flex-col gap-2 md:flex-row md:gap-0">
       {items.map((item, index) => (
         <Fragment key={item.name + item.value}>
           <UserGlanceBlock item={item} />
           {index < items.length - 1 && <Divider horizontal />}
         </Fragment>
       ))}
-      <Divider horizontal />
     </section>
   )
 }
