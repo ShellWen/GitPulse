@@ -120,6 +120,21 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/DeveloperWithPulsePoint'
+  /languages:
+    get:
+      tags:
+        - developers
+      summary: 获得语言列表
+      description: ''
+      responses:
+        '200':
+          description: 请求成功
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Language'
 components:
   schemas:
     Developer:
