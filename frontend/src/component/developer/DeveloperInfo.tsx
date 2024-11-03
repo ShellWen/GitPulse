@@ -1,9 +1,12 @@
+import type { ReactNode } from 'react'
+
 import { type Developer } from '$/lib/api/endpoint/developer.ts'
 import { Avatar } from 'react-daisyui'
 
-const UserInfo = ({ developer }: { developer: Developer }) => {
+const UserInfo = ({ developer, rightBlock }: { developer: Developer; rightBlock?: ReactNode }) => {
   return (
-    <section className="flex w-full max-w-6xl flex-row flex-wrap gap-8">
+    <section className="relative flex w-full max-w-6xl flex-col flex-wrap gap-8 sm:flex-row">
+      {rightBlock && <div className="absolute bottom-0 right-0 -z-10">{rightBlock}</div>}
       <Avatar src={developer.avatar_url} shape="square" size="lg" />
       <div className="flex flex-col gap-2">
         <div className="text-4xl font-bold leading-none">{developer.name}</div>
