@@ -43,3 +43,8 @@ func (s *RepoServer) GetRepoById(ctx context.Context, in *pb.GetRepoByIdReq) (*p
 	l := logic.NewGetRepoByIdLogic(ctx, s.svcCtx)
 	return l.GetRepoById(in)
 }
+
+func (s *RepoServer) BlockUntilRepoUpdated(ctx context.Context, in *pb.BlockUntilRepoUpdatedReq) (*pb.BlockUntilRepoUpdatedResp, error) {
+	l := logic.NewBlockUntilRepoUpdatedLogic(ctx, s.svcCtx)
+	return l.BlockUntilRepoUpdated(in)
+}

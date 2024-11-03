@@ -95,6 +95,15 @@ message GetRepoByIdResp {
   Repo repo = 3; //repo
 }
 
+message BlockUntilRepoUpdatedReq {
+  int64 id = 1; //id
+}
+
+message BlockUntilRepoUpdatedResp {
+  int64 code = 1;
+  string message = 2;
+}
+
 // ------------------------------------ 
 // Rpc Func
 // ------------------------------------ 
@@ -106,5 +115,6 @@ service repo{
 	 rpc UpdateRepo(UpdateRepoReq) returns (UpdateRepoResp); 
 	 rpc DelRepoById(DelRepoByIdReq) returns (DelRepoByIdResp);
 	 rpc GetRepoById(GetRepoByIdReq) returns (GetRepoByIdResp);
+    rpc BlockUntilRepoUpdated(BlockUntilRepoUpdatedReq) returns (BlockUntilRepoUpdatedResp);
 
 }

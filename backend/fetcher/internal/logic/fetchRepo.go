@@ -9,6 +9,7 @@ import (
 	"github.com/zeromicro/go-zero/core/jsonx"
 	"github.com/zeromicro/go-zero/core/logx"
 	"os"
+	"time"
 )
 
 func FetchRepo(ctx context.Context, svcContext *svc.ServiceContext, repoId int64) (err error) {
@@ -43,6 +44,7 @@ func buildAndPushRepoByGithubRepo(ctx context.Context, svcContext *svc.ServiceCo
 		openPrCount   int64
 		commentCount  int64
 		reviewCount   int64
+		languages     string
 	)
 
 	if issueCount, prCount, err = getGithubIssuePrCountByRepo(ctx, githubClient, githubRepo.GetOwner().GetLogin(), githubRepo.GetName()); err != nil {
@@ -69,7 +71,11 @@ func buildAndPushRepoByGithubRepo(ctx context.Context, svcContext *svc.ServiceCo
 		return
 	}
 
-	if err = pushRepo(ctx, svcContext, buildRepo(ctx, svcContext, githubRepo, issueCount, prCount, commitCount, mergedPrCount, openPrCount, commentCount, reviewCount)); err != nil {
+	if languages, err = getGithubLanguagesByRepo(ctx, githubClient, githubRepo.GetOwner().GetLogin(), githubRepo.GetName()); err != nil {
+		return
+	}
+
+	if err = pushRepo(ctx, svcContext, buildRepo(ctx, svcContext, githubRepo, issueCount, prCount, commitCount, mergedPrCount, openPrCount, commentCount, reviewCount, languages)); err != nil {
 		return
 	}
 
@@ -161,8 +167,26 @@ func getGithubCommitCountByRepo(ctx context.Context, githubClient *github.Client
 	return
 }
 
-func buildRepo(ctx context.Context, svcContext *svc.ServiceContext, githubRepo *github.Repository, issueCount int64, prCount int64, commitCount int64, mergedPrCount int64, openPrCount int64, commentCount int64, reviewCount int64) (newRepo *model.Repo) {
+func getGithubLanguagesByRepo(ctx context.Context, githubClient *github.Client, owner string, name string) (languages string, err error) {
+	var githubLanguages map[string]int
+
+	if githubLanguages, _, err = githubClient.Repositories.ListLanguages(ctx, owner, name); err != nil {
+		logx.Error(errors.New("Unexpected error when fetching languages: " + err.Error()))
+		return
+	}
+
+	if languages, err = jsonx.MarshalToString(githubLanguages); err != nil {
+		logx.Error(errors.New("Unexpected error when marshalling languages: " + err.Error()))
+		return
+	}
+
+	return
+}
+
+func buildRepo(ctx context.Context, svcContext *svc.ServiceContext, githubRepo *github.Repository, issueCount int64, prCount int64, commitCount int64, mergedPrCount int64, openPrCount int64, commentCount int64, reviewCount int64, languages string) (newRepo *model.Repo) {
 	newRepo = &model.Repo{
+		DataCreatedAt: time.Now(),
+		DataUpdatedAt: time.Now(),
 		Id:            githubRepo.GetID(),
 		Name:          githubRepo.GetName(),
 		StarCount:     int64(githubRepo.GetStargazersCount()),
@@ -170,7 +194,7 @@ func buildRepo(ctx context.Context, svcContext *svc.ServiceContext, githubRepo *
 		IssueCount:    issueCount,
 		PrCount:       prCount,
 		CommitCount:   commitCount,
-		Language:      githubRepo.GetLanguage(),
+		Language:      languages,
 		Description:   githubRepo.GetDescription(),
 		MergedPrCount: mergedPrCount,
 		OpenPrCount:   openPrCount,
