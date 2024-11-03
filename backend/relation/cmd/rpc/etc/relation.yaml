@@ -18,3 +18,31 @@ DB:
 Cache:
   - Host: 127.0.0.1:6379
     Pass:
+
+KqCreateRepoUpdateConsumerConf:
+  Name: create-repo-update-consumer
+  Brokers:
+    - 127.0.0.1:9092
+  Group: create-repo
+  Topic: create-repo-update
+
+KqForkUpdateConsumerConf:
+  Name: fork-update-consumer
+  Brokers:
+    - 127.0.0.1:9092
+  Group: fork
+  Topic: fork-update
+
+KqStarUpdateConsumerConf:
+    Name: star-update-consumer
+    Brokers:
+      - 127.0.0.1:9092
+    Group: star
+    Topic: star-update
+
+KqFollowUpdateConsumerConf:
+    Name: follow-update-consumer
+    Brokers:
+      - 127.0.0.1:9092
+    Group: follow
+    Topic: follow-update
