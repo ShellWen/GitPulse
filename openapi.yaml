@@ -1,0 +1,303 @@
+openapi: 3.0.3
+info:
+  title: GitPulse
+  description: https://github.com/ShellWen/GitPulse
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: ''
+externalDocs:
+  description: GitHub 仓库
+  url: https://github.com/ShellWen/GitPulse
+servers:
+  - url: https://api-pulse.shellwen.com
+tags:
+  - name: developers
+    description: 关于开发者
+paths:
+  /developers/{username}:
+    get:
+      tags:
+        - developers
+      summary: 根据 GitHub 用户 ID 获取信息
+      description: ''
+      parameters:
+        - $ref: '#/components/parameters/username'
+      responses:
+        '200':
+          description: 请求成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Developer'
+        '404':
+          description: 用户名不存在
+  /developers/{username}/pulse-point:
+    get:
+      tags:
+        - developers
+      summary: 根据 GitHub 用户 ID 获取 Pulse Point
+      description: ''
+      parameters:
+        - $ref: '#/components/parameters/username'
+      responses:
+        '200':
+          description: 请求成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeveloperPulsePoint'
+        '404':
+          description: 用户名不存在
+  /developers/{username}/languages:
+    get:
+      tags:
+        - developers
+      summary: 根据 GitHub 用户 ID 获取使用的语言
+      description: ''
+      parameters:
+        - $ref: '#/components/parameters/username'
+      responses:
+        '200':
+          description: 请求成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeveloperLanguages'
+        '404':
+          description: 用户名不存在
+  /developers/{username}/region:
+    get:
+      tags:
+        - developers
+      summary: 根据 GitHub 用户 ID 推测国家/地区
+      description: ''
+      parameters:
+        - $ref: '#/components/parameters/username'
+      responses:
+        '200':
+          description: 请求成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeveloperRegion'
+        '404':
+          description: 用户名不存在
+  /developers/:
+    get:
+      tags:
+        - developers
+      summary: 获得开发者排行榜，按照 Pulse Point 降序排列，并应用筛选条件
+      description: ''
+      parameters:
+        - name: language
+          in: query
+          required: false
+          schema:
+            type: string
+          description: 语言 ID
+        - name: region
+          in: query
+          required: false
+          schema:
+            type: string
+          description: 国家/地区代码
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 50
+          description: 返回数量
+      responses:
+        '200':
+          description: 请求成功
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DeveloperWithPulsePoint'
+components:
+  schemas:
+    Developer:
+      type: object
+      properties:
+        id:
+          type: integer
+          minimum: 0
+          example: 38996248
+          description: GitHub 用户数字 ID
+        name:
+          type: string
+          nullable: true
+          example: ShellWen | 颉文
+          description: GitHub 用户显示名
+        login:
+          type: string
+          minLength: 1
+          example: ShellWen
+          description: GitHub 用户名
+        avatar_url:
+          type: string
+          format: uri
+          example: https://avatars.githubusercontent.com/u/38996248?v=4
+          description: GitHub 用户头像
+        company:
+          type: string
+          nullable: true
+          example: null
+          description: GitHub 用户公司
+        location:
+          type: string
+          nullable: true
+          example: null
+          description: GitHub 用户位置
+        bio:
+          type: string
+          nullable: true
+          example: Another Furry/🌈/Coder/Student
+          description: GitHub 用户简介
+        blog:
+          type: string
+          nullable: true
+          example: https://shellwen.com
+          description: GitHub 用户博客
+        email:
+          type: string
+          format: email
+          nullable: true
+          example: me@shellwen.com
+          description: GitHub 用户邮箱
+        followers:
+          type: integer
+          minimum: 0
+          example: 114
+          description: GitHub 用户关注者数量
+        following:
+          type: integer
+          minimum: 0
+          example: 514
+          description: GitHub 用户关注数量
+        stars:
+          type: integer
+          minimum: 0
+          example: 191
+          description: GitHub 用户获得的星标数量
+        repos:
+          type: integer
+          minimum: 0
+          example: 98
+          description: GitHub 用户的公共仓库数量
+        gists:
+          type: integer
+          minimum: 0
+          example: 10
+          description: GitHub 用户的公共 Gists 数量
+        created_at:
+          type: string
+          format: date-time
+          example: 2018-05-05T02:44:13Z
+          description: GitHub 用户创建日期
+        updated_at:
+          type: string
+          format: date-time
+          example: 2024-10-28T03:08:49Z
+          description: GitHub 用户最后更新日期
+    DeveloperWithPulsePoint:
+      type: object
+      properties:
+        developer:
+          $ref: '#/components/schemas/Developer'
+          description: 开发者信息
+        pulse_point:
+          $ref: '#/components/schemas/DeveloperPulsePoint'
+          description: Pulse Point 信息
+    DeveloperPulsePoint:
+      type: object
+      properties:
+        id:
+          type: integer
+          minimum: 0
+          example: 38996248
+          description: GitHub 用户数字 ID
+        pulse_point:
+          type: integer
+          minimum: 0
+          description: GitHub 用户的 Pulse Point
+        updated_at:
+          type: string
+          format: date-time
+          example: 2024-11-03T19:44:38Z
+          description: Pulse Point 最后更新日期
+    DeveloperLanguages:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 38996248
+          description: GitHub 用户数字 ID
+        languages:
+          type: array
+          items:
+            $ref: '#/components/schemas/LanguageWithUsage'
+          description: GitHub 用户使用的语言
+        updated_at:
+          type: string
+          format: date-time
+          example: 2024-11-03T19:44:38Z
+          description: 语言使用情况最后更新日期
+    DeveloperRegion:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 38996248
+          description: GitHub 用户数字 ID
+        region:
+          type: string
+          example: cn
+          nullable: true
+          description: GitHub 用户国家/地区代码，以 ISO 3166-1 alpha-2 为准
+        confidence:
+          type: number
+          minimum: 0
+          maximum: 1
+          example: 0.8
+          description: GitHub 用户国家/地区置信度，当 region 为 null 时，confidence 为 0
+    LanguageWithUsage:
+      type: object
+      properties:
+        language:
+          $ref: '#/components/schemas/Language'
+          description: 语言信息
+        percentage:
+          type: integer
+          minimum: 0
+          example: 100
+          description: 使用占比
+    Language:
+      type: object
+      properties:
+        id:
+          type: string
+          example: javascript
+          description: 语言 ID，仅小写字母与连字符
+        name:
+          type: string
+          example: JavaScript
+          description: 语言名称
+        color:
+          type: string
+          example: '#f1e05a'
+          description: 语言颜色
+  parameters:
+    username:
+      name: username
+      in: path
+      required: true
+      schema:
+        type: string
+      description: GitHub 用户名
