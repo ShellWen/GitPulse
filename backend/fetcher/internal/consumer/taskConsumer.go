@@ -54,8 +54,6 @@ func (c *FetcherTaskConsumer) Consume(ctx context.Context, key string, value str
 		err = logic.FetchIssuePROfUser(c.ctx, c.svc, msg.Id)
 	case message.FetchCommentOfUser:
 		err = logic.FetchCommentOfUser(c.ctx, c.svc, msg.Id)
-	case message.FetchReviewOfUser:
-		err = logic.FetchReviewOfUser(c.ctx, c.svc, msg.Id)
 	default:
 		err = errors.New("unexpected message type: " + strconv.FormatInt(int64(msg.Type), 10))
 	}

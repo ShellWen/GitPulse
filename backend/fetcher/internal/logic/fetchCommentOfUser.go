@@ -101,7 +101,7 @@ func buildComment(ctx context.Context, svcContext *svc.ServiceContext, githubCom
 		newComment = &model.Contribution{
 			UserId:         userId,
 			RepoId:         githubCommentWithRepoId.repoId,
-			Category:       model.CategoryComment,
+			Category:       model.CategoryReview,
 			Content:        githubCommentWithRepoId.prComment.GetBody(),
 			CreatedAt:      githubCommentWithRepoId.prComment.GetCreatedAt().Time,
 			UpdatedAt:      githubCommentWithRepoId.prComment.GetUpdatedAt().Time,

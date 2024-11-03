@@ -15,7 +15,6 @@ import (
 const (
 	RoleAuthor    = "author"
 	RoleCommenter = "commenter"
-	RoleReviewer  = "reviewed-by"
 )
 
 func FetchContributionOfUser(ctx context.Context, svcContext *svc.ServiceContext, repoId int64) (err error) {
@@ -24,10 +23,6 @@ func FetchContributionOfUser(ctx context.Context, svcContext *svc.ServiceContext
 	}
 
 	if err = FetchCommentOfUser(ctx, svcContext, repoId); err != nil {
-		return
-	}
-
-	if err = FetchReviewOfUser(ctx, svcContext, repoId); err != nil {
 		return
 	}
 

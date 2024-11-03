@@ -124,52 +124,26 @@ func getGithubMergedPrCountByRepo(ctx context.Context, githubClient *github.Clie
 
 func getGithubCommentCountByRepo(ctx context.Context, githubClient *github.Client, owner string, name string) (commentCount int64, err error) {
 	var githubIssueResp *github.Response
-	var githubPrResp *github.Response
 
 	if _, githubIssueResp, err = githubClient.Issues.ListComments(ctx, owner, name, 0, &github.IssueListCommentsOptions{ListOptions: github.ListOptions{PerPage: 1}}); err != nil {
 		logx.Error(errors.New("Unexpected error when fetching comment count: " + err.Error()))
 		return
 	}
 
-	if _, githubPrResp, err = githubClient.PullRequests.ListComments(ctx, owner, name, 0, &github.PullRequestListCommentsOptions{ListOptions: github.ListOptions{PerPage: 1}}); err != nil {
-		logx.Error(errors.New("Unexpected error when fetching comment count: " + err.Error()))
-		return
-	}
-
-	commentCount = int64(githubIssueResp.LastPage) + int64(githubPrResp.LastPage)
+	commentCount = int64(githubIssueResp.LastPage)
 
 	return
 }
 
 func getGithubReviewCountByRepo(ctx context.Context, githubClient *github.Client, owner string, name string) (reviewCount int64, err error) {
-	var (
-		allPr []*github.PullRequest
-		resp  *github.Response
-	)
+	var githubPrResp *github.Response
 
-	opt := &github.PullRequestListOptions{ListOptions: github.ListOptions{PerPage: 100}}
-	for {
-		var prs []*github.PullRequest
-		prs, resp, err = githubClient.PullRequests.List(ctx, owner, name, opt)
-		if err != nil {
-			logx.Error("Unexpected error when getting all prs: " + err.Error())
-			return
-		}
-		allPr = append(allPr, prs...)
-		if resp.NextPage == 0 {
-			break
-		}
-		opt.Page = resp.NextPage
+	if _, githubPrResp, err = githubClient.PullRequests.ListComments(ctx, owner, name, 0, &github.PullRequestListCommentsOptions{ListOptions: github.ListOptions{PerPage: 1}}); err != nil {
+		logx.Error(errors.New("Unexpected error when fetching comment count: " + err.Error()))
+		return
 	}
 
-	for _, pr := range allPr {
-		if _, resp, err = githubClient.PullRequests.ListReviews(ctx, owner, name, pr.GetNumber(), &github.ListOptions{PerPage: 1}); err != nil {
-			logx.Error(errors.New("Unexpected error when fetching review count: " + err.Error()))
-			return
-		}
-
-		reviewCount += int64(resp.LastPage)
-	}
+	reviewCount = int64(githubPrResp.LastPage)
 
 	return
 }

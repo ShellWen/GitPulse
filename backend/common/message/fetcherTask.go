@@ -12,7 +12,6 @@ const (
 	FetchContributionOfUser
 	FetchIssuePROfUser
 	FetchCommentOfUser
-	FetchReviewOfUser
 
 	FetchRepo
 	FetchFork
