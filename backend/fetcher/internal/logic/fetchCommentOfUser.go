@@ -38,7 +38,7 @@ func doFetchCommentOfUser(ctx context.Context, svcContext *svc.ServiceContext, u
 	}
 
 	logx.Info("Start fetching comment of user: ", githubUser.GetLogin())
-	if allComment, err = getAllGithubCommentByLogin(ctx, githubClient, githubUser.GetLogin()); err != nil {
+	if allComment, err = getAllGithubCommentByLogin(ctx, svcContext, githubClient, githubUser.GetLogin()); err != nil {
 		return
 	}
 	logx.Info("Finish fetching comment of user: ", githubUser.GetLogin()+", total comment: "+strconv.Itoa(len(allComment)))
@@ -58,7 +58,7 @@ func doFetchCommentOfUser(ctx context.Context, svcContext *svc.ServiceContext, u
 	return
 }
 
-func getAllGithubCommentByLogin(ctx context.Context, githubClient *github.Client, login string) (allCommentWithRepoId []*commentWithRepoId, err error) {
+func getAllGithubCommentByLogin(ctx context.Context, svcContext *svc.ServiceContext, githubClient *github.Client, login string) (allCommentWithRepoId []*commentWithRepoId, err error) {
 	var allIssue []*github.Issue
 	allIssue, err = getAllGithubIssuePRByLogin(ctx, githubClient, login, RoleCommenter)
 
@@ -66,18 +66,24 @@ func getAllGithubCommentByLogin(ctx context.Context, githubClient *github.Client
 	prOpt := &github.PullRequestListCommentsOptions{ListOptions: github.ListOptions{PerPage: 100}}
 	var issueResp *github.Response
 	var prResp *github.Response
+	var repos = make(map[int64]*github.Repository)
 	for _, issue := range allIssue {
 		var repo *github.Repository
 		if repo, err = getRepoByUrl(ctx, githubClient, issue.GetRepositoryURL()); err != nil {
 			return
 		}
+		repos[repo.GetID()] = repo
 
 		for {
 			var issueComments []*github.IssueComment
 			if issueComments, issueResp, err = githubClient.Issues.ListComments(ctx, repo.GetOwner().GetLogin(), repo.GetName(), issue.GetNumber(), issueOpt); err != nil {
 				if issueResp != nil && issueResp.StatusCode == http.StatusNotFound {
 					err = nil
-					break
+					if issueResp.NextPage == 0 {
+						break
+					}
+					issueOpt.Page = issueResp.NextPage
+					continue
 				}
 				return
 			}
@@ -99,7 +105,11 @@ func getAllGithubCommentByLogin(ctx context.Context, githubClient *github.Client
 				if prComments, prResp, err = githubClient.PullRequests.ListComments(ctx, repo.GetOwner().GetLogin(), repo.GetName(), 0, prOpt); err != nil {
 					if prResp != nil && prResp.StatusCode == http.StatusNotFound {
 						err = nil
-						break
+						if prResp.NextPage == 0 {
+							break
+						}
+						prOpt.Page = prResp.NextPage
+						continue
 					}
 					return
 				}
@@ -114,6 +124,12 @@ func getAllGithubCommentByLogin(ctx context.Context, githubClient *github.Client
 				}
 				prOpt.Page = prResp.NextPage
 			}
+		}
+	}
+
+	for _, repo := range repos {
+		if err = buildAndPushRepoByGithubRepo(ctx, svcContext, githubClient, repo); err != nil {
+			return
 		}
 	}
 

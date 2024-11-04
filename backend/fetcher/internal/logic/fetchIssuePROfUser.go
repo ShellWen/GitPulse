@@ -63,8 +63,11 @@ func doFetchIssuePROfUser(ctx context.Context, svcContext *svc.ServiceContext, u
 		if err = pushContribution(ctx, svcContext, buildIssuePR(githubIssuePR, userId, merged, repo)); err != nil {
 			return
 		}
+		if err = buildAndPushRepoByGithubRepo(ctx, svcContext, githubClient, repo); err != nil {
+			return
+		}
 	}
-	
+
 	logx.Info("Successfully push all update tasks of issues and PRs")
 	return
 }
