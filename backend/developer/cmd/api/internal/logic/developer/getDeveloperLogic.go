@@ -51,7 +51,7 @@ func (l *GetDeveloperLogic) doGetDeveloper(req *types.GetDeveloperReq) (resp *ty
 	switch rpcResp.Code {
 	case http.StatusOK:
 		logx.Info("Found in local cache")
-		if time.Now().Unix()-rpcResp.Developer.UpdatedAt < int64(time.Hour.Seconds()*24) {
+		if time.Now().Unix()-rpcResp.Developer.GetDataUpdatedAt() < int64(time.Hour.Seconds()*24) {
 			break
 		}
 		logx.Info("Local cache expired, fetching from github")
