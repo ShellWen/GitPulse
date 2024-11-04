@@ -19,10 +19,15 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Analysis_AddAnalysis_FullMethodName    = "/pb.analysis/AddAnalysis"
-	Analysis_UpdateAnalysis_FullMethodName = "/pb.analysis/UpdateAnalysis"
-	Analysis_DelAnalysis_FullMethodName    = "/pb.analysis/DelAnalysis"
-	Analysis_GetAnalysis_FullMethodName    = "/pb.analysis/GetAnalysis"
+	Analysis_DelLanguage_FullMethodName      = "/pb.analysis/DelLanguage"
+	Analysis_DelRegion_FullMethodName        = "/pb.analysis/DelRegion"
+	Analysis_DelPulsePoint_FullMethodName    = "/pb.analysis/DelPulsePoint"
+	Analysis_UpdateLanguage_FullMethodName   = "/pb.analysis/UpdateLanguage"
+	Analysis_UpdateRegion_FullMethodName     = "/pb.analysis/UpdateRegion"
+	Analysis_UpdatePulsePoint_FullMethodName = "/pb.analysis/UpdatePulsePoint"
+	Analysis_GetLanguages_FullMethodName     = "/pb.analysis/GetLanguages"
+	Analysis_GetRegion_FullMethodName        = "/pb.analysis/GetRegion"
+	Analysis_GetPulsePoint_FullMethodName    = "/pb.analysis/GetPulsePoint"
 )
 
 // AnalysisClient is the client API for Analysis service.
@@ -30,10 +35,15 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AnalysisClient interface {
 	// -----------------------analysis-----------------------
-	AddAnalysis(ctx context.Context, in *AddAnalysisReq, opts ...grpc.CallOption) (*AddAnalysisResp, error)
-	UpdateAnalysis(ctx context.Context, in *UpdateAnalysisReq, opts ...grpc.CallOption) (*UpdateAnalysisResp, error)
-	DelAnalysis(ctx context.Context, in *DelAnalysisReq, opts ...grpc.CallOption) (*DelAnalysisResp, error)
-	GetAnalysis(ctx context.Context, in *GetAnalysisReq, opts ...grpc.CallOption) (*GetAnalysisResp, error)
+	DelLanguage(ctx context.Context, in *DelAnalysisReq, opts ...grpc.CallOption) (*DelAnalysisResp, error)
+	DelRegion(ctx context.Context, in *DelAnalysisReq, opts ...grpc.CallOption) (*DelAnalysisResp, error)
+	DelPulsePoint(ctx context.Context, in *DelAnalysisReq, opts ...grpc.CallOption) (*DelAnalysisResp, error)
+	UpdateLanguage(ctx context.Context, in *UpdateAnalysisReq, opts ...grpc.CallOption) (*UpdateAnalysisResp, error)
+	UpdateRegion(ctx context.Context, in *UpdateAnalysisReq, opts ...grpc.CallOption) (*UpdateAnalysisResp, error)
+	UpdatePulsePoint(ctx context.Context, in *UpdateAnalysisReq, opts ...grpc.CallOption) (*UpdateAnalysisResp, error)
+	GetLanguages(ctx context.Context, in *GetAnalysisReq, opts ...grpc.CallOption) (*GetLanguagesResp, error)
+	GetRegion(ctx context.Context, in *GetAnalysisReq, opts ...grpc.CallOption) (*GetRegionResp, error)
+	GetPulsePoint(ctx context.Context, in *GetAnalysisReq, opts ...grpc.CallOption) (*GetPulsePointResp, error)
 }
 
 type analysisClient struct {
@@ -44,40 +54,90 @@ func NewAnalysisClient(cc grpc.ClientConnInterface) AnalysisClient {
 	return &analysisClient{cc}
 }
 
-func (c *analysisClient) AddAnalysis(ctx context.Context, in *AddAnalysisReq, opts ...grpc.CallOption) (*AddAnalysisResp, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(AddAnalysisResp)
-	err := c.cc.Invoke(ctx, Analysis_AddAnalysis_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *analysisClient) UpdateAnalysis(ctx context.Context, in *UpdateAnalysisReq, opts ...grpc.CallOption) (*UpdateAnalysisResp, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(UpdateAnalysisResp)
-	err := c.cc.Invoke(ctx, Analysis_UpdateAnalysis_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *analysisClient) DelAnalysis(ctx context.Context, in *DelAnalysisReq, opts ...grpc.CallOption) (*DelAnalysisResp, error) {
+func (c *analysisClient) DelLanguage(ctx context.Context, in *DelAnalysisReq, opts ...grpc.CallOption) (*DelAnalysisResp, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(DelAnalysisResp)
-	err := c.cc.Invoke(ctx, Analysis_DelAnalysis_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, Analysis_DelLanguage_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *analysisClient) GetAnalysis(ctx context.Context, in *GetAnalysisReq, opts ...grpc.CallOption) (*GetAnalysisResp, error) {
+func (c *analysisClient) DelRegion(ctx context.Context, in *DelAnalysisReq, opts ...grpc.CallOption) (*DelAnalysisResp, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(GetAnalysisResp)
-	err := c.cc.Invoke(ctx, Analysis_GetAnalysis_FullMethodName, in, out, cOpts...)
+	out := new(DelAnalysisResp)
+	err := c.cc.Invoke(ctx, Analysis_DelRegion_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *analysisClient) DelPulsePoint(ctx context.Context, in *DelAnalysisReq, opts ...grpc.CallOption) (*DelAnalysisResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DelAnalysisResp)
+	err := c.cc.Invoke(ctx, Analysis_DelPulsePoint_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *analysisClient) UpdateLanguage(ctx context.Context, in *UpdateAnalysisReq, opts ...grpc.CallOption) (*UpdateAnalysisResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateAnalysisResp)
+	err := c.cc.Invoke(ctx, Analysis_UpdateLanguage_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *analysisClient) UpdateRegion(ctx context.Context, in *UpdateAnalysisReq, opts ...grpc.CallOption) (*UpdateAnalysisResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateAnalysisResp)
+	err := c.cc.Invoke(ctx, Analysis_UpdateRegion_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *analysisClient) UpdatePulsePoint(ctx context.Context, in *UpdateAnalysisReq, opts ...grpc.CallOption) (*UpdateAnalysisResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateAnalysisResp)
+	err := c.cc.Invoke(ctx, Analysis_UpdatePulsePoint_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *analysisClient) GetLanguages(ctx context.Context, in *GetAnalysisReq, opts ...grpc.CallOption) (*GetLanguagesResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetLanguagesResp)
+	err := c.cc.Invoke(ctx, Analysis_GetLanguages_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *analysisClient) GetRegion(ctx context.Context, in *GetAnalysisReq, opts ...grpc.CallOption) (*GetRegionResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetRegionResp)
+	err := c.cc.Invoke(ctx, Analysis_GetRegion_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *analysisClient) GetPulsePoint(ctx context.Context, in *GetAnalysisReq, opts ...grpc.CallOption) (*GetPulsePointResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetPulsePointResp)
+	err := c.cc.Invoke(ctx, Analysis_GetPulsePoint_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -89,10 +149,15 @@ func (c *analysisClient) GetAnalysis(ctx context.Context, in *GetAnalysisReq, op
 // for forward compatibility.
 type AnalysisServer interface {
 	// -----------------------analysis-----------------------
-	AddAnalysis(context.Context, *AddAnalysisReq) (*AddAnalysisResp, error)
-	UpdateAnalysis(context.Context, *UpdateAnalysisReq) (*UpdateAnalysisResp, error)
-	DelAnalysis(context.Context, *DelAnalysisReq) (*DelAnalysisResp, error)
-	GetAnalysis(context.Context, *GetAnalysisReq) (*GetAnalysisResp, error)
+	DelLanguage(context.Context, *DelAnalysisReq) (*DelAnalysisResp, error)
+	DelRegion(context.Context, *DelAnalysisReq) (*DelAnalysisResp, error)
+	DelPulsePoint(context.Context, *DelAnalysisReq) (*DelAnalysisResp, error)
+	UpdateLanguage(context.Context, *UpdateAnalysisReq) (*UpdateAnalysisResp, error)
+	UpdateRegion(context.Context, *UpdateAnalysisReq) (*UpdateAnalysisResp, error)
+	UpdatePulsePoint(context.Context, *UpdateAnalysisReq) (*UpdateAnalysisResp, error)
+	GetLanguages(context.Context, *GetAnalysisReq) (*GetLanguagesResp, error)
+	GetRegion(context.Context, *GetAnalysisReq) (*GetRegionResp, error)
+	GetPulsePoint(context.Context, *GetAnalysisReq) (*GetPulsePointResp, error)
 	mustEmbedUnimplementedAnalysisServer()
 }
 
@@ -103,17 +168,32 @@ type AnalysisServer interface {
 // pointer dereference when methods are called.
 type UnimplementedAnalysisServer struct{}
 
-func (UnimplementedAnalysisServer) AddAnalysis(context.Context, *AddAnalysisReq) (*AddAnalysisResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AddAnalysis not implemented")
+func (UnimplementedAnalysisServer) DelLanguage(context.Context, *DelAnalysisReq) (*DelAnalysisResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DelLanguage not implemented")
 }
-func (UnimplementedAnalysisServer) UpdateAnalysis(context.Context, *UpdateAnalysisReq) (*UpdateAnalysisResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateAnalysis not implemented")
+func (UnimplementedAnalysisServer) DelRegion(context.Context, *DelAnalysisReq) (*DelAnalysisResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DelRegion not implemented")
 }
-func (UnimplementedAnalysisServer) DelAnalysis(context.Context, *DelAnalysisReq) (*DelAnalysisResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DelAnalysis not implemented")
+func (UnimplementedAnalysisServer) DelPulsePoint(context.Context, *DelAnalysisReq) (*DelAnalysisResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DelPulsePoint not implemented")
 }
-func (UnimplementedAnalysisServer) GetAnalysis(context.Context, *GetAnalysisReq) (*GetAnalysisResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetAnalysis not implemented")
+func (UnimplementedAnalysisServer) UpdateLanguage(context.Context, *UpdateAnalysisReq) (*UpdateAnalysisResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateLanguage not implemented")
+}
+func (UnimplementedAnalysisServer) UpdateRegion(context.Context, *UpdateAnalysisReq) (*UpdateAnalysisResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateRegion not implemented")
+}
+func (UnimplementedAnalysisServer) UpdatePulsePoint(context.Context, *UpdateAnalysisReq) (*UpdateAnalysisResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdatePulsePoint not implemented")
+}
+func (UnimplementedAnalysisServer) GetLanguages(context.Context, *GetAnalysisReq) (*GetLanguagesResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetLanguages not implemented")
+}
+func (UnimplementedAnalysisServer) GetRegion(context.Context, *GetAnalysisReq) (*GetRegionResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetRegion not implemented")
+}
+func (UnimplementedAnalysisServer) GetPulsePoint(context.Context, *GetAnalysisReq) (*GetPulsePointResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetPulsePoint not implemented")
 }
 func (UnimplementedAnalysisServer) mustEmbedUnimplementedAnalysisServer() {}
 func (UnimplementedAnalysisServer) testEmbeddedByValue()                  {}
@@ -136,74 +216,164 @@ func RegisterAnalysisServer(s grpc.ServiceRegistrar, srv AnalysisServer) {
 	s.RegisterService(&Analysis_ServiceDesc, srv)
 }
 
-func _Analysis_AddAnalysis_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AddAnalysisReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(AnalysisServer).AddAnalysis(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Analysis_AddAnalysis_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AnalysisServer).AddAnalysis(ctx, req.(*AddAnalysisReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Analysis_UpdateAnalysis_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UpdateAnalysisReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(AnalysisServer).UpdateAnalysis(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Analysis_UpdateAnalysis_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AnalysisServer).UpdateAnalysis(ctx, req.(*UpdateAnalysisReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Analysis_DelAnalysis_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Analysis_DelLanguage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DelAnalysisReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AnalysisServer).DelAnalysis(ctx, in)
+		return srv.(AnalysisServer).DelLanguage(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Analysis_DelAnalysis_FullMethodName,
+		FullMethod: Analysis_DelLanguage_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AnalysisServer).DelAnalysis(ctx, req.(*DelAnalysisReq))
+		return srv.(AnalysisServer).DelLanguage(ctx, req.(*DelAnalysisReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Analysis_GetAnalysis_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Analysis_DelRegion_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DelAnalysisReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AnalysisServer).DelRegion(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Analysis_DelRegion_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AnalysisServer).DelRegion(ctx, req.(*DelAnalysisReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Analysis_DelPulsePoint_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DelAnalysisReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AnalysisServer).DelPulsePoint(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Analysis_DelPulsePoint_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AnalysisServer).DelPulsePoint(ctx, req.(*DelAnalysisReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Analysis_UpdateLanguage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateAnalysisReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AnalysisServer).UpdateLanguage(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Analysis_UpdateLanguage_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AnalysisServer).UpdateLanguage(ctx, req.(*UpdateAnalysisReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Analysis_UpdateRegion_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateAnalysisReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AnalysisServer).UpdateRegion(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Analysis_UpdateRegion_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AnalysisServer).UpdateRegion(ctx, req.(*UpdateAnalysisReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Analysis_UpdatePulsePoint_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateAnalysisReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AnalysisServer).UpdatePulsePoint(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Analysis_UpdatePulsePoint_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AnalysisServer).UpdatePulsePoint(ctx, req.(*UpdateAnalysisReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Analysis_GetLanguages_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetAnalysisReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AnalysisServer).GetAnalysis(ctx, in)
+		return srv.(AnalysisServer).GetLanguages(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Analysis_GetAnalysis_FullMethodName,
+		FullMethod: Analysis_GetLanguages_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AnalysisServer).GetAnalysis(ctx, req.(*GetAnalysisReq))
+		return srv.(AnalysisServer).GetLanguages(ctx, req.(*GetAnalysisReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Analysis_GetRegion_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAnalysisReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AnalysisServer).GetRegion(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Analysis_GetRegion_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AnalysisServer).GetRegion(ctx, req.(*GetAnalysisReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Analysis_GetPulsePoint_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAnalysisReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AnalysisServer).GetPulsePoint(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Analysis_GetPulsePoint_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AnalysisServer).GetPulsePoint(ctx, req.(*GetAnalysisReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -216,20 +386,40 @@ var Analysis_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*AnalysisServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "AddAnalysis",
-			Handler:    _Analysis_AddAnalysis_Handler,
+			MethodName: "DelLanguage",
+			Handler:    _Analysis_DelLanguage_Handler,
 		},
 		{
-			MethodName: "UpdateAnalysis",
-			Handler:    _Analysis_UpdateAnalysis_Handler,
+			MethodName: "DelRegion",
+			Handler:    _Analysis_DelRegion_Handler,
 		},
 		{
-			MethodName: "DelAnalysis",
-			Handler:    _Analysis_DelAnalysis_Handler,
+			MethodName: "DelPulsePoint",
+			Handler:    _Analysis_DelPulsePoint_Handler,
 		},
 		{
-			MethodName: "GetAnalysis",
-			Handler:    _Analysis_GetAnalysis_Handler,
+			MethodName: "UpdateLanguage",
+			Handler:    _Analysis_UpdateLanguage_Handler,
+		},
+		{
+			MethodName: "UpdateRegion",
+			Handler:    _Analysis_UpdateRegion_Handler,
+		},
+		{
+			MethodName: "UpdatePulsePoint",
+			Handler:    _Analysis_UpdatePulsePoint_Handler,
+		},
+		{
+			MethodName: "GetLanguages",
+			Handler:    _Analysis_GetLanguages_Handler,
+		},
+		{
+			MethodName: "GetRegion",
+			Handler:    _Analysis_GetRegion_Handler,
+		},
+		{
+			MethodName: "GetPulsePoint",
+			Handler:    _Analysis_GetPulsePoint_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

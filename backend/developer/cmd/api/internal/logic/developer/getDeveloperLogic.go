@@ -2,14 +2,14 @@ package developer
 
 import (
 	"context"
+	"errors"
+	customGithub "github.com/ShellWen/GitPulse/common/github"
 	"github.com/ShellWen/GitPulse/common/message"
 	"github.com/ShellWen/GitPulse/developer/cmd/api/internal/svc"
 	"github.com/ShellWen/GitPulse/developer/cmd/api/internal/types"
 	"github.com/ShellWen/GitPulse/developer/cmd/rpc/developer"
-	"github.com/google/go-github/v66/github"
 	"github.com/zeromicro/go-zero/core/jsonx"
 	"net/http"
-	"os"
 	"time"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -40,7 +40,9 @@ func (l *GetDeveloperLogic) doGetDeveloper(req *types.GetDeveloperReq) (resp *ty
 		rpcResp *developer.GetDeveloperByIdResp
 	)
 
-	if id, err = l.getIdByLogin(req.Login); err != nil {
+	resp = &types.GetDeveloperResp{}
+
+	if id, err = customGithub.GetIdByLogin(l.ctx, req.Login); err != nil {
 		return
 	}
 
@@ -68,7 +70,7 @@ func (l *GetDeveloperLogic) doGetDeveloper(req *types.GetDeveloperReq) (resp *ty
 		fallthrough
 	default:
 		if rpcResp.Code != http.StatusOK {
-			err = jsonx.UnmarshalFromString(rpcResp.Message, &resp)
+			err = errors.New(rpcResp.Message)
 			return
 		}
 	}
@@ -91,18 +93,6 @@ func (l *GetDeveloperLogic) doGetDeveloper(req *types.GetDeveloperReq) (resp *ty
 		CreatedAt: time.Unix(rpcResp.Developer.CreatedAt, 0).Format(time.RFC3339),
 		UpdatedAt: time.Unix(rpcResp.Developer.UpdatedAt, 0).Format(time.RFC3339),
 	}
-	return
-}
-
-func (l *GetDeveloperLogic) getIdByLogin(login string) (id int64, err error) {
-	var githubClient *github.Client = github.NewClient(nil).WithAuthToken(os.Getenv("GITHUB_API_TOKEN"))
-	var githubUser *github.User
-	if githubUser, _, err = githubClient.Users.Get(l.ctx, login); err != nil {
-		logx.Error("Unexpected error when fetching user ", login, " from github: ", err)
-		return
-	}
-	id = githubUser.GetID()
-	logx.Info("Successfully get id ", id, " of login", login)
 	return
 }
 

@@ -1,6 +1,15 @@
-Name: analysis.rpc
-ListenOn: 127.0.0.1:2005
-Mode: dev
+RpcServerConf:
+  Name: analysis.rpc
+  ListenOn: 127.0.0.1:2005
+  Mode: dev
+
+RpcClientConf:
+  Endpoints:
+    - 127.0.0.1:2001
+    - 127.0.0.1:2002
+    - 127.0.0.1:2003
+    - 127.0.0.1:2004
+  Timeout: 30000
 
 #Etcd:
 #  Hosts:

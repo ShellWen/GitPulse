@@ -1,0 +1,83 @@
+syntax = "v1"
+
+type (
+	Developer {
+		Id        int64  `json:"id"`
+		Name      string `json:"name"`
+		Login     string `json:"login"`
+		AvatarUrl string `json:"avatar_url"`
+		Company   string `json:"company"`
+		Location  string `json:"location"`
+		Bio       string `json:"bio"`
+		Blog      string `json:"blog"`
+		Email     string `json:"email"`
+		Followers int64  `json:"followers"`
+		Following int64  `json:"following"`
+		Stars     int64  `json:"stars"`
+		Repos     int64  `json:"repos"`
+		Gists     int64  `json:"gists"`
+		CreatedAt string `json:"created_at"`
+		UpdatedAt string `json:"updated_at"`
+	}
+	PulsePoint {
+		Id         int64   `json:"id"`
+		PulsePoint float64 `json:"pulse_point"`
+		UpdatedAt  string  `json:"updated_at"`
+	}
+	Language {
+		Id    string `json:"id"`
+		Name  string `json:"name"`
+		Color string `json:"color"`
+	}
+	LanguageWithPercentage {
+		Language   Language `json:"language"`
+		Percentage float64  `json:"percentage"`
+	}
+	LanguageUsage {
+		Id        int64                    `json:"id"`
+		Languages []LanguageWithPercentage `json:"languages"`
+		UpdatedAt string                   `json:"updated_at"`
+	}
+	Region {
+		Id         int64   `json:"id"`
+		Region     string  `json:"region"`
+		Confidence float64 `json:"confidence"`
+	}
+	GetPulsePointReq {
+		Login string `path:"login"`
+	}
+	GetPulsePointResp {
+		PulsePoint PulsePoint `json:"pulse_point"`
+	}
+	GetLanguageUsageReq {
+		Login string `path:"login"`
+	}
+	GetLanguageUsageResp {
+		LanguageUsage LanguageUsage `json:"languages"`
+	}
+	GetRegionReq {
+		Login string `path:"login"`
+	}
+	GetRegionResp {
+		Region Region `json:"region"`
+	}
+	GetLanguages  {}
+)
+
+@server (
+	timeout: 60s
+)
+service Analysis {
+	@handler getPulsePoint
+	get /developers/:login/pulse-point (GetPulsePointReq) returns (GetPulsePointResp)
+
+	@handler getLanguageUsage
+	get /developers/:login/languages (GetLanguageUsageReq) returns (GetLanguageUsageResp)
+
+	@handler getRegion
+	get /developers/:login/region (GetRegionReq) returns (GetRegionResp)
+
+	@handler getLanguages
+	get /languages (GetLanguages) returns ([]Language)
+}
+

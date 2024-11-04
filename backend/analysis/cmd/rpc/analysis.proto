@@ -9,38 +9,26 @@ package pb;
 // ------------------------------------ 
 
 //--------------------------------analysis--------------------------------
-message Analysis {
+message Languages {
   int64 dataId = 1; //dataId
   int64 dataCreatedAt = 2; //dataCreatedAt
   int64 dataUpdatedAt = 3; //dataUpdatedAt
   string languages = 4; //languages
-  double talentRank = 5; //talentRank
-  int64 developerId = 6; //developerId
-  string nation = 7; //nation
 }
 
-message AddAnalysisReq {
-  string languages = 1; //languages
-  double talentRank = 2; //talentRank
-  int64 developerId = 3; //developerId
-  string nation = 4; //nation
+message Region {
+  int64 dataId = 1; //dataId
+  int64 dataCreatedAt = 2; //dataCreatedAt
+  int64 dataUpdatedAt = 3; //dataUpdatedAt
+  string region = 4; //region
+  double confidence = 5; //confidence
 }
 
-message AddAnalysisResp {
-  int64 code = 1;
-  string message = 2;
-}
-
-message UpdateAnalysisReq {
-  string languages = 1; //languages
-  double talentRank = 2; //talentRank
-  int64 developerId = 3; //developerId
-  string nation = 4; //nation
-}
-
-message UpdateAnalysisResp {
-  int64 code = 1;
-  string message = 2;
+message PulsePoint {
+  int64 dataId = 1; //dataId
+  int64 dataCreatedAt = 2; //dataCreatedAt
+  int64 dataUpdatedAt = 3; //dataUpdatedAt
+  double pulsePoint = 4; //pulsePoint
 }
 
 message DelAnalysisReq {
@@ -56,13 +44,32 @@ message GetAnalysisReq {
   int64 developerId = 1; //developerId
 }
 
-message GetAnalysisResp {
+message GetLanguagesResp {
   int64 code = 1;
   string message = 2;
-  Analysis analysis = 3; //analysis
+  Languages languages = 3; //languages
 }
 
+message GetRegionResp {
+  int64 code = 1;
+  string message = 2;
+  Region region = 3; //region
+}
 
+message GetPulsePointResp {
+  int64 code = 1;
+  string message = 2;
+  PulsePoint pulsePoint = 3; //pulsePoint
+}
+
+message UpdateAnalysisReq {
+  int64 developerId = 1; //developerId
+}
+
+message UpdateAnalysisResp {
+  int64 code = 1;
+  string message = 2;
+}
 
 // ------------------------------------ 
 // Rpc Func
@@ -70,10 +77,14 @@ message GetAnalysisResp {
 
 service analysis{ 
 
-	 //-----------------------analysis----------------------- 
-	 rpc AddAnalysis(AddAnalysisReq) returns (AddAnalysisResp); 
-	 rpc UpdateAnalysis(UpdateAnalysisReq) returns (UpdateAnalysisResp); 
-	 rpc DelAnalysis(DelAnalysisReq) returns (DelAnalysisResp); 
-	 rpc GetAnalysis(GetAnalysisReq) returns (GetAnalysisResp);
-
+	 //-----------------------analysis-----------------------
+	  rpc DelLanguage(DelAnalysisReq) returns (DelAnalysisResp);
+    rpc DelRegion(DelAnalysisReq) returns (DelAnalysisResp);
+    rpc DelPulsePoint(DelAnalysisReq) returns (DelAnalysisResp);
+    rpc UpdateLanguage(UpdateAnalysisReq) returns (UpdateAnalysisResp);
+    rpc UpdateRegion(UpdateAnalysisReq) returns (UpdateAnalysisResp);
+    rpc UpdatePulsePoint(UpdateAnalysisReq) returns (UpdateAnalysisResp);
+    rpc GetLanguages(GetAnalysisReq) returns (GetLanguagesResp);
+    rpc GetRegion(GetAnalysisReq) returns (GetRegionResp);
+    rpc GetPulsePoint(GetAnalysisReq) returns (GetPulsePointResp);
 }

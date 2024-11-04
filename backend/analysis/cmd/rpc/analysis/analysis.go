@@ -14,52 +14,84 @@ import (
 )
 
 type (
-	AddAnalysisReq     = pb.AddAnalysisReq
-	AddAnalysisResp    = pb.AddAnalysisResp
-	Analysis           = pb.Analysis
 	DelAnalysisReq     = pb.DelAnalysisReq
 	DelAnalysisResp    = pb.DelAnalysisResp
 	GetAnalysisReq     = pb.GetAnalysisReq
-	GetAnalysisResp    = pb.GetAnalysisResp
+	GetLanguagesResp   = pb.GetLanguagesResp
+	GetPulsePointResp  = pb.GetPulsePointResp
+	GetRegionResp      = pb.GetRegionResp
+	Languages          = pb.Languages
+	PulsePoint         = pb.PulsePoint
+	Region             = pb.Region
 	UpdateAnalysisReq  = pb.UpdateAnalysisReq
 	UpdateAnalysisResp = pb.UpdateAnalysisResp
 
-	AnalysisZrpcClient interface {
+	Analysis interface {
 		// -----------------------analysis-----------------------
-		AddAnalysis(ctx context.Context, in *AddAnalysisReq, opts ...grpc.CallOption) (*AddAnalysisResp, error)
-		UpdateAnalysis(ctx context.Context, in *UpdateAnalysisReq, opts ...grpc.CallOption) (*UpdateAnalysisResp, error)
-		DelAnalysis(ctx context.Context, in *DelAnalysisReq, opts ...grpc.CallOption) (*DelAnalysisResp, error)
-		GetAnalysis(ctx context.Context, in *GetAnalysisReq, opts ...grpc.CallOption) (*GetAnalysisResp, error)
+		DelLanguage(ctx context.Context, in *DelAnalysisReq, opts ...grpc.CallOption) (*DelAnalysisResp, error)
+		DelRegion(ctx context.Context, in *DelAnalysisReq, opts ...grpc.CallOption) (*DelAnalysisResp, error)
+		DelPulsePoint(ctx context.Context, in *DelAnalysisReq, opts ...grpc.CallOption) (*DelAnalysisResp, error)
+		UpdateLanguage(ctx context.Context, in *UpdateAnalysisReq, opts ...grpc.CallOption) (*UpdateAnalysisResp, error)
+		UpdateRegion(ctx context.Context, in *UpdateAnalysisReq, opts ...grpc.CallOption) (*UpdateAnalysisResp, error)
+		UpdatePulsePoint(ctx context.Context, in *UpdateAnalysisReq, opts ...grpc.CallOption) (*UpdateAnalysisResp, error)
+		GetLanguages(ctx context.Context, in *GetAnalysisReq, opts ...grpc.CallOption) (*GetLanguagesResp, error)
+		GetRegion(ctx context.Context, in *GetAnalysisReq, opts ...grpc.CallOption) (*GetRegionResp, error)
+		GetPulsePoint(ctx context.Context, in *GetAnalysisReq, opts ...grpc.CallOption) (*GetPulsePointResp, error)
 	}
 
-	defaultAnalysisZrpcClient struct {
+	defaultAnalysis struct {
 		cli zrpc.Client
 	}
 )
 
-func NewAnalysisZrpcClient(cli zrpc.Client) AnalysisZrpcClient {
-	return &defaultAnalysisZrpcClient{
+func NewAnalysis(cli zrpc.Client) Analysis {
+	return &defaultAnalysis{
 		cli: cli,
 	}
 }
 
 // -----------------------analysis-----------------------
-func (m *defaultAnalysisZrpcClient) AddAnalysis(ctx context.Context, in *AddAnalysisReq, opts ...grpc.CallOption) (*AddAnalysisResp, error) {
+func (m *defaultAnalysis) DelLanguage(ctx context.Context, in *DelAnalysisReq, opts ...grpc.CallOption) (*DelAnalysisResp, error) {
 	client := pb.NewAnalysisClient(m.cli.Conn())
-	return client.AddAnalysis(ctx, in, opts...)
+	return client.DelLanguage(ctx, in, opts...)
 }
 
-func (m *defaultAnalysisZrpcClient) UpdateAnalysis(ctx context.Context, in *UpdateAnalysisReq, opts ...grpc.CallOption) (*UpdateAnalysisResp, error) {
+func (m *defaultAnalysis) DelRegion(ctx context.Context, in *DelAnalysisReq, opts ...grpc.CallOption) (*DelAnalysisResp, error) {
 	client := pb.NewAnalysisClient(m.cli.Conn())
-	return client.UpdateAnalysis(ctx, in, opts...)
+	return client.DelRegion(ctx, in, opts...)
 }
 
-func (m *defaultAnalysisZrpcClient) DelAnalysis(ctx context.Context, in *DelAnalysisReq, opts ...grpc.CallOption) (*DelAnalysisResp, error) {
+func (m *defaultAnalysis) DelPulsePoint(ctx context.Context, in *DelAnalysisReq, opts ...grpc.CallOption) (*DelAnalysisResp, error) {
 	client := pb.NewAnalysisClient(m.cli.Conn())
-	return client.DelAnalysis(ctx, in, opts...)
+	return client.DelPulsePoint(ctx, in, opts...)
 }
 
-func (m *defaultAnalysisZrpcClient) GetAnalysis(ctx context.Context, in *GetAnalysisReq, opts ...grpc.CallOption) (*GetAnalysisResp, error) {
+func (m *defaultAnalysis) UpdateLanguage(ctx context.Context, in *UpdateAnalysisReq, opts ...grpc.CallOption) (*UpdateAnalysisResp, error) {
 	client := pb.NewAnalysisClient(m.cli.Conn())
-	return client.GetAnalysis(ctx, in, opts...)
+	return client.UpdateLanguage(ctx, in, opts...)
+}
+
+func (m *defaultAnalysis) UpdateRegion(ctx context.Context, in *UpdateAnalysisReq, opts ...grpc.CallOption) (*UpdateAnalysisResp, error) {
+	client := pb.NewAnalysisClient(m.cli.Conn())
+	return client.UpdateRegion(ctx, in, opts...)
+}
+
+func (m *defaultAnalysis) UpdatePulsePoint(ctx context.Context, in *UpdateAnalysisReq, opts ...grpc.CallOption) (*UpdateAnalysisResp, error) {
+	client := pb.NewAnalysisClient(m.cli.Conn())
+	return client.UpdatePulsePoint(ctx, in, opts...)
+}
+
+func (m *defaultAnalysis) GetLanguages(ctx context.Context, in *GetAnalysisReq, opts ...grpc.CallOption) (*GetLanguagesResp, error) {
+	client := pb.NewAnalysisClient(m.cli.Conn())
+	return client.GetLanguages(ctx, in, opts...)
+}
+
+func (m *defaultAnalysis) GetRegion(ctx context.Context, in *GetAnalysisReq, opts ...grpc.CallOption) (*GetRegionResp, error) {
+	client := pb.NewAnalysisClient(m.cli.Conn())
+	return client.GetRegion(ctx, in, opts...)
+}
+
+func (m *defaultAnalysis) GetPulsePoint(ctx context.Context, in *GetAnalysisReq, opts ...grpc.CallOption) (*GetPulsePointResp, error) {
+	client := pb.NewAnalysisClient(m.cli.Conn())
+	return client.GetPulsePoint(ctx, in, opts...)
 }

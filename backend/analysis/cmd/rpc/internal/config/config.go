@@ -6,8 +6,9 @@ import (
 )
 
 type Config struct {
-	zrpc.RpcServerConf
-	DB struct {
+	RpcServerConf zrpc.RpcServerConf
+	RpcClientConf zrpc.RpcClientConf
+	DB            struct {
 		DataSource string
 	}
 	Cache cache.CacheConf

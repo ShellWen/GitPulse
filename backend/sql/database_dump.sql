@@ -140,25 +140,26 @@ ALTER TABLE analysis.languages ALTER COLUMN data_id ADD GENERATED ALWAYS AS IDEN
 
 
 --
--- Name: nation; Type: TABLE; Schema: analysis; Owner: general_user
+-- Name: region; Type: TABLE; Schema: analysis; Owner: general_user
 --
 
-CREATE TABLE analysis.nation (
+CREATE TABLE analysis.region (
     data_id bigint NOT NULL,
     data_created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     data_updated_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     developer_id bigint DEFAULT 0 NOT NULL,
-    nation json DEFAULT '{}'::json NOT NULL
+    region character varying(10) DEFAULT ''::character varying NOT NULL,
+    confidence double precision DEFAULT 0 NOT NULL
 );
 
 
-ALTER TABLE analysis.nation OWNER TO general_user;
+ALTER TABLE analysis.region OWNER TO general_user;
 
 --
 -- Name: nation_data_id_seq; Type: SEQUENCE; Schema: analysis; Owner: general_user
 --
 
-ALTER TABLE analysis.nation ALTER COLUMN data_id ADD GENERATED ALWAYS AS IDENTITY (
+ALTER TABLE analysis.region ALTER COLUMN data_id ADD GENERATED ALWAYS AS IDENTITY (
     SEQUENCE NAME analysis.nation_data_id_seq
     START WITH 1
     INCREMENT BY 1
@@ -439,18 +440,18 @@ COPY analysis.languages (data_id, data_created_at, data_updated_at, developer_id
 
 
 --
--- Data for Name: nation; Type: TABLE DATA; Schema: analysis; Owner: general_user
---
-
-COPY analysis.nation (data_id, data_created_at, data_updated_at, developer_id, nation) FROM stdin;
-\.
-
-
---
 -- Data for Name: pulse_point; Type: TABLE DATA; Schema: analysis; Owner: general_user
 --
 
 COPY analysis.pulse_point (data_id, data_created_at, data_updated_at, developer_id, pulse_point) FROM stdin;
+\.
+
+
+--
+-- Data for Name: region; Type: TABLE DATA; Schema: analysis; Owner: general_user
+--
+
+COPY analysis.region (data_id, data_created_at, data_updated_at, developer_id, region, confidence) FROM stdin;
 \.
 
 
@@ -597,22 +598,6 @@ ALTER TABLE ONLY analysis.languages
 
 
 --
--- Name: nation nation_pk; Type: CONSTRAINT; Schema: analysis; Owner: general_user
---
-
-ALTER TABLE ONLY analysis.nation
-    ADD CONSTRAINT nation_pk PRIMARY KEY (data_id);
-
-
---
--- Name: nation nation_pk_2; Type: CONSTRAINT; Schema: analysis; Owner: general_user
---
-
-ALTER TABLE ONLY analysis.nation
-    ADD CONSTRAINT nation_pk_2 UNIQUE (developer_id);
-
-
---
 -- Name: pulse_point pulse_point_pk; Type: CONSTRAINT; Schema: analysis; Owner: general_user
 --
 
@@ -626,6 +611,22 @@ ALTER TABLE ONLY analysis.pulse_point
 
 ALTER TABLE ONLY analysis.pulse_point
     ADD CONSTRAINT pulse_point_pk_2 UNIQUE (developer_id);
+
+
+--
+-- Name: region region_pk; Type: CONSTRAINT; Schema: analysis; Owner: general_user
+--
+
+ALTER TABLE ONLY analysis.region
+    ADD CONSTRAINT region_pk PRIMARY KEY (data_id);
+
+
+--
+-- Name: region region_pk_2; Type: CONSTRAINT; Schema: analysis; Owner: general_user
+--
+
+ALTER TABLE ONLY analysis.region
+    ADD CONSTRAINT region_pk_2 UNIQUE (developer_id);
 
 
 --
@@ -740,17 +741,17 @@ CREATE TRIGGER update_time BEFORE UPDATE ON analysis.languages FOR EACH ROW EXEC
 
 
 --
--- Name: nation update_time; Type: TRIGGER; Schema: analysis; Owner: general_user
---
-
-CREATE TRIGGER update_time BEFORE UPDATE ON analysis.nation FOR EACH ROW EXECUTE FUNCTION analysis.update_time();
-
-
---
 -- Name: pulse_point update_time; Type: TRIGGER; Schema: analysis; Owner: general_user
 --
 
 CREATE TRIGGER update_time BEFORE UPDATE ON analysis.pulse_point FOR EACH ROW EXECUTE FUNCTION analysis.update_time();
+
+
+--
+-- Name: region update_time; Type: TRIGGER; Schema: analysis; Owner: general_user
+--
+
+CREATE TRIGGER update_time BEFORE UPDATE ON analysis.region FOR EACH ROW EXECUTE FUNCTION analysis.update_time();
 
 
 --

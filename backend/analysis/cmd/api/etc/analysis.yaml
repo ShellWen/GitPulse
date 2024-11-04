@@ -1,0 +1,26 @@
+Name: Analysis
+Host: 127.0.0.1
+Port: 3005
+Mode: dev
+
+DB:
+  DataSource: postgres://general_user:password@localhost:5432/database?sslmode=disable
+Cache:
+  - Host: 127.0.0.1:6379
+    Pass:
+
+RpcClientConf:
+  Endpoints:
+    - 127.0.0.1:2001
+    - 127.0.0.1:2002
+    - 127.0.0.1:2003
+    - 127.0.0.1:2004
+    - 127.0.0.1:2005
+  NonBlock: true
+  Timeout: 30000
+
+KqFetcherTaskPusherConf:
+  Name: fetcher-task-pusher
+  Brokers:
+    - 127.0.0.1:9092
+  Topic: fetcher-task

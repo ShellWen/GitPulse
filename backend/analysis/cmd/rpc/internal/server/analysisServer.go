@@ -24,22 +24,47 @@ func NewAnalysisServer(svcCtx *svc.ServiceContext) *AnalysisServer {
 }
 
 // -----------------------analysis-----------------------
-func (s *AnalysisServer) AddAnalysis(ctx context.Context, in *pb.AddAnalysisReq) (*pb.AddAnalysisResp, error) {
-	l := logic.NewAddAnalysisLogic(ctx, s.svcCtx)
-	return l.AddAnalysis(in)
+func (s *AnalysisServer) DelLanguage(ctx context.Context, in *pb.DelAnalysisReq) (*pb.DelAnalysisResp, error) {
+	l := logic.NewDelLanguageLogic(ctx, s.svcCtx)
+	return l.DelLanguage(in)
 }
 
-func (s *AnalysisServer) UpdateAnalysis(ctx context.Context, in *pb.UpdateAnalysisReq) (*pb.UpdateAnalysisResp, error) {
-	l := logic.NewUpdateAnalysisLogic(ctx, s.svcCtx)
-	return l.UpdateAnalysis(in)
+func (s *AnalysisServer) DelRegion(ctx context.Context, in *pb.DelAnalysisReq) (*pb.DelAnalysisResp, error) {
+	l := logic.NewDelRegionLogic(ctx, s.svcCtx)
+	return l.DelRegion(in)
 }
 
-func (s *AnalysisServer) DelAnalysis(ctx context.Context, in *pb.DelAnalysisReq) (*pb.DelAnalysisResp, error) {
-	l := logic.NewDelAnalysisLogic(ctx, s.svcCtx)
-	return l.DelAnalysis(in)
+func (s *AnalysisServer) DelPulsePoint(ctx context.Context, in *pb.DelAnalysisReq) (*pb.DelAnalysisResp, error) {
+	l := logic.NewDelPulsePointLogic(ctx, s.svcCtx)
+	return l.DelPulsePoint(in)
 }
 
-func (s *AnalysisServer) GetAnalysis(ctx context.Context, in *pb.GetAnalysisReq) (*pb.GetAnalysisResp, error) {
-	l := logic.NewGetAnalysisLogic(ctx, s.svcCtx)
-	return l.GetAnalysis(in)
+func (s *AnalysisServer) UpdateLanguage(ctx context.Context, in *pb.UpdateAnalysisReq) (*pb.UpdateAnalysisResp, error) {
+	l := logic.NewUpdateLanguageLogic(ctx, s.svcCtx)
+	return l.UpdateLanguage(in)
+}
+
+func (s *AnalysisServer) UpdateRegion(ctx context.Context, in *pb.UpdateAnalysisReq) (*pb.UpdateAnalysisResp, error) {
+	l := logic.NewUpdateRegionLogic(ctx, s.svcCtx)
+	return l.UpdateRegion(in)
+}
+
+func (s *AnalysisServer) UpdatePulsePoint(ctx context.Context, in *pb.UpdateAnalysisReq) (*pb.UpdateAnalysisResp, error) {
+	l := logic.NewUpdatePulsePointLogic(ctx, s.svcCtx)
+	return l.UpdatePulsePoint(in)
+}
+
+func (s *AnalysisServer) GetLanguages(ctx context.Context, in *pb.GetAnalysisReq) (*pb.GetLanguagesResp, error) {
+	l := logic.NewGetLanguagesLogic(ctx, s.svcCtx)
+	return l.GetLanguages(in)
+}
+
+func (s *AnalysisServer) GetRegion(ctx context.Context, in *pb.GetAnalysisReq) (*pb.GetRegionResp, error) {
+	l := logic.NewGetRegionLogic(ctx, s.svcCtx)
+	return l.GetRegion(in)
+}
+
+func (s *AnalysisServer) GetPulsePoint(ctx context.Context, in *pb.GetAnalysisReq) (*pb.GetPulsePointResp, error) {
+	l := logic.NewGetPulsePointLogic(ctx, s.svcCtx)
+	return l.GetPulsePoint(in)
 }
