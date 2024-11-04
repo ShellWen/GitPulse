@@ -15,7 +15,7 @@
     "application/json"
   ],
   "paths": {
-    "/developer/{login}": {
+    "/developers/{login}": {
       "get": {
         "operationId": "getDeveloper",
         "responses": {
@@ -48,74 +48,63 @@
     "GetDeveloperResp": {
       "type": "object",
       "properties": {
-        "code": {
+        "id": {
           "type": "integer",
-          "format": "int32"
+          "format": "int64"
         },
-        "message": {
+        "name": {
           "type": "string"
         },
-        "data": {
-          "id": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "name": {
-            "type": "string"
-          },
-          "login": {
-            "type": "string"
-          },
-          "avatar_url": {
-            "type": "string"
-          },
-          "company": {
-            "type": "string"
-          },
-          "location": {
-            "type": "string"
-          },
-          "bio": {
-            "type": "string"
-          },
-          "blog": {
-            "type": "string"
-          },
-          "email": {
-            "type": "string"
-          },
-          "followers" : {
-            "type": "integer",
-            "format": "int64"
-          },
-          "following" : {
-            "type": "integer",
-            "format": "int64"
-          },
-            "stars" : {
-                "type": "integer",
-                "format": "int64"
-            },
-            "repos" : {
-                "type": "integer",
-                "format": "int64"
-            },
-            "gists" : {
-                "type": "integer",
-                "format": "int64"
-            },
-          "created_at": {
-            "type": "string"
-          },
-          "updated_at": {
-            "type": "string"
-          }
+        "login": {
+          "type": "string"
+        },
+        "avatar_url": {
+          "type": "string"
+        },
+        "company": {
+          "type": "string"
+        },
+        "location": {
+          "type": "string"
+        },
+        "bio": {
+          "type": "string"
+        },
+        "blog": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "followers": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "following": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "stars": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "repos": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "gists": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "updated_at": {
+          "type": "string"
         }
       },
       "title": "GetDeveloperResp",
       "required": [
-        "code",
-        "message",
         "id",
         "name",
         "login",
@@ -130,8 +119,8 @@
         "stars",
         "repos",
         "gists",
-        "create_at",
-        "update_at"
+        "created_at",
+        "updated_at"
       ]
     }
   },

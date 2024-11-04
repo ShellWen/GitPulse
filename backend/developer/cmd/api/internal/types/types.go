@@ -8,24 +8,20 @@ type GetDeveloperReq struct {
 }
 
 type GetDeveloperResp struct {
-	Code    int32  `json:"code"`
-	Message string `json:"message"`
-	Data    struct {
-		Id        int64  `json:"id"`
-		Name      string `json:"name"`
-		Login     string `json:"login"`
-		AvatarUrl string `json:"avatar_url"`
-		Company   string `json:"company"`
-		Location  string `json:"location"`
-		Bio       string `json:"bio"`
-		Blog      string `json:"blog"`
-		Email     string `json:"email"`
-		Followers int64  `json:"followers"`
-		Following int64  `json:"following"`
-		Stars     int64  `json:"stars"`
-		Repos     int64  `json:"repos"`
-		Gists     int64  `json:"gists"`
-		CreatedAt string `json:"created_at"`
-		UpdatedAt string `json:"updated_at"`
-	} `json:"data"`
+	Id        int64  `json:"id"`
+	Name      string `json:"name"`
+	Login     string `json:"login"`
+	AvatarUrl string `json:"avatar_url"`
+	Company   string `json:"company"`
+	Location  string `json:"location"`
+	Bio       string `json:"bio"`
+	Blog      string `json:"blog"`
+	Email     string `json:"email"`
+	Followers int64  `json:"followers"`
+	Following int64  `json:"following"`
+	Stars     int64  `json:"stars"`
+	Repos     int64  `json:"repos"`
+	Gists     int64  `json:"gists"`
+	CreatedAt string `json:"created_at"`
+	UpdatedAt string `json:"updated_at"`
 }

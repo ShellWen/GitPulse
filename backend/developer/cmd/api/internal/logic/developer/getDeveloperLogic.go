@@ -30,12 +30,7 @@ func NewGetDeveloperLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetD
 }
 
 func (l *GetDeveloperLogic) GetDeveloper(req *types.GetDeveloperReq) (resp *types.GetDeveloperResp, err error) {
-	if resp, err = l.doGetDeveloper(req); err != nil {
-		resp = &types.GetDeveloperResp{
-			Code:    http.StatusInternalServerError,
-			Message: err.Error(),
-		}
-	}
+	resp, err = l.doGetDeveloper(req)
 	return
 }
 
@@ -56,7 +51,7 @@ func (l *GetDeveloperLogic) doGetDeveloper(req *types.GetDeveloperReq) (resp *ty
 	switch rpcResp.Code {
 	case http.StatusOK:
 		logx.Info("Found in local cache")
-		if (time.Duration(time.Now().Unix() - rpcResp.Developer.UpdatedAt)) < time.Hour*24 {
+		if time.Now().Unix()-rpcResp.Developer.UpdatedAt < int64(time.Hour.Seconds()*24) {
 			break
 		}
 		logx.Info("Local cache expired, fetching from github")
@@ -73,50 +68,28 @@ func (l *GetDeveloperLogic) doGetDeveloper(req *types.GetDeveloperReq) (resp *ty
 		fallthrough
 	default:
 		if rpcResp.Code != http.StatusOK {
-			resp = &types.GetDeveloperResp{
-				Code:    int32(rpcResp.Code),
-				Message: rpcResp.Message,
-			}
+			err = jsonx.UnmarshalFromString(rpcResp.Message, &resp)
 			return
 		}
 	}
 
 	resp = &types.GetDeveloperResp{
-		Data: struct {
-			Id        int64  `json:"id"`
-			Name      string `json:"name"`
-			Login     string `json:"login"`
-			AvatarUrl string `json:"avatar_url"`
-			Company   string `json:"company"`
-			Location  string `json:"location"`
-			Bio       string `json:"bio"`
-			Blog      string `json:"blog"`
-			Email     string `json:"email"`
-			Followers int64  `json:"followers"`
-			Following int64  `json:"following"`
-			Stars     int64  `json:"stars"`
-			Repos     int64  `json:"repos"`
-			Gists     int64  `json:"gists"`
-			CreatedAt string `json:"created_at"`
-			UpdatedAt string `json:"updated_at"`
-		}{
-			Id:        rpcResp.Developer.Id,
-			Name:      rpcResp.Developer.Name,
-			Login:     rpcResp.Developer.Login,
-			AvatarUrl: rpcResp.Developer.AvatarUrl,
-			Company:   rpcResp.Developer.Company,
-			Location:  rpcResp.Developer.Location,
-			Bio:       rpcResp.Developer.Bio,
-			Blog:      rpcResp.Developer.Blog,
-			Email:     rpcResp.Developer.Email,
-			Followers: rpcResp.Developer.Followers,
-			Following: rpcResp.Developer.Following,
-			Stars:     rpcResp.Developer.Stars,
-			Repos:     rpcResp.Developer.Repos,
-			Gists:     rpcResp.Developer.Gists,
-			CreatedAt: time.Unix(rpcResp.Developer.CreatedAt, 0).Format(time.RFC3339),
-			UpdatedAt: time.Unix(rpcResp.Developer.UpdatedAt, 0).Format(time.RFC3339),
-		},
+		Id:        rpcResp.Developer.Id,
+		Name:      rpcResp.Developer.Name,
+		Login:     rpcResp.Developer.Login,
+		AvatarUrl: rpcResp.Developer.AvatarUrl,
+		Company:   rpcResp.Developer.Company,
+		Location:  rpcResp.Developer.Location,
+		Bio:       rpcResp.Developer.Bio,
+		Blog:      rpcResp.Developer.Blog,
+		Email:     rpcResp.Developer.Email,
+		Followers: rpcResp.Developer.Followers,
+		Following: rpcResp.Developer.Following,
+		Stars:     rpcResp.Developer.Stars,
+		Repos:     rpcResp.Developer.Repos,
+		Gists:     rpcResp.Developer.Gists,
+		CreatedAt: time.Unix(rpcResp.Developer.CreatedAt, 0).Format(time.RFC3339),
+		UpdatedAt: time.Unix(rpcResp.Developer.UpdatedAt, 0).Format(time.RFC3339),
 	}
 	return
 }
