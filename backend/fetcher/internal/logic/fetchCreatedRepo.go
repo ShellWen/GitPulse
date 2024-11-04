@@ -60,7 +60,7 @@ func doFetchCreatedRepo(ctx context.Context, svcContext *svc.ServiceContext, use
 }
 
 func delAllCreatedRepo(ctx context.Context, svcContext *svc.ServiceContext, userId int64) error {
-	relationZrpcClient := relation.NewRelation(svcContext.RpcClient)
+	relationZrpcClient := svcContext.RelationRpcClient
 
 	if delAllCreatedRepoResp, err := relationZrpcClient.DelAllCreatedRepo(ctx, &relation.DelAllCreatedRepoReq{DeveloperId: userId}); err != nil {
 		logx.Error("Unexpected error when deleting all created repos: " + err.Error())
@@ -79,7 +79,7 @@ func delAllCreatedRepo(ctx context.Context, svcContext *svc.ServiceContext, user
 func getLastFetchTimeOfCreatedRepo(ctx context.Context, svcContext *svc.ServiceContext, userId int64) (lastModified string, err error) {
 	var existingDeveloperResp *developer.GetDeveloperByIdResp
 
-	developerZrpcClient := developer.NewDeveloperZrpcClient(svcContext.RpcClient)
+	developerZrpcClient := svcContext.DeveloperRpcClient
 	if existingDeveloperResp, err = developerZrpcClient.GetDeveloperById(ctx, &developer.GetDeveloperByIdReq{Id: userId}); err != nil {
 		logx.Error(errors.New("Unexpected error when fetching developer profile: " + err.Error()))
 	} else if existingDeveloperResp.Code == http.StatusOK {

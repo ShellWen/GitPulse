@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/ShellWen/GitPulse/developer/cmd/rpc/internal/consumer"
+	"github.com/zeromicro/zero-contrib/zrpc/registry/consul"
 
 	"github.com/ShellWen/GitPulse/developer/cmd/rpc/internal/config"
 	"github.com/ShellWen/GitPulse/developer/cmd/rpc/internal/server"
@@ -42,6 +43,8 @@ func main() {
 	for _, s := range consumer.Consumers(c, context.Background(), ctx) {
 		serviceGroup.Add(s)
 	}
+
+	_ = consul.RegisterService(c.ListenOn, c.Consul)
 
 	fmt.Printf("Starting rpc server at %s...\n", c.ListenOn)
 	serviceGroup.Start()

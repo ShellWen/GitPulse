@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/zeromicro/zero-contrib/zrpc/registry/consul"
 
 	"github.com/ShellWen/GitPulse/analysis/cmd/rpc/internal/config"
 	"github.com/ShellWen/GitPulse/analysis/cmd/rpc/internal/server"
@@ -33,6 +34,8 @@ func main() {
 		}
 	})
 	defer s.Stop()
+
+	_ = consul.RegisterService(c.RpcServerConf.ListenOn, c.Consul)
 
 	fmt.Printf("Starting rpc server at %s...\n", c.RpcServerConf.ListenOn)
 	s.Start()

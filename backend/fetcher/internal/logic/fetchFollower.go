@@ -71,7 +71,7 @@ func getAllGithubFollowersByLogin(ctx context.Context, githubClient *github.Clie
 }
 
 func delAllOldFollowers(ctx context.Context, svcContext *svc.ServiceContext, userId int64) (err error) {
-	relationZrpcClient := relation.NewRelation(svcContext.RpcClient)
+	relationZrpcClient := svcContext.RelationRpcClient
 
 	if delAllFollowersResp, err := relationZrpcClient.DelAllFollower(ctx, &relation.DelAllFollowerReq{DeveloperId: userId}); err != nil {
 		logx.Error(errors.New("Unexpected error when deleting old followers: " + err.Error()))

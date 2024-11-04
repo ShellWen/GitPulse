@@ -57,7 +57,7 @@ func doFetchStarredRepo(ctx context.Context, svcContext *svc.ServiceContext, use
 }
 
 func delAllOldStars(ctx context.Context, svcContext *svc.ServiceContext, userId int64) (err error) {
-	relationZrpcClient := relation.NewRelation(svcContext.RpcClient)
+	relationZrpcClient := svcContext.RelationRpcClient
 
 	if delAllStarredRepoResp, err := relationZrpcClient.DelAllStarredRepo(ctx, &relation.DelAllStarredRepoReq{DeveloperId: userId}); err != nil {
 		logx.Error(errors.New("Unexpected error when deleting old stars: " + err.Error()))
@@ -91,7 +91,7 @@ func getAllGithubStarredReposByLogin(ctx context.Context, githubClient *github.C
 func getLastFetchTimeOfStarredRepo(ctx context.Context, svcContext *svc.ServiceContext, userId int64) (lastModified string, err error) {
 	var (
 		existingDeveloperResp *developer.GetDeveloperByIdResp
-		developerZrpcClient   = developer.NewDeveloperZrpcClient(svcContext.RpcClient)
+		developerZrpcClient   = svcContext.DeveloperRpcClient
 	)
 
 	if existingDeveloperResp, err = developerZrpcClient.GetDeveloperById(ctx, &developer.GetDeveloperByIdReq{Id: userId}); err != nil {

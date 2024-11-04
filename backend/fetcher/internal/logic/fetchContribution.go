@@ -37,7 +37,7 @@ func buildContribution(ctx context.Context, svcContext *svc.ServiceContext, gith
 }
 
 func delAllOldContributionInCategory(ctx context.Context, svcContext *svc.ServiceContext, userId int64, category string) (err error) {
-	contributionZrpcClient := contribution.NewContributionZrpcClient(svcContext.RpcClient)
+	contributionZrpcClient := svcContext.ContributionRpcClient
 
 	if delAllOldContributionResp, err := contributionZrpcClient.DelAllContributionInCategoryByUserId(ctx, &contribution.DelAllContributionInCategoryByUserIdReq{Category: category, UserId: userId}); err != nil {
 		logx.Error("Unexpected error when deleting all old " + category + " contributions: " + err.Error())

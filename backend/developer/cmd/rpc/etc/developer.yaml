@@ -3,10 +3,15 @@ ListenOn: 127.0.0.1:2001
 Mode: dev
 Timeout: 10000
 
-#Etcd:
-#  Hosts:
-#  - 127.0.0.1:2379
-#  Key: developer.rpc
+Consul:
+  Host: 127.0.0.1:8500
+  Token:
+  Key: developer.rpc
+  Meta:
+    Protocol: grpc
+  Tag:
+    - tag
+    - rpc
 
 Redis:
   Host: 127.0.0.1:6379

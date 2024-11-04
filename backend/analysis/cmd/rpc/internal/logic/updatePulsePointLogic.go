@@ -54,8 +54,8 @@ func (l *UpdatePulsePointLogic) UpdatePulsePoint(in *pb.UpdateAnalysisReq) (resp
 
 func (l *UpdatePulsePointLogic) doUpdatePulsePoint(id int64) (err error) {
 	var (
-		contributionZrpcClient              = contribution.NewContributionZrpcClient(l.svcCtx.RpcClient)
-		repositoryZrpcClient                = repo.NewRepoZrpcClient(l.svcCtx.RpcClient)
+		contributionZrpcClient              = l.svcCtx.ContributionRpcClient
+		repositoryZrpcClient                = l.svcCtx.RepoRpcClient
 		allContributionResp                 *contribution.SearchByUserIdResp
 		allContributions                    []*contribution.Contribution
 		allContributionsCategorizedByRepoId = make(map[int64][]*contribution.Contribution)

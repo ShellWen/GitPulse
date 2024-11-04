@@ -1,15 +1,23 @@
 package svc
 
 import (
+	"github.com/ShellWen/GitPulse/contribution/cmd/rpc/contribution"
+	"github.com/ShellWen/GitPulse/developer/cmd/rpc/developer"
 	"github.com/ShellWen/GitPulse/fetcher/internal/config"
+	"github.com/ShellWen/GitPulse/relation/cmd/rpc/relation"
+	"github.com/ShellWen/GitPulse/repo/cmd/rpc/repo"
 	"github.com/zeromicro/go-queue/kq"
 	"github.com/zeromicro/go-zero/core/stores/redis"
 	"github.com/zeromicro/go-zero/zrpc"
 )
 
 type ServiceContext struct {
-	Config                             config.Config
-	RpcClient                          zrpc.Client
+	Config                config.Config
+	DeveloperRpcClient    developer.DeveloperZrpcClient
+	RelationRpcClient     relation.Relation
+	ContributionRpcClient contribution.ContributionZrpcClient
+	RepoRpcClient         repo.RepoZrpcClient
+
 	KqDeveloperPusher                  *kq.Pusher
 	KqContributionPusher               *kq.Pusher
 	KqCreateRepoPusher                 *kq.Pusher
@@ -26,8 +34,12 @@ type ServiceContext struct {
 
 func NewServiceContext(c config.Config) *ServiceContext {
 	return &ServiceContext{
-		Config:                             c,
-		RpcClient:                          zrpc.MustNewClient(c.RpcClientConf),
+		Config:                c,
+		DeveloperRpcClient:    developer.NewDeveloperZrpcClient(zrpc.MustNewClient(c.DeveloperRpcConf)),
+		RelationRpcClient:     relation.NewRelation(zrpc.MustNewClient(c.RelationRpcConf)),
+		ContributionRpcClient: contribution.NewContributionZrpcClient(zrpc.MustNewClient(c.ContributionRpcConf)),
+		RepoRpcClient:         repo.NewRepoZrpcClient(zrpc.MustNewClient(c.RepoRpcConf)),
+
 		KqDeveloperPusher:                  kq.NewPusher(c.KqDeveloperPusherConf.Brokers, c.KqDeveloperPusherConf.Topic, kq.WithAllowAutoTopicCreation(), kq.WithSyncPush()),
 		KqContributionPusher:               kq.NewPusher(c.KqContributionPusherConf.Brokers, c.KqContributionPusherConf.Topic, kq.WithAllowAutoTopicCreation(), kq.WithSyncPush()),
 		KqCreateRepoPusher:                 kq.NewPusher(c.KqCreateRepoPusherConf.Brokers, c.KqCreateRepoPusherConf.Topic, kq.WithAllowAutoTopicCreation(), kq.WithSyncPush()),

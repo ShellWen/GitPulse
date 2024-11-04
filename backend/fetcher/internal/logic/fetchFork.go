@@ -74,7 +74,7 @@ func getAllGithubForksByRepo(ctx context.Context, githubClient *github.Client, l
 }
 
 func delAllOldForks(ctx context.Context, svcContext *svc.ServiceContext, repoId int64) (err error) {
-	relationZrpcClient := relation.NewRelation(svcContext.RpcClient)
+	relationZrpcClient := svcContext.RelationRpcClient
 
 	if delAllForkResp, err := relationZrpcClient.DelAllFork(ctx, &relation.DelAllForkReq{OriginalRepoId: repoId}); err != nil {
 		logx.Error(errors.New("Unexpected error when deleting old forks: " + err.Error()))

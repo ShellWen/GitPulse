@@ -71,7 +71,7 @@ func getAllGithubFollowingByLogin(ctx context.Context, githubClient *github.Clie
 }
 
 func delAllOldFollowing(ctx context.Context, svcContext *svc.ServiceContext, userId int64) (err error) {
-	relationZrpcClient := relation.NewRelation(svcContext.RpcClient)
+	relationZrpcClient := svcContext.RelationRpcClient
 
 	if delAllFollowingResp, err := relationZrpcClient.DelAllFollowing(ctx, &relation.DelAllFollowingReq{DeveloperId: userId}); err != nil {
 		logx.Error(errors.New("Unexpected error when deleting old following: " + err.Error()))

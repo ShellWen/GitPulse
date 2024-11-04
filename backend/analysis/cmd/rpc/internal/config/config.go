@@ -3,12 +3,19 @@ package config
 import (
 	"github.com/zeromicro/go-zero/core/stores/cache"
 	"github.com/zeromicro/go-zero/zrpc"
+	"github.com/zeromicro/zero-contrib/zrpc/registry/consul"
 )
 
 type Config struct {
 	RpcServerConf zrpc.RpcServerConf
-	RpcClientConf zrpc.RpcClientConf
-	DB            struct {
+	Consul        consul.Conf
+
+	DeveloperRpcConf    zrpc.RpcClientConf
+	RelationRpcConf     zrpc.RpcClientConf
+	RepoRpcConf         zrpc.RpcClientConf
+	ContributionRpcConf zrpc.RpcClientConf
+
+	DB struct {
 		DataSource string
 	}
 	Cache cache.CacheConf

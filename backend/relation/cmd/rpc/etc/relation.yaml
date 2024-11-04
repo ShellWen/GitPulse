@@ -2,10 +2,15 @@ Name: relation.rpc
 ListenOn: 127.0.0.1:2003
 Mode: dev
 
-#Etcd:
-#  Hosts:
-#  - 127.0.0.1:2379
-#  Key: developer.rpc
+Consul:
+  Host: 127.0.0.1:8500
+  Token:
+  Key: relation.rpc
+  Meta:
+    Protocol: grpc
+  Tag:
+    - tag
+    - rpc
 
 Redis:
   Host: 127.0.0.1:6379

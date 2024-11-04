@@ -48,8 +48,8 @@ func (l *UpdateLanguageLogic) UpdateLanguage(in *pb.UpdateAnalysisReq) (resp *pb
 
 func (l *UpdateLanguageLogic) doUpdateLanguage(id int64) (err error) {
 	var (
-		relationZrpcClient   = relation.NewRelation(l.svcCtx.RpcClient)
-		repoZrpcClient       = repo.NewRepoZrpcClient(l.svcCtx.RpcClient)
+		relationZrpcClient   = l.svcCtx.RelationRpcClient
+		repoZrpcClient       = l.svcCtx.RepoRpcClient
 		createRepoResp       *relation.SearchCreatedRepoResp
 		createRepoIds        []int64
 		allLanguageBytes     map[string]int64

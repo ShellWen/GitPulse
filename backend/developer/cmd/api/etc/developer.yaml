@@ -10,10 +10,8 @@ Cache:
     Pass:
 
 DeveloperRpcConf:
-  Endpoints:
-    - 127.0.0.1:2001
-  NonBlock: true
-  Timeout: 10000
+  Target: consul://localhost:8500/developer.rpc?wait=14s
+  Timeout: 30000
 
 KqFetcherTaskPusherConf:
   Name: fetcher-task-pusher

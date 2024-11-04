@@ -10,6 +10,8 @@ import (
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/service"
+
+	_ "github.com/zeromicro/zero-contrib/zrpc/registry/consul"
 )
 
 var configFile = flag.String("f", "fetcher/etc/fetcher.yaml", "the config file")

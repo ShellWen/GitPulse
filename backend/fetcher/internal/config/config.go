@@ -9,7 +9,11 @@ import (
 )
 
 type Config struct {
-	zrpc.RpcClientConf
+	DeveloperRpcConf    zrpc.RpcClientConf
+	RelationRpcConf     zrpc.RpcClientConf
+	ContributionRpcConf zrpc.RpcClientConf
+	RepoRpcConf         zrpc.RpcClientConf
+
 	logx.LogConf
 	KqFetcherTaskConsumerConf              kq.KqConf
 	KqDeveloperPusherConf                  config.KqPusherConf

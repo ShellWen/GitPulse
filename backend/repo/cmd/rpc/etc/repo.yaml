@@ -2,10 +2,15 @@ Name: repo.rpc
 ListenOn: 127.0.0.1:2002
 Mode: dev
 
-#Etcd:
-#  Hosts:
-#  - 127.0.0.1:2379
-#  Key: developer.rpc
+Consul:
+  Host: 127.0.0.1:8500
+  Token:
+  Key: repo.rpc
+  Meta:
+    Protocol: grpc
+  Tag:
+    - tag
+    - rpc
 
 Redis:
   Host: 127.0.0.1:6379

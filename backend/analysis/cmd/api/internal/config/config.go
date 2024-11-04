@@ -13,6 +13,11 @@ type Config struct {
 		DataSource string
 	}
 	Cache                   cache.CacheConf
-	RpcClientConf           zrpc.RpcClientConf
 	KqFetcherTaskPusherConf config.KqPusherConf
+
+	DeveloperRpcConf    zrpc.RpcClientConf
+	RelationRpcConf     zrpc.RpcClientConf
+	RepoRpcConf         zrpc.RpcClientConf
+	ContributionRpcConf zrpc.RpcClientConf
+	AnalysisRpcConf     zrpc.RpcClientConf
 }
