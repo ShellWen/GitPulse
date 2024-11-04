@@ -33,6 +33,7 @@ func doFetchDeveloper(ctx context.Context, svcContext *svc.ServiceContext, userI
 		return
 	}
 
+	logx.Info("Successfully push developer profile: " + githubUser.GetLogin())
 	return
 }
 

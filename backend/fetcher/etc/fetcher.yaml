@@ -63,3 +63,27 @@ RedisClient:
   Type: node
   Pass:
   Key: fetcher
+
+KqDeveloperUpdateCompletePusherConf:
+    Name: developer-update-complete-pusher
+    Brokers:
+      - 127.0.0.1:9092
+    Topic: developer-update-complete
+
+KqRepoUpdateCompletePusherConf:
+    Name: repo-update-complete-pusher
+    Brokers:
+      - 127.0.0.1:9092
+    Topic: repo-update-complete
+
+KqContributionUpdateCompletePusherConf:
+    Name: contribution-update-complete-pusher
+    Brokers:
+      - 127.0.0.1:9092
+    Topic: contribution-update-complete
+
+KqRelationUpdateCompletePusherConf:
+    Name: relation-update-complete-pusher
+    Brokers:
+      - 127.0.0.1:9092
+    Topic: relation-update-complete

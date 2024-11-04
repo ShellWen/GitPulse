@@ -33,27 +33,71 @@ func (c *FetcherTaskConsumer) Consume(ctx context.Context, key string, value str
 
 	switch msg.Type {
 	case message.FetchDeveloper:
-		err = logic.FetchDeveloper(c.ctx, c.svc, msg.Id)
+		if err = logic.FetchDeveloper(c.ctx, c.svc, msg.Id); err != nil {
+			_ = c.svc.KqDeveloperUpdateCompletePusher.Push(c.ctx, value)
+			return
+		}
+		err = c.svc.KqDeveloperUpdateCompletePusher.Push(c.ctx, value)
 	case message.FetchRepo:
-		err = logic.FetchRepo(c.ctx, c.svc, msg.Id)
+		if err = logic.FetchRepo(c.ctx, c.svc, msg.Id); err != nil {
+			_ = c.svc.KqRepoUpdateCompletePusher.Push(c.ctx, value)
+			return
+		}
+		err = c.svc.KqRepoUpdateCompletePusher.Push(c.ctx, value)
 	case message.FetchCreatedRepo:
-		err = logic.FetchCreatedRepo(c.ctx, c.svc, msg.Id)
+		if err = logic.FetchCreatedRepo(c.ctx, c.svc, msg.Id); err != nil {
+			_ = c.svc.KqRelationUpdateCompletePusher.Push(c.ctx, value)
+			return
+		}
+		err = c.svc.KqRelationUpdateCompletePusher.Push(c.ctx, value)
 	case message.FetchStarredRepo:
-		err = logic.FetchStarredRepo(c.ctx, c.svc, msg.Id)
+		if err = logic.FetchStarredRepo(c.ctx, c.svc, msg.Id); err != nil {
+			_ = c.svc.KqRelationUpdateCompletePusher.Push(c.ctx, value)
+			return
+		}
+		err = c.svc.KqRelationUpdateCompletePusher.Push(c.ctx, value)
 	case message.FetchFollow:
-		err = logic.FetchFollow(c.ctx, c.svc, msg.Id)
+		if err = logic.FetchFollow(c.ctx, c.svc, msg.Id); err != nil {
+			_ = c.svc.KqRelationUpdateCompletePusher.Push(c.ctx, value)
+			return
+		}
+		err = c.svc.KqRelationUpdateCompletePusher.Push(c.ctx, value)
 	case message.FetchFollower:
-		err = logic.FetchFollower(c.ctx, c.svc, msg.Id)
+		if err = logic.FetchFollower(c.ctx, c.svc, msg.Id); err != nil {
+			_ = c.svc.KqRelationUpdateCompletePusher.Push(c.ctx, value)
+			return
+		}
+		err = c.svc.KqRelationUpdateCompletePusher.Push(c.ctx, value)
 	case message.FetchFollowing:
-		err = logic.FetchFollowing(c.ctx, c.svc, msg.Id)
+		if err = logic.FetchFollowing(c.ctx, c.svc, msg.Id); err != nil {
+			_ = c.svc.KqRelationUpdateCompletePusher.Push(c.ctx, value)
+			return
+		}
+		err = c.svc.KqRelationUpdateCompletePusher.Push(c.ctx, value)
 	case message.FetchFork:
-		err = logic.FetchFork(c.ctx, c.svc, msg.Id)
+		if err = logic.FetchFork(c.ctx, c.svc, msg.Id); err != nil {
+			_ = c.svc.KqRelationUpdateCompletePusher.Push(c.ctx, value)
+			return
+		}
+		err = c.svc.KqRelationUpdateCompletePusher.Push(c.ctx, value)
 	case message.FetchContributionOfUser:
-		err = logic.FetchContributionOfUser(c.ctx, c.svc, msg.Id)
+		if err = logic.FetchContributionOfUser(c.ctx, c.svc, msg.Id); err != nil {
+			_ = c.svc.KqContributionUpdateCompletePusher.Push(c.ctx, value)
+			return
+		}
+		err = c.svc.KqContributionUpdateCompletePusher.Push(c.ctx, value)
 	case message.FetchIssuePROfUser:
-		err = logic.FetchIssuePROfUser(c.ctx, c.svc, msg.Id)
+		if err = logic.FetchIssuePROfUser(c.ctx, c.svc, msg.Id); err != nil {
+			_ = c.svc.KqContributionUpdateCompletePusher.Push(c.ctx, value)
+			return
+		}
+		err = c.svc.KqContributionUpdateCompletePusher.Push(c.ctx, value)
 	case message.FetchCommentOfUser:
-		err = logic.FetchCommentOfUser(c.ctx, c.svc, msg.Id)
+		if err = logic.FetchCommentOfUser(c.ctx, c.svc, msg.Id); err != nil {
+			_ = c.svc.KqContributionUpdateCompletePusher.Push(c.ctx, value)
+			return
+		}
+		err = c.svc.KqContributionUpdateCompletePusher.Push(c.ctx, value)
 	default:
 		err = errors.New("unexpected message type: " + strconv.FormatInt(int64(msg.Type), 10))
 	}

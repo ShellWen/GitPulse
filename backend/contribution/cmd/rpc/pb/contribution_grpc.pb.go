@@ -27,6 +27,9 @@ const (
 	Contribution_SearchByCategory_FullMethodName                     = "/pb.contribution/SearchByCategory"
 	Contribution_SearchByUserId_FullMethodName                       = "/pb.contribution/SearchByUserId"
 	Contribution_SearchByRepoId_FullMethodName                       = "/pb.contribution/SearchByRepoId"
+	Contribution_BlockUntilIssuePrOfUserUpdated_FullMethodName       = "/pb.contribution/BlockUntilIssuePrOfUserUpdated"
+	Contribution_BlockUntilCommentReviewOfUserUpdated_FullMethodName = "/pb.contribution/BlockUntilCommentReviewOfUserUpdated"
+	Contribution_BlockUntilAllUpdated_FullMethodName                 = "/pb.contribution/BlockUntilAllUpdated"
 )
 
 // ContributionClient is the client API for Contribution service.
@@ -42,6 +45,9 @@ type ContributionClient interface {
 	SearchByCategory(ctx context.Context, in *SearchByCategoryReq, opts ...grpc.CallOption) (*SearchByCategoryResp, error)
 	SearchByUserId(ctx context.Context, in *SearchByUserIdReq, opts ...grpc.CallOption) (*SearchByUserIdResp, error)
 	SearchByRepoId(ctx context.Context, in *SearchByRepoIdReq, opts ...grpc.CallOption) (*SearchByRepoIdResp, error)
+	BlockUntilIssuePrOfUserUpdated(ctx context.Context, in *BlockUntilIssuePrOfUserUpdatedReq, opts ...grpc.CallOption) (*BlockUntilIssuePrOfUserUpdatedResp, error)
+	BlockUntilCommentReviewOfUserUpdated(ctx context.Context, in *BlockUntilCommentReviewOfUserUpdatedReq, opts ...grpc.CallOption) (*BlockUntilCommentReviewOfUserUpdatedResp, error)
+	BlockUntilAllUpdated(ctx context.Context, in *BlockUntilAllUpdatedReq, opts ...grpc.CallOption) (*BlockUntilAllUpdatedResp, error)
 }
 
 type contributionClient struct {
@@ -132,6 +138,36 @@ func (c *contributionClient) SearchByRepoId(ctx context.Context, in *SearchByRep
 	return out, nil
 }
 
+func (c *contributionClient) BlockUntilIssuePrOfUserUpdated(ctx context.Context, in *BlockUntilIssuePrOfUserUpdatedReq, opts ...grpc.CallOption) (*BlockUntilIssuePrOfUserUpdatedResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(BlockUntilIssuePrOfUserUpdatedResp)
+	err := c.cc.Invoke(ctx, Contribution_BlockUntilIssuePrOfUserUpdated_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *contributionClient) BlockUntilCommentReviewOfUserUpdated(ctx context.Context, in *BlockUntilCommentReviewOfUserUpdatedReq, opts ...grpc.CallOption) (*BlockUntilCommentReviewOfUserUpdatedResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(BlockUntilCommentReviewOfUserUpdatedResp)
+	err := c.cc.Invoke(ctx, Contribution_BlockUntilCommentReviewOfUserUpdated_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *contributionClient) BlockUntilAllUpdated(ctx context.Context, in *BlockUntilAllUpdatedReq, opts ...grpc.CallOption) (*BlockUntilAllUpdatedResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(BlockUntilAllUpdatedResp)
+	err := c.cc.Invoke(ctx, Contribution_BlockUntilAllUpdated_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ContributionServer is the server API for Contribution service.
 // All implementations must embed UnimplementedContributionServer
 // for forward compatibility.
@@ -145,6 +181,9 @@ type ContributionServer interface {
 	SearchByCategory(context.Context, *SearchByCategoryReq) (*SearchByCategoryResp, error)
 	SearchByUserId(context.Context, *SearchByUserIdReq) (*SearchByUserIdResp, error)
 	SearchByRepoId(context.Context, *SearchByRepoIdReq) (*SearchByRepoIdResp, error)
+	BlockUntilIssuePrOfUserUpdated(context.Context, *BlockUntilIssuePrOfUserUpdatedReq) (*BlockUntilIssuePrOfUserUpdatedResp, error)
+	BlockUntilCommentReviewOfUserUpdated(context.Context, *BlockUntilCommentReviewOfUserUpdatedReq) (*BlockUntilCommentReviewOfUserUpdatedResp, error)
+	BlockUntilAllUpdated(context.Context, *BlockUntilAllUpdatedReq) (*BlockUntilAllUpdatedResp, error)
 	mustEmbedUnimplementedContributionServer()
 }
 
@@ -178,6 +217,15 @@ func (UnimplementedContributionServer) SearchByUserId(context.Context, *SearchBy
 }
 func (UnimplementedContributionServer) SearchByRepoId(context.Context, *SearchByRepoIdReq) (*SearchByRepoIdResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SearchByRepoId not implemented")
+}
+func (UnimplementedContributionServer) BlockUntilIssuePrOfUserUpdated(context.Context, *BlockUntilIssuePrOfUserUpdatedReq) (*BlockUntilIssuePrOfUserUpdatedResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method BlockUntilIssuePrOfUserUpdated not implemented")
+}
+func (UnimplementedContributionServer) BlockUntilCommentReviewOfUserUpdated(context.Context, *BlockUntilCommentReviewOfUserUpdatedReq) (*BlockUntilCommentReviewOfUserUpdatedResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method BlockUntilCommentReviewOfUserUpdated not implemented")
+}
+func (UnimplementedContributionServer) BlockUntilAllUpdated(context.Context, *BlockUntilAllUpdatedReq) (*BlockUntilAllUpdatedResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method BlockUntilAllUpdated not implemented")
 }
 func (UnimplementedContributionServer) mustEmbedUnimplementedContributionServer() {}
 func (UnimplementedContributionServer) testEmbeddedByValue()                      {}
@@ -344,6 +392,60 @@ func _Contribution_SearchByRepoId_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Contribution_BlockUntilIssuePrOfUserUpdated_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(BlockUntilIssuePrOfUserUpdatedReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ContributionServer).BlockUntilIssuePrOfUserUpdated(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Contribution_BlockUntilIssuePrOfUserUpdated_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ContributionServer).BlockUntilIssuePrOfUserUpdated(ctx, req.(*BlockUntilIssuePrOfUserUpdatedReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Contribution_BlockUntilCommentReviewOfUserUpdated_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(BlockUntilCommentReviewOfUserUpdatedReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ContributionServer).BlockUntilCommentReviewOfUserUpdated(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Contribution_BlockUntilCommentReviewOfUserUpdated_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ContributionServer).BlockUntilCommentReviewOfUserUpdated(ctx, req.(*BlockUntilCommentReviewOfUserUpdatedReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Contribution_BlockUntilAllUpdated_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(BlockUntilAllUpdatedReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ContributionServer).BlockUntilAllUpdated(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Contribution_BlockUntilAllUpdated_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ContributionServer).BlockUntilAllUpdated(ctx, req.(*BlockUntilAllUpdatedReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Contribution_ServiceDesc is the grpc.ServiceDesc for Contribution service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -382,6 +484,18 @@ var Contribution_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SearchByRepoId",
 			Handler:    _Contribution_SearchByRepoId_Handler,
+		},
+		{
+			MethodName: "BlockUntilIssuePrOfUserUpdated",
+			Handler:    _Contribution_BlockUntilIssuePrOfUserUpdated_Handler,
+		},
+		{
+			MethodName: "BlockUntilCommentReviewOfUserUpdated",
+			Handler:    _Contribution_BlockUntilCommentReviewOfUserUpdated_Handler,
+		},
+		{
+			MethodName: "BlockUntilAllUpdated",
+			Handler:    _Contribution_BlockUntilAllUpdated_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

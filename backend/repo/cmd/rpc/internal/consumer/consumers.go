@@ -11,5 +11,6 @@ import (
 func Consumers(c config.Config, ctx context.Context, svc *svc.ServiceContext) []service.Service {
 	return []service.Service{
 		kq.MustNewQueue(c.KqRepoUpdateConsumerConf, NewRepoUpdateConsumer(ctx, svc)),
+		kq.MustNewQueue(c.KqRepoUpdateCompleteConsumerConf, NewRepoUpdateCompleteConsumer(ctx, svc)),
 	}
 }

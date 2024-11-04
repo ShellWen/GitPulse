@@ -31,14 +31,17 @@ func doFetchStarredRepo(ctx context.Context, svcContext *svc.ServiceContext, use
 		return
 	}
 
+	logx.Info("Start fetching starred repo of user: ", githubUser.GetLogin())
 	if allRepos, err = getAllGithubStarredReposByLogin(ctx, githubClient, githubUser.GetLogin()); err != nil {
 		return
 	}
+	logx.Info("Finish fetching starred repo of user: ", githubUser.GetLogin()+", total starred repos: "+string(rune(len(allRepos))))
 
 	if err = delAllOldStars(ctx, svcContext, userId); err != nil {
 		return
 	}
 
+	logx.Info("Start pushing starred repo of user: ", githubUser.GetLogin())
 	for _, githubRepo := range allRepos {
 		if err = pushStarredRepo(ctx, svcContext, buildStarredRepo(ctx, svcContext, githubRepo, userId)); err != nil {
 			return
@@ -49,6 +52,7 @@ func doFetchStarredRepo(ctx context.Context, svcContext *svc.ServiceContext, use
 		}
 	}
 
+	logx.Info("Successfully push all update tasks of starred repo")
 	return
 }
 

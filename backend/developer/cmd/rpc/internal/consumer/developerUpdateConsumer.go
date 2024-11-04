@@ -45,15 +45,6 @@ func (c *DeveloperUpdateConsumer) Consume(ctx context.Context, key string, value
 		err = insertNewDeveloper(c, newDeveloper)
 	}
 
-	if c.svc.DeveloperUpdatedChan[newDeveloper.Id] == nil {
-		c.svc.DeveloperUpdatedChan[newDeveloper.Id] = make(chan struct{})
-	}
-
-	select {
-	case c.svc.DeveloperUpdatedChan[newDeveloper.Id] <- struct{}{}:
-	default:
-	}
-
 	return
 }
 

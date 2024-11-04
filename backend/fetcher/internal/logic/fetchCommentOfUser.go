@@ -5,8 +5,10 @@ import (
 	"github.com/ShellWen/GitPulse/contribution/model"
 	"github.com/ShellWen/GitPulse/fetcher/internal/svc"
 	"github.com/google/go-github/v66/github"
+	"github.com/zeromicro/go-zero/core/logx"
 	"net/http"
 	"os"
+	"strconv"
 	"time"
 )
 
@@ -35,20 +37,24 @@ func doFetchCommentOfUser(ctx context.Context, svcContext *svc.ServiceContext, u
 		return
 	}
 
+	logx.Info("Start fetching comment of user: ", githubUser.GetLogin())
 	if allComment, err = getAllGithubCommentByLogin(ctx, githubClient, githubUser.GetLogin()); err != nil {
 		return
 	}
+	logx.Info("Finish fetching comment of user: ", githubUser.GetLogin()+", total comment: "+strconv.Itoa(len(allComment)))
 
 	if err = delAllOldContributionInCategory(ctx, svcContext, userId, model.CategoryComment); err != nil {
 		return
 	}
 
+	logx.Info("Start pushing comment of user: ", githubUser.GetLogin())
 	for _, githubComment := range allComment {
 		if err = pushContribution(ctx, svcContext, buildComment(ctx, svcContext, githubComment, userId)); err != nil {
 			return
 		}
 	}
 
+	logx.Info("Successfully push all update tasks of comment")
 	return
 }
 

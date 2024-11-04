@@ -29,9 +29,11 @@ func doFetchIssuePROfUser(ctx context.Context, svcContext *svc.ServiceContext, u
 		return
 	}
 
+	logx.Info("Start fetching issues and PRs of user: ", githubUser.GetLogin())
 	if allIssuePR, err = getAllGithubIssuePRByLogin(ctx, githubClient, githubUser.GetLogin(), RoleAuthor); err != nil {
 		return
 	}
+	logx.Info("Finish fetching issues and PRs of user: ", githubUser.GetLogin()+", total issues and PRs: "+string(rune(len(allIssuePR))))
 
 	if err = delAllOldContributionInCategory(ctx, svcContext, userId, model.CategoryOpenIssue); err != nil {
 		return
@@ -45,6 +47,7 @@ func doFetchIssuePROfUser(ctx context.Context, svcContext *svc.ServiceContext, u
 		return
 	}
 
+	logx.Info("Start pushing issues and PRs of user: ", githubUser.GetLogin())
 	for _, githubIssuePR := range allIssuePR {
 		var (
 			merged bool
@@ -61,7 +64,8 @@ func doFetchIssuePROfUser(ctx context.Context, svcContext *svc.ServiceContext, u
 			return
 		}
 	}
-
+	
+	logx.Info("Successfully push all update tasks of issues and PRs")
 	return
 }
 

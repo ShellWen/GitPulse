@@ -65,6 +65,15 @@ message SearchCreatedRepoResp {
   repeated int64 repoIds = 3; //repoId
 }
 
+message BlockUntilCreatedRepoUpdatedReq {
+  int64 id = 1; //id
+}
+
+message BlockUntilCreatedRepoUpdatedResp {
+  int64 code = 1;
+  string message = 2;
+}
+
 //--------------------------------follow--------------------------------
 message Follow {
   int64 dataId = 1; //dataId
@@ -145,6 +154,24 @@ message SearchFollowerByDeveloperIdResp {
   repeated int64 followerIds = 3; //followerId
 }
 
+message BlockUntilFollowingUpdatedReq {
+  int64 id = 1; //id
+}
+
+message BlockUntilFollowingUpdatedResp {
+  int64 code = 1;
+  string message = 2;
+}
+
+message BlockUntilFollowerUpdatedReq {
+  int64 id = 1; //id
+}
+
+message BlockUntilFollowerUpdatedResp {
+  int64 code = 1;
+  string message = 2;
+}
+
 //--------------------------------fork--------------------------------
 message Fork {
   int64 dataId = 1; //dataId
@@ -200,6 +227,15 @@ message SearchForkResp {
   int64 code = 1;
   string message = 2;
   repeated int64 forkRepoIds = 3; //forkRepoId
+}
+
+message BlockUntilForkUpdatedReq {
+  int64 id = 1; //id
+}
+
+message BlockUntilForkUpdatedResp {
+  int64 code = 1;
+  string message = 2;
 }
 
 //--------------------------------star--------------------------------
@@ -282,6 +318,16 @@ message SearchStaringDevResp {
   repeated int64 developerIds = 3; //developerId
 }
 
+message BlockUntilStarredRepoUpdatedReq {
+  int64 id = 1; //id
+}
+
+message BlockUntilStarredRepoUpdatedResp {
+  int64 code = 1;
+  string message = 2;
+}
+
+
 // ------------------------------------ 
 // Rpc Func
 // ------------------------------------ 
@@ -294,6 +340,7 @@ service relation{
     rpc DelAllCreatedRepo(DelAllCreatedRepoReq) returns (DelAllCreatedRepoResp);
     rpc GetCreatorId(GetCreatorIdReq) returns (GetCreatorIdResp);
     rpc SearchCreatedRepo(SearchCreatedRepoReq) returns (SearchCreatedRepoResp);
+    rpc BlockUntilCreatedRepoUpdated(BlockUntilCreatedRepoUpdatedReq) returns (BlockUntilCreatedRepoUpdatedResp);
     //-----------------------follow-----------------------
 	  rpc AddFollow(AddFollowReq) returns (AddFollowResp);
     rpc DelFollow(DelFollowReq) returns (DelFollowResp);
@@ -302,12 +349,15 @@ service relation{
     rpc CheckIfFollow(CheckIfFollowReq) returns (CheckFollowResp);
     rpc SearchFollowingByDeveloperId(SearchFollowingByDeveloperIdReq) returns (SearchFollowingByDeveloperIdResp);
     rpc SearchFollowerByDeveloperId(SearchFollowerByDeveloperIdReq) returns (SearchFollowerByDeveloperIdResp);
+    rpc BlockUntilFollowingUpdated(BlockUntilFollowingUpdatedReq) returns (BlockUntilFollowingUpdatedResp);
+    rpc BlockUntilFollowerUpdated(BlockUntilFollowerUpdatedReq) returns (BlockUntilFollowerUpdatedResp);
 	  //-----------------------fork-----------------------
 	  rpc AddFork(AddForkReq) returns (AddForkResp);
     rpc DelFork(DelForkReq) returns (DelForkResp);
     rpc DelAllFork(DelAllForkReq) returns (DelAllForkResp);
     rpc GetOrigin(GetOriginReq) returns (GetOriginResp);
     rpc SearchFork(SearchForkReq) returns (SearchForkResp);
+    rpc BlockUntilForkUpdated(BlockUntilForkUpdatedReq) returns (BlockUntilForkUpdatedResp);
 	  //-----------------------star-----------------------
 	  rpc AddStar(AddStarReq) returns (AddStarResp);
     rpc DelStar(DelStarReq) returns (DelStarResp);
@@ -316,4 +366,5 @@ service relation{
     rpc CheckIfStar(CheckIfStarReq) returns (CheckIfStarResp);
     rpc SearchStarredRepo(SearchStarredRepoReq) returns (SearchStarredRepoResp);
     rpc SearchStaringDev(SearchStaringDevReq) returns (SearchStaringDevResp);
+    rpc BlockUntilStarredRepoUpdated(BlockUntilStarredRepoUpdatedReq) returns (BlockUntilStarredRepoUpdatedResp);
 }

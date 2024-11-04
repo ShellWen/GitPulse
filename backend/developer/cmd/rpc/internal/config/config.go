@@ -11,6 +11,7 @@ type Config struct {
 	DB struct {
 		DataSource string
 	}
-	Cache                         cache.CacheConf
-	KqDeveloperUpdateConsumerConf kq.KqConf
+	Cache                                 cache.CacheConf
+	KqDeveloperUpdateConsumerConf         kq.KqConf
+	KqDeveloperUpdateCompleteConsumerConf kq.KqConf
 }

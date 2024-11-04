@@ -49,6 +49,11 @@ func (s *RelationServer) SearchCreatedRepo(ctx context.Context, in *pb.SearchCre
 	return l.SearchCreatedRepo(in)
 }
 
+func (s *RelationServer) BlockUntilCreatedRepoUpdated(ctx context.Context, in *pb.BlockUntilCreatedRepoUpdatedReq) (*pb.BlockUntilCreatedRepoUpdatedResp, error) {
+	l := logic.NewBlockUntilCreatedRepoUpdatedLogic(ctx, s.svcCtx)
+	return l.BlockUntilCreatedRepoUpdated(in)
+}
+
 // -----------------------follow-----------------------
 func (s *RelationServer) AddFollow(ctx context.Context, in *pb.AddFollowReq) (*pb.AddFollowResp, error) {
 	l := logic.NewAddFollowLogic(ctx, s.svcCtx)
@@ -85,6 +90,16 @@ func (s *RelationServer) SearchFollowerByDeveloperId(ctx context.Context, in *pb
 	return l.SearchFollowerByDeveloperId(in)
 }
 
+func (s *RelationServer) BlockUntilFollowingUpdated(ctx context.Context, in *pb.BlockUntilFollowingUpdatedReq) (*pb.BlockUntilFollowingUpdatedResp, error) {
+	l := logic.NewBlockUntilFollowingUpdatedLogic(ctx, s.svcCtx)
+	return l.BlockUntilFollowingUpdated(in)
+}
+
+func (s *RelationServer) BlockUntilFollowerUpdated(ctx context.Context, in *pb.BlockUntilFollowerUpdatedReq) (*pb.BlockUntilFollowerUpdatedResp, error) {
+	l := logic.NewBlockUntilFollowerUpdatedLogic(ctx, s.svcCtx)
+	return l.BlockUntilFollowerUpdated(in)
+}
+
 // -----------------------fork-----------------------
 func (s *RelationServer) AddFork(ctx context.Context, in *pb.AddForkReq) (*pb.AddForkResp, error) {
 	l := logic.NewAddForkLogic(ctx, s.svcCtx)
@@ -109,6 +124,11 @@ func (s *RelationServer) GetOrigin(ctx context.Context, in *pb.GetOriginReq) (*p
 func (s *RelationServer) SearchFork(ctx context.Context, in *pb.SearchForkReq) (*pb.SearchForkResp, error) {
 	l := logic.NewSearchForkLogic(ctx, s.svcCtx)
 	return l.SearchFork(in)
+}
+
+func (s *RelationServer) BlockUntilForkUpdated(ctx context.Context, in *pb.BlockUntilForkUpdatedReq) (*pb.BlockUntilForkUpdatedResp, error) {
+	l := logic.NewBlockUntilForkUpdatedLogic(ctx, s.svcCtx)
+	return l.BlockUntilForkUpdated(in)
 }
 
 // -----------------------star-----------------------
@@ -145,4 +165,9 @@ func (s *RelationServer) SearchStarredRepo(ctx context.Context, in *pb.SearchSta
 func (s *RelationServer) SearchStaringDev(ctx context.Context, in *pb.SearchStaringDevReq) (*pb.SearchStaringDevResp, error) {
 	l := logic.NewSearchStaringDevLogic(ctx, s.svcCtx)
 	return l.SearchStaringDev(in)
+}
+
+func (s *RelationServer) BlockUntilStarredRepoUpdated(ctx context.Context, in *pb.BlockUntilStarredRepoUpdatedReq) (*pb.BlockUntilStarredRepoUpdatedResp, error) {
+	l := logic.NewBlockUntilStarredRepoUpdatedLogic(ctx, s.svcCtx)
+	return l.BlockUntilStarredRepoUpdated(in)
 }

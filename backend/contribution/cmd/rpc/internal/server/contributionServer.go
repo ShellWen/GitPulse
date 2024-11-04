@@ -63,3 +63,18 @@ func (s *ContributionServer) SearchByRepoId(ctx context.Context, in *pb.SearchBy
 	l := logic.NewSearchByRepoIdLogic(ctx, s.svcCtx)
 	return l.SearchByRepoId(in)
 }
+
+func (s *ContributionServer) BlockUntilIssuePrOfUserUpdated(ctx context.Context, in *pb.BlockUntilIssuePrOfUserUpdatedReq) (*pb.BlockUntilIssuePrOfUserUpdatedResp, error) {
+	l := logic.NewBlockUntilIssuePrOfUserUpdatedLogic(ctx, s.svcCtx)
+	return l.BlockUntilIssuePrOfUserUpdated(in)
+}
+
+func (s *ContributionServer) BlockUntilCommentReviewOfUserUpdated(ctx context.Context, in *pb.BlockUntilCommentReviewOfUserUpdatedReq) (*pb.BlockUntilCommentReviewOfUserUpdatedResp, error) {
+	l := logic.NewBlockUntilCommentReviewOfUserUpdatedLogic(ctx, s.svcCtx)
+	return l.BlockUntilCommentReviewOfUserUpdated(in)
+}
+
+func (s *ContributionServer) BlockUntilAllUpdated(ctx context.Context, in *pb.BlockUntilAllUpdatedReq) (*pb.BlockUntilAllUpdatedResp, error) {
+	l := logic.NewBlockUntilAllUpdatedLogic(ctx, s.svcCtx)
+	return l.BlockUntilAllUpdated(in)
+}

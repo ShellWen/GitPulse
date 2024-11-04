@@ -34,10 +34,13 @@ func doFetchFork(ctx context.Context, svcContext *svc.ServiceContext, repoId int
 		return
 	}
 
+	logx.Info("Start fetching forks of repo: ", originalRepo.GetFullName())
 	if allForks, err = getAllGithubForksByRepo(ctx, githubClient, originalRepo.GetOwner().GetLogin(), originalRepo.GetName()); err != nil {
 		return
 	}
+	logx.Info("Finish fetching forks of repo: ", originalRepo.GetFullName()+", total forks: "+strconv.Itoa(len(allForks)))
 
+	logx.Info("Start pushing forks of repo: ", originalRepo.GetFullName())
 	for _, githubRepo := range allForks {
 		if err = pushFork(ctx, svcContext, buildFork(ctx, svcContext, githubRepo, repoId)); err != nil {
 			return
@@ -48,6 +51,7 @@ func doFetchFork(ctx context.Context, svcContext *svc.ServiceContext, repoId int
 		}
 	}
 
+	logx.Info("Successfully push all update tasks of forks")
 	return
 }
 

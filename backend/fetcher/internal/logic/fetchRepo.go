@@ -32,6 +32,7 @@ func doFetchRepo(ctx context.Context, svcContext *svc.ServiceContext, repoId int
 		return
 	}
 
+	logx.Info("Successfully push repo: " + githubRepo.GetFullName())
 	return
 }
 

@@ -24,6 +24,7 @@ const (
 	Relation_DelAllCreatedRepo_FullMethodName            = "/pb.relation/DelAllCreatedRepo"
 	Relation_GetCreatorId_FullMethodName                 = "/pb.relation/GetCreatorId"
 	Relation_SearchCreatedRepo_FullMethodName            = "/pb.relation/SearchCreatedRepo"
+	Relation_BlockUntilCreatedRepoUpdated_FullMethodName = "/pb.relation/BlockUntilCreatedRepoUpdated"
 	Relation_AddFollow_FullMethodName                    = "/pb.relation/AddFollow"
 	Relation_DelFollow_FullMethodName                    = "/pb.relation/DelFollow"
 	Relation_DelAllFollower_FullMethodName               = "/pb.relation/DelAllFollower"
@@ -31,11 +32,14 @@ const (
 	Relation_CheckIfFollow_FullMethodName                = "/pb.relation/CheckIfFollow"
 	Relation_SearchFollowingByDeveloperId_FullMethodName = "/pb.relation/SearchFollowingByDeveloperId"
 	Relation_SearchFollowerByDeveloperId_FullMethodName  = "/pb.relation/SearchFollowerByDeveloperId"
+	Relation_BlockUntilFollowingUpdated_FullMethodName   = "/pb.relation/BlockUntilFollowingUpdated"
+	Relation_BlockUntilFollowerUpdated_FullMethodName    = "/pb.relation/BlockUntilFollowerUpdated"
 	Relation_AddFork_FullMethodName                      = "/pb.relation/AddFork"
 	Relation_DelFork_FullMethodName                      = "/pb.relation/DelFork"
 	Relation_DelAllFork_FullMethodName                   = "/pb.relation/DelAllFork"
 	Relation_GetOrigin_FullMethodName                    = "/pb.relation/GetOrigin"
 	Relation_SearchFork_FullMethodName                   = "/pb.relation/SearchFork"
+	Relation_BlockUntilForkUpdated_FullMethodName        = "/pb.relation/BlockUntilForkUpdated"
 	Relation_AddStar_FullMethodName                      = "/pb.relation/AddStar"
 	Relation_DelStar_FullMethodName                      = "/pb.relation/DelStar"
 	Relation_DelAllStarredRepo_FullMethodName            = "/pb.relation/DelAllStarredRepo"
@@ -43,6 +47,7 @@ const (
 	Relation_CheckIfStar_FullMethodName                  = "/pb.relation/CheckIfStar"
 	Relation_SearchStarredRepo_FullMethodName            = "/pb.relation/SearchStarredRepo"
 	Relation_SearchStaringDev_FullMethodName             = "/pb.relation/SearchStaringDev"
+	Relation_BlockUntilStarredRepoUpdated_FullMethodName = "/pb.relation/BlockUntilStarredRepoUpdated"
 )
 
 // RelationClient is the client API for Relation service.
@@ -55,6 +60,7 @@ type RelationClient interface {
 	DelAllCreatedRepo(ctx context.Context, in *DelAllCreatedRepoReq, opts ...grpc.CallOption) (*DelAllCreatedRepoResp, error)
 	GetCreatorId(ctx context.Context, in *GetCreatorIdReq, opts ...grpc.CallOption) (*GetCreatorIdResp, error)
 	SearchCreatedRepo(ctx context.Context, in *SearchCreatedRepoReq, opts ...grpc.CallOption) (*SearchCreatedRepoResp, error)
+	BlockUntilCreatedRepoUpdated(ctx context.Context, in *BlockUntilCreatedRepoUpdatedReq, opts ...grpc.CallOption) (*BlockUntilCreatedRepoUpdatedResp, error)
 	// -----------------------follow-----------------------
 	AddFollow(ctx context.Context, in *AddFollowReq, opts ...grpc.CallOption) (*AddFollowResp, error)
 	DelFollow(ctx context.Context, in *DelFollowReq, opts ...grpc.CallOption) (*DelFollowResp, error)
@@ -63,12 +69,15 @@ type RelationClient interface {
 	CheckIfFollow(ctx context.Context, in *CheckIfFollowReq, opts ...grpc.CallOption) (*CheckFollowResp, error)
 	SearchFollowingByDeveloperId(ctx context.Context, in *SearchFollowingByDeveloperIdReq, opts ...grpc.CallOption) (*SearchFollowingByDeveloperIdResp, error)
 	SearchFollowerByDeveloperId(ctx context.Context, in *SearchFollowerByDeveloperIdReq, opts ...grpc.CallOption) (*SearchFollowerByDeveloperIdResp, error)
+	BlockUntilFollowingUpdated(ctx context.Context, in *BlockUntilFollowingUpdatedReq, opts ...grpc.CallOption) (*BlockUntilFollowingUpdatedResp, error)
+	BlockUntilFollowerUpdated(ctx context.Context, in *BlockUntilFollowerUpdatedReq, opts ...grpc.CallOption) (*BlockUntilFollowerUpdatedResp, error)
 	// -----------------------fork-----------------------
 	AddFork(ctx context.Context, in *AddForkReq, opts ...grpc.CallOption) (*AddForkResp, error)
 	DelFork(ctx context.Context, in *DelForkReq, opts ...grpc.CallOption) (*DelForkResp, error)
 	DelAllFork(ctx context.Context, in *DelAllForkReq, opts ...grpc.CallOption) (*DelAllForkResp, error)
 	GetOrigin(ctx context.Context, in *GetOriginReq, opts ...grpc.CallOption) (*GetOriginResp, error)
 	SearchFork(ctx context.Context, in *SearchForkReq, opts ...grpc.CallOption) (*SearchForkResp, error)
+	BlockUntilForkUpdated(ctx context.Context, in *BlockUntilForkUpdatedReq, opts ...grpc.CallOption) (*BlockUntilForkUpdatedResp, error)
 	// -----------------------star-----------------------
 	AddStar(ctx context.Context, in *AddStarReq, opts ...grpc.CallOption) (*AddStarResp, error)
 	DelStar(ctx context.Context, in *DelStarReq, opts ...grpc.CallOption) (*DelStarResp, error)
@@ -77,6 +86,7 @@ type RelationClient interface {
 	CheckIfStar(ctx context.Context, in *CheckIfStarReq, opts ...grpc.CallOption) (*CheckIfStarResp, error)
 	SearchStarredRepo(ctx context.Context, in *SearchStarredRepoReq, opts ...grpc.CallOption) (*SearchStarredRepoResp, error)
 	SearchStaringDev(ctx context.Context, in *SearchStaringDevReq, opts ...grpc.CallOption) (*SearchStaringDevResp, error)
+	BlockUntilStarredRepoUpdated(ctx context.Context, in *BlockUntilStarredRepoUpdatedReq, opts ...grpc.CallOption) (*BlockUntilStarredRepoUpdatedResp, error)
 }
 
 type relationClient struct {
@@ -131,6 +141,16 @@ func (c *relationClient) SearchCreatedRepo(ctx context.Context, in *SearchCreate
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(SearchCreatedRepoResp)
 	err := c.cc.Invoke(ctx, Relation_SearchCreatedRepo_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *relationClient) BlockUntilCreatedRepoUpdated(ctx context.Context, in *BlockUntilCreatedRepoUpdatedReq, opts ...grpc.CallOption) (*BlockUntilCreatedRepoUpdatedResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(BlockUntilCreatedRepoUpdatedResp)
+	err := c.cc.Invoke(ctx, Relation_BlockUntilCreatedRepoUpdated_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -207,6 +227,26 @@ func (c *relationClient) SearchFollowerByDeveloperId(ctx context.Context, in *Se
 	return out, nil
 }
 
+func (c *relationClient) BlockUntilFollowingUpdated(ctx context.Context, in *BlockUntilFollowingUpdatedReq, opts ...grpc.CallOption) (*BlockUntilFollowingUpdatedResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(BlockUntilFollowingUpdatedResp)
+	err := c.cc.Invoke(ctx, Relation_BlockUntilFollowingUpdated_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *relationClient) BlockUntilFollowerUpdated(ctx context.Context, in *BlockUntilFollowerUpdatedReq, opts ...grpc.CallOption) (*BlockUntilFollowerUpdatedResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(BlockUntilFollowerUpdatedResp)
+	err := c.cc.Invoke(ctx, Relation_BlockUntilFollowerUpdated_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *relationClient) AddFork(ctx context.Context, in *AddForkReq, opts ...grpc.CallOption) (*AddForkResp, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(AddForkResp)
@@ -251,6 +291,16 @@ func (c *relationClient) SearchFork(ctx context.Context, in *SearchForkReq, opts
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(SearchForkResp)
 	err := c.cc.Invoke(ctx, Relation_SearchFork_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *relationClient) BlockUntilForkUpdated(ctx context.Context, in *BlockUntilForkUpdatedReq, opts ...grpc.CallOption) (*BlockUntilForkUpdatedResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(BlockUntilForkUpdatedResp)
+	err := c.cc.Invoke(ctx, Relation_BlockUntilForkUpdated_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -327,6 +377,16 @@ func (c *relationClient) SearchStaringDev(ctx context.Context, in *SearchStaring
 	return out, nil
 }
 
+func (c *relationClient) BlockUntilStarredRepoUpdated(ctx context.Context, in *BlockUntilStarredRepoUpdatedReq, opts ...grpc.CallOption) (*BlockUntilStarredRepoUpdatedResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(BlockUntilStarredRepoUpdatedResp)
+	err := c.cc.Invoke(ctx, Relation_BlockUntilStarredRepoUpdated_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // RelationServer is the server API for Relation service.
 // All implementations must embed UnimplementedRelationServer
 // for forward compatibility.
@@ -337,6 +397,7 @@ type RelationServer interface {
 	DelAllCreatedRepo(context.Context, *DelAllCreatedRepoReq) (*DelAllCreatedRepoResp, error)
 	GetCreatorId(context.Context, *GetCreatorIdReq) (*GetCreatorIdResp, error)
 	SearchCreatedRepo(context.Context, *SearchCreatedRepoReq) (*SearchCreatedRepoResp, error)
+	BlockUntilCreatedRepoUpdated(context.Context, *BlockUntilCreatedRepoUpdatedReq) (*BlockUntilCreatedRepoUpdatedResp, error)
 	// -----------------------follow-----------------------
 	AddFollow(context.Context, *AddFollowReq) (*AddFollowResp, error)
 	DelFollow(context.Context, *DelFollowReq) (*DelFollowResp, error)
@@ -345,12 +406,15 @@ type RelationServer interface {
 	CheckIfFollow(context.Context, *CheckIfFollowReq) (*CheckFollowResp, error)
 	SearchFollowingByDeveloperId(context.Context, *SearchFollowingByDeveloperIdReq) (*SearchFollowingByDeveloperIdResp, error)
 	SearchFollowerByDeveloperId(context.Context, *SearchFollowerByDeveloperIdReq) (*SearchFollowerByDeveloperIdResp, error)
+	BlockUntilFollowingUpdated(context.Context, *BlockUntilFollowingUpdatedReq) (*BlockUntilFollowingUpdatedResp, error)
+	BlockUntilFollowerUpdated(context.Context, *BlockUntilFollowerUpdatedReq) (*BlockUntilFollowerUpdatedResp, error)
 	// -----------------------fork-----------------------
 	AddFork(context.Context, *AddForkReq) (*AddForkResp, error)
 	DelFork(context.Context, *DelForkReq) (*DelForkResp, error)
 	DelAllFork(context.Context, *DelAllForkReq) (*DelAllForkResp, error)
 	GetOrigin(context.Context, *GetOriginReq) (*GetOriginResp, error)
 	SearchFork(context.Context, *SearchForkReq) (*SearchForkResp, error)
+	BlockUntilForkUpdated(context.Context, *BlockUntilForkUpdatedReq) (*BlockUntilForkUpdatedResp, error)
 	// -----------------------star-----------------------
 	AddStar(context.Context, *AddStarReq) (*AddStarResp, error)
 	DelStar(context.Context, *DelStarReq) (*DelStarResp, error)
@@ -359,6 +423,7 @@ type RelationServer interface {
 	CheckIfStar(context.Context, *CheckIfStarReq) (*CheckIfStarResp, error)
 	SearchStarredRepo(context.Context, *SearchStarredRepoReq) (*SearchStarredRepoResp, error)
 	SearchStaringDev(context.Context, *SearchStaringDevReq) (*SearchStaringDevResp, error)
+	BlockUntilStarredRepoUpdated(context.Context, *BlockUntilStarredRepoUpdatedReq) (*BlockUntilStarredRepoUpdatedResp, error)
 	mustEmbedUnimplementedRelationServer()
 }
 
@@ -384,6 +449,9 @@ func (UnimplementedRelationServer) GetCreatorId(context.Context, *GetCreatorIdRe
 func (UnimplementedRelationServer) SearchCreatedRepo(context.Context, *SearchCreatedRepoReq) (*SearchCreatedRepoResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SearchCreatedRepo not implemented")
 }
+func (UnimplementedRelationServer) BlockUntilCreatedRepoUpdated(context.Context, *BlockUntilCreatedRepoUpdatedReq) (*BlockUntilCreatedRepoUpdatedResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method BlockUntilCreatedRepoUpdated not implemented")
+}
 func (UnimplementedRelationServer) AddFollow(context.Context, *AddFollowReq) (*AddFollowResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddFollow not implemented")
 }
@@ -405,6 +473,12 @@ func (UnimplementedRelationServer) SearchFollowingByDeveloperId(context.Context,
 func (UnimplementedRelationServer) SearchFollowerByDeveloperId(context.Context, *SearchFollowerByDeveloperIdReq) (*SearchFollowerByDeveloperIdResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SearchFollowerByDeveloperId not implemented")
 }
+func (UnimplementedRelationServer) BlockUntilFollowingUpdated(context.Context, *BlockUntilFollowingUpdatedReq) (*BlockUntilFollowingUpdatedResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method BlockUntilFollowingUpdated not implemented")
+}
+func (UnimplementedRelationServer) BlockUntilFollowerUpdated(context.Context, *BlockUntilFollowerUpdatedReq) (*BlockUntilFollowerUpdatedResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method BlockUntilFollowerUpdated not implemented")
+}
 func (UnimplementedRelationServer) AddFork(context.Context, *AddForkReq) (*AddForkResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddFork not implemented")
 }
@@ -419,6 +493,9 @@ func (UnimplementedRelationServer) GetOrigin(context.Context, *GetOriginReq) (*G
 }
 func (UnimplementedRelationServer) SearchFork(context.Context, *SearchForkReq) (*SearchForkResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SearchFork not implemented")
+}
+func (UnimplementedRelationServer) BlockUntilForkUpdated(context.Context, *BlockUntilForkUpdatedReq) (*BlockUntilForkUpdatedResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method BlockUntilForkUpdated not implemented")
 }
 func (UnimplementedRelationServer) AddStar(context.Context, *AddStarReq) (*AddStarResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddStar not implemented")
@@ -440,6 +517,9 @@ func (UnimplementedRelationServer) SearchStarredRepo(context.Context, *SearchSta
 }
 func (UnimplementedRelationServer) SearchStaringDev(context.Context, *SearchStaringDevReq) (*SearchStaringDevResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SearchStaringDev not implemented")
+}
+func (UnimplementedRelationServer) BlockUntilStarredRepoUpdated(context.Context, *BlockUntilStarredRepoUpdatedReq) (*BlockUntilStarredRepoUpdatedResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method BlockUntilStarredRepoUpdated not implemented")
 }
 func (UnimplementedRelationServer) mustEmbedUnimplementedRelationServer() {}
 func (UnimplementedRelationServer) testEmbeddedByValue()                  {}
@@ -548,6 +628,24 @@ func _Relation_SearchCreatedRepo_Handler(srv interface{}, ctx context.Context, d
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(RelationServer).SearchCreatedRepo(ctx, req.(*SearchCreatedRepoReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Relation_BlockUntilCreatedRepoUpdated_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(BlockUntilCreatedRepoUpdatedReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RelationServer).BlockUntilCreatedRepoUpdated(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Relation_BlockUntilCreatedRepoUpdated_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RelationServer).BlockUntilCreatedRepoUpdated(ctx, req.(*BlockUntilCreatedRepoUpdatedReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -678,6 +776,42 @@ func _Relation_SearchFollowerByDeveloperId_Handler(srv interface{}, ctx context.
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Relation_BlockUntilFollowingUpdated_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(BlockUntilFollowingUpdatedReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RelationServer).BlockUntilFollowingUpdated(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Relation_BlockUntilFollowingUpdated_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RelationServer).BlockUntilFollowingUpdated(ctx, req.(*BlockUntilFollowingUpdatedReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Relation_BlockUntilFollowerUpdated_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(BlockUntilFollowerUpdatedReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RelationServer).BlockUntilFollowerUpdated(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Relation_BlockUntilFollowerUpdated_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RelationServer).BlockUntilFollowerUpdated(ctx, req.(*BlockUntilFollowerUpdatedReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Relation_AddFork_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(AddForkReq)
 	if err := dec(in); err != nil {
@@ -764,6 +898,24 @@ func _Relation_SearchFork_Handler(srv interface{}, ctx context.Context, dec func
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(RelationServer).SearchFork(ctx, req.(*SearchForkReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Relation_BlockUntilForkUpdated_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(BlockUntilForkUpdatedReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RelationServer).BlockUntilForkUpdated(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Relation_BlockUntilForkUpdated_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RelationServer).BlockUntilForkUpdated(ctx, req.(*BlockUntilForkUpdatedReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -894,6 +1046,24 @@ func _Relation_SearchStaringDev_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Relation_BlockUntilStarredRepoUpdated_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(BlockUntilStarredRepoUpdatedReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RelationServer).BlockUntilStarredRepoUpdated(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Relation_BlockUntilStarredRepoUpdated_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RelationServer).BlockUntilStarredRepoUpdated(ctx, req.(*BlockUntilStarredRepoUpdatedReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Relation_ServiceDesc is the grpc.ServiceDesc for Relation service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -920,6 +1090,10 @@ var Relation_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SearchCreatedRepo",
 			Handler:    _Relation_SearchCreatedRepo_Handler,
+		},
+		{
+			MethodName: "BlockUntilCreatedRepoUpdated",
+			Handler:    _Relation_BlockUntilCreatedRepoUpdated_Handler,
 		},
 		{
 			MethodName: "AddFollow",
@@ -950,6 +1124,14 @@ var Relation_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Relation_SearchFollowerByDeveloperId_Handler,
 		},
 		{
+			MethodName: "BlockUntilFollowingUpdated",
+			Handler:    _Relation_BlockUntilFollowingUpdated_Handler,
+		},
+		{
+			MethodName: "BlockUntilFollowerUpdated",
+			Handler:    _Relation_BlockUntilFollowerUpdated_Handler,
+		},
+		{
 			MethodName: "AddFork",
 			Handler:    _Relation_AddFork_Handler,
 		},
@@ -968,6 +1150,10 @@ var Relation_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SearchFork",
 			Handler:    _Relation_SearchFork_Handler,
+		},
+		{
+			MethodName: "BlockUntilForkUpdated",
+			Handler:    _Relation_BlockUntilForkUpdated_Handler,
 		},
 		{
 			MethodName: "AddStar",
@@ -996,6 +1182,10 @@ var Relation_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SearchStaringDev",
 			Handler:    _Relation_SearchStaringDev_Handler,
+		},
+		{
+			MethodName: "BlockUntilStarredRepoUpdated",
+			Handler:    _Relation_BlockUntilStarredRepoUpdated_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

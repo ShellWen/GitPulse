@@ -31,17 +31,20 @@ func doFetchCreatedRepo(ctx context.Context, svcContext *svc.ServiceContext, use
 		return
 	}
 
+	logx.Info("Start fetching created repos of user: ", githubUser.GetLogin())
 	if allRepos, err = getAllGithubReposByLogin(ctx, githubClient, githubUser.GetLogin(), &github.RepositoryListByUserOptions{
 		Type:        "owner",
 		ListOptions: github.ListOptions{PerPage: 100},
 	}); err != nil {
 		return
 	}
+	logx.Info("Finish fetching created repos of user: ", githubUser.GetLogin()+", total created repos: "+string(rune(len(allRepos))))
 
 	if err = delAllCreatedRepo(ctx, svcContext, userId); err != nil {
 		return
 	}
 
+	logx.Info("Start pushing created repos of user: ", githubUser.GetLogin())
 	for _, githubRepo := range allRepos {
 		if err = pushCreatedRepo(ctx, svcContext, buildCreatedRepo(ctx, svcContext, githubRepo, userId)); err != nil {
 			return

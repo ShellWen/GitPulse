@@ -46,3 +46,11 @@ KqFollowUpdateConsumerConf:
       - 127.0.0.1:9092
     Group: follow
     Topic: follow-update
+
+KqRelationUpdateCompleteConsumerConf:
+    Name: relation-update-complete-consumer
+    Brokers:
+      - 127.0.0.1:9092
+    Group: relation
+    Topic: relation-update-complete
+

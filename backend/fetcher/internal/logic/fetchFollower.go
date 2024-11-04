@@ -27,14 +27,17 @@ func doFetchFollower(ctx context.Context, svcContext *svc.ServiceContext, userId
 		return
 	}
 
+	logx.Info("Start fetching followers of user: ", githubUser.GetLogin())
 	if allFollowers, err = getAllGithubFollowersByLogin(ctx, githubClient, githubUser.GetLogin()); err != nil {
 		return
 	}
+	logx.Info("Finish fetching followers of user: ", githubUser.GetLogin()+", total followers: "+string(rune(len(allFollowers))))
 
 	if err = delAllOldFollowers(ctx, svcContext, userId); err != nil {
 		return
 	}
 
+	logx.Info("Start pushing followers of user: ", githubUser.GetLogin())
 	for _, githubRepo := range allFollowers {
 		if err = pushFollow(ctx, svcContext, buildFollow(ctx, svcContext, githubRepo.GetID(), userId)); err != nil {
 			return
@@ -45,6 +48,7 @@ func doFetchFollower(ctx context.Context, svcContext *svc.ServiceContext, userId
 		}
 	}
 
+	logx.Info("Successfully push all update tasks of followers")
 	return
 }
 

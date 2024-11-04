@@ -121,6 +121,33 @@ message SearchByRepoIdResp {
   repeated Contribution contributions = 3; //contributions
 }
 
+message BlockUntilIssuePrOfUserUpdatedReq {
+  int64 userId = 1; //userId
+}
+
+message BlockUntilIssuePrOfUserUpdatedResp {
+  int64 code = 1;
+  string message = 2;
+}
+
+message BlockUntilCommentReviewOfUserUpdatedReq {
+  int64 userId = 1; //userId
+}
+
+message BlockUntilCommentReviewOfUserUpdatedResp {
+  int64 code = 1;
+  string message = 2;
+}
+
+message BlockUntilAllUpdatedReq {
+  int64 userId = 1; //userId
+}
+
+message BlockUntilAllUpdatedResp {
+  int64 code = 1;
+  string message = 2;
+}
+
 // ------------------------------------ 
 // Rpc Func
 // ------------------------------------ 
@@ -136,4 +163,7 @@ service contribution{
     rpc SearchByCategory(SearchByCategoryReq) returns (SearchByCategoryResp);
     rpc SearchByUserId(SearchByUserIdReq) returns (SearchByUserIdResp);
     rpc SearchByRepoId(SearchByRepoIdReq) returns (SearchByRepoIdResp);
+    rpc BlockUntilIssuePrOfUserUpdated(BlockUntilIssuePrOfUserUpdatedReq) returns (BlockUntilIssuePrOfUserUpdatedResp);
+    rpc BlockUntilCommentReviewOfUserUpdated(BlockUntilCommentReviewOfUserUpdatedReq) returns (BlockUntilCommentReviewOfUserUpdatedResp);
+    rpc BlockUntilAllUpdated(BlockUntilAllUpdatedReq) returns (BlockUntilAllUpdatedResp);
 }

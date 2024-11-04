@@ -45,15 +45,6 @@ func (c *RepoUpdateConsumer) Consume(ctx context.Context, key string, value stri
 		err = insertNewRepo(c, newRepo)
 	}
 
-	if c.svc.RepoUpdatedChan[newRepo.Id] == nil {
-		c.svc.RepoUpdatedChan[newRepo.Id] = make(chan struct{})
-	}
-
-	select {
-	case c.svc.RepoUpdatedChan[newRepo.Id] <- struct{}{}:
-	default:
-	}
-
 	return
 }
 
