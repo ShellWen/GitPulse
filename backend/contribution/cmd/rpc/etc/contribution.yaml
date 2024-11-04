@@ -18,3 +18,10 @@ DB:
 Cache:
   - Host: 127.0.0.1:6379
     Pass:
+
+KqContributionUpdateConsumerConf:
+  Name: contribution-update-consumer
+  Brokers:
+    - 127.0.0.1:9092
+  Group: contribution
+  Topic: contribution-update

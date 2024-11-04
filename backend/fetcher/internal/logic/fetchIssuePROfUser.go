@@ -7,6 +7,8 @@ import (
 	"github.com/google/go-github/v66/github"
 	"github.com/zeromicro/go-zero/core/logx"
 	"os"
+	"strings"
+	"time"
 )
 
 const issuePRFetcherTopic = "issuePR"
@@ -39,12 +41,23 @@ func doFetchIssuePROfUser(ctx context.Context, svcContext *svc.ServiceContext, u
 		return
 	}
 
+	if err = delAllOldContributionInCategory(ctx, svcContext, userId, model.CategoryMerge); err != nil {
+		return
+	}
+
 	for _, githubIssuePR := range allIssuePR {
-		var merged bool
-		if merged, err = checkIfMerged(ctx, githubClient, githubIssuePR); err != nil {
+		var (
+			merged bool
+			repo   *github.Repository
+		)
+		if repo, err = getRepoByUrl(ctx, githubClient, githubIssuePR.GetRepositoryURL()); err != nil {
 			return
 		}
-		if err = pushContribution(ctx, svcContext, buildIssuePR(ctx, svcContext, githubIssuePR, userId, merged)); err != nil {
+
+		if merged, err = checkIfMerged(ctx, githubClient, githubIssuePR, repo); err != nil {
+			return
+		}
+		if err = pushContribution(ctx, svcContext, buildIssuePR(githubIssuePR, userId, merged, repo)); err != nil {
 			return
 		}
 	}
@@ -52,9 +65,9 @@ func doFetchIssuePROfUser(ctx context.Context, svcContext *svc.ServiceContext, u
 	return
 }
 
-func checkIfMerged(ctx context.Context, githubClient *github.Client, githubIssuePR *github.Issue) (merged bool, err error) {
+func checkIfMerged(ctx context.Context, githubClient *github.Client, githubIssuePR *github.Issue, repo *github.Repository) (merged bool, err error) {
 	if githubIssuePR.IsPullRequest() {
-		pr, _, err := githubClient.PullRequests.Get(ctx, *githubIssuePR.Repository.Owner.Login, *githubIssuePR.Repository.Name, *githubIssuePR.Number)
+		pr, _, err := githubClient.PullRequests.Get(ctx, repo.GetOwner().GetLogin(), repo.GetName(), githubIssuePR.GetNumber())
 		if err != nil {
 			logx.Error("Unexpected error when getting PR: " + err.Error())
 			return false, err
@@ -66,6 +79,8 @@ func checkIfMerged(ctx context.Context, githubClient *github.Client, githubIssue
 }
 
 func getAllGithubIssuePRByLogin(ctx context.Context, githubClient *github.Client, login string, role string) (allIssuePR []*github.Issue, err error) {
+	logx.Info("Start to fetch " + role + " " + login + "'s issues and PRs")
+
 	opt := &github.SearchOptions{ListOptions: github.ListOptions{PerPage: 100}}
 	for {
 		issueSearchResult, resp, err := githubClient.Search.Issues(ctx, role+":"+login, opt)
@@ -83,10 +98,29 @@ func getAllGithubIssuePRByLogin(ctx context.Context, githubClient *github.Client
 		opt.Page = resp.NextPage
 	}
 
+	logx.Info("Successfully get all " + role + " " + login + "'s issues and PRs, size: " + string(rune(len(allIssuePR))))
 	return
 }
 
-func buildIssuePR(ctx context.Context, svcContext *svc.ServiceContext, githubIssuePR *github.Issue, userId int64, merged bool) (newIssuePR *model.Contribution) {
+func getRepoByUrl(ctx context.Context, githubClient *github.Client, repoUrl string) (repo *github.Repository, err error) {
+	var (
+		split    []string
+		owner    string
+		repoName string
+	)
+	split = strings.Split(repoUrl, "/")
+	owner = split[len(split)-2]
+	repoName = split[len(split)-1]
+
+	if repo, _, err = githubClient.Repositories.Get(ctx, owner, repoName); err != nil {
+		logx.Error("Unexpected error when getting repo info: " + err.Error())
+		return
+	}
+
+	return
+}
+
+func buildIssuePR(githubIssuePR *github.Issue, userId int64, merged bool, repo *github.Repository) (newIssuePR *model.Contribution) {
 	var category string
 	if githubIssuePR.IsPullRequest() {
 		if merged {
@@ -98,12 +132,14 @@ func buildIssuePR(ctx context.Context, svcContext *svc.ServiceContext, githubIss
 		category = model.CategoryOpenIssue
 	}
 	newIssuePR = &model.Contribution{
+		DataCreatedAt:  time.Now(),
+		DataUpdatedAt:  time.Now(),
 		UserId:         userId,
-		RepoId:         *githubIssuePR.Repository.ID,
+		RepoId:         repo.GetID(),
 		Category:       category,
 		Content:        githubIssuePR.GetTitle() + " " + githubIssuePR.GetBody(),
-		CreatedAt:      githubIssuePR.CreatedAt.Time,
-		UpdatedAt:      githubIssuePR.UpdatedAt.Time,
+		CreatedAt:      githubIssuePR.GetCreatedAt().Time,
+		UpdatedAt:      githubIssuePR.GetUpdatedAt().Time,
 		ContributionId: githubIssuePR.GetID(),
 	}
 	return

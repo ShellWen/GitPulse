@@ -5,7 +5,9 @@ import (
 	"github.com/ShellWen/GitPulse/contribution/model"
 	"github.com/ShellWen/GitPulse/fetcher/internal/svc"
 	"github.com/google/go-github/v66/github"
+	"net/http"
 	"os"
+	"time"
 )
 
 const commentFetcherTopic = "comment"
@@ -56,29 +58,55 @@ func getAllGithubCommentByLogin(ctx context.Context, githubClient *github.Client
 
 	issueOpt := &github.IssueListCommentsOptions{ListOptions: github.ListOptions{PerPage: 100}}
 	prOpt := &github.PullRequestListCommentsOptions{ListOptions: github.ListOptions{PerPage: 100}}
+	var issueResp *github.Response
+	var prResp *github.Response
 	for _, issue := range allIssue {
-		issueComments, _, err := githubClient.Issues.ListComments(ctx, *issue.Repository.Owner.Login, *issue.Repository.Name, *issue.Number, issueOpt)
-
-		if err != nil {
-			return nil, err
+		var repo *github.Repository
+		if repo, err = getRepoByUrl(ctx, githubClient, issue.GetRepositoryURL()); err != nil {
+			return
 		}
 
-		for _, comment := range issueComments {
-			if comment.User.GetLogin() == login {
-				allCommentWithRepoId = append(allCommentWithRepoId, &commentWithRepoId{isIssueComment: true, issueComment: comment, repoId: *issue.Repository.ID})
+		for {
+			var issueComments []*github.IssueComment
+			if issueComments, issueResp, err = githubClient.Issues.ListComments(ctx, repo.GetOwner().GetLogin(), repo.GetName(), issue.GetNumber(), issueOpt); err != nil {
+				if issueResp != nil && issueResp.StatusCode == http.StatusNotFound {
+					err = nil
+					break
+				}
+				return
 			}
+
+			for _, comment := range issueComments {
+				if comment.User.GetLogin() == login {
+					allCommentWithRepoId = append(allCommentWithRepoId, &commentWithRepoId{isIssueComment: true, issueComment: comment, repoId: repo.GetID()})
+				}
+			}
+			if issueResp.NextPage == 0 {
+				break
+			}
+			issueOpt.Page = issueResp.NextPage
 		}
 
 		if issue.IsPullRequest() {
-			prComments, _, err := githubClient.PullRequests.ListComments(ctx, *issue.Repository.Owner.Login, *issue.Repository.Name, *issue.Number, prOpt)
-			if err != nil {
-				return nil, err
-			}
-
-			for _, comment := range prComments {
-				if comment.User.GetLogin() == login {
-					allCommentWithRepoId = append(allCommentWithRepoId, &commentWithRepoId{isIssueComment: false, prComment: comment, repoId: *issue.Repository.ID})
+			for {
+				var prComments []*github.PullRequestComment
+				if prComments, prResp, err = githubClient.PullRequests.ListComments(ctx, repo.GetOwner().GetLogin(), repo.GetName(), 0, prOpt); err != nil {
+					if prResp != nil && prResp.StatusCode == http.StatusNotFound {
+						err = nil
+						break
+					}
+					return
 				}
+
+				for _, comment := range prComments {
+					if comment.User.GetLogin() == login {
+						allCommentWithRepoId = append(allCommentWithRepoId, &commentWithRepoId{isIssueComment: false, prComment: comment, repoId: repo.GetID()})
+					}
+				}
+				if prResp.NextPage == 0 {
+					break
+				}
+				prOpt.Page = prResp.NextPage
 			}
 		}
 	}
@@ -89,6 +117,8 @@ func getAllGithubCommentByLogin(ctx context.Context, githubClient *github.Client
 func buildComment(ctx context.Context, svcContext *svc.ServiceContext, githubCommentWithRepoId *commentWithRepoId, userId int64) (newComment *model.Contribution) {
 	if githubCommentWithRepoId.isIssueComment {
 		newComment = &model.Contribution{
+			DataCreatedAt:  time.Now(),
+			DataUpdatedAt:  time.Now(),
 			UserId:         userId,
 			RepoId:         githubCommentWithRepoId.repoId,
 			Category:       model.CategoryComment,
@@ -99,6 +129,8 @@ func buildComment(ctx context.Context, svcContext *svc.ServiceContext, githubCom
 		}
 	} else {
 		newComment = &model.Contribution{
+			DataCreatedAt:  time.Now(),
+			DataUpdatedAt:  time.Now(),
 			UserId:         userId,
 			RepoId:         githubCommentWithRepoId.repoId,
 			Category:       model.CategoryReview,

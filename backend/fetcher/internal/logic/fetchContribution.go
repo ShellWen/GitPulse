@@ -64,5 +64,6 @@ func pushContribution(ctx context.Context, svcContext *svc.ServiceContext, newCo
 		return
 	}
 
+	logx.Info("Successfully pushed a contribution, size: ", len(jsonStr))
 	return
 }
