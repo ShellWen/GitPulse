@@ -98,7 +98,7 @@ func (l *UpdateLanguageLogic) doUpdateLanguage(id int64) (err error) {
 	}
 
 	for language, metric := range allMetrics {
-		allMetrics[language] = metric / totalMetric
+		allMetrics[language] = (metric / totalMetric) * 100
 	}
 
 	if jsonBytes, err = json.Marshal(allMetrics); err != nil {

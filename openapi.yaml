@@ -268,7 +268,7 @@ components:
       type: object
       properties:
         id:
-          type: string
+          type: integer
           example: 38996248
           description: GitHub 用户数字 ID
         region:
@@ -289,8 +289,9 @@ components:
           $ref: '#/components/schemas/Language'
           description: 语言信息
         percentage:
-          type: integer
+          type: number
           minimum: 0
+          maximum: 100
           example: 100
           description: 使用占比
     Language:
