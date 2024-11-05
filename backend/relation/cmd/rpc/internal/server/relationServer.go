@@ -171,3 +171,8 @@ func (s *RelationServer) BlockUntilStarredRepoUpdated(ctx context.Context, in *p
 	l := logic.NewBlockUntilStarredRepoUpdatedLogic(ctx, s.svcCtx)
 	return l.BlockUntilStarredRepoUpdated(in)
 }
+
+func (s *RelationServer) UnblockRelation(ctx context.Context, in *pb.UnblockRelationReq) (*pb.UnblockRelationResp, error) {
+	l := logic.NewUnblockRelationLogic(ctx, s.svcCtx)
+	return l.UnblockRelation(in)
+}

@@ -31,10 +31,3 @@ KqContributionUpdateConsumerConf:
     - 127.0.0.1:9092
   Group: contribution
   Topic: contribution-update
-
-KqContributionUpdateCompleteConsumerConf:
-  Name: contribution-update-complete-consumer
-  Brokers:
-    - 127.0.0.1:9092
-  Group: contribution
-  Topic: contribution-update-complete

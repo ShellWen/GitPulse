@@ -3,9 +3,14 @@ package consumer
 import (
 	"context"
 	"errors"
-	"github.com/ShellWen/GitPulse/common/message"
+	"github.com/ShellWen/GitPulse/common/tasks"
+	"github.com/ShellWen/GitPulse/contribution/cmd/rpc/contribution"
+	"github.com/ShellWen/GitPulse/developer/cmd/rpc/developer"
 	"github.com/ShellWen/GitPulse/fetcher/internal/logic"
 	"github.com/ShellWen/GitPulse/fetcher/internal/svc"
+	"github.com/ShellWen/GitPulse/relation/cmd/rpc/relation"
+	"github.com/ShellWen/GitPulse/repo/cmd/rpc/repo"
+	"github.com/hibiken/asynq"
 	"github.com/zeromicro/go-zero/core/jsonx"
 	"github.com/zeromicro/go-zero/core/logx"
 	"strconv"
@@ -29,84 +34,62 @@ func NewFetcherTaskConsumer(ctx context.Context, svc *svc.ServiceContext) *Fetch
 	}
 }
 
-func (c *FetcherTaskConsumer) Consume(ctx context.Context, key string, value string) (err error) {
-	logx.Info("consume message: ", value)
+func (c *FetcherTaskConsumer) Register() *asynq.ServeMux {
+	mux := asynq.NewServeMux()
 
-	msg := message.FetcherTask{}
-	if err = jsonx.UnmarshalFromString(value, &msg); err != nil {
+	mux.HandleFunc(tasks.FetchTaskName, c.Consume)
+
+	return mux
+}
+
+func (c *FetcherTaskConsumer) Consume(ctx context.Context, task *asynq.Task) (err error) {
+	logx.Info("consume message: ", task.Type(), task.Payload())
+
+	msg := tasks.FetchPayload{}
+	if err = jsonx.Unmarshal(task.Payload(), &msg); err != nil {
 		return
 	}
 
 	switch msg.Type {
-	case message.FetchDeveloper:
-		if err = logic.FetchDeveloper(c.ctx, c.svc, msg.Id); err != nil {
-			_ = c.svc.KqDeveloperUpdateCompletePusher.Push(c.ctx, value)
-			return
-		}
-		err = c.svc.KqDeveloperUpdateCompletePusher.Push(c.ctx, value)
-	case message.FetchRepo:
-		if err = logic.FetchRepo(c.ctx, c.svc, msg.Id); err != nil {
-			_ = c.svc.KqRepoUpdateCompletePusher.Push(c.ctx, value)
-			return
-		}
-		err = c.svc.KqRepoUpdateCompletePusher.Push(c.ctx, value)
-	case message.FetchCreatedRepo:
-		if err = logic.FetchCreatedRepo(c.ctx, c.svc, msg.Id); err != nil {
-			_ = c.svc.KqRelationUpdateCompletePusher.Push(c.ctx, value)
-			return
-		}
-		err = c.svc.KqRelationUpdateCompletePusher.Push(c.ctx, value)
-	case message.FetchStarredRepo:
-		if err = logic.FetchStarredRepo(c.ctx, c.svc, msg.Id); err != nil {
-			_ = c.svc.KqRelationUpdateCompletePusher.Push(c.ctx, value)
-			return
-		}
-		err = c.svc.KqRelationUpdateCompletePusher.Push(c.ctx, value)
-	case message.FetchFollow:
-		if err = logic.FetchFollow(c.ctx, c.svc, msg.Id); err != nil {
-			_ = c.svc.KqRelationUpdateCompletePusher.Push(c.ctx, value)
-			return
-		}
-		err = c.svc.KqRelationUpdateCompletePusher.Push(c.ctx, value)
-	case message.FetchFollower:
-		if err = logic.FetchFollower(c.ctx, c.svc, msg.Id); err != nil {
-			_ = c.svc.KqRelationUpdateCompletePusher.Push(c.ctx, value)
-			return
-		}
-		err = c.svc.KqRelationUpdateCompletePusher.Push(c.ctx, value)
-	case message.FetchFollowing:
-		if err = logic.FetchFollowing(c.ctx, c.svc, msg.Id); err != nil {
-			_ = c.svc.KqRelationUpdateCompletePusher.Push(c.ctx, value)
-			return
-		}
-		err = c.svc.KqRelationUpdateCompletePusher.Push(c.ctx, value)
-	case message.FetchFork:
-		if err = logic.FetchFork(c.ctx, c.svc, msg.Id); err != nil {
-			_ = c.svc.KqRelationUpdateCompletePusher.Push(c.ctx, value)
-			return
-		}
-		err = c.svc.KqRelationUpdateCompletePusher.Push(c.ctx, value)
-	case message.FetchContributionOfUser:
-		if err = logic.FetchContributionOfUser(c.ctx, c.svc, msg.Id, createdAfterTime, issueSearchLimit, commentSearchLimit); err != nil {
-			_ = c.svc.KqContributionUpdateCompletePusher.Push(c.ctx, value)
-			return
-		}
-		err = c.svc.KqContributionUpdateCompletePusher.Push(c.ctx, value)
-	case message.FetchIssuePROfUser:
-		if err = logic.FetchIssuePROfUser(c.ctx, c.svc, msg.Id, createdAfterTime, issueSearchLimit); err != nil {
-			_ = c.svc.KqContributionUpdateCompletePusher.Push(c.ctx, value)
-			return
-		}
-		err = c.svc.KqContributionUpdateCompletePusher.Push(c.ctx, value)
-	case message.FetchCommentOfUser:
-		if err = logic.FetchCommentOfUser(c.ctx, c.svc, msg.Id, createdAfterTime, commentSearchLimit); err != nil {
-			_ = c.svc.KqContributionUpdateCompletePusher.Push(c.ctx, value)
-			return
-		}
-		err = c.svc.KqContributionUpdateCompletePusher.Push(c.ctx, value)
+	case tasks.FetchDeveloper:
+		defer c.svc.DeveloperRpcClient.UnblockDeveloper(c.ctx, &developer.UnblockDeveloperReq{FetchType: tasks.FetchDeveloper, Id: msg.Id})
+		err = logic.FetchDeveloper(c.ctx, c.svc, msg.Id)
+	case tasks.FetchRepo:
+		defer c.svc.RepoRpcClient.UnblockRepo(c.ctx, &repo.UnblockRepoReq{FetchType: tasks.FetchRepo, Id: msg.Id})
+		err = logic.FetchRepo(c.ctx, c.svc, msg.Id)
+	case tasks.FetchCreatedRepo:
+		defer c.svc.RelationRpcClient.UnblockRelation(c.ctx, &relation.UnblockRelationReq{FetchType: tasks.FetchCreatedRepo, Id: msg.Id})
+		err = logic.FetchCreatedRepo(c.ctx, c.svc, msg.Id)
+	case tasks.FetchStarredRepo:
+		defer c.svc.RelationRpcClient.UnblockRelation(c.ctx, &relation.UnblockRelationReq{FetchType: tasks.FetchStarredRepo, Id: msg.Id})
+		err = logic.FetchStarredRepo(c.ctx, c.svc, msg.Id)
+	case tasks.FetchFollow:
+		defer c.svc.RelationRpcClient.UnblockRelation(c.ctx, &relation.UnblockRelationReq{FetchType: tasks.FetchFollow, Id: msg.Id})
+		err = logic.FetchFollow(c.ctx, c.svc, msg.Id)
+	case tasks.FetchFollower:
+		defer c.svc.RelationRpcClient.UnblockRelation(c.ctx, &relation.UnblockRelationReq{FetchType: tasks.FetchFollower, Id: msg.Id})
+		err = logic.FetchFollower(c.ctx, c.svc, msg.Id)
+	case tasks.FetchFollowing:
+		defer c.svc.RelationRpcClient.UnblockRelation(c.ctx, &relation.UnblockRelationReq{FetchType: tasks.FetchFollowing, Id: msg.Id})
+		err = logic.FetchFollowing(c.ctx, c.svc, msg.Id)
+	case tasks.FetchFork:
+		defer c.svc.RelationRpcClient.UnblockRelation(c.ctx, &relation.UnblockRelationReq{FetchType: tasks.FetchFork, Id: msg.Id})
+		err = logic.FetchFork(c.ctx, c.svc, msg.Id)
+	case tasks.FetchContributionOfUser:
+		defer c.svc.ContributionRpcClient.UnblockContribution(c.ctx, &contribution.UnblockContributionReq{FetchType: tasks.FetchContributionOfUser, Id: msg.Id})
+		err = logic.FetchContributionOfUser(c.ctx, c.svc, msg.Id, createdAfterTime, issueSearchLimit, commentSearchLimit)
+	case tasks.FetchIssuePROfUser:
+		defer c.svc.ContributionRpcClient.UnblockContribution(c.ctx, &contribution.UnblockContributionReq{FetchType: tasks.FetchIssuePROfUser, Id: msg.Id})
+		err = logic.FetchIssuePROfUser(c.ctx, c.svc, msg.Id, createdAfterTime, issueSearchLimit)
+	case tasks.FetchCommentOfUser:
+		defer c.svc.ContributionRpcClient.UnblockContribution(c.ctx, &contribution.UnblockContributionReq{FetchType: tasks.FetchCommentOfUser, Id: msg.Id})
+		err = logic.FetchCommentOfUser(c.ctx, c.svc, msg.Id, createdAfterTime, commentSearchLimit)
 	default:
 		err = errors.New("unexpected message type: " + strconv.FormatInt(int64(msg.Type), 10))
 	}
+
+	// wait to ensure the message is consumed
+	time.Sleep(time.Second)
 
 	return
 }

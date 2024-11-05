@@ -7,13 +7,13 @@ import (
 	"github.com/ShellWen/GitPulse/developer/cmd/rpc/developer"
 	"github.com/ShellWen/GitPulse/relation/cmd/rpc/relation"
 	"github.com/ShellWen/GitPulse/repo/cmd/rpc/repo"
-	"github.com/zeromicro/go-queue/kq"
+	"github.com/hibiken/asynq"
 	"github.com/zeromicro/go-zero/zrpc"
 )
 
 type ServiceContext struct {
-	Config              config.Config
-	KqFetcherTaskPusher *kq.Pusher
+	Config      config.Config
+	AsynqClient *asynq.Client
 
 	DeveloperRpcClient    developer.DeveloperZrpcClient
 	RepoRpcClient         repo.RepoZrpcClient
@@ -24,8 +24,12 @@ type ServiceContext struct {
 
 func NewServiceContext(c config.Config) *ServiceContext {
 	return &ServiceContext{
-		Config:              c,
-		KqFetcherTaskPusher: kq.NewPusher(c.KqFetcherTaskPusherConf.Brokers, c.KqFetcherTaskPusherConf.Topic, kq.WithAllowAutoTopicCreation(), kq.WithSyncPush()),
+		Config: c,
+		AsynqClient: asynq.NewClient(&asynq.RedisClientOpt{
+			Addr:     c.AsynqRedisConf.Addr,
+			Password: c.AsynqRedisConf.Password,
+			DB:       c.AsynqRedisConf.DB,
+		}),
 
 		DeveloperRpcClient:    developer.NewDeveloperZrpcClient(zrpc.MustNewClient(c.DeveloperRpcConf)),
 		RepoRpcClient:         repo.NewRepoZrpcClient(zrpc.MustNewClient(c.RepoRpcConf)),

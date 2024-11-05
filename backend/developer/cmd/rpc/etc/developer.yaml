@@ -32,10 +32,3 @@ KqDeveloperUpdateConsumerConf:
     - 127.0.0.1:9092
   Group: developer
   Topic: developer-update
-
-KqDeveloperUpdateCompleteConsumerConf:
-  Name: developer-update-complete-consumer
-  Brokers:
-    - 127.0.0.1:9092
-  Group: developer
-  Topic: developer-update-complete

@@ -35,6 +35,8 @@ type (
 	SearchByRepoIdResp                       = pb.SearchByRepoIdResp
 	SearchByUserIdReq                        = pb.SearchByUserIdReq
 	SearchByUserIdResp                       = pb.SearchByUserIdResp
+	UnblockContributionReq                   = pb.UnblockContributionReq
+	UnblockContributionResp                  = pb.UnblockContributionResp
 	UpdateContributionReq                    = pb.UpdateContributionReq
 	UpdateContributionResp                   = pb.UpdateContributionResp
 
@@ -51,6 +53,7 @@ type (
 		BlockUntilIssuePrOfUserUpdated(ctx context.Context, in *BlockUntilIssuePrOfUserUpdatedReq, opts ...grpc.CallOption) (*BlockUntilIssuePrOfUserUpdatedResp, error)
 		BlockUntilCommentReviewOfUserUpdated(ctx context.Context, in *BlockUntilCommentReviewOfUserUpdatedReq, opts ...grpc.CallOption) (*BlockUntilCommentReviewOfUserUpdatedResp, error)
 		BlockUntilAllUpdated(ctx context.Context, in *BlockUntilAllUpdatedReq, opts ...grpc.CallOption) (*BlockUntilAllUpdatedResp, error)
+		UnblockContribution(ctx context.Context, in *UnblockContributionReq, opts ...grpc.CallOption) (*UnblockContributionResp, error)
 	}
 
 	defaultContributionZrpcClient struct {
@@ -118,4 +121,9 @@ func (m *defaultContributionZrpcClient) BlockUntilCommentReviewOfUserUpdated(ctx
 func (m *defaultContributionZrpcClient) BlockUntilAllUpdated(ctx context.Context, in *BlockUntilAllUpdatedReq, opts ...grpc.CallOption) (*BlockUntilAllUpdatedResp, error) {
 	client := pb.NewContributionClient(m.cli.Conn())
 	return client.BlockUntilAllUpdated(ctx, in, opts...)
+}
+
+func (m *defaultContributionZrpcClient) UnblockContribution(ctx context.Context, in *UnblockContributionReq, opts ...grpc.CallOption) (*UnblockContributionResp, error) {
+	client := pb.NewContributionClient(m.cli.Conn())
+	return client.UnblockContribution(ctx, in, opts...)
 }

@@ -48,6 +48,7 @@ const (
 	Relation_SearchStarredRepo_FullMethodName            = "/pb.relation/SearchStarredRepo"
 	Relation_SearchStaringDev_FullMethodName             = "/pb.relation/SearchStaringDev"
 	Relation_BlockUntilStarredRepoUpdated_FullMethodName = "/pb.relation/BlockUntilStarredRepoUpdated"
+	Relation_UnblockRelation_FullMethodName              = "/pb.relation/UnblockRelation"
 )
 
 // RelationClient is the client API for Relation service.
@@ -87,6 +88,7 @@ type RelationClient interface {
 	SearchStarredRepo(ctx context.Context, in *SearchStarredRepoReq, opts ...grpc.CallOption) (*SearchStarredRepoResp, error)
 	SearchStaringDev(ctx context.Context, in *SearchStaringDevReq, opts ...grpc.CallOption) (*SearchStaringDevResp, error)
 	BlockUntilStarredRepoUpdated(ctx context.Context, in *BlockUntilStarredRepoUpdatedReq, opts ...grpc.CallOption) (*BlockUntilStarredRepoUpdatedResp, error)
+	UnblockRelation(ctx context.Context, in *UnblockRelationReq, opts ...grpc.CallOption) (*UnblockRelationResp, error)
 }
 
 type relationClient struct {
@@ -387,6 +389,16 @@ func (c *relationClient) BlockUntilStarredRepoUpdated(ctx context.Context, in *B
 	return out, nil
 }
 
+func (c *relationClient) UnblockRelation(ctx context.Context, in *UnblockRelationReq, opts ...grpc.CallOption) (*UnblockRelationResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UnblockRelationResp)
+	err := c.cc.Invoke(ctx, Relation_UnblockRelation_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // RelationServer is the server API for Relation service.
 // All implementations must embed UnimplementedRelationServer
 // for forward compatibility.
@@ -424,6 +436,7 @@ type RelationServer interface {
 	SearchStarredRepo(context.Context, *SearchStarredRepoReq) (*SearchStarredRepoResp, error)
 	SearchStaringDev(context.Context, *SearchStaringDevReq) (*SearchStaringDevResp, error)
 	BlockUntilStarredRepoUpdated(context.Context, *BlockUntilStarredRepoUpdatedReq) (*BlockUntilStarredRepoUpdatedResp, error)
+	UnblockRelation(context.Context, *UnblockRelationReq) (*UnblockRelationResp, error)
 	mustEmbedUnimplementedRelationServer()
 }
 
@@ -520,6 +533,9 @@ func (UnimplementedRelationServer) SearchStaringDev(context.Context, *SearchStar
 }
 func (UnimplementedRelationServer) BlockUntilStarredRepoUpdated(context.Context, *BlockUntilStarredRepoUpdatedReq) (*BlockUntilStarredRepoUpdatedResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method BlockUntilStarredRepoUpdated not implemented")
+}
+func (UnimplementedRelationServer) UnblockRelation(context.Context, *UnblockRelationReq) (*UnblockRelationResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UnblockRelation not implemented")
 }
 func (UnimplementedRelationServer) mustEmbedUnimplementedRelationServer() {}
 func (UnimplementedRelationServer) testEmbeddedByValue()                  {}
@@ -1064,6 +1080,24 @@ func _Relation_BlockUntilStarredRepoUpdated_Handler(srv interface{}, ctx context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Relation_UnblockRelation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UnblockRelationReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RelationServer).UnblockRelation(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Relation_UnblockRelation_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RelationServer).UnblockRelation(ctx, req.(*UnblockRelationReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Relation_ServiceDesc is the grpc.ServiceDesc for Relation service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -1186,6 +1220,10 @@ var Relation_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "BlockUntilStarredRepoUpdated",
 			Handler:    _Relation_BlockUntilStarredRepoUpdated_Handler,
+		},
+		{
+			MethodName: "UnblockRelation",
+			Handler:    _Relation_UnblockRelation_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

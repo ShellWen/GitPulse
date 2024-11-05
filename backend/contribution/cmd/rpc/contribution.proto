@@ -148,6 +148,16 @@ message BlockUntilAllUpdatedResp {
   string message = 2;
 }
 
+message UnblockContributionReq {
+  int64 fetchType = 1; //fetchType
+  int64 id = 2; //id
+}
+
+message UnblockContributionResp {
+  int64 code = 1;
+  string message = 2;
+}
+
 // ------------------------------------ 
 // Rpc Func
 // ------------------------------------ 
@@ -166,4 +176,5 @@ service contribution{
     rpc BlockUntilIssuePrOfUserUpdated(BlockUntilIssuePrOfUserUpdatedReq) returns (BlockUntilIssuePrOfUserUpdatedResp);
     rpc BlockUntilCommentReviewOfUserUpdated(BlockUntilCommentReviewOfUserUpdatedReq) returns (BlockUntilCommentReviewOfUserUpdatedResp);
     rpc BlockUntilAllUpdated(BlockUntilAllUpdatedReq) returns (BlockUntilAllUpdatedResp);
+    rpc UnblockContribution(UnblockContributionReq) returns (UnblockContributionResp);
 }

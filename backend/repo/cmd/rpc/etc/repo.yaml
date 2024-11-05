@@ -31,10 +31,3 @@ KqRepoUpdateConsumerConf:
     - 127.0.0.1:9092
   Group: repo
   Topic: repo-update
-
-KqRepoUpdateCompleteConsumerConf:
-  Name: repo-update-complete-consumer
-  Brokers:
-    - 127.0.0.1:9092
-  Group: repo
-  Topic: repo-update-complete

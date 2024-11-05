@@ -23,6 +23,8 @@ type (
 	GetRepoByIdReq            = pb.GetRepoByIdReq
 	GetRepoByIdResp           = pb.GetRepoByIdResp
 	Repo                      = pb.Repo
+	UnblockRepoReq            = pb.UnblockRepoReq
+	UnblockRepoResp           = pb.UnblockRepoResp
 	UpdateRepoReq             = pb.UpdateRepoReq
 	UpdateRepoResp            = pb.UpdateRepoResp
 
@@ -33,6 +35,7 @@ type (
 		DelRepoById(ctx context.Context, in *DelRepoByIdReq, opts ...grpc.CallOption) (*DelRepoByIdResp, error)
 		GetRepoById(ctx context.Context, in *GetRepoByIdReq, opts ...grpc.CallOption) (*GetRepoByIdResp, error)
 		BlockUntilRepoUpdated(ctx context.Context, in *BlockUntilRepoUpdatedReq, opts ...grpc.CallOption) (*BlockUntilRepoUpdatedResp, error)
+		UnblockRepo(ctx context.Context, in *UnblockRepoReq, opts ...grpc.CallOption) (*UnblockRepoResp, error)
 	}
 
 	defaultRepoZrpcClient struct {
@@ -70,4 +73,9 @@ func (m *defaultRepoZrpcClient) GetRepoById(ctx context.Context, in *GetRepoById
 func (m *defaultRepoZrpcClient) BlockUntilRepoUpdated(ctx context.Context, in *BlockUntilRepoUpdatedReq, opts ...grpc.CallOption) (*BlockUntilRepoUpdatedResp, error) {
 	client := pb.NewRepoClient(m.cli.Conn())
 	return client.BlockUntilRepoUpdated(ctx, in, opts...)
+}
+
+func (m *defaultRepoZrpcClient) UnblockRepo(ctx context.Context, in *UnblockRepoReq, opts ...grpc.CallOption) (*UnblockRepoResp, error) {
+	client := pb.NewRepoClient(m.cli.Conn())
+	return client.UnblockRepo(ctx, in, opts...)
 }

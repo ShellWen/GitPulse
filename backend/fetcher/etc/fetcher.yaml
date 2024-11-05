@@ -18,13 +18,6 @@ Log:
   Mode: console
   Encoding: plain
 
-KqFetcherTaskConsumerConf:
-  Name: fetcher-task-consumer
-  Brokers:
-    - 127.0.0.1:9092
-  Group: fetchers
-  Topic: fetcher-task
-
 KqDeveloperPusherConf:
   Name: developer-pusher
   Brokers:
@@ -96,3 +89,8 @@ KqRelationUpdateCompletePusherConf:
     Brokers:
       - 127.0.0.1:9092
     Topic: relation-update-complete
+
+AsynqRedisConf:
+  Addr: 127.0.0.1:6379
+  Password:
+  DB: 0

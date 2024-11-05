@@ -30,6 +30,7 @@ const (
 	Contribution_BlockUntilIssuePrOfUserUpdated_FullMethodName       = "/pb.contribution/BlockUntilIssuePrOfUserUpdated"
 	Contribution_BlockUntilCommentReviewOfUserUpdated_FullMethodName = "/pb.contribution/BlockUntilCommentReviewOfUserUpdated"
 	Contribution_BlockUntilAllUpdated_FullMethodName                 = "/pb.contribution/BlockUntilAllUpdated"
+	Contribution_UnblockContribution_FullMethodName                  = "/pb.contribution/UnblockContribution"
 )
 
 // ContributionClient is the client API for Contribution service.
@@ -48,6 +49,7 @@ type ContributionClient interface {
 	BlockUntilIssuePrOfUserUpdated(ctx context.Context, in *BlockUntilIssuePrOfUserUpdatedReq, opts ...grpc.CallOption) (*BlockUntilIssuePrOfUserUpdatedResp, error)
 	BlockUntilCommentReviewOfUserUpdated(ctx context.Context, in *BlockUntilCommentReviewOfUserUpdatedReq, opts ...grpc.CallOption) (*BlockUntilCommentReviewOfUserUpdatedResp, error)
 	BlockUntilAllUpdated(ctx context.Context, in *BlockUntilAllUpdatedReq, opts ...grpc.CallOption) (*BlockUntilAllUpdatedResp, error)
+	UnblockContribution(ctx context.Context, in *UnblockContributionReq, opts ...grpc.CallOption) (*UnblockContributionResp, error)
 }
 
 type contributionClient struct {
@@ -168,6 +170,16 @@ func (c *contributionClient) BlockUntilAllUpdated(ctx context.Context, in *Block
 	return out, nil
 }
 
+func (c *contributionClient) UnblockContribution(ctx context.Context, in *UnblockContributionReq, opts ...grpc.CallOption) (*UnblockContributionResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UnblockContributionResp)
+	err := c.cc.Invoke(ctx, Contribution_UnblockContribution_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ContributionServer is the server API for Contribution service.
 // All implementations must embed UnimplementedContributionServer
 // for forward compatibility.
@@ -184,6 +196,7 @@ type ContributionServer interface {
 	BlockUntilIssuePrOfUserUpdated(context.Context, *BlockUntilIssuePrOfUserUpdatedReq) (*BlockUntilIssuePrOfUserUpdatedResp, error)
 	BlockUntilCommentReviewOfUserUpdated(context.Context, *BlockUntilCommentReviewOfUserUpdatedReq) (*BlockUntilCommentReviewOfUserUpdatedResp, error)
 	BlockUntilAllUpdated(context.Context, *BlockUntilAllUpdatedReq) (*BlockUntilAllUpdatedResp, error)
+	UnblockContribution(context.Context, *UnblockContributionReq) (*UnblockContributionResp, error)
 	mustEmbedUnimplementedContributionServer()
 }
 
@@ -226,6 +239,9 @@ func (UnimplementedContributionServer) BlockUntilCommentReviewOfUserUpdated(cont
 }
 func (UnimplementedContributionServer) BlockUntilAllUpdated(context.Context, *BlockUntilAllUpdatedReq) (*BlockUntilAllUpdatedResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method BlockUntilAllUpdated not implemented")
+}
+func (UnimplementedContributionServer) UnblockContribution(context.Context, *UnblockContributionReq) (*UnblockContributionResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UnblockContribution not implemented")
 }
 func (UnimplementedContributionServer) mustEmbedUnimplementedContributionServer() {}
 func (UnimplementedContributionServer) testEmbeddedByValue()                      {}
@@ -446,6 +462,24 @@ func _Contribution_BlockUntilAllUpdated_Handler(srv interface{}, ctx context.Con
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Contribution_UnblockContribution_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UnblockContributionReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ContributionServer).UnblockContribution(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Contribution_UnblockContribution_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ContributionServer).UnblockContribution(ctx, req.(*UnblockContributionReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Contribution_ServiceDesc is the grpc.ServiceDesc for Contribution service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -496,6 +530,10 @@ var Contribution_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "BlockUntilAllUpdated",
 			Handler:    _Contribution_BlockUntilAllUpdated_Handler,
+		},
+		{
+			MethodName: "UnblockContribution",
+			Handler:    _Contribution_UnblockContribution_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

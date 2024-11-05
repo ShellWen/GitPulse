@@ -13,3 +13,9 @@ type SparkModelConf struct {
 	Temperature float64
 	Model       string
 }
+
+type AsynqRedisConf struct {
+	Addr     string
+	Password string
+	DB       int
+}

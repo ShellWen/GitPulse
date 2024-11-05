@@ -4,12 +4,13 @@ import (
 	"context"
 	"errors"
 	customGithub "github.com/ShellWen/GitPulse/common/github"
-	"github.com/ShellWen/GitPulse/common/message"
+	"github.com/ShellWen/GitPulse/common/tasks"
 	"github.com/ShellWen/GitPulse/developer/cmd/api/internal/svc"
 	"github.com/ShellWen/GitPulse/developer/cmd/api/internal/types"
 	"github.com/ShellWen/GitPulse/developer/cmd/rpc/developer"
-	"github.com/zeromicro/go-zero/core/jsonx"
+	"github.com/hibiken/asynq"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -114,20 +115,17 @@ func (l *GetDeveloperLogic) rpcGetDeveloperById(id int64) (resp *developer.GetDe
 }
 
 func (l *GetDeveloperLogic) updateDeveloperWithBlock(id int64) (err error) {
-	var (
-		task    *message.FetcherTask
-		jsonStr string
-	)
+	var task *asynq.Task
 
-	task = &message.FetcherTask{Type: message.FetchDeveloper, Id: id}
-	if jsonStr, err = jsonx.MarshalToString(task); err != nil {
+	if task, err = tasks.NewFetcherTask(tasks.FetchDeveloper, id); err != nil {
 		return
 	}
 
-	if err = l.svcCtx.KqFetcherTaskPusher.Push(l.ctx, jsonStr); err != nil {
+	if _, err = l.svcCtx.AsynqClient.Enqueue(task, asynq.TaskID(strconv.Itoa(tasks.FetchDeveloper)+","+strconv.Itoa(int(id)))); err != nil {
 		return
 	}
-	logx.Info("Successfully pushed task ", jsonStr, " to fetcher, waiting for developer updated")
+
+	logx.Info("Successfully pushed task ", task.Payload(), " to fetcher, waiting for developer updated")
 
 	if _, err = l.svcCtx.DeveloperRpc.BlockUntilDeveloperUpdated(l.ctx, &developer.BlockUntilDeveloperUpdatedReq{Id: id}); err != nil {
 		return

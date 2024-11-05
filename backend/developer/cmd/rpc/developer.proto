@@ -137,6 +137,16 @@ message BlockUntilDeveloperUpdatedResp {
   string message = 2;
 }
 
+message UnblockDeveloperReq {
+  int64 fetchType = 1; //fetchType
+  int64 id = 2; //id
+}
+
+message UnblockDeveloperResp {
+  int64 code = 1;
+  string message = 2;
+}
+
 // ------------------------------------ 
 // Rpc Func
 // ------------------------------------ 
@@ -150,4 +160,5 @@ service developer{
   rpc GetDeveloperById(GetDeveloperByIdReq) returns (GetDeveloperByIdResp);
   rpc GetDeveloperByLogin(GetDeveloperByLoginReq) returns (GetDeveloperByLoginResp);
   rpc BlockUntilDeveloperUpdated(BlockUntilDeveloperUpdatedReq) returns (BlockUntilDeveloperUpdatedResp);
+  rpc UnblockDeveloper(UnblockDeveloperReq) returns (UnblockDeveloperResp);
 }

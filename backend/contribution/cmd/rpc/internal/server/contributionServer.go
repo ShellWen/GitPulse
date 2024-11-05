@@ -78,3 +78,8 @@ func (s *ContributionServer) BlockUntilAllUpdated(ctx context.Context, in *pb.Bl
 	l := logic.NewBlockUntilAllUpdatedLogic(ctx, s.svcCtx)
 	return l.BlockUntilAllUpdated(in)
 }
+
+func (s *ContributionServer) UnblockContribution(ctx context.Context, in *pb.UnblockContributionReq) (*pb.UnblockContributionResp, error) {
+	l := logic.NewUnblockContributionLogic(ctx, s.svcCtx)
+	return l.UnblockContribution(in)
+}

@@ -29,8 +29,7 @@ AnalysisRpcConf:
   Target: consul://localhost:8500/analysis.rpc?wait=14s
   Timeout: 120000
 
-KqFetcherTaskPusherConf:
-  Name: fetcher-task-pusher
-  Brokers:
-    - 127.0.0.1:9092
-  Topic: fetcher-task
+AsynqRedisConf:
+  Addr: 127.0.0.1:6379
+  Password:
+  DB: 0

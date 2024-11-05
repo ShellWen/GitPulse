@@ -6,6 +6,7 @@ import (
 	"github.com/ShellWen/GitPulse/fetcher/internal/config"
 	"github.com/ShellWen/GitPulse/relation/cmd/rpc/relation"
 	"github.com/ShellWen/GitPulse/repo/cmd/rpc/repo"
+	"github.com/hibiken/asynq"
 	"github.com/zeromicro/go-queue/kq"
 	"github.com/zeromicro/go-zero/core/stores/redis"
 	"github.com/zeromicro/go-zero/zrpc"
@@ -30,6 +31,8 @@ type ServiceContext struct {
 	KqRepoUpdateCompletePusher         *kq.Pusher
 	KqContributionUpdateCompletePusher *kq.Pusher
 	KqRelationUpdateCompletePusher     *kq.Pusher
+
+	AsynqServer *asynq.Server
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -52,5 +55,14 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		KqRepoUpdateCompletePusher:         kq.NewPusher(c.KqRepoUpdateCompletePusherConf.Brokers, c.KqRepoUpdateCompletePusherConf.Topic, kq.WithAllowAutoTopicCreation(), kq.WithSyncPush()),
 		KqContributionUpdateCompletePusher: kq.NewPusher(c.KqContributionUpdateCompletePusherConf.Brokers, c.KqContributionUpdateCompletePusherConf.Topic, kq.WithAllowAutoTopicCreation(), kq.WithSyncPush()),
 		KqRelationUpdateCompletePusher:     kq.NewPusher(c.KqRelationUpdateCompletePusherConf.Brokers, c.KqRelationUpdateCompletePusherConf.Topic, kq.WithAllowAutoTopicCreation(), kq.WithSyncPush()),
+
+		AsynqServer: asynq.NewServer(
+			asynq.RedisClientOpt{
+				Addr:     c.AsynqRedisConf.Addr,
+				Password: c.AsynqRedisConf.Password,
+				DB:       c.AsynqRedisConf.DB,
+			}, asynq.Config{
+				Concurrency: 10,
+			}),
 	}
 }

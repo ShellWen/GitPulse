@@ -327,6 +327,16 @@ message BlockUntilStarredRepoUpdatedResp {
   string message = 2;
 }
 
+message UnblockRelationReq {
+  int64 fetchType = 1; //fetchType
+  int64 id = 2; //id
+}
+
+message UnblockRelationResp {
+  int64 code = 1;
+  string message = 2;
+}
+
 
 // ------------------------------------ 
 // Rpc Func
@@ -367,4 +377,6 @@ service relation{
     rpc SearchStarredRepo(SearchStarredRepoReq) returns (SearchStarredRepoResp);
     rpc SearchStaringDev(SearchStaringDevReq) returns (SearchStaringDevResp);
     rpc BlockUntilStarredRepoUpdated(BlockUntilStarredRepoUpdatedReq) returns (BlockUntilStarredRepoUpdatedResp);
+
+    rpc UnblockRelation(UnblockRelationReq) returns (UnblockRelationResp);
 }

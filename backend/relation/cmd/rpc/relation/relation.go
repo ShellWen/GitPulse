@@ -76,6 +76,8 @@ type (
 	SearchStarredRepoReq             = pb.SearchStarredRepoReq
 	SearchStarredRepoResp            = pb.SearchStarredRepoResp
 	Star                             = pb.Star
+	UnblockRelationReq               = pb.UnblockRelationReq
+	UnblockRelationResp              = pb.UnblockRelationResp
 
 	Relation interface {
 		// -----------------------createRepo-----------------------
@@ -111,6 +113,7 @@ type (
 		SearchStarredRepo(ctx context.Context, in *SearchStarredRepoReq, opts ...grpc.CallOption) (*SearchStarredRepoResp, error)
 		SearchStaringDev(ctx context.Context, in *SearchStaringDevReq, opts ...grpc.CallOption) (*SearchStaringDevResp, error)
 		BlockUntilStarredRepoUpdated(ctx context.Context, in *BlockUntilStarredRepoUpdatedReq, opts ...grpc.CallOption) (*BlockUntilStarredRepoUpdatedResp, error)
+		UnblockRelation(ctx context.Context, in *UnblockRelationReq, opts ...grpc.CallOption) (*UnblockRelationResp, error)
 	}
 
 	defaultRelation struct {
@@ -271,4 +274,9 @@ func (m *defaultRelation) SearchStaringDev(ctx context.Context, in *SearchStarin
 func (m *defaultRelation) BlockUntilStarredRepoUpdated(ctx context.Context, in *BlockUntilStarredRepoUpdatedReq, opts ...grpc.CallOption) (*BlockUntilStarredRepoUpdatedResp, error) {
 	client := pb.NewRelationClient(m.cli.Conn())
 	return client.BlockUntilStarredRepoUpdated(ctx, in, opts...)
+}
+
+func (m *defaultRelation) UnblockRelation(ctx context.Context, in *UnblockRelationReq, opts ...grpc.CallOption) (*UnblockRelationResp, error) {
+	client := pb.NewRelationClient(m.cli.Conn())
+	return client.UnblockRelation(ctx, in, opts...)
 }

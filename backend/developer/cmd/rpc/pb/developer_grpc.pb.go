@@ -26,6 +26,7 @@ const (
 	Developer_GetDeveloperById_FullMethodName           = "/pb.developer/GetDeveloperById"
 	Developer_GetDeveloperByLogin_FullMethodName        = "/pb.developer/GetDeveloperByLogin"
 	Developer_BlockUntilDeveloperUpdated_FullMethodName = "/pb.developer/BlockUntilDeveloperUpdated"
+	Developer_UnblockDeveloper_FullMethodName           = "/pb.developer/UnblockDeveloper"
 )
 
 // DeveloperClient is the client API for Developer service.
@@ -40,6 +41,7 @@ type DeveloperClient interface {
 	GetDeveloperById(ctx context.Context, in *GetDeveloperByIdReq, opts ...grpc.CallOption) (*GetDeveloperByIdResp, error)
 	GetDeveloperByLogin(ctx context.Context, in *GetDeveloperByLoginReq, opts ...grpc.CallOption) (*GetDeveloperByLoginResp, error)
 	BlockUntilDeveloperUpdated(ctx context.Context, in *BlockUntilDeveloperUpdatedReq, opts ...grpc.CallOption) (*BlockUntilDeveloperUpdatedResp, error)
+	UnblockDeveloper(ctx context.Context, in *UnblockDeveloperReq, opts ...grpc.CallOption) (*UnblockDeveloperResp, error)
 }
 
 type developerClient struct {
@@ -120,6 +122,16 @@ func (c *developerClient) BlockUntilDeveloperUpdated(ctx context.Context, in *Bl
 	return out, nil
 }
 
+func (c *developerClient) UnblockDeveloper(ctx context.Context, in *UnblockDeveloperReq, opts ...grpc.CallOption) (*UnblockDeveloperResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UnblockDeveloperResp)
+	err := c.cc.Invoke(ctx, Developer_UnblockDeveloper_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // DeveloperServer is the server API for Developer service.
 // All implementations must embed UnimplementedDeveloperServer
 // for forward compatibility.
@@ -132,6 +144,7 @@ type DeveloperServer interface {
 	GetDeveloperById(context.Context, *GetDeveloperByIdReq) (*GetDeveloperByIdResp, error)
 	GetDeveloperByLogin(context.Context, *GetDeveloperByLoginReq) (*GetDeveloperByLoginResp, error)
 	BlockUntilDeveloperUpdated(context.Context, *BlockUntilDeveloperUpdatedReq) (*BlockUntilDeveloperUpdatedResp, error)
+	UnblockDeveloper(context.Context, *UnblockDeveloperReq) (*UnblockDeveloperResp, error)
 	mustEmbedUnimplementedDeveloperServer()
 }
 
@@ -162,6 +175,9 @@ func (UnimplementedDeveloperServer) GetDeveloperByLogin(context.Context, *GetDev
 }
 func (UnimplementedDeveloperServer) BlockUntilDeveloperUpdated(context.Context, *BlockUntilDeveloperUpdatedReq) (*BlockUntilDeveloperUpdatedResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method BlockUntilDeveloperUpdated not implemented")
+}
+func (UnimplementedDeveloperServer) UnblockDeveloper(context.Context, *UnblockDeveloperReq) (*UnblockDeveloperResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UnblockDeveloper not implemented")
 }
 func (UnimplementedDeveloperServer) mustEmbedUnimplementedDeveloperServer() {}
 func (UnimplementedDeveloperServer) testEmbeddedByValue()                   {}
@@ -310,6 +326,24 @@ func _Developer_BlockUntilDeveloperUpdated_Handler(srv interface{}, ctx context.
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Developer_UnblockDeveloper_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UnblockDeveloperReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DeveloperServer).UnblockDeveloper(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Developer_UnblockDeveloper_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DeveloperServer).UnblockDeveloper(ctx, req.(*UnblockDeveloperReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Developer_ServiceDesc is the grpc.ServiceDesc for Developer service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -344,6 +378,10 @@ var Developer_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "BlockUntilDeveloperUpdated",
 			Handler:    _Developer_BlockUntilDeveloperUpdated_Handler,
+		},
+		{
+			MethodName: "UnblockDeveloper",
+			Handler:    _Developer_UnblockDeveloper_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

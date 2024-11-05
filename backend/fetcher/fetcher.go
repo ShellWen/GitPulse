@@ -9,8 +9,6 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/core/logx"
-	"github.com/zeromicro/go-zero/core/service"
-
 	_ "github.com/zeromicro/zero-contrib/zrpc/registry/consul"
 )
 
@@ -31,13 +29,11 @@ func main() {
 
 	ctx := context.Background()
 	svcContext := svc.NewServiceContext(c)
+	taskConsumer := consumer.NewFetcherTaskConsumer(ctx, svcContext)
+	mux := taskConsumer.Register()
 
-	serviceGroup := service.NewServiceGroup()
-	defer serviceGroup.Stop()
-
-	for _, s := range consumer.Consumers(c, ctx, svcContext) {
-		serviceGroup.Add(s)
+	if err := svcContext.AsynqServer.Run(mux); err != nil {
+		logx.Error(err)
+		return
 	}
-
-	serviceGroup.Start()
 }

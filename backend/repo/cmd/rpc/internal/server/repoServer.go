@@ -48,3 +48,8 @@ func (s *RepoServer) BlockUntilRepoUpdated(ctx context.Context, in *pb.BlockUnti
 	l := logic.NewBlockUntilRepoUpdatedLogic(ctx, s.svcCtx)
 	return l.BlockUntilRepoUpdated(in)
 }
+
+func (s *RepoServer) UnblockRepo(ctx context.Context, in *pb.UnblockRepoReq) (*pb.UnblockRepoResp, error) {
+	l := logic.NewUnblockRepoLogic(ctx, s.svcCtx)
+	return l.UnblockRepo(in)
+}

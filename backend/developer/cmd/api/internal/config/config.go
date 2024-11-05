@@ -12,7 +12,7 @@ type Config struct {
 	DB struct {
 		DataSource string
 	}
-	Cache                   cache.CacheConf
-	DeveloperRpcConf        zrpc.RpcClientConf
-	KqFetcherTaskPusherConf config.KqPusherConf
+	Cache            cache.CacheConf
+	DeveloperRpcConf zrpc.RpcClientConf
+	AsynqRedisConf   config.AsynqRedisConf
 }

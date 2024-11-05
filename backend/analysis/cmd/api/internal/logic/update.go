@@ -4,13 +4,15 @@ import (
 	"context"
 	"errors"
 	"github.com/ShellWen/GitPulse/analysis/cmd/api/internal/svc"
-	"github.com/ShellWen/GitPulse/common/message"
+	"github.com/ShellWen/GitPulse/common/tasks"
 	"github.com/ShellWen/GitPulse/contribution/cmd/rpc/contribution"
 	"github.com/ShellWen/GitPulse/developer/cmd/rpc/developer"
 	"github.com/ShellWen/GitPulse/relation/cmd/rpc/relation"
+	"github.com/hibiken/asynq"
 	"github.com/zeromicro/go-zero/core/jsonx"
 	"github.com/zeromicro/go-zero/core/logx"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -88,17 +90,19 @@ func checkIfNeedUpdateDeveloper(ctx context.Context, svcCtx *svc.ServiceContext,
 
 func updateDeveloper(ctx context.Context, svcCtx *svc.ServiceContext, id int64) (err error) {
 	var (
-		task      *message.FetcherTask
+		task      *asynq.Task
 		jsonStr   string
 		blockResp *developer.BlockUntilDeveloperUpdatedResp
 	)
 
-	task = &message.FetcherTask{Type: message.FetchDeveloper, Id: id}
+	if task, err = tasks.NewFetcherTask(tasks.FetchDeveloper, id); err != nil {
+		return
+	}
 	if jsonStr, err = jsonx.MarshalToString(task); err != nil {
 		return
 	}
 
-	if err = svcCtx.KqFetcherTaskPusher.Push(ctx, jsonStr); err != nil {
+	if _, err = svcCtx.AsynqClient.Enqueue(task, asynq.TaskID(strconv.Itoa(tasks.FetchDeveloper)+","+strconv.Itoa(int(id)))); err != nil {
 		return
 	}
 	logx.Info("Successfully pushed task ", jsonStr, " to fetcher, waiting for developer updated")
@@ -119,20 +123,19 @@ func updateDeveloper(ctx context.Context, svcCtx *svc.ServiceContext, id int64) 
 func updateContribution(ctx context.Context, svcCtx *svc.ServiceContext, id int64) (err error) {
 	var (
 		contributionRpcClient = svcCtx.ContributionRpcClient
-		fetcherTask           = message.FetcherTask{Type: message.FetchContributionOfUser, Id: id}
-		taskStr               string
+		fetcherTask           *asynq.Task
 		blockResp             *contribution.BlockUntilAllUpdatedResp
 	)
 
-	if taskStr, err = jsonx.MarshalToString(fetcherTask); err != nil {
+	if fetcherTask, err = tasks.NewFetcherTask(tasks.FetchContributionOfUser, id); err != nil {
 		return
 	}
 
-	if err = svcCtx.KqFetcherTaskPusher.Push(ctx, taskStr); err != nil {
+	if _, err = svcCtx.AsynqClient.Enqueue(fetcherTask, asynq.TaskID(strconv.Itoa(tasks.FetchContributionOfUser)+","+strconv.Itoa(int(id)))); err != nil {
 		return
 	}
 
-	logx.Info("Successfully pushed task ", taskStr, " to fetcher, waiting for contribution updated")
+	logx.Info("Successfully pushed task ", fetcherTask.Payload(), " to fetcher, waiting for contribution updated")
 
 	if blockResp, err = contributionRpcClient.BlockUntilAllUpdated(ctx, &contribution.BlockUntilAllUpdatedReq{
 		UserId: id,
@@ -152,16 +155,15 @@ func updateContribution(ctx context.Context, svcCtx *svc.ServiceContext, id int6
 func updateCreatedRepo(ctx context.Context, svcCtx *svc.ServiceContext, id int64) (err error) {
 	var (
 		relationRpcClient = svcCtx.RelationRpcClient
-		fetcherTask       = message.FetcherTask{Type: message.FetchCreatedRepo, Id: id}
-		taskStr           string
+		fetcherTask       *asynq.Task
 		blockResp         *relation.BlockUntilCreatedRepoUpdatedResp
 	)
 
-	if taskStr, err = jsonx.MarshalToString(fetcherTask); err != nil {
+	if fetcherTask, err = tasks.NewFetcherTask(tasks.FetchCreatedRepo, id); err != nil {
 		return
 	}
 
-	if err = svcCtx.KqFetcherTaskPusher.Push(ctx, taskStr); err != nil {
+	if _, err = svcCtx.AsynqClient.Enqueue(fetcherTask, asynq.TaskID(strconv.Itoa(tasks.FetchCreatedRepo)+","+strconv.Itoa(int(id)))); err != nil {
 		return
 	}
 

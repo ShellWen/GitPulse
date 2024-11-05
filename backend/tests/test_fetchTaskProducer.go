@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/ShellWen/GitPulse/common/message"
 	"github.com/zeromicro/go-queue/kq"
 	"github.com/zeromicro/go-zero/core/jsonx"
 )
@@ -13,8 +12,8 @@ func main() {
 
 	pusher := kq.NewPusher([]string{"localhost:9092"}, "fetcher-task", kq.WithAllowAutoTopicCreation())
 
-	task := message.FetcherTask{
-		Type: message.FetchDeveloper,
+	task := tasks.FetcherTask{
+		Type: tasks.FetchDeveloper,
 		Id:   105362324,
 	}
 

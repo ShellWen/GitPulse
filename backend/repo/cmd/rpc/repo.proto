@@ -104,6 +104,16 @@ message BlockUntilRepoUpdatedResp {
   string message = 2;
 }
 
+message UnblockRepoReq {
+  int64 fetchType = 1; //fetchType
+  int64 id = 2; //id
+}
+
+message UnblockRepoResp {
+  int64 code = 1;
+  string message = 2;
+}
+
 // ------------------------------------ 
 // Rpc Func
 // ------------------------------------ 
@@ -116,5 +126,6 @@ service repo{
 	 rpc DelRepoById(DelRepoByIdReq) returns (DelRepoByIdResp);
 	 rpc GetRepoById(GetRepoByIdReq) returns (GetRepoByIdResp);
     rpc BlockUntilRepoUpdated(BlockUntilRepoUpdatedReq) returns (BlockUntilRepoUpdatedResp);
+    rpc UnblockRepo(UnblockRepoReq) returns (UnblockRepoResp);
 
 }
