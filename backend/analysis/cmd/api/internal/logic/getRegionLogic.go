@@ -111,6 +111,22 @@ func (l *GetRegionLogic) updateRegion(id int64) (err error) {
 		updateAnalysisResp *analysis.UpdateAnalysisResp
 	)
 
+	if needUpdate, err := checkIfNeedUpdateDeveloper(l.ctx, l.svcCtx, id); err != nil {
+		return err
+	} else if needUpdate {
+		if err = updateDeveloper(l.ctx, l.svcCtx, id); err != nil {
+			return err
+		}
+	}
+
+	if needUpdate, err := checkIfNeedUpdateContribution(l.ctx, l.svcCtx, id); err != nil {
+		return err
+	} else if needUpdate {
+		if err = updateContribution(l.ctx, l.svcCtx, id); err != nil {
+			return err
+		}
+	}
+
 	if updateAnalysisResp, err = analysisRpcClient.UpdateRegion(l.ctx, &analysis.UpdateAnalysisReq{
 		DeveloperId: id,
 	}); err != nil {

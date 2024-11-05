@@ -2,11 +2,13 @@ package logic
 
 import (
 	"context"
+	"errors"
 	"github.com/ShellWen/GitPulse/analysis/model"
 	"github.com/ShellWen/GitPulse/contribution/cmd/rpc/contribution"
 	"github.com/ShellWen/GitPulse/repo/cmd/rpc/repo"
 	"math"
 	"net/http"
+	"time"
 
 	"github.com/ShellWen/GitPulse/analysis/cmd/rpc/internal/svc"
 	"github.com/ShellWen/GitPulse/analysis/cmd/rpc/pb"
@@ -63,7 +65,11 @@ func (l *UpdatePulsePointLogic) doUpdatePulsePoint(id int64) (err error) {
 		pulsePointItem                      *model.PulsePoint
 	)
 
-	if allContributionResp, err = contributionZrpcClient.SearchByUserId(l.ctx, &contribution.SearchByUserIdReq{UserId: id}); err != nil {
+	if allContributionResp, err = contributionZrpcClient.SearchByUserId(l.ctx, &contribution.SearchByUserIdReq{
+		UserId: id,
+		Limit:  1000,
+		Page:   1,
+	}); err != nil {
 		return
 	}
 	allContributions = allContributionResp.Contributions
@@ -113,7 +119,21 @@ func (l *UpdatePulsePointLogic) doUpdatePulsePoint(id int64) (err error) {
 	}
 
 	if pulsePointItem, err = l.svcCtx.PulsePointModel.FindOneByDeveloperId(l.ctx, id); err != nil {
-		return
+		if errors.Is(err, model.ErrNotFound) {
+			if _, err = l.svcCtx.PulsePointModel.Insert(l.ctx, &model.PulsePoint{
+				DataCreatedAt: time.Now(),
+				DataUpdatedAt: time.Now(),
+				DeveloperId:   id,
+				PulsePoint:    0,
+			}); err != nil {
+				return
+			}
+			if pulsePointItem, err = l.svcCtx.PulsePointModel.FindOneByDeveloperId(l.ctx, id); err != nil {
+				return
+			}
+		} else {
+			return
+		}
 	}
 	pulsePointItem.PulsePoint = pulsePoint
 	if err = l.svcCtx.PulsePointModel.Update(l.ctx, pulsePointItem); err != nil {

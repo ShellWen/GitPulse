@@ -16,7 +16,15 @@ import (
 )
 
 func FetchStarredRepo(ctx context.Context, svcContext *svc.ServiceContext, userId int64) (err error) {
-	err = doFetchStarredRepo(ctx, svcContext, userId)
+	if err = doFetchStarredRepo(ctx, svcContext, userId); err != nil {
+		return
+	}
+
+	if err = updateStarredRepoFetchTimeOfDeveloper(ctx, svcContext, userId); err != nil {
+		return
+	}
+
+	logx.Info("Successfully update fetch time of starred repo")
 	return
 }
 
@@ -123,6 +131,56 @@ func pushStarredRepo(ctx context.Context, svcContext *svc.ServiceContext, newSta
 
 	if err = svcContext.KqStarPusher.Push(ctx, jsonStr); err != nil {
 		logx.Error(errors.New("Unexpected error when fetching starred repo: " + err.Error()))
+		return
+	}
+
+	return
+}
+
+func updateStarredRepoFetchTimeOfDeveloper(ctx context.Context, svcContext *svc.ServiceContext, userId int64) (err error) {
+	developerZrpcClient := svcContext.DeveloperRpcClient
+	var resp *developer.GetDeveloperByIdResp
+	var theDeveloper *developer.Developer
+
+	if resp, err = developerZrpcClient.GetDeveloperById(ctx, &developer.GetDeveloperByIdReq{Id: userId}); err != nil {
+		return
+	}
+
+	switch resp.Code {
+	case http.StatusOK:
+		theDeveloper = resp.Developer
+	case http.StatusNotFound:
+		err = errors.New("Developer not found")
+		return
+	default:
+		err = errors.New("Unexpected error when getting developer: " + resp.Message)
+		return
+	}
+
+	theDeveloper.LastFetchStarAt = time.Now().Unix()
+	if _, err = developerZrpcClient.UpdateDeveloper(ctx, &developer.UpdateDeveloperReq{
+		Id:                      userId,
+		Name:                    theDeveloper.Name,
+		Login:                   theDeveloper.Login,
+		AvatarUrl:               theDeveloper.AvatarUrl,
+		Company:                 theDeveloper.Company,
+		Location:                theDeveloper.Location,
+		Bio:                     theDeveloper.Bio,
+		Blog:                    theDeveloper.Blog,
+		Email:                   theDeveloper.Email,
+		CreatedAt:               theDeveloper.CreatedAt,
+		UpdatedAt:               theDeveloper.UpdatedAt,
+		TwitterUsername:         theDeveloper.TwitterUsername,
+		Repos:                   theDeveloper.Repos,
+		Following:               theDeveloper.Following,
+		Followers:               theDeveloper.Followers,
+		Gists:                   theDeveloper.Gists,
+		Stars:                   theDeveloper.Stars,
+		LastFetchContributionAt: theDeveloper.LastFetchContributionAt,
+		LastFetchFollowAt:       theDeveloper.LastFetchFollowAt,
+		LastFetchStarAt:         theDeveloper.LastFetchStarAt,
+		LastFetchCreateRepoAt:   theDeveloper.LastFetchCreateRepoAt,
+	}); err != nil {
 		return
 	}
 

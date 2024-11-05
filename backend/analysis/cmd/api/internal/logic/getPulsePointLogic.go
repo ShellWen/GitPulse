@@ -5,9 +5,6 @@ import (
 	"errors"
 	"github.com/ShellWen/GitPulse/analysis/cmd/rpc/analysis"
 	customGithub "github.com/ShellWen/GitPulse/common/github"
-	"github.com/ShellWen/GitPulse/common/message"
-	"github.com/ShellWen/GitPulse/contribution/cmd/rpc/contribution"
-	"github.com/zeromicro/go-zero/core/jsonx"
 	"net/http"
 	"time"
 
@@ -112,13 +109,17 @@ func (l *GetPulsePointLogic) getPulsePointFromRpc(id int64) (pulsePoint float64,
 
 func (l *GetPulsePointLogic) updatePulsePoint(id int64) (err error) {
 	var (
+		needUpdate         bool
 		analysisRpcClient  = l.svcCtx.AnalysisRpcClient
 		updateAnalysisResp *analysis.UpdateAnalysisResp
 	)
 
-	// contribution needed for pulse point
-	if err = l.updateContribution(id); err != nil {
+	if needUpdate, err = checkIfNeedUpdateContribution(l.ctx, l.svcCtx, id); err != nil {
 		return
+	} else if needUpdate {
+		if err = updateContribution(l.ctx, l.svcCtx, id); err != nil {
+			return
+		}
 	}
 
 	if updateAnalysisResp, err = analysisRpcClient.UpdatePulsePoint(l.ctx, &analysis.UpdateAnalysisReq{
@@ -131,35 +132,6 @@ func (l *GetPulsePointLogic) updatePulsePoint(id int64) (err error) {
 	case http.StatusOK:
 	default:
 		err = errors.New(updateAnalysisResp.Message)
-	}
-
-	return
-}
-
-func (l *GetPulsePointLogic) updateContribution(id int64) (err error) {
-	var (
-		contributionRpcClient = l.svcCtx.ContributionRpcClient
-		fetcherTask           = message.FetcherTask{Type: message.FetchContributionOfUser, Id: id}
-		taskStr               string
-		blockResp             *contribution.BlockUntilAllUpdatedResp
-	)
-
-	if taskStr, err = jsonx.MarshalToString(fetcherTask); err != nil {
-		return
-	}
-
-	if err = l.svcCtx.KqFetcherTaskPusher.Push(l.ctx, taskStr); err != nil {
-		return
-	}
-
-	if blockResp, err = contributionRpcClient.BlockUntilAllUpdated(l.ctx, &contribution.BlockUntilAllUpdatedReq{
-		UserId: id,
-	}); err != nil {
-		return
-	}
-
-	if blockResp.Code != http.StatusOK {
-		err = errors.New(blockResp.Message)
 	}
 
 	return

@@ -52,9 +52,9 @@ func (l *UpdateLanguageLogic) doUpdateLanguage(id int64) (err error) {
 		repoZrpcClient       = l.svcCtx.RepoRpcClient
 		createRepoResp       *relation.SearchCreatedRepoResp
 		createRepoIds        []int64
-		allLanguageBytes     map[string]int64
-		allLanguageRepoCount map[string]int64
-		allMetrics           map[string]float64
+		allLanguageBytes     = make(map[string]int64)
+		allLanguageRepoCount = make(map[string]int64)
+		allMetrics           = make(map[string]float64)
 		totalMetric          float64
 		languagesItem        *model.Languages
 		jsonBytes            []byte
@@ -62,6 +62,8 @@ func (l *UpdateLanguageLogic) doUpdateLanguage(id int64) (err error) {
 
 	if createRepoResp, err = relationZrpcClient.SearchCreatedRepo(l.ctx, &relation.SearchCreatedRepoReq{
 		DeveloperId: id,
+		Limit:       1000,
+		Page:        1,
 	}); err != nil {
 		return
 	}
@@ -91,7 +93,7 @@ func (l *UpdateLanguageLogic) doUpdateLanguage(id int64) (err error) {
 	}
 
 	for language, bytes := range allLanguageBytes {
-		allMetrics[language] = math.Sqrt(float64(bytes) * float64(allLanguageRepoCount[language]))
+		allMetrics[language] = math.Sqrt(float64(bytes)) * math.Sqrt(float64(allLanguageRepoCount[language]))
 		totalMetric += allMetrics[language]
 	}
 
@@ -111,6 +113,9 @@ func (l *UpdateLanguageLogic) doUpdateLanguage(id int64) (err error) {
 				DeveloperId:   id,
 				Languages:     "{}",
 			}); err != nil {
+				return
+			}
+			if languagesItem, err = l.svcCtx.LanguagesModel.FindOneByDeveloperId(l.ctx, id); err != nil {
 				return
 			}
 		} else {

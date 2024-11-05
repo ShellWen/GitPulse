@@ -8,8 +8,6 @@ import (
 	"github.com/ShellWen/GitPulse/analysis/cmd/api/internal/types"
 	"github.com/ShellWen/GitPulse/analysis/cmd/rpc/analysis"
 	customGithub "github.com/ShellWen/GitPulse/common/github"
-	"github.com/ShellWen/GitPulse/common/message"
-	"github.com/ShellWen/GitPulse/relation/cmd/rpc/relation"
 	"github.com/zeromicro/go-zero/core/jsonx"
 	"github.com/zeromicro/go-zero/core/logx"
 	"net/http"
@@ -131,13 +129,17 @@ func (l *GetLanguageUsageLogic) getLanguageUsageFromRpc(id int64) (usage map[str
 
 func (l *GetLanguageUsageLogic) updateLanguageUsage(id int64) (err error) {
 	var (
+		needUpdate         bool
 		analysisRpcClient  = l.svcCtx.AnalysisRpcClient
 		updateAnalysisResp *analysis.UpdateAnalysisResp
 	)
 
-	// create repo needed for analysis
-	if err = l.updateCreatedRepo(id); err != nil {
+	if needUpdate, err = checkIfNeedUpdateCreatedRepo(l.ctx, l.svcCtx, id); err != nil {
 		return
+	} else if needUpdate {
+		if err = updateCreatedRepo(l.ctx, l.svcCtx, id); err != nil {
+			return
+		}
 	}
 
 	if updateAnalysisResp, err = analysisRpcClient.UpdateLanguage(l.ctx, &analysis.UpdateAnalysisReq{
@@ -150,35 +152,6 @@ func (l *GetLanguageUsageLogic) updateLanguageUsage(id int64) (err error) {
 	case http.StatusOK:
 	default:
 		err = errors.New(updateAnalysisResp.Message)
-	}
-
-	return
-}
-
-func (l *GetLanguageUsageLogic) updateCreatedRepo(id int64) (err error) {
-	var (
-		relationRpcClient = l.svcCtx.RelationRpcClient
-		fetcherTask       = message.FetcherTask{Type: message.FetchCreatedRepo, Id: id}
-		taskStr           string
-		blockResp         *relation.BlockUntilCreatedRepoUpdatedResp
-	)
-
-	if taskStr, err = jsonx.MarshalToString(fetcherTask); err != nil {
-		return
-	}
-
-	if err = l.svcCtx.KqFetcherTaskPusher.Push(l.ctx, taskStr); err != nil {
-		return
-	}
-
-	if blockResp, err = relationRpcClient.BlockUntilCreatedRepoUpdated(l.ctx, &relation.BlockUntilCreatedRepoUpdatedReq{
-		Id: id,
-	}); err != nil {
-		return
-	}
-
-	if blockResp.Code != http.StatusOK {
-		err = errors.New(blockResp.Message)
 	}
 
 	return

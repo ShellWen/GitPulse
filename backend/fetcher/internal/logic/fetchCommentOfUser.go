@@ -22,7 +22,14 @@ type commentWithRepoId struct {
 }
 
 func FetchCommentOfUser(ctx context.Context, svcContext *svc.ServiceContext, userId int64, createAfter string, searchLimit int64) (err error) {
-	err = doFetchCommentOfUser(ctx, svcContext, userId, createAfter, searchLimit)
+	if err = doFetchCommentOfUser(ctx, svcContext, userId, createAfter, searchLimit); err != nil {
+		return
+	}
+	if err = updateContributionFetchTimeOfDeveloper(ctx, svcContext, userId); err != nil {
+		return
+	}
+
+	logx.Info("Successfully update contribution fetch time of developer: " + strconv.FormatInt(userId, 10))
 	return
 }
 
@@ -146,7 +153,9 @@ func getAllGithubCommentByLogin(ctx context.Context, svcContext *svc.ServiceCont
 		}
 	}
 
-	allCommentWithRepoId = allCommentWithRepoId[:int(searchLimit)]
+	if len(allCommentWithRepoId) > int(searchLimit) {
+		allCommentWithRepoId = allCommentWithRepoId[:int(searchLimit)]
+	}
 
 	return
 }

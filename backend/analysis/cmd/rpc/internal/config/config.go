@@ -1,6 +1,7 @@
 package config
 
 import (
+	"github.com/ShellWen/GitPulse/common/config"
 	"github.com/zeromicro/go-zero/core/stores/cache"
 	"github.com/zeromicro/go-zero/zrpc"
 	"github.com/zeromicro/zero-contrib/zrpc/registry/consul"
@@ -18,5 +19,6 @@ type Config struct {
 	DB struct {
 		DataSource string
 	}
-	Cache cache.CacheConf
+	Cache          cache.CacheConf
+	SparkModelConf config.SparkModelConf
 }

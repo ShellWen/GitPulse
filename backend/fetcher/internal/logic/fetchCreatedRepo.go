@@ -12,11 +12,19 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 	"net/http"
 	"os"
+	"strconv"
 	"time"
 )
 
 func FetchCreatedRepo(ctx context.Context, svcContext *svc.ServiceContext, userId int64) (err error) {
-	err = doFetchCreatedRepo(ctx, svcContext, userId)
+	if err = doFetchCreatedRepo(ctx, svcContext, userId); err != nil {
+		return
+	}
+
+	if err = updateCreateRepoFetchTimeOfDeveloper(ctx, svcContext, userId); err != nil {
+		return
+	}
+
 	return
 }
 
@@ -38,7 +46,7 @@ func doFetchCreatedRepo(ctx context.Context, svcContext *svc.ServiceContext, use
 	}); err != nil {
 		return
 	}
-	logx.Info("Finish fetching created repos of user: ", githubUser.GetLogin()+", total created repos: "+string(rune(len(allRepos))))
+	logx.Info("Finish fetching created repos of user: ", githubUser.GetLogin()+", total created repos: "+strconv.Itoa(len(allRepos)))
 
 	if err = delAllCreatedRepo(ctx, svcContext, userId); err != nil {
 		return
@@ -46,6 +54,11 @@ func doFetchCreatedRepo(ctx context.Context, svcContext *svc.ServiceContext, use
 
 	logx.Info("Start pushing created repos of user: ", githubUser.GetLogin())
 	for _, githubRepo := range allRepos {
+		if githubRepo.GetFork() == true {
+			logx.Info("Skipped a fork...")
+			continue
+		}
+
 		if err = pushCreatedRepo(ctx, svcContext, buildCreatedRepo(ctx, svcContext, githubRepo, userId)); err != nil {
 			continue
 		}
@@ -127,6 +140,56 @@ func pushCreatedRepo(ctx context.Context, svcContext *svc.ServiceContext, newCre
 
 	if err = svcContext.KqCreateRepoPusher.Push(ctx, jsonStr); err != nil {
 		logx.Error(errors.New("Unexpected error when pushing created repo: " + err.Error()))
+		return
+	}
+
+	return
+}
+
+func updateCreateRepoFetchTimeOfDeveloper(ctx context.Context, svcContext *svc.ServiceContext, userId int64) (err error) {
+	developerZrpcClient := svcContext.DeveloperRpcClient
+	var resp *developer.GetDeveloperByIdResp
+	var theDeveloper *developer.Developer
+
+	if resp, err = developerZrpcClient.GetDeveloperById(ctx, &developer.GetDeveloperByIdReq{Id: userId}); err != nil {
+		return
+	}
+
+	switch resp.Code {
+	case http.StatusOK:
+		theDeveloper = resp.Developer
+	case http.StatusNotFound:
+		err = errors.New("Developer not found")
+		return
+	default:
+		err = errors.New("Unexpected error when getting developer: " + resp.Message)
+		return
+	}
+
+	theDeveloper.LastFetchCreateRepoAt = time.Now().Unix()
+	if _, err = developerZrpcClient.UpdateDeveloper(ctx, &developer.UpdateDeveloperReq{
+		Id:                      userId,
+		Name:                    theDeveloper.Name,
+		Login:                   theDeveloper.Login,
+		AvatarUrl:               theDeveloper.AvatarUrl,
+		Company:                 theDeveloper.Company,
+		Location:                theDeveloper.Location,
+		Bio:                     theDeveloper.Bio,
+		Blog:                    theDeveloper.Blog,
+		Email:                   theDeveloper.Email,
+		CreatedAt:               theDeveloper.CreatedAt,
+		UpdatedAt:               theDeveloper.UpdatedAt,
+		TwitterUsername:         theDeveloper.TwitterUsername,
+		Repos:                   theDeveloper.Repos,
+		Following:               theDeveloper.Following,
+		Followers:               theDeveloper.Followers,
+		Gists:                   theDeveloper.Gists,
+		Stars:                   theDeveloper.Stars,
+		LastFetchContributionAt: theDeveloper.LastFetchContributionAt,
+		LastFetchFollowAt:       theDeveloper.LastFetchFollowAt,
+		LastFetchStarAt:         theDeveloper.LastFetchStarAt,
+		LastFetchCreateRepoAt:   theDeveloper.LastFetchCreateRepoAt,
+	}); err != nil {
 		return
 	}
 

@@ -15,7 +15,15 @@ import (
 const issuePRFetcherTopic = "issuePR"
 
 func FetchIssuePROfUser(ctx context.Context, svcContext *svc.ServiceContext, userId int64, createAfter string, serachLimit int64) (err error) {
-	err = doFetchIssuePROfUser(ctx, svcContext, userId, createAfter, serachLimit)
+	if err = doFetchIssuePROfUser(ctx, svcContext, userId, createAfter, serachLimit); err != nil {
+		return
+	}
+
+	if err = updateContributionFetchTimeOfDeveloper(ctx, svcContext, userId); err != nil {
+		return
+	}
+
+	logx.Info("Successfully update contribution fetch time of developer: " + strconv.FormatInt(userId, 10))
 	return
 }
 

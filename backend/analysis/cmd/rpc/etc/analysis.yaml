@@ -2,7 +2,7 @@ RpcServerConf:
   Name: analysis.rpc
   ListenOn: 127.0.0.1:2005
   Mode: dev
-  Timeout: 60000
+  Timeout: 120000
 
 Consul:
   Host: 127.0.0.1:8500 # consul endpoint
@@ -20,11 +20,11 @@ DeveloperRpcConf:
 
 RelationRpcConf:
   Target: consul://localhost:8500/relation.rpc?wait=14s
-  Timeout: 30000
+  Timeout: 120000
 
 ContributionRpcConf:
   Target: consul://localhost:8500/contribution.rpc?wait=14s
-  Timeout: 30000
+  Timeout: 180000
 
 RepoRpcConf:
   Target: consul://localhost:8500/repo.rpc?wait=14s
@@ -41,3 +41,11 @@ DB:
 Cache:
   - Host: 127.0.0.1:6379
     Pass:
+
+SparkModelConf:
+  Url: https://spark-api-open.xf-yun.com/v1/chat/completions
+  APIPassword: fPXYVCkCeBnqSvEVcFZF:FNtNczoVCwNVkHAgxNJE
+  MaxTokens: 1000
+  TopK: 4
+  Temperature: 0.5
+  Model: generalv3.5

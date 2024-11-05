@@ -15,7 +15,7 @@ import (
 // the recent month YYYY-MM-DD
 var createdAfterTime string = time.Unix(time.Now().Unix()-int64(180*24*time.Hour.Seconds()), 0).Format("2006-01-02")
 var issueSearchLimit int64 = 50
-var commentSearchLimit int64 = 100
+var commentSearchLimit int64 = 50
 
 type FetcherTaskConsumer struct {
 	ctx context.Context

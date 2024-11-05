@@ -12,7 +12,15 @@ import (
 )
 
 func FetchFollowing(ctx context.Context, svcContext *svc.ServiceContext, userId int64) (err error) {
-	err = doFetchFollowing(ctx, svcContext, userId)
+	if err = doFetchFollowing(ctx, svcContext, userId); err != nil {
+		return
+	}
+
+	if err = updateFollowFetchTimeOfDeveloper(ctx, svcContext, userId); err != nil {
+		return
+	}
+
+	logx.Info("Successfully update fetch time of following")
 	return
 }
 

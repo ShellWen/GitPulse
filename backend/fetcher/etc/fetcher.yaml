@@ -4,11 +4,11 @@ DeveloperRpcConf:
 
 RelationRpcConf:
   Target: consul://localhost:8500/relation.rpc?wait=14s
-  Timeout: 30000
+  Timeout: 120000
 
 ContributionRpcConf:
   Target: consul://localhost:8500/contribution.rpc?wait=14s
-  Timeout: 30000
+  Timeout: 180000
 
 RepoRpcConf:
   Target: consul://localhost:8500/repo.rpc?wait=14s
