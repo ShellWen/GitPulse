@@ -9,6 +9,7 @@ WORKDIR /build
 ADD go.mod .
 ADD go.sum .
 RUN go mod download
+COPY ./common ./common
 COPY ./repo ./repo
 COPY ./repo/cmd/rpc/etc/repo.yaml /app/repo/cmd/rpc/etc/repo.yaml
 RUN go build -ldflags="-s -w" -o /app/repo_rpc ./repo/cmd/rpc
