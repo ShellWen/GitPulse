@@ -21,16 +21,17 @@ type commentWithRepoId struct {
 	repoId         int64
 }
 
-func FetchCommentOfUser(ctx context.Context, svcContext *svc.ServiceContext, userId int64) (err error) {
-	err = fetchWithRetry(ctx, svcContext, userId, commentFetcherTopic, doFetchCommentOfUser)
+func FetchCommentOfUser(ctx context.Context, svcContext *svc.ServiceContext, userId int64, createAfter string, searchLimit int64) (err error) {
+	err = doFetchCommentOfUser(ctx, svcContext, userId, createAfter, searchLimit)
 	return
 }
 
-func doFetchCommentOfUser(ctx context.Context, svcContext *svc.ServiceContext, userId int64) (err error) {
+func doFetchCommentOfUser(ctx context.Context, svcContext *svc.ServiceContext, userId int64, createAfter string, searchLimit int64) (err error) {
 	var (
 		githubClient *github.Client = github.NewClient(nil).WithAuthToken(os.Getenv("GITHUB_API_TOKEN"))
 		githubUser   *github.User
 		allComment   []*commentWithRepoId
+		allRepo      map[int64]*github.Repository
 	)
 
 	if githubUser, _, err = getGithubUserById(ctx, githubClient, userId); err != nil {
@@ -38,7 +39,7 @@ func doFetchCommentOfUser(ctx context.Context, svcContext *svc.ServiceContext, u
 	}
 
 	logx.Info("Start fetching comment of user: ", githubUser.GetLogin())
-	if allComment, err = getAllGithubCommentByLogin(ctx, svcContext, githubClient, githubUser.GetLogin()); err != nil {
+	if allComment, allRepo, err = getAllGithubCommentByLogin(ctx, svcContext, githubClient, githubUser.GetLogin(), createAfter, searchLimit); err != nil {
 		return
 	}
 	logx.Info("Finish fetching comment of user: ", githubUser.GetLogin()+", total comment: "+strconv.Itoa(len(allComment)))
@@ -47,10 +48,20 @@ func doFetchCommentOfUser(ctx context.Context, svcContext *svc.ServiceContext, u
 		return
 	}
 
+	if err = delAllOldContributionInCategory(ctx, svcContext, userId, model.CategoryReview); err != nil {
+		return
+	}
+
 	logx.Info("Start pushing comment of user: ", githubUser.GetLogin())
 	for _, githubComment := range allComment {
 		if err = pushContribution(ctx, svcContext, buildComment(ctx, svcContext, githubComment, userId)); err != nil {
-			return
+			continue
+		}
+	}
+
+	for _, repo := range allRepo {
+		if err = buildAndPushRepoByGithubRepo(ctx, svcContext, githubClient, repo); err != nil {
+			continue
 		}
 	}
 
@@ -58,80 +69,84 @@ func doFetchCommentOfUser(ctx context.Context, svcContext *svc.ServiceContext, u
 	return
 }
 
-func getAllGithubCommentByLogin(ctx context.Context, svcContext *svc.ServiceContext, githubClient *github.Client, login string) (allCommentWithRepoId []*commentWithRepoId, err error) {
+func getAllGithubCommentByLogin(ctx context.Context, svcContext *svc.ServiceContext, githubClient *github.Client, login string, createAfter string, searchLimit int64) (allCommentWithRepoId []*commentWithRepoId, repos map[int64]*github.Repository, err error) {
 	var allIssue []*github.Issue
-	allIssue, err = getAllGithubIssuePRByLogin(ctx, githubClient, login, RoleCommenter)
+	allIssue, err = getAllGithubIssuePRByLogin(ctx, githubClient, login, RoleCommenter, createAfter, searchLimit)
 
-	issueOpt := &github.IssueListCommentsOptions{ListOptions: github.ListOptions{PerPage: 100}}
-	prOpt := &github.PullRequestListCommentsOptions{ListOptions: github.ListOptions{PerPage: 100}}
+	updated := "updated"
+	desc := "desc"
+	createAfterTime, _ := time.Parse("2006-01-02", createAfter)
+
+	issueOpt := &github.IssueListCommentsOptions{
+		Sort:        &updated,
+		Direction:   &desc,
+		Since:       &createAfterTime,
+		ListOptions: github.ListOptions{PerPage: int(searchLimit)},
+	}
+	prOpt := &github.PullRequestListCommentsOptions{
+		Sort:        updated,
+		Direction:   desc,
+		Since:       createAfterTime,
+		ListOptions: github.ListOptions{PerPage: int(searchLimit)},
+	}
+
 	var issueResp *github.Response
 	var prResp *github.Response
-	var repos = make(map[int64]*github.Repository)
+	repos = make(map[int64]*github.Repository)
+
 	for _, issue := range allIssue {
+		if len(allCommentWithRepoId) >= int(searchLimit) {
+			break
+		}
+
 		var repo *github.Repository
 		if repo, err = getRepoByUrl(ctx, githubClient, issue.GetRepositoryURL()); err != nil {
 			return
 		}
 		repos[repo.GetID()] = repo
 
-		for {
-			var issueComments []*github.IssueComment
-			if issueComments, issueResp, err = githubClient.Issues.ListComments(ctx, repo.GetOwner().GetLogin(), repo.GetName(), issue.GetNumber(), issueOpt); err != nil {
-				if issueResp != nil && issueResp.StatusCode == http.StatusNotFound {
-					err = nil
-					if issueResp.NextPage == 0 {
-						break
-					}
-					issueOpt.Page = issueResp.NextPage
-					continue
-				}
-				return
-			}
-
-			for _, comment := range issueComments {
-				if comment.User.GetLogin() == login {
-					allCommentWithRepoId = append(allCommentWithRepoId, &commentWithRepoId{isIssueComment: true, issueComment: comment, repoId: repo.GetID()})
-				}
-			}
-			if issueResp.NextPage == 0 {
-				break
-			}
-			issueOpt.Page = issueResp.NextPage
-		}
-
 		if issue.IsPullRequest() {
-			for {
-				var prComments []*github.PullRequestComment
-				if prComments, prResp, err = githubClient.PullRequests.ListComments(ctx, repo.GetOwner().GetLogin(), repo.GetName(), 0, prOpt); err != nil {
-					if prResp != nil && prResp.StatusCode == http.StatusNotFound {
-						err = nil
-						if prResp.NextPage == 0 {
-							break
-						}
-						prOpt.Page = prResp.NextPage
-						continue
-					}
+			var prComments []*github.PullRequestComment
+			if prComments, prResp, err = githubClient.PullRequests.ListComments(ctx, repo.GetOwner().GetLogin(), repo.GetName(), 0, prOpt); err != nil {
+				if prResp == nil || prResp.StatusCode != http.StatusNotFound {
 					return
 				}
+			}
 
-				for _, comment := range prComments {
-					if comment.User.GetLogin() == login {
-						allCommentWithRepoId = append(allCommentWithRepoId, &commentWithRepoId{isIssueComment: false, prComment: comment, repoId: repo.GetID()})
-					}
+			for _, comment := range prComments {
+				if comment.User.GetLogin() == login {
+					allCommentWithRepoId = append(allCommentWithRepoId, &commentWithRepoId{isIssueComment: false, prComment: comment, repoId: repo.GetID()})
 				}
-				if prResp.NextPage == 0 {
-					break
-				}
-				prOpt.Page = prResp.NextPage
 			}
 		}
 	}
 
-	for _, repo := range repos {
-		if err = buildAndPushRepoByGithubRepo(ctx, svcContext, githubClient, repo); err != nil {
+	for _, issue := range allIssue {
+		if len(allCommentWithRepoId) >= int(searchLimit) {
+			break
+		}
+
+		var repo *github.Repository
+		if repo, err = getRepoByUrl(ctx, githubClient, issue.GetRepositoryURL()); err != nil {
 			return
 		}
+		repos[repo.GetID()] = repo
+
+		var issueComments []*github.IssueComment
+		if issueComments, issueResp, err = githubClient.Issues.ListComments(ctx, repo.GetOwner().GetLogin(), repo.GetName(), issue.GetNumber(), issueOpt); err != nil {
+			if issueResp == nil || issueResp.StatusCode != http.StatusNotFound {
+				return
+			}
+		}
+
+		for _, comment := range issueComments {
+			if comment.User.GetLogin() == login {
+				allCommentWithRepoId = append(allCommentWithRepoId, &commentWithRepoId{isIssueComment: true, issueComment: comment, repoId: repo.GetID()})
+			}
+		}
 	}
+
+	allCommentWithRepoId = allCommentWithRepoId[:int(searchLimit)]
 
 	return
 }

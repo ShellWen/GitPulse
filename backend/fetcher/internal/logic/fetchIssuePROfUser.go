@@ -7,18 +7,19 @@ import (
 	"github.com/google/go-github/v66/github"
 	"github.com/zeromicro/go-zero/core/logx"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 )
 
 const issuePRFetcherTopic = "issuePR"
 
-func FetchIssuePROfUser(ctx context.Context, svcContext *svc.ServiceContext, userId int64) (err error) {
-	err = fetchWithRetry(ctx, svcContext, userId, issuePRFetcherTopic, doFetchIssuePROfUser)
+func FetchIssuePROfUser(ctx context.Context, svcContext *svc.ServiceContext, userId int64, createAfter string, serachLimit int64) (err error) {
+	err = doFetchIssuePROfUser(ctx, svcContext, userId, createAfter, serachLimit)
 	return
 }
 
-func doFetchIssuePROfUser(ctx context.Context, svcContext *svc.ServiceContext, userId int64) (err error) {
+func doFetchIssuePROfUser(ctx context.Context, svcContext *svc.ServiceContext, userId int64, createAfter string, serachLimit int64) (err error) {
 	var (
 		githubClient *github.Client = github.NewClient(nil).WithAuthToken(os.Getenv("GITHUB_API_TOKEN"))
 		githubUser   *github.User
@@ -30,7 +31,7 @@ func doFetchIssuePROfUser(ctx context.Context, svcContext *svc.ServiceContext, u
 	}
 
 	logx.Info("Start fetching issues and PRs of user: ", githubUser.GetLogin())
-	if allIssuePR, err = getAllGithubIssuePRByLogin(ctx, githubClient, githubUser.GetLogin(), RoleAuthor); err != nil {
+	if allIssuePR, err = getAllGithubIssuePRByLogin(ctx, githubClient, githubUser.GetLogin(), RoleAuthor, createAfter, serachLimit); err != nil {
 		return
 	}
 	logx.Info("Finish fetching issues and PRs of user: ", githubUser.GetLogin()+", total issues and PRs: "+string(rune(len(allIssuePR))))
@@ -48,6 +49,7 @@ func doFetchIssuePROfUser(ctx context.Context, svcContext *svc.ServiceContext, u
 	}
 
 	logx.Info("Start pushing issues and PRs of user: ", githubUser.GetLogin())
+	var repos map[int64]*github.Repository = make(map[int64]*github.Repository)
 	for _, githubIssuePR := range allIssuePR {
 		var (
 			merged bool
@@ -58,13 +60,18 @@ func doFetchIssuePROfUser(ctx context.Context, svcContext *svc.ServiceContext, u
 		}
 
 		if merged, err = checkIfMerged(ctx, githubClient, githubIssuePR, repo); err != nil {
-			return
+			continue
 		}
 		if err = pushContribution(ctx, svcContext, buildIssuePR(githubIssuePR, userId, merged, repo)); err != nil {
-			return
+			continue
 		}
+
+		repos[repo.GetID()] = repo
+	}
+
+	for _, repo := range repos {
 		if err = buildAndPushRepoByGithubRepo(ctx, svcContext, githubClient, repo); err != nil {
-			return
+			continue
 		}
 	}
 
@@ -85,27 +92,25 @@ func checkIfMerged(ctx context.Context, githubClient *github.Client, githubIssue
 	return
 }
 
-func getAllGithubIssuePRByLogin(ctx context.Context, githubClient *github.Client, login string, role string) (allIssuePR []*github.Issue, err error) {
+func getAllGithubIssuePRByLogin(ctx context.Context, githubClient *github.Client, login string, role string, createAfter string, searchLimit int64) (issues []*github.Issue, err error) {
 	logx.Info("Start to fetch " + role + " " + login + "'s issues and PRs")
 
-	opt := &github.SearchOptions{ListOptions: github.ListOptions{PerPage: 100}}
-	for {
-		issueSearchResult, resp, err := githubClient.Search.Issues(ctx, role+":"+login, opt)
-		if err != nil {
-			logx.Error("Unexpected error when searching issues: " + err.Error())
-			return nil, err
-		}
+	var issueSearchResult *github.IssuesSearchResult
 
-		issues := issueSearchResult.Issues
-
-		allIssuePR = append(allIssuePR, issues...)
-		if resp.NextPage == 0 {
-			break
-		}
-		opt.Page = resp.NextPage
+	opt := &github.SearchOptions{
+		Sort:        "updated",
+		Order:       "desc",
+		ListOptions: github.ListOptions{PerPage: int(searchLimit), Page: 1},
 	}
 
-	logx.Info("Successfully get all " + role + " " + login + "'s issues and PRs, size: " + string(rune(len(allIssuePR))))
+	if issueSearchResult, _, err = githubClient.Search.Issues(ctx, role+":"+login+" created:>="+createAfter, opt); err != nil {
+		logx.Error("Unexpected error when searching issues: " + err.Error())
+		return nil, err
+	}
+
+	issues = issueSearchResult.Issues
+
+	logx.Info("Successfully get all " + role + " " + login + "'s issues and PRs, size: " + strconv.Itoa(len(issues)))
 	return
 }
 

@@ -13,7 +13,7 @@ import (
 )
 
 func FetchRepo(ctx context.Context, svcContext *svc.ServiceContext, repoId int64) (err error) {
-	err = fetchWithRetry(ctx, svcContext, repoId, "repo", doFetchRepo)
+	err = doFetchRepo(ctx, svcContext, repoId)
 	return
 }
 
@@ -89,12 +89,12 @@ func getGithubIssuePrCountByRepo(ctx context.Context, githubClient *github.Clien
 
 	if _, githubPrResp, err = githubClient.PullRequests.List(ctx, owner, name, &github.PullRequestListOptions{ListOptions: github.ListOptions{PerPage: 1}}); err != nil {
 		logx.Error(errors.New("Unexpected error when fetching issue count: " + err.Error()))
-		return
+		return 0, 0, nil
 	}
 
 	if _, githubIssueResp, err = githubClient.Issues.ListByRepo(ctx, owner, name, &github.IssueListByRepoOptions{ListOptions: github.ListOptions{PerPage: 1}}); err != nil {
 		logx.Error(errors.New("Unexpected error when fetching issue count: " + err.Error()))
-		return
+		return 0, 0, nil
 	}
 
 	prCount = int64(githubPrResp.LastPage)
@@ -108,7 +108,7 @@ func getGithubOpenPrCountByRepo(ctx context.Context, githubClient *github.Client
 
 	if _, githubPrResp, err = githubClient.PullRequests.List(ctx, owner, name, &github.PullRequestListOptions{State: "open", ListOptions: github.ListOptions{PerPage: 1}}); err != nil {
 		logx.Error(errors.New("Unexpected error when fetching open merge pr count: " + err.Error()))
-		return
+		return 0, nil
 	}
 
 	openMergePrCount = int64(githubPrResp.LastPage)
@@ -121,7 +121,7 @@ func getGithubMergedPrCountByRepo(ctx context.Context, githubClient *github.Clie
 
 	if _, githubPrResp, err = githubClient.Search.Issues(ctx, "repo:"+owner+"/"+name+" is:pr is:merged", &github.SearchOptions{ListOptions: github.ListOptions{PerPage: 1}}); err != nil {
 		logx.Error(errors.New("Unexpected error when fetching merged pr count: " + err.Error()))
-		return
+		return 0, nil
 	}
 
 	mergedPrCount = int64(githubPrResp.LastPage)
@@ -134,7 +134,7 @@ func getGithubCommentCountByRepo(ctx context.Context, githubClient *github.Clien
 
 	if _, githubIssueResp, err = githubClient.Issues.ListComments(ctx, owner, name, 0, &github.IssueListCommentsOptions{ListOptions: github.ListOptions{PerPage: 1}}); err != nil {
 		logx.Error(errors.New("Unexpected error when fetching comment count: " + err.Error()))
-		return
+		return 0, nil
 	}
 
 	commentCount = int64(githubIssueResp.LastPage)
@@ -147,7 +147,7 @@ func getGithubReviewCountByRepo(ctx context.Context, githubClient *github.Client
 
 	if _, githubPrResp, err = githubClient.PullRequests.ListComments(ctx, owner, name, 0, &github.PullRequestListCommentsOptions{ListOptions: github.ListOptions{PerPage: 1}}); err != nil {
 		logx.Error(errors.New("Unexpected error when fetching comment count: " + err.Error()))
-		return
+		return 0, nil
 	}
 
 	reviewCount = int64(githubPrResp.LastPage)
@@ -160,7 +160,7 @@ func getGithubCommitCountByRepo(ctx context.Context, githubClient *github.Client
 
 	if _, githubCommitResp, err = githubClient.Repositories.ListCommits(ctx, owner, name, &github.CommitsListOptions{ListOptions: github.ListOptions{PerPage: 1}}); err != nil {
 		logx.Error(errors.New("Unexpected error when fetching commit count: " + err.Error()))
-		return
+		return 0, nil
 	}
 
 	commitCount = int64(githubCommitResp.LastPage)
@@ -173,12 +173,12 @@ func getGithubLanguagesByRepo(ctx context.Context, githubClient *github.Client, 
 
 	if githubLanguages, _, err = githubClient.Repositories.ListLanguages(ctx, owner, name); err != nil {
 		logx.Error(errors.New("Unexpected error when fetching languages: " + err.Error()))
-		return
+		return "{}", nil
 	}
 
 	if languages, err = jsonx.MarshalToString(githubLanguages); err != nil {
 		logx.Error(errors.New("Unexpected error when marshalling languages: " + err.Error()))
-		return
+		return "{}", nil
 	}
 
 	return
@@ -218,5 +218,6 @@ func pushRepo(ctx context.Context, svcContext *svc.ServiceContext, newRepo *mode
 		return
 	}
 
+	logx.Info("Successfully push repo: " + newRepo.Name)
 	return
 }

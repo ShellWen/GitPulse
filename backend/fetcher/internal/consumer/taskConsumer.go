@@ -9,7 +9,13 @@ import (
 	"github.com/zeromicro/go-zero/core/jsonx"
 	"github.com/zeromicro/go-zero/core/logx"
 	"strconv"
+	"time"
 )
+
+// the recent month YYYY-MM-DD
+var createdAfterTime string = time.Unix(time.Now().Unix()-int64(180*24*time.Hour.Seconds()), 0).Format("2006-01-02")
+var issueSearchLimit int64 = 50
+var commentSearchLimit int64 = 100
 
 type FetcherTaskConsumer struct {
 	ctx context.Context
@@ -81,19 +87,19 @@ func (c *FetcherTaskConsumer) Consume(ctx context.Context, key string, value str
 		}
 		err = c.svc.KqRelationUpdateCompletePusher.Push(c.ctx, value)
 	case message.FetchContributionOfUser:
-		if err = logic.FetchContributionOfUser(c.ctx, c.svc, msg.Id); err != nil {
+		if err = logic.FetchContributionOfUser(c.ctx, c.svc, msg.Id, createdAfterTime, issueSearchLimit, commentSearchLimit); err != nil {
 			_ = c.svc.KqContributionUpdateCompletePusher.Push(c.ctx, value)
 			return
 		}
 		err = c.svc.KqContributionUpdateCompletePusher.Push(c.ctx, value)
 	case message.FetchIssuePROfUser:
-		if err = logic.FetchIssuePROfUser(c.ctx, c.svc, msg.Id); err != nil {
+		if err = logic.FetchIssuePROfUser(c.ctx, c.svc, msg.Id, createdAfterTime, issueSearchLimit); err != nil {
 			_ = c.svc.KqContributionUpdateCompletePusher.Push(c.ctx, value)
 			return
 		}
 		err = c.svc.KqContributionUpdateCompletePusher.Push(c.ctx, value)
 	case message.FetchCommentOfUser:
-		if err = logic.FetchCommentOfUser(c.ctx, c.svc, msg.Id); err != nil {
+		if err = logic.FetchCommentOfUser(c.ctx, c.svc, msg.Id, createdAfterTime, commentSearchLimit); err != nil {
 			_ = c.svc.KqContributionUpdateCompletePusher.Push(c.ctx, value)
 			return
 		}

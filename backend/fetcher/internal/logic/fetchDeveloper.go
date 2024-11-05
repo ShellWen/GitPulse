@@ -15,7 +15,7 @@ import (
 const developerProfileFetcherTopic = "developer profile"
 
 func FetchDeveloper(ctx context.Context, svcContext *svc.ServiceContext, userId int64) (err error) {
-	err = fetchWithRetry(ctx, svcContext, userId, developerProfileFetcherTopic, doFetchDeveloper)
+	err = doFetchDeveloper(ctx, svcContext, userId)
 	return
 }
 
@@ -65,7 +65,7 @@ func getGithubStarredRepoCountByLogin(ctx context.Context, githubClient *github.
 	var githubStarredRepoResp *github.Response
 	if _, githubStarredRepoResp, err = githubClient.Activity.ListStarred(ctx, login, &github.ActivityListStarredOptions{ListOptions: github.ListOptions{PerPage: 1}}); err != nil {
 		logx.Error(errors.New("Unexpected error when fetching starred repo: " + err.Error()))
-		return
+		return 0, nil
 	}
 
 	logx.Info("Successfully get starred repo count: " + login)

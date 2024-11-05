@@ -2,6 +2,7 @@ RpcServerConf:
   Name: analysis.rpc
   ListenOn: 127.0.0.1:2005
   Mode: dev
+  Timeout: 60000
 
 Consul:
   Host: 127.0.0.1:8500 # consul endpoint

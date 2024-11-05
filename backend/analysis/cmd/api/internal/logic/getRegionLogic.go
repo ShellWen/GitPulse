@@ -64,7 +64,7 @@ func (l *GetRegionLogic) doGetRegion(req *types.GetRegionReq) (resp *types.GetRe
 
 func (l *GetRegionLogic) getRegionFromRpc(id int64) (region string, confidence float64, err error) {
 	var (
-		analysisRpcClient = analysis.NewAnalysis(l.svcCtx.RpcClient)
+		analysisRpcClient = l.svcCtx.AnalysisRpcClient
 		rpcResp           *analysis.GetRegionResp
 	)
 
@@ -107,7 +107,7 @@ func (l *GetRegionLogic) getRegionFromRpc(id int64) (region string, confidence f
 
 func (l *GetRegionLogic) updateRegion(id int64) (err error) {
 	var (
-		analysisRpcClient  = analysis.NewAnalysis(l.svcCtx.RpcClient)
+		analysisRpcClient  = l.svcCtx.AnalysisRpcClient
 		updateAnalysisResp *analysis.UpdateAnalysisResp
 	)
 

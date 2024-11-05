@@ -15,7 +15,7 @@ import (
 )
 
 func FetchFork(ctx context.Context, svcContext *svc.ServiceContext, repoId int64) (err error) {
-	err = fetchWithRetry(ctx, svcContext, repoId, "fork", doFetchFork)
+	err = doFetchFork(ctx, svcContext, repoId)
 	return
 }
 
@@ -43,11 +43,11 @@ func doFetchFork(ctx context.Context, svcContext *svc.ServiceContext, repoId int
 	logx.Info("Start pushing forks of repo: ", originalRepo.GetFullName())
 	for _, githubRepo := range allForks {
 		if err = pushFork(ctx, svcContext, buildFork(ctx, svcContext, githubRepo, repoId)); err != nil {
-			return
+			continue
 		}
 
 		if err = buildAndPushRepoByGithubRepo(ctx, svcContext, githubClient, githubRepo); err != nil {
-			return
+			continue
 		}
 	}
 
@@ -61,7 +61,7 @@ func getAllGithubForksByRepo(ctx context.Context, githubClient *github.Client, l
 		repos, resp, err := githubClient.Repositories.ListForks(ctx, login, repoName, opt)
 		if err != nil {
 			logx.Error(errors.New("Unexpected error when fetching forks: " + err.Error()))
-			return nil, err
+			return nil, nil
 		}
 		allForks = append(allForks, repos...)
 		if resp.NextPage == 0 {

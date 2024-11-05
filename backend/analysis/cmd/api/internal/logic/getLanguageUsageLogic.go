@@ -85,7 +85,7 @@ func (l *GetLanguageUsageLogic) doGetLanguageUsage(req *types.GetLanguageUsageRe
 
 func (l *GetLanguageUsageLogic) getLanguageUsageFromRpc(id int64) (usage map[string]float64, updatedAt time.Time, err error) {
 	var (
-		analysisRpcClient = analysis.NewAnalysis(l.svcCtx.RpcClient)
+		analysisRpcClient = l.svcCtx.AnalysisRpcClient
 		rpcResp           *analysis.GetLanguagesResp
 	)
 
@@ -131,7 +131,7 @@ func (l *GetLanguageUsageLogic) getLanguageUsageFromRpc(id int64) (usage map[str
 
 func (l *GetLanguageUsageLogic) updateLanguageUsage(id int64) (err error) {
 	var (
-		analysisRpcClient  = analysis.NewAnalysis(l.svcCtx.RpcClient)
+		analysisRpcClient  = l.svcCtx.AnalysisRpcClient
 		updateAnalysisResp *analysis.UpdateAnalysisResp
 	)
 
@@ -157,7 +157,7 @@ func (l *GetLanguageUsageLogic) updateLanguageUsage(id int64) (err error) {
 
 func (l *GetLanguageUsageLogic) updateCreatedRepo(id int64) (err error) {
 	var (
-		relationRpcClient = relation.NewRelation(l.svcCtx.RpcClient)
+		relationRpcClient = l.svcCtx.RelationRpcClient
 		fetcherTask       = message.FetcherTask{Type: message.FetchCreatedRepo, Id: id}
 		taskStr           string
 		blockResp         *relation.BlockUntilCreatedRepoUpdatedResp

@@ -16,7 +16,7 @@ import (
 )
 
 func FetchStarredRepo(ctx context.Context, svcContext *svc.ServiceContext, userId int64) (err error) {
-	err = fetchWithRetry(ctx, svcContext, userId, "starred repo", doFetchStarredRepo)
+	err = doFetchStarredRepo(ctx, svcContext, userId)
 	return
 }
 
@@ -44,11 +44,11 @@ func doFetchStarredRepo(ctx context.Context, svcContext *svc.ServiceContext, use
 	logx.Info("Start pushing starred repo of user: ", githubUser.GetLogin())
 	for _, githubRepo := range allRepos {
 		if err = pushStarredRepo(ctx, svcContext, buildStarredRepo(ctx, svcContext, githubRepo, userId)); err != nil {
-			return
+			continue
 		}
 
 		if err = buildAndPushRepoByGithubRepo(ctx, svcContext, githubClient, githubRepo.Repository); err != nil {
-			return
+			continue
 		}
 	}
 
@@ -76,7 +76,7 @@ func getAllGithubStarredReposByLogin(ctx context.Context, githubClient *github.C
 		repos, resp, err := githubClient.Activity.ListStarred(ctx, login, opt)
 		if err != nil {
 			logx.Error(errors.New("Unexpected error when fetching starred repo: " + err.Error()))
-			return nil, err
+			return nil, nil
 		}
 		allRepos = append(allRepos, repos...)
 		if resp.NextPage == 0 {

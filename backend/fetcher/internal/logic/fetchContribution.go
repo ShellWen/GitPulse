@@ -17,12 +17,12 @@ const (
 	RoleCommenter = "commenter"
 )
 
-func FetchContributionOfUser(ctx context.Context, svcContext *svc.ServiceContext, repoId int64) (err error) {
-	if err = FetchIssuePROfUser(ctx, svcContext, repoId); err != nil {
+func FetchContributionOfUser(ctx context.Context, svcContext *svc.ServiceContext, repoId int64, createAfter string, issueSearchLimit int64, commentSearchLimit int64) (err error) {
+	if err = FetchIssuePROfUser(ctx, svcContext, repoId, createAfter, issueSearchLimit); err != nil {
 		return
 	}
 
-	if err = FetchCommentOfUser(ctx, svcContext, repoId); err != nil {
+	if err = FetchCommentOfUser(ctx, svcContext, repoId, createAfter, commentSearchLimit); err != nil {
 		return
 	}
 

@@ -16,7 +16,7 @@ import (
 )
 
 func FetchCreatedRepo(ctx context.Context, svcContext *svc.ServiceContext, userId int64) (err error) {
-	err = fetchWithRetry(ctx, svcContext, userId, "created repo", doFetchCreatedRepo)
+	err = doFetchCreatedRepo(ctx, svcContext, userId)
 	return
 }
 
@@ -47,11 +47,11 @@ func doFetchCreatedRepo(ctx context.Context, svcContext *svc.ServiceContext, use
 	logx.Info("Start pushing created repos of user: ", githubUser.GetLogin())
 	for _, githubRepo := range allRepos {
 		if err = pushCreatedRepo(ctx, svcContext, buildCreatedRepo(ctx, svcContext, githubRepo, userId)); err != nil {
-			return
+			continue
 		}
 
 		if err = buildAndPushRepoByGithubRepo(ctx, svcContext, githubClient, githubRepo); err != nil {
-			return
+			continue
 		}
 	}
 
@@ -96,7 +96,7 @@ func getAllGithubReposByLogin(ctx context.Context, githubClient *github.Client, 
 		repos, resp, err := githubClient.Repositories.ListByUser(ctx, login, opt)
 		if err != nil {
 			logx.Error("Unexpected error when getting github repos: " + err.Error())
-			return nil, err
+			return nil, nil
 		}
 		allRepos = append(allRepos, repos...)
 		if resp.NextPage == 0 {

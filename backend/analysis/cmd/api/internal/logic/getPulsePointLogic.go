@@ -17,6 +17,8 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
+const UpdateContributionLimit = 10
+
 type GetPulsePointLogic struct {
 	logx.Logger
 	ctx    context.Context
@@ -67,7 +69,7 @@ func (l *GetPulsePointLogic) doGetPulsePoint(req *types.GetPulsePointReq) (resp 
 
 func (l *GetPulsePointLogic) getPulsePointFromRpc(id int64) (pulsePoint float64, updatedAt time.Time, err error) {
 	var (
-		analysisRpcClient = analysis.NewAnalysis(l.svcCtx.RpcClient)
+		analysisRpcClient = l.svcCtx.AnalysisRpcClient
 		rpcResp           *analysis.GetPulsePointResp
 	)
 
@@ -110,7 +112,7 @@ func (l *GetPulsePointLogic) getPulsePointFromRpc(id int64) (pulsePoint float64,
 
 func (l *GetPulsePointLogic) updatePulsePoint(id int64) (err error) {
 	var (
-		analysisRpcClient  = analysis.NewAnalysis(l.svcCtx.RpcClient)
+		analysisRpcClient  = l.svcCtx.AnalysisRpcClient
 		updateAnalysisResp *analysis.UpdateAnalysisResp
 	)
 
@@ -136,7 +138,7 @@ func (l *GetPulsePointLogic) updatePulsePoint(id int64) (err error) {
 
 func (l *GetPulsePointLogic) updateContribution(id int64) (err error) {
 	var (
-		contributionRpcClient = contribution.NewContributionZrpcClient(l.svcCtx.RpcClient)
+		contributionRpcClient = l.svcCtx.ContributionRpcClient
 		fetcherTask           = message.FetcherTask{Type: message.FetchContributionOfUser, Id: id}
 		taskStr               string
 		blockResp             *contribution.BlockUntilAllUpdatedResp

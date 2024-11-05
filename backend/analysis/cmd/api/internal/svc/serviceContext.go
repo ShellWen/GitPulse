@@ -13,7 +13,6 @@ import (
 
 type ServiceContext struct {
 	Config              config.Config
-	RpcClient           zrpc.Client
 	KqFetcherTaskPusher *kq.Pusher
 
 	DeveloperRpcClient    developer.DeveloperZrpcClient

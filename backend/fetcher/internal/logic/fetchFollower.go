@@ -12,7 +12,7 @@ import (
 )
 
 func FetchFollower(ctx context.Context, svcContext *svc.ServiceContext, userId int64) (err error) {
-	err = fetchWithRetry(ctx, svcContext, userId, "follower", doFetchFollower)
+	err = doFetchFollower(ctx, svcContext, userId)
 	return
 }
 
@@ -40,11 +40,11 @@ func doFetchFollower(ctx context.Context, svcContext *svc.ServiceContext, userId
 	logx.Info("Start pushing followers of user: ", githubUser.GetLogin())
 	for _, githubRepo := range allFollowers {
 		if err = pushFollow(ctx, svcContext, buildFollow(ctx, svcContext, githubRepo.GetID(), userId)); err != nil {
-			return
+			continue
 		}
 
 		if err = buildAndPushDeveloperByGithubUser(ctx, svcContext, githubClient, githubRepo); err != nil {
-			return
+			continue
 		}
 	}
 
@@ -58,7 +58,7 @@ func getAllGithubFollowersByLogin(ctx context.Context, githubClient *github.Clie
 		followers, resp, err := githubClient.Users.ListFollowers(ctx, login, opt)
 		if err != nil {
 			logx.Error(errors.New("Unexpected error when fetching followers: " + err.Error()))
-			return nil, err
+			return nil, nil
 		}
 		allFollowers = append(allFollowers, followers...)
 		if resp.NextPage == 0 {
