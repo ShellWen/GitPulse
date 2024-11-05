@@ -11,6 +11,10 @@ ADD go.sum .
 RUN go mod download
 COPY ./common ./common
 COPY ./analysis ./analysis
+COPY ./contribution ./contribution
+COPY ./developer ./developer
+COPY ./relation ./relation
+COPY ./repo ./repo
 COPY ./analysis/cmd/rpc/etc/analysis.yaml /app/analysis/cmd/rpc/etc/analysis.yaml
 RUN go build -ldflags="-s -w" -o /app/analysis_rpc ./analysis/cmd/rpc
 
