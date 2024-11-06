@@ -57,7 +57,7 @@ const LanguagePie = ({ data }: { data: DeveloperLanguages }) => {
   const isDarkMode = useDarkMode()
   const flattenedData: LanguagePieItem[] = useMemo(
     () => [
-      ...data.languages.map((language) => ({
+      ...data.languages.languages.map((language) => ({
         id: language.language.id,
         color: language.language.color,
         name: language.language.name,
@@ -109,7 +109,7 @@ const DeveloperLanguageBlock = ({ username }: { username: string }) => {
     if (!data) {
       return null
     }
-    return data.languages.reduce((prev, current) => (prev.percentage > current.percentage ? prev : current))
+    return data.languages.languages.reduce((prev, current) => (prev.percentage > current.percentage ? prev : current))
   }, [data])
   return (
     <>

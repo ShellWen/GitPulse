@@ -1,4 +1,5 @@
-import { z } from 'zod'
+import { z } from 'zod';
+
 
 export const developer = z.object({
   id: z.number().nonnegative('Developer ID should be non-negative'),
@@ -56,9 +57,11 @@ export const languageWithUsage = z.object({
 export type LanguageWithUsage = z.infer<typeof languageWithUsage>
 
 export const developerLanguages = z.object({
-  id: z.number().nonnegative('Developer ID should be non-negative'),
-  languages: z.array(languageWithUsage),
-  updated_at: z.coerce.date(),
+  languages: z.object({
+    id: z.number().nonnegative('Developer ID should be non-negative'),
+    languages: z.array(languageWithUsage),
+    updated_at: z.coerce.date(),
+  }),
 })
 export type DeveloperLanguages = z.infer<typeof developerLanguages>
 
