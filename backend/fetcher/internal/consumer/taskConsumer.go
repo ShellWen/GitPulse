@@ -18,9 +18,8 @@ import (
 )
 
 // the recent month YYYY-MM-DD
-var createdAfterTime string = time.Unix(time.Now().Unix()-int64(180*24*time.Hour.Seconds()), 0).Format("2006-01-02")
-var issueSearchLimit int64 = 50
-var commentSearchLimit int64 = 50
+var createdAfterTime string = time.Unix(time.Now().Unix()-int64(60*24*time.Hour.Seconds()), 0).Format("2006-01-02")
+var searchLimit int64 = 60
 
 type FetcherTaskConsumer struct {
 	ctx context.Context
@@ -77,13 +76,20 @@ func (c *FetcherTaskConsumer) Consume(ctx context.Context, task *asynq.Task) (er
 		err = logic.FetchFork(c.ctx, c.svc, msg.Id)
 	case tasks.FetchContributionOfUser:
 		defer c.svc.ContributionRpcClient.UnblockContribution(c.ctx, &contribution.UnblockContributionReq{FetchType: tasks.FetchContributionOfUser, Id: msg.Id})
-		err = logic.FetchContributionOfUser(c.ctx, c.svc, msg.Id, createdAfterTime, issueSearchLimit, commentSearchLimit)
+		defer logic.UpdateContributionFetchTimeOfDeveloper(c.ctx, c.svc, msg.Id)
+		err = logic.FetchContributionOfUser(c.ctx, c.svc, msg.Id, createdAfterTime, searchLimit)
 	case tasks.FetchIssuePROfUser:
 		defer c.svc.ContributionRpcClient.UnblockContribution(c.ctx, &contribution.UnblockContributionReq{FetchType: tasks.FetchIssuePROfUser, Id: msg.Id})
-		err = logic.FetchIssuePROfUser(c.ctx, c.svc, msg.Id, createdAfterTime, issueSearchLimit)
+		defer logic.UpdateContributionFetchTimeOfDeveloper(c.ctx, c.svc, msg.Id)
+		_, err = logic.FetchIssuePROfUser(c.ctx, c.svc, msg.Id, createdAfterTime, searchLimit)
 	case tasks.FetchCommentOfUser:
 		defer c.svc.ContributionRpcClient.UnblockContribution(c.ctx, &contribution.UnblockContributionReq{FetchType: tasks.FetchCommentOfUser, Id: msg.Id})
-		err = logic.FetchCommentOfUser(c.ctx, c.svc, msg.Id, createdAfterTime, commentSearchLimit)
+		defer logic.UpdateContributionFetchTimeOfDeveloper(c.ctx, c.svc, msg.Id)
+		_, err = logic.FetchCommentOfUser(c.ctx, c.svc, msg.Id, createdAfterTime, searchLimit)
+	case tasks.FetchReviewOfUser:
+		defer c.svc.ContributionRpcClient.UnblockContribution(c.ctx, &contribution.UnblockContributionReq{FetchType: tasks.FetchReviewOfUser, Id: msg.Id})
+		defer logic.UpdateContributionFetchTimeOfDeveloper(c.ctx, c.svc, msg.Id)
+		_, err = logic.FetchReviewOfUser(c.ctx, c.svc, msg.Id, createdAfterTime, searchLimit)
 	default:
 		err = errors.New("unexpected message type: " + strconv.FormatInt(int64(msg.Type), 10))
 	}

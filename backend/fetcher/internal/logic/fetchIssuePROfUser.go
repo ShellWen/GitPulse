@@ -14,20 +14,14 @@ import (
 
 const issuePRFetcherTopic = "issuePR"
 
-func FetchIssuePROfUser(ctx context.Context, svcContext *svc.ServiceContext, userId int64, createAfter string, serachLimit int64) (err error) {
-	if err = doFetchIssuePROfUser(ctx, svcContext, userId, createAfter, serachLimit); err != nil {
+func FetchIssuePROfUser(ctx context.Context, svcContext *svc.ServiceContext, userId int64, createAfter string, serachLimit int64) (successPush int, err error) {
+	if successPush, err = doFetchIssuePROfUser(ctx, svcContext, userId, createAfter, serachLimit); err != nil {
 		return
 	}
-
-	if err = updateContributionFetchTimeOfDeveloper(ctx, svcContext, userId); err != nil {
-		return
-	}
-
-	logx.Info("Successfully update contribution fetch time of developer: " + strconv.FormatInt(userId, 10))
 	return
 }
 
-func doFetchIssuePROfUser(ctx context.Context, svcContext *svc.ServiceContext, userId int64, createAfter string, serachLimit int64) (err error) {
+func doFetchIssuePROfUser(ctx context.Context, svcContext *svc.ServiceContext, userId int64, createAfter string, serachLimit int64) (successPush int, err error) {
 	var (
 		githubClient *github.Client = github.NewClient(nil).WithAuthToken(os.Getenv("GITHUB_API_TOKEN"))
 		githubUser   *github.User
@@ -73,6 +67,8 @@ func doFetchIssuePROfUser(ctx context.Context, svcContext *svc.ServiceContext, u
 		if err = pushContribution(ctx, svcContext, buildIssuePR(githubIssuePR, userId, merged, repo)); err != nil {
 			continue
 		}
+
+		successPush++
 
 		repos[repo.GetID()] = repo
 	}
@@ -122,6 +118,51 @@ func getAllGithubIssuePRByLogin(ctx context.Context, githubClient *github.Client
 	return
 }
 
+func getAllGithubPRByLogin(ctx context.Context, githubClient *github.Client, login string, role string, createAfter string, searchLimit int64) (prs []*github.PullRequest, err error) {
+	logx.Info("Start to fetch " + role + " " + login + "'s issues and PRs")
+
+	var (
+		issueSearchResult *github.IssuesSearchResult
+		searchResp        *github.Response
+	)
+
+	opt := &github.SearchOptions{
+		Sort:        "updated",
+		Order:       "desc",
+		ListOptions: github.ListOptions{PerPage: 100, Page: 1},
+	}
+
+	for {
+		if len(prs) >= int(searchLimit) {
+			break
+		}
+
+		if issueSearchResult, searchResp, err = githubClient.Search.Issues(ctx, role+":"+login+" created:>="+createAfter, opt); err != nil {
+			logx.Error("Unexpected error when searching issues: " + err.Error())
+			return nil, err
+		}
+
+		for _, issue := range issueSearchResult.Issues {
+			if issue.IsPullRequest() {
+				var pr *github.PullRequest
+				if pr, _, err = githubClient.PullRequests.Get(ctx, issue.GetRepository().GetOwner().GetLogin(), issue.GetRepository().GetName(), issue.GetNumber()); err != nil {
+					logx.Error("Unexpected error when getting PR: " + err.Error())
+					return nil, err
+				}
+				prs = append(prs, pr)
+			}
+		}
+
+		if searchResp.NextPage == 0 {
+			break
+		}
+		opt.Page = searchResp.NextPage
+	}
+
+	logx.Info("Successfully get all " + role + " " + login + "'s issues and PRs, size: " + strconv.Itoa(len(prs)))
+	return
+}
+
 func getRepoByUrl(ctx context.Context, githubClient *github.Client, repoUrl string) (repo *github.Repository, err error) {
 	var (
 		split    []string
@@ -137,6 +178,7 @@ func getRepoByUrl(ctx context.Context, githubClient *github.Client, repoUrl stri
 		return
 	}
 
+	logx.Info("Successfully get repo: " + repo.GetFullName())
 	return
 }
 

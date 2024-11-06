@@ -21,19 +21,14 @@ type commentWithRepoId struct {
 	repoId         int64
 }
 
-func FetchCommentOfUser(ctx context.Context, svcContext *svc.ServiceContext, userId int64, createAfter string, searchLimit int64) (err error) {
-	if err = doFetchCommentOfUser(ctx, svcContext, userId, createAfter, searchLimit); err != nil {
+func FetchCommentOfUser(ctx context.Context, svcContext *svc.ServiceContext, userId int64, createAfter string, searchLimit int64) (successPush int, err error) {
+	if successPush, err = doFetchCommentOfUser(ctx, svcContext, userId, createAfter, searchLimit); err != nil {
 		return
 	}
-	if err = updateContributionFetchTimeOfDeveloper(ctx, svcContext, userId); err != nil {
-		return
-	}
-
-	logx.Info("Successfully update contribution fetch time of developer: " + strconv.FormatInt(userId, 10))
 	return
 }
 
-func doFetchCommentOfUser(ctx context.Context, svcContext *svc.ServiceContext, userId int64, createAfter string, searchLimit int64) (err error) {
+func doFetchCommentOfUser(ctx context.Context, svcContext *svc.ServiceContext, userId int64, createAfter string, searchLimit int64) (successPush int, err error) {
 	var (
 		githubClient *github.Client = github.NewClient(nil).WithAuthToken(os.Getenv("GITHUB_API_TOKEN"))
 		githubUser   *github.User
@@ -55,15 +50,12 @@ func doFetchCommentOfUser(ctx context.Context, svcContext *svc.ServiceContext, u
 		return
 	}
 
-	if err = delAllOldContributionInCategory(ctx, svcContext, userId, model.CategoryReview); err != nil {
-		return
-	}
-
 	logx.Info("Start pushing comment of user: ", githubUser.GetLogin())
 	for _, githubComment := range allComment {
 		if err = pushContribution(ctx, svcContext, buildComment(ctx, svcContext, githubComment, userId)); err != nil {
 			continue
 		}
+		successPush++
 	}
 
 	for _, repo := range allRepo {
@@ -72,7 +64,7 @@ func doFetchCommentOfUser(ctx context.Context, svcContext *svc.ServiceContext, u
 		}
 	}
 
-	logx.Info("Successfully push all update tasks of comment")
+	logx.Info("Successfully pushed comment of user: ", githubUser.GetLogin()+", total comment: "+strconv.Itoa(successPush))
 	return
 }
 
@@ -179,7 +171,7 @@ func buildComment(ctx context.Context, svcContext *svc.ServiceContext, githubCom
 			DataUpdatedAt:  time.Now(),
 			UserId:         userId,
 			RepoId:         githubCommentWithRepoId.repoId,
-			Category:       model.CategoryReview,
+			Category:       model.CategoryComment,
 			Content:        githubCommentWithRepoId.prComment.GetBody(),
 			CreatedAt:      githubCommentWithRepoId.prComment.GetCreatedAt().Time,
 			UpdatedAt:      githubCommentWithRepoId.prComment.GetUpdatedAt().Time,

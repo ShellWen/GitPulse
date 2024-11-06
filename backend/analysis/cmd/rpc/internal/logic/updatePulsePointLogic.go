@@ -22,7 +22,7 @@ const (
 	ScoreComment         = 1
 	ScoreOpenIssue       = 2
 	ScoreOpenPullRequest = 3
-	ScoreReview          = 4
+	ScoreReview          = 5
 	ScoreMerge           = 5
 )
 

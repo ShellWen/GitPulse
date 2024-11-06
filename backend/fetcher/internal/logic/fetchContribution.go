@@ -17,14 +17,31 @@ import (
 const (
 	RoleAuthor    = "author"
 	RoleCommenter = "commenter"
+	RoleReviewer  = "reviewed-by"
 )
 
-func FetchContributionOfUser(ctx context.Context, svcContext *svc.ServiceContext, repoId int64, createAfter string, issueSearchLimit int64, commentSearchLimit int64) (err error) {
-	if err = FetchIssuePROfUser(ctx, svcContext, repoId, createAfter, issueSearchLimit); err != nil {
+func FetchContributionOfUser(ctx context.Context, svcContext *svc.ServiceContext, repoId int64, createAfter string, searchLimit int64) (err error) {
+	successPush := 0
+
+	if successPush, err = FetchReviewOfUser(ctx, svcContext, repoId, createAfter, searchLimit); err != nil {
 		return
 	}
 
-	if err = FetchCommentOfUser(ctx, svcContext, repoId, createAfter, commentSearchLimit); err != nil {
+	if successPush >= int(searchLimit) {
+		return
+	}
+	searchLimit -= int64(successPush)
+
+	if successPush, err = FetchIssuePROfUser(ctx, svcContext, repoId, createAfter, searchLimit); err != nil {
+		return
+	}
+
+	if successPush >= int(searchLimit) {
+		return
+	}
+	searchLimit -= int64(successPush)
+
+	if _, err = FetchCommentOfUser(ctx, svcContext, repoId, createAfter, searchLimit); err != nil {
 		return
 	}
 
@@ -70,7 +87,7 @@ func pushContribution(ctx context.Context, svcContext *svc.ServiceContext, newCo
 	return
 }
 
-func updateContributionFetchTimeOfDeveloper(ctx context.Context, svcContext *svc.ServiceContext, userId int64) (err error) {
+func UpdateContributionFetchTimeOfDeveloper(ctx context.Context, svcContext *svc.ServiceContext, userId int64) (err error) {
 	developerZrpcClient := svcContext.DeveloperRpcClient
 	var resp *developer.GetDeveloperByIdResp
 	var theDeveloper *developer.Developer
