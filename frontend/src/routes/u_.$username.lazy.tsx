@@ -30,7 +30,7 @@ const DeveloperInfoWrapper = ({ username }: { username: string }) => {
       developer={user}
       rightBlock={
         <div className="text-clip whitespace-nowrap text-8xl font-bold italic tracking-wider text-base-content/20 sm:text-9xl">
-          {pulsePoint ? `${pulsePoint.pulse_point.pulse_point}pp` : '计算中...'}
+          {pulsePoint ? `${pulsePoint.pulse_point.pulse_point.toFixed(2)}pp` : '计算中...'}
         </div>
       }
     />
