@@ -2,16 +2,19 @@ import {
   type Developer,
   type DeveloperLanguages,
   type DeveloperPulsePoint,
+  type DeveloperRegion,
+  type Language,
   developer,
   developerLanguages,
-  developerPulsePoint, type Language, developerRegion, type DeveloperRegion,
+  developerPulsePoint,
+  developerRegion,
 } from '$/lib/api/endpoint/types.ts'
 import { type ErrorResponse, errorResponse } from '$/lib/api/types.ts'
 import { HttpHandler, HttpResponse, delay, http } from 'msw'
 
 import { BASE_URL } from '../constants.ts'
-
 import languagesJson from './languages.json'
+
 const languages: Array<Language> = languagesJson
 
 const fakeDeveloper: Developer = {
@@ -72,10 +75,12 @@ export const handlers = [
     }
 
     const resp = developerPulsePoint.parse({
-      id: fakeDeveloper.id,
-      pulse_point: 233,
+      pulse_point: {
+        id: fakeDeveloper.id,
+        pulse_point: 233,
 
-      updated_at: new Date('2024-10-24T11:45:14Z'),
+        updated_at: new Date('2024-10-24T11:45:14Z'),
+      },
     } satisfies DeveloperPulsePoint)
     return HttpResponse.json(resp)
   }),
@@ -115,7 +120,7 @@ export const handlers = [
         {
           language: languages.find((l) => l.id === 'java')!,
           percentage: 5,
-        }
+        },
       ],
 
       updated_at: new Date('2024-10-24T11:45:14Z'),
