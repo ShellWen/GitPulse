@@ -22,6 +22,11 @@ type Developer struct {
 	UpdatedAt string `json:"updated_at"`
 }
 
+type DeveloperWithPulsePoint struct {
+	Developer  Developer  `json:"developer"`
+	PulsePoint PulsePoint `json:"pulse_point"`
+}
+
 type GetLanguageUsageReq struct {
 	Login string `path:"login"`
 }
@@ -31,6 +36,12 @@ type GetLanguageUsageResp struct {
 }
 
 type GetLanguages struct {
+}
+
+type GetPulsePointRankReq struct {
+	Language string `query:"language"`
+	Region   string `query:"region"`
+	Limit    int64  `query:"limit"`
 }
 
 type GetPulsePointReq struct {

@@ -3,11 +3,10 @@ package logic
 import (
 	"context"
 	"errors"
-	"github.com/ShellWen/GitPulse/analysis/model"
-	"net/http"
-
 	"github.com/ShellWen/GitPulse/analysis/cmd/rpc/internal/svc"
 	"github.com/ShellWen/GitPulse/analysis/cmd/rpc/pb"
+	"github.com/ShellWen/GitPulse/analysis/model"
+	"net/http"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )

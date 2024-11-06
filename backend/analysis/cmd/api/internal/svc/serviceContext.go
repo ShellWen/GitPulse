@@ -8,12 +8,14 @@ import (
 	"github.com/ShellWen/GitPulse/relation/cmd/rpc/relation"
 	"github.com/ShellWen/GitPulse/repo/cmd/rpc/repo"
 	"github.com/hibiken/asynq"
+	"github.com/zeromicro/go-zero/core/stores/redis"
 	"github.com/zeromicro/go-zero/zrpc"
 )
 
 type ServiceContext struct {
 	Config      config.Config
 	AsynqClient *asynq.Client
+	RedisClient *redis.Redis
 
 	DeveloperRpcClient    developer.DeveloperZrpcClient
 	RepoRpcClient         repo.RepoZrpcClient
@@ -30,6 +32,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			Password: c.AsynqRedisConf.Password,
 			DB:       c.AsynqRedisConf.DB,
 		}),
+		RedisClient: redis.MustNewRedis(c.Redis),
 
 		DeveloperRpcClient:    developer.NewDeveloperZrpcClient(zrpc.MustNewClient(c.DeveloperRpcConf)),
 		RepoRpcClient:         repo.NewRepoZrpcClient(zrpc.MustNewClient(c.RepoRpcConf)),

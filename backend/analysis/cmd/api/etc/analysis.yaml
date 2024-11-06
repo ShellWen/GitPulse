@@ -2,12 +2,18 @@ Name: Analysis
 Host: 127.0.0.1
 Port: 3005
 Mode: dev
+TimeOut: 180000
 
 DB:
   DataSource: postgres://general_user:password@localhost:5432/database?sslmode=disable
 Cache:
   - Host: 127.0.0.1:6379
     Pass:
+
+Redis:
+  Host: 127.0.0.1:6379
+  Type: node
+  Pass:
 
 DeveloperRpcConf:
   Target: consul://localhost:8500/developer.rpc?wait=14s

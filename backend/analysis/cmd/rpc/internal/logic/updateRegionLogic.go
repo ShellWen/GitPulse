@@ -9,6 +9,7 @@ import (
 	"github.com/ShellWen/GitPulse/common/llm"
 	"github.com/ShellWen/GitPulse/contribution/cmd/rpc/contribution"
 	"github.com/ShellWen/GitPulse/developer/cmd/rpc/developer"
+	"github.com/biter777/countries"
 	"github.com/zeromicro/go-zero/core/jsonx"
 	"io"
 	"time"
@@ -139,11 +140,12 @@ func (l *UpdateRegionLogic) getRegionWithConfidenceByLLModel(id int64, login str
 		resp           *http.Response
 		role           = "你是一名专业的GitHub数据分析师。同时，你对世界不同地区、语言、文化有着非常深刻的了解。" +
 			"GitHub是一个代码协作平台，该平台的主语言以英文为主，可以通过多种方式来猜测用户可能的区域，" +
-			"例如使用的语言、文化地区元素等。请主要以非英语语言，以及地区文化元素来判别所在地区。" +
+			"例如使用的非英语语言、文化地区元素、位置、地名等等。请主要以语言、位置、地名来判别用户国籍或地区名。" +
 			"接下来，我将给你GitHub上某位用户的简介、Issue、PullRequest或Comment。" +
-			"你的任务是对GitHub上某位用户的简介、Issue、PullRequest或Comment进行分析，分析该用户可能的所在区域。" +
-			"你只需要以{\"region\":confidence}格式进行回复，表示用户最可能的所在区域及置信度。" +
-			"Region使用ISO标准的Alpha-2小写形式表示。请不要回复其他任何无关文字。请不要回复Unknown" +
+			"你的任务是对GitHub上某位用户的简介、Issue、PullRequest或Comment进行分析，分析该用户可能的所在国籍或地区名。" +
+			"你只需要以{\"region\": regionName, \"confidence\": confidenceValue}格式进行回复，将regionName替换为" +
+			"你所判别的国籍或地区名，confidenceValue替换为置信度, 表示用户最可能的所在国籍（或地区名）及置信度。" +
+			"Region使用英文表示。请不要回复其他任何无关文字。请不要回复Unknown" +
 			"请一直保持该状态，不要停止。"
 		allText          = ""
 		jsonStr          string
@@ -207,6 +209,7 @@ func (l *UpdateRegionLogic) getRegionWithConfidenceByLLModel(id int64, login str
 	}
 
 	region = regionConfidence.Region
+	region = strings.ToLower(countries.ByName(region).Alpha2())
 	confidence = regionConfidence.Confidence
 
 	return
@@ -260,7 +263,9 @@ func (l *UpdateRegionLogic) getTextFromProfile(id int64) (text string, err error
 		return
 	}
 
-	text += "|Developer Profile Start|" + theDeveloper.Name + theDeveloper.Bio + theDeveloper.TwitterUsername + theDeveloper.Company + theDeveloper.Location + "|Developer Profile End|"
+	text += "|Developer Profile Start|" + "|Name:" +
+		theDeveloper.Name + "|Bio:" + theDeveloper.Bio + "|TwitterUsername:" + theDeveloper.TwitterUsername +
+		"|Company:" + theDeveloper.Company + "|Location:" + theDeveloper.Location + "|Developer Profile End|"
 
 	return
 }

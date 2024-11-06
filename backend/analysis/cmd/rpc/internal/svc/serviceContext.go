@@ -29,6 +29,7 @@ type ServiceContext struct {
 func NewServiceContext(c config.Config) *ServiceContext {
 	return &ServiceContext{
 		Config:          c,
+		RedisClient:     redis.MustNewRedis(c.Redis),
 		RegionModel:     model.NewRegionModel(sqlx.NewSqlConn("pgx", c.DB.DataSource), c.Cache),
 		LanguagesModel:  model.NewLanguagesModel(sqlx.NewSqlConn("pgx", c.DB.DataSource), c.Cache),
 		PulsePointModel: model.NewPulsePointModel(sqlx.NewSqlConn("pgx", c.DB.DataSource), c.Cache),

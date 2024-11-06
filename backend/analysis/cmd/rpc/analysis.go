@@ -1,8 +1,10 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
+	"github.com/ShellWen/GitPulse/analysis/cmd/rpc/internal/logic"
 	"github.com/zeromicro/zero-contrib/zrpc/registry/consul"
 
 	"github.com/ShellWen/GitPulse/analysis/cmd/rpc/internal/config"
@@ -36,6 +38,10 @@ func main() {
 	defer s.Stop()
 
 	_ = consul.RegisterService(c.RpcServerConf.ListenOn, c.Consul)
+
+	if err := logic.BuildRank(context.Background(), ctx); err != nil {
+		panic(err)
+	}
 
 	fmt.Printf("Starting rpc server at %s...\n", c.RpcServerConf.ListenOn)
 	s.Start()

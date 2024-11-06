@@ -71,6 +71,10 @@ message UpdateAnalysisResp {
   string message = 2;
 }
 
+message GetPulsePointRankReq {
+  int64 developerId = 1; //developerId
+}
+
 // ------------------------------------ 
 // Rpc Func
 // ------------------------------------ 

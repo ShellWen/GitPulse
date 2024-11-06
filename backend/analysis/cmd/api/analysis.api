@@ -43,6 +43,10 @@ type (
 		Region     string  `json:"region"`
 		Confidence float64 `json:"confidence"`
 	}
+	DeveloperWithPulsePoint {
+		Developer  Developer  `json:"developer"`
+		PulsePoint PulsePoint `json:"pulse_point"`
+	}
 	GetPulsePointReq {
 		Login string `path:"login"`
 	}
@@ -62,6 +66,11 @@ type (
 		Region Region `json:"region"`
 	}
 	GetLanguages  {}
+	GetPulsePointRankReq {
+		Language string `query:"language"`
+		Region   string `query:"region"`
+		Limit    int64  `query:"limit"`
+	}
 )
 
 @server (
@@ -79,5 +88,8 @@ service Analysis {
 
 	@handler getLanguages
 	get /languages (GetLanguages) returns ([]Language)
+
+	@handler getPulsePointRank
+	get /developers (GetPulsePointRankReq) returns ([]DeveloperWithPulsePoint)
 }
 

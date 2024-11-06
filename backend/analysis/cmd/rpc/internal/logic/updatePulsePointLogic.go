@@ -8,6 +8,7 @@ import (
 	"github.com/ShellWen/GitPulse/repo/cmd/rpc/repo"
 	"math"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/ShellWen/GitPulse/analysis/cmd/rpc/internal/svc"
@@ -108,6 +109,11 @@ func (l *UpdatePulsePointLogic) doUpdatePulsePoint(id int64) (err error) {
 		if repoResp, err = repositoryZrpcClient.GetRepoById(l.ctx, &repo.GetRepoByIdReq{Id: repoId}); err != nil {
 			return
 		}
+		if repoResp.Code != http.StatusOK {
+			logx.Error("Unexpected error: " + repoResp.Message)
+			continue
+		}
+
 		theRepo = repoResp.Repo
 		virtualDeveloperPulsePoint = float64(theRepo.CommentCount*ScoreComment + theRepo.IssueCount*ScoreOpenIssue + theRepo.OpenPrCount*ScoreOpenPullRequest + theRepo.ReviewCount*ScoreReview + theRepo.MergedPrCount*ScoreMerge)
 		virtualDeveloperPulsePoint = math.Sqrt(virtualDeveloperPulsePoint)
@@ -138,6 +144,11 @@ func (l *UpdatePulsePointLogic) doUpdatePulsePoint(id int64) (err error) {
 	pulsePointItem.PulsePoint = pulsePoint
 	if err = l.svcCtx.PulsePointModel.Update(l.ctx, pulsePointItem); err != nil {
 		return
+	}
+
+	// maintain a rank of pulse point
+	if _, err := l.svcCtx.RedisClient.ZaddFloatCtx(l.ctx, "pulse_point_rank", pulsePointItem.PulsePoint, strconv.FormatInt(id, 10)); err != nil {
+		return err
 	}
 
 	return
