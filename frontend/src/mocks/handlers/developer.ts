@@ -95,28 +95,28 @@ export const handlers = [
     const resp = developerLanguages.parse({
       id: fakeDeveloper.id,
 
-      languages: {
-        typescript: {
+      languages: [
+        {
           language: languages.find((l) => l.id === 'typescript')!,
           percentage: 60.9,
         },
-        kotlin: {
+        {
           language: languages.find((l) => l.id === 'kotlin')!,
           percentage: 19.1,
         },
-        rust: {
+        {
           language: languages.find((l) => l.id === 'rust')!,
           percentage: 7.9,
         },
-        go: {
+        {
           language: languages.find((l) => l.id === 'go')!,
           percentage: 7.1,
         },
-        java: {
+        {
           language: languages.find((l) => l.id === 'java')!,
           percentage: 5,
         }
-      },
+      ],
 
       updated_at: new Date('2024-10-24T11:45:14Z'),
     } satisfies DeveloperLanguages)
