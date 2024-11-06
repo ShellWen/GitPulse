@@ -1,6 +1,6 @@
 import { Fragment, useMemo } from 'react'
 
-import { type Developer } from '$/lib/api/endpoint/developer.ts'
+import { type Developer } from '$/lib/api/endpoint/types.ts'
 import { Divider } from 'react-daisyui'
 
 interface UserGlanceItem {

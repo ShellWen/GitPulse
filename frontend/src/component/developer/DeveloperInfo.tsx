@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 
-import { type Developer } from '$/lib/api/endpoint/developer.ts'
+import { type Developer } from '$/lib/api/endpoint/types.ts'
 import { Avatar } from 'react-daisyui'
 
 const UserInfo = ({ developer, rightBlock }: { developer: Developer; rightBlock?: ReactNode }) => {
