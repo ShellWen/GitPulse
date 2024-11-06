@@ -26,6 +26,11 @@ RUN apk add --no-cache ca-certificates tzdata
 
 WORKDIR /app
 
+RUN apk add --no-cache python3 py3-pip
+RUN python -m venv venv
+COPY ./script/guess_region /app/script/guess_region
+RUN . venv/bin/activate && pip install --no-cache-dir -r /app/script/guess_region/requirements.txt
+
 VOLUME /app/analyzer/cmd/rpc/etc
 COPY --from=builder /app/analysis/cmd/rpc/etc/analysis.yaml /app/analysis/cmd/rpc/etc/analysis.yaml
 COPY --from=builder /app/analysis_rpc /app/analysis_rpc
