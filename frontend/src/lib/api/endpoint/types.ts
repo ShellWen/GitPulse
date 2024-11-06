@@ -9,7 +9,7 @@ export const developer = z.object({
   location: z.string().nullable(),
   bio: z.string().nullable(),
   blog: z.string().nullable(),
-  email: z.string().email('Email should be a valid email').nullable(),
+  email: z.string().email('Email should be a valid email').or(z.literal('')).or(z.null()),
 
   followers: z.number().nonnegative('Followers count should be non-negative'),
   following: z.number().nonnegative('Following count should be non-negative'),
