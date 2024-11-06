@@ -16,7 +16,8 @@ COPY ./developer ./developer
 COPY ./relation ./relation
 COPY ./repo ./repo
 COPY ./analysis/cmd/rpc/etc/analysis.yaml /app/analysis/cmd/rpc/etc/analysis.yaml
-RUN go build -ldflags="-s -w" -o /app/analysis_rpc ./analysis/cmd/rpc
+ENV GOCACHE=/root/.cache/go-build
+RUN --mount=type=cache,target="/root/.cache/go-build" go build -ldflags="-s -w" -o /app/analysis_rpc ./analysis/cmd/rpc
 
 
 FROM alpine:latest

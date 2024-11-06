@@ -12,7 +12,8 @@ RUN go mod download
 COPY ./common ./common
 COPY ./contribution ./contribution
 COPY ./contribution/cmd/rpc/etc/contribution.yaml /app/contribution/cmd/rpc/etc/contribution.yaml
-RUN go build -ldflags="-s -w" -o /app/contribution_rpc ./contribution/cmd/rpc
+ENV GOCACHE=/root/.cache/go-build
+RUN --mount=type=cache,target="/root/.cache/go-build" go build -ldflags="-s -w" -o /app/contribution_rpc ./contribution/cmd/rpc
 
 
 FROM alpine:latest

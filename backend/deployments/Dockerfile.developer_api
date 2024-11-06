@@ -12,7 +12,8 @@ RUN go mod download
 COPY ./common ./common
 COPY ./developer ./developer
 COPY ./developer/cmd/api/etc/developer.yaml /app/developer/cmd/api/etc/developer.yaml
-RUN go build -ldflags="-s -w" -o /app/developer_api ./developer/cmd/api
+ENV GOCACHE=/root/.cache/go-build
+RUN --mount=type=cache,target="/root/.cache/go-build" go build -ldflags="-s -w" -o /app/developer_api ./developer/cmd/api
 
 
 FROM alpine:latest

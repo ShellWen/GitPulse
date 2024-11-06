@@ -12,7 +12,8 @@ RUN go mod download
 COPY ./common ./common
 COPY ./developer ./developer
 COPY ./developer/cmd/rpc/etc/developer.yaml /app/developer/cmd/rpc/etc/developer.yaml
-RUN go build -ldflags="-s -w" -o /app/developer_rpc ./developer/cmd/rpc
+ENV GOCACHE=/root/.cache/go-build
+RUN --mount=type=cache,target="/root/.cache/go-build" go build -ldflags="-s -w" -o /app/developer_rpc ./developer/cmd/rpc
 
 
 FROM alpine:latest
