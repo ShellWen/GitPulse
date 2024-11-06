@@ -52,7 +52,7 @@ export type LanguageWithUsage = z.infer<typeof languageWithUsage>
 
 export const developerLanguages = z.object({
   id: z.number().nonnegative('Developer ID should be non-negative'),
-  languages: z.record(languageWithUsage),
+  languages: z.array(languageWithUsage),
   updated_at: z.coerce.date(),
 })
 export type DeveloperLanguages = z.infer<typeof developerLanguages>
