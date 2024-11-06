@@ -1,0 +1,3702 @@
+[
+  {
+    "id": "basic",
+    "name": "BASIC",
+    "color": "#ff0000"
+  },
+  {
+    "id": "cabal config",
+    "name": "Cabal Config",
+    "color": "#483465"
+  },
+  {
+    "id": "gaml",
+    "name": "GAML",
+    "color": "#FFC766"
+  },
+  {
+    "id": "lark",
+    "name": "Lark",
+    "color": "#2980B9"
+  },
+  {
+    "id": "less",
+    "name": "Less",
+    "color": "#1d365d"
+  },
+  {
+    "id": "muse",
+    "name": "Muse",
+    "color": ""
+  },
+  {
+    "id": "postcss",
+    "name": "PostCSS",
+    "color": "#dc3a0c"
+  },
+  {
+    "id": "prisma",
+    "name": "Prisma",
+    "color": "#0c344b"
+  },
+  {
+    "id": "rpc",
+    "name": "RPC",
+    "color": ""
+  },
+  {
+    "id": "fish",
+    "name": "fish",
+    "color": "#4aae47"
+  },
+  {
+    "id": "aspectj",
+    "name": "AspectJ",
+    "color": "#a957b0"
+  },
+  {
+    "id": "crystal",
+    "name": "Crystal",
+    "color": "#000100"
+  },
+  {
+    "id": "fortran free form",
+    "name": "Fortran Free Form",
+    "color": "#4d41b1"
+  },
+  {
+    "id": "genero per",
+    "name": "Genero per",
+    "color": "#d8df39"
+  },
+  {
+    "id": "red",
+    "name": "Red",
+    "color": "#f50000"
+  },
+  {
+    "id": "redcode",
+    "name": "Redcode",
+    "color": ""
+  },
+  {
+    "id": "stringtemplate",
+    "name": "StringTemplate",
+    "color": "#3fb34f"
+  },
+  {
+    "id": "apacheconf",
+    "name": "ApacheConf",
+    "color": "#d12127"
+  },
+  {
+    "id": "denizenscript",
+    "name": "DenizenScript",
+    "color": "#FBEE96"
+  },
+  {
+    "id": "idl",
+    "name": "IDL",
+    "color": "#a3522f"
+  },
+  {
+    "id": "kicad legacy layout",
+    "name": "KiCad Legacy Layout",
+    "color": "#2f4aab"
+  },
+  {
+    "id": "opentype feature file",
+    "name": "OpenType Feature File",
+    "color": ""
+  },
+  {
+    "id": "readline config",
+    "name": "Readline Config",
+    "color": ""
+  },
+  {
+    "id": "gams",
+    "name": "GAMS",
+    "color": "#f49a22"
+  },
+  {
+    "id": "qt script",
+    "name": "Qt Script",
+    "color": "#00b841"
+  },
+  {
+    "id": "xc",
+    "name": "XC",
+    "color": "#99DA07"
+  },
+  {
+    "id": "bluespec",
+    "name": "Bluespec",
+    "color": "#12223c"
+  },
+  {
+    "id": "faust",
+    "name": "Faust",
+    "color": "#c37240"
+  },
+  {
+    "id": "ioke",
+    "name": "Ioke",
+    "color": "#078193"
+  },
+  {
+    "id": "rust",
+    "name": "Rust",
+    "color": "#dea584"
+  },
+  {
+    "id": "shellsession",
+    "name": "ShellSession",
+    "color": ""
+  },
+  {
+    "id": "edgeql",
+    "name": "EdgeQL",
+    "color": "#31A7FF"
+  },
+  {
+    "id": "glsl",
+    "name": "GLSL",
+    "color": "#5686a5"
+  },
+  {
+    "id": "html+ecr",
+    "name": "HTML+ECR",
+    "color": "#2e1052"
+  },
+  {
+    "id": "objective-c",
+    "name": "Objective-C",
+    "color": "#438eff"
+  },
+  {
+    "id": "vbscript",
+    "name": "VBScript",
+    "color": "#15dcdc"
+  },
+  {
+    "id": "boo",
+    "name": "Boo",
+    "color": "#d4bec1"
+  },
+  {
+    "id": "ncl",
+    "name": "NCL",
+    "color": "#28431f"
+  },
+  {
+    "id": "openscad",
+    "name": "OpenSCAD",
+    "color": "#e5cd45"
+  },
+  {
+    "id": "procfile",
+    "name": "Procfile",
+    "color": "#3B2F63"
+  },
+  {
+    "id": "purescript",
+    "name": "PureScript",
+    "color": "#1D222D"
+  },
+  {
+    "id": "star",
+    "name": "STAR",
+    "color": ""
+  },
+  {
+    "id": "svelte",
+    "name": "Svelte",
+    "color": "#ff3e00"
+  },
+  {
+    "id": "avro idl",
+    "name": "Avro IDL",
+    "color": "#0040FF"
+  },
+  {
+    "id": "stan",
+    "name": "Stan",
+    "color": "#b2011d"
+  },
+  {
+    "id": "systemverilog",
+    "name": "SystemVerilog",
+    "color": "#DAE1C2"
+  },
+  {
+    "id": "vim script",
+    "name": "Vim Script",
+    "color": "#199f4b"
+  },
+  {
+    "id": "vyper",
+    "name": "Vyper",
+    "color": "#2980b9"
+  },
+  {
+    "id": "xs",
+    "name": "XS",
+    "color": ""
+  },
+  {
+    "id": "xojo",
+    "name": "Xojo",
+    "color": "#81bd41"
+  },
+  {
+    "id": "d",
+    "name": "D",
+    "color": "#ba595e"
+  },
+  {
+    "id": "darcs patch",
+    "name": "Darcs Patch",
+    "color": "#8eff23"
+  },
+  {
+    "id": "rpm spec",
+    "name": "RPM Spec",
+    "color": ""
+  },
+  {
+    "id": "scenic",
+    "name": "Scenic",
+    "color": "#fdc700"
+  },
+  {
+    "id": "coq",
+    "name": "Coq",
+    "color": "#d0b68c"
+  },
+  {
+    "id": "earthly",
+    "name": "Earthly",
+    "color": "#2af0ff"
+  },
+  {
+    "id": "moocode",
+    "name": "Moocode",
+    "color": ""
+  },
+  {
+    "id": "nim",
+    "name": "Nim",
+    "color": "#ffc200"
+  },
+  {
+    "id": "processing",
+    "name": "Processing",
+    "color": "#0096D8"
+  },
+  {
+    "id": "ssh config",
+    "name": "SSH Config",
+    "color": ""
+  },
+  {
+    "id": "tl-verilog",
+    "name": "TL-Verilog",
+    "color": "#C40023"
+  },
+  {
+    "id": "cartocss",
+    "name": "CartoCSS",
+    "color": ""
+  },
+  {
+    "id": "click",
+    "name": "Click",
+    "color": "#E4E6F3"
+  },
+  {
+    "id": "mako",
+    "name": "Mako",
+    "color": "#7e858d"
+  },
+  {
+    "id": "shaderlab",
+    "name": "ShaderLab",
+    "color": "#222c37"
+  },
+  {
+    "id": "slim",
+    "name": "Slim",
+    "color": "#2b2b2b"
+  },
+  {
+    "id": "tcsh",
+    "name": "Tcsh",
+    "color": ""
+  },
+  {
+    "id": "graphviz (dot)",
+    "name": "Graphviz (DOT)",
+    "color": "#2596be"
+  },
+  {
+    "id": "openrc runscript",
+    "name": "OpenRC runscript",
+    "color": ""
+  },
+  {
+    "id": "org",
+    "name": "Org",
+    "color": "#77aa99"
+  },
+  {
+    "id": "pod",
+    "name": "Pod",
+    "color": ""
+  },
+  {
+    "id": "brainfuck",
+    "name": "Brainfuck",
+    "color": "#2F2530"
+  },
+  {
+    "id": "gsc",
+    "name": "GSC",
+    "color": "#FF6800"
+  },
+  {
+    "id": "gemfile.lock",
+    "name": "Gemfile.lock",
+    "color": "#701516"
+  },
+  {
+    "id": "git attributes",
+    "name": "Git Attributes",
+    "color": "#F44D27"
+  },
+  {
+    "id": "haproxy",
+    "name": "HAProxy",
+    "color": "#106da9"
+  },
+  {
+    "id": "jasmin",
+    "name": "Jasmin",
+    "color": "#d03600"
+  },
+  {
+    "id": "noir",
+    "name": "Noir",
+    "color": "#2f1f49"
+  },
+  {
+    "id": "webvtt",
+    "name": "WebVTT",
+    "color": ""
+  },
+  {
+    "id": "glimmer ts",
+    "name": "Glimmer TS",
+    "color": "#3178c6"
+  },
+  {
+    "id": "max",
+    "name": "Max",
+    "color": "#c4a79c"
+  },
+  {
+    "id": "nearley",
+    "name": "Nearley",
+    "color": "#990000"
+  },
+  {
+    "id": "oasv2-json",
+    "name": "OASv2-json",
+    "color": "#85ea2d"
+  },
+  {
+    "id": "rdoc",
+    "name": "RDoc",
+    "color": "#701516"
+  },
+  {
+    "id": "ren'py",
+    "name": "Ren'Py",
+    "color": "#ff7f7f"
+  },
+  {
+    "id": "ruby",
+    "name": "Ruby",
+    "color": "#701516"
+  },
+  {
+    "id": "sparql",
+    "name": "SPARQL",
+    "color": "#0C4597"
+  },
+  {
+    "id": "sed",
+    "name": "sed",
+    "color": "#64b970"
+  },
+  {
+    "id": "haxe",
+    "name": "Haxe",
+    "color": "#df7900"
+  },
+  {
+    "id": "rich text format",
+    "name": "Rich Text Format",
+    "color": ""
+  },
+  {
+    "id": "saltstack",
+    "name": "SaltStack",
+    "color": "#646464"
+  },
+  {
+    "id": "blitzbasic",
+    "name": "BlitzBasic",
+    "color": "#00FFAE"
+  },
+  {
+    "id": "directx 3d file",
+    "name": "DirectX 3D File",
+    "color": "#aace60"
+  },
+  {
+    "id": "golo",
+    "name": "Golo",
+    "color": "#88562A"
+  },
+  {
+    "id": "jupyter notebook",
+    "name": "Jupyter Notebook",
+    "color": "#DA5B0B"
+  },
+  {
+    "id": "modelica",
+    "name": "Modelica",
+    "color": "#de1d31"
+  },
+  {
+    "id": "object data instance notation",
+    "name": "Object Data Instance Notation",
+    "color": ""
+  },
+  {
+    "id": "vhdl",
+    "name": "VHDL",
+    "color": "#adb2cb"
+  },
+  {
+    "id": "dtrace",
+    "name": "DTrace",
+    "color": ""
+  },
+  {
+    "id": "hxml",
+    "name": "HXML",
+    "color": "#f68712"
+  },
+  {
+    "id": "oasv2-yaml",
+    "name": "OASv2-yaml",
+    "color": "#85ea2d"
+  },
+  {
+    "id": "vue",
+    "name": "Vue",
+    "color": "#41b883"
+  },
+  {
+    "id": "mcfunction",
+    "name": "mcfunction",
+    "color": "#E22837"
+  },
+  {
+    "id": "xbase",
+    "name": "xBase",
+    "color": "#403a40"
+  },
+  {
+    "id": "checksums",
+    "name": "Checksums",
+    "color": ""
+  },
+  {
+    "id": "common workflow language",
+    "name": "Common Workflow Language",
+    "color": "#B5314C"
+  },
+  {
+    "id": "ecl",
+    "name": "ECL",
+    "color": "#8a1267"
+  },
+  {
+    "id": "futhark",
+    "name": "Futhark",
+    "color": "#5f021f"
+  },
+  {
+    "id": "genie",
+    "name": "Genie",
+    "color": "#fb855d"
+  },
+  {
+    "id": "liquid",
+    "name": "Liquid",
+    "color": "#67b8de"
+  },
+  {
+    "id": "myghty",
+    "name": "Myghty",
+    "color": ""
+  },
+  {
+    "id": "objectscript",
+    "name": "ObjectScript",
+    "color": "#424893"
+  },
+  {
+    "id": "raw token data",
+    "name": "Raw token data",
+    "color": ""
+  },
+  {
+    "id": "stata",
+    "name": "Stata",
+    "color": "#1a5f91"
+  },
+  {
+    "id": "cweb",
+    "name": "CWeb",
+    "color": "#00007a"
+  },
+  {
+    "id": "caddyfile",
+    "name": "Caddyfile",
+    "color": "#22b638"
+  },
+  {
+    "id": "html+eex",
+    "name": "HTML+EEX",
+    "color": "#6e4a7e"
+  },
+  {
+    "id": "jsonnet",
+    "name": "Jsonnet",
+    "color": "#0064bd"
+  },
+  {
+    "id": "swig",
+    "name": "SWIG",
+    "color": ""
+  },
+  {
+    "id": "x10",
+    "name": "X10",
+    "color": "#4B6BEF"
+  },
+  {
+    "id": "xml property list",
+    "name": "XML Property List",
+    "color": "#0060ac"
+  },
+  {
+    "id": "crontab",
+    "name": "crontab",
+    "color": "#ead7ac"
+  },
+  {
+    "id": "cil",
+    "name": "CIL",
+    "color": ""
+  },
+  {
+    "id": "cairo",
+    "name": "Cairo",
+    "color": "#ff4a48"
+  },
+  {
+    "id": "coffeescript",
+    "name": "CoffeeScript",
+    "color": "#244776"
+  },
+  {
+    "id": "php",
+    "name": "PHP",
+    "color": "#4F5D95"
+  },
+  {
+    "id": "antlers",
+    "name": "Antlers",
+    "color": "#ff269e"
+  },
+  {
+    "id": "circom",
+    "name": "Circom",
+    "color": "#707575"
+  },
+  {
+    "id": "idris",
+    "name": "Idris",
+    "color": "#b30000"
+  },
+  {
+    "id": "kotlin",
+    "name": "Kotlin",
+    "color": "#A97BFF"
+  },
+  {
+    "id": "nextflow",
+    "name": "Nextflow",
+    "color": "#3ac486"
+  },
+  {
+    "id": "roc",
+    "name": "Roc",
+    "color": "#7c38f5"
+  },
+  {
+    "id": "stl",
+    "name": "STL",
+    "color": "#373b5e"
+  },
+  {
+    "id": "simple file verification",
+    "name": "Simple File Verification",
+    "color": "#C9BFED"
+  },
+  {
+    "id": "urweb",
+    "name": "UrWeb",
+    "color": "#ccccee"
+  },
+  {
+    "id": "wavefront object",
+    "name": "Wavefront Object",
+    "color": ""
+  },
+  {
+    "id": "xproc",
+    "name": "XProc",
+    "color": ""
+  },
+  {
+    "id": "cobol",
+    "name": "COBOL",
+    "color": ""
+  },
+  {
+    "id": "isabelle",
+    "name": "Isabelle",
+    "color": "#FEFE00"
+  },
+  {
+    "id": "move",
+    "name": "Move",
+    "color": "#4a137a"
+  },
+  {
+    "id": "oasv3-yaml",
+    "name": "OASv3-yaml",
+    "color": "#85ea2d"
+  },
+  {
+    "id": "pascal",
+    "name": "Pascal",
+    "color": "#E3F171"
+  },
+  {
+    "id": "easybuild",
+    "name": "Easybuild",
+    "color": "#069406"
+  },
+  {
+    "id": "edge",
+    "name": "Edge",
+    "color": "#0dffe0"
+  },
+  {
+    "id": "emacs lisp",
+    "name": "Emacs Lisp",
+    "color": "#c065db"
+  },
+  {
+    "id": "gentoo eclass",
+    "name": "Gentoo Eclass",
+    "color": "#9400ff"
+  },
+  {
+    "id": "inno setup",
+    "name": "Inno Setup",
+    "color": "#264b99"
+  },
+  {
+    "id": "e",
+    "name": "E",
+    "color": "#ccce35"
+  },
+  {
+    "id": "json",
+    "name": "JSON",
+    "color": "#292929"
+  },
+  {
+    "id": "literate agda",
+    "name": "Literate Agda",
+    "color": "#315665"
+  },
+  {
+    "id": "plsql",
+    "name": "PLSQL",
+    "color": "#dad8d8"
+  },
+  {
+    "id": "pony",
+    "name": "Pony",
+    "color": ""
+  },
+  {
+    "id": "xcompose",
+    "name": "XCompose",
+    "color": ""
+  },
+  {
+    "id": "c-objdump",
+    "name": "C-ObjDump",
+    "color": ""
+  },
+  {
+    "id": "gdscript",
+    "name": "GDScript",
+    "color": "#355570"
+  },
+  {
+    "id": "srecode template",
+    "name": "SRecode Template",
+    "color": "#348a34"
+  },
+  {
+    "id": "smarty",
+    "name": "Smarty",
+    "color": "#f0c040"
+  },
+  {
+    "id": "edje data collection",
+    "name": "Edje Data Collection",
+    "color": ""
+  },
+  {
+    "id": "java properties",
+    "name": "Java Properties",
+    "color": "#2A6277"
+  },
+  {
+    "id": "kit",
+    "name": "Kit",
+    "color": ""
+  },
+  {
+    "id": "m",
+    "name": "M",
+    "color": ""
+  },
+  {
+    "id": "markdown",
+    "name": "Markdown",
+    "color": "#083fa1"
+  },
+  {
+    "id": "python",
+    "name": "Python",
+    "color": "#3572A5"
+  },
+  {
+    "id": "roff manpage",
+    "name": "Roff Manpage",
+    "color": "#ecdebe"
+  },
+  {
+    "id": "singularity",
+    "name": "Singularity",
+    "color": "#64E6AD"
+  },
+  {
+    "id": "ada",
+    "name": "Ada",
+    "color": "#02f88c"
+  },
+  {
+    "id": "handlebars",
+    "name": "Handlebars",
+    "color": "#f7931e"
+  },
+  {
+    "id": "jsoniq",
+    "name": "JSONiq",
+    "color": "#40d47e"
+  },
+  {
+    "id": "newlisp",
+    "name": "NewLisp",
+    "color": "#87AED7"
+  },
+  {
+    "id": "pov-ray sdl",
+    "name": "POV-Ray SDL",
+    "color": "#6bac65"
+  },
+  {
+    "id": "pawn",
+    "name": "Pawn",
+    "color": "#dbb284"
+  },
+  {
+    "id": "wren",
+    "name": "Wren",
+    "color": "#383838"
+  },
+  {
+    "id": "brightscript",
+    "name": "Brightscript",
+    "color": "#662D91"
+  },
+  {
+    "id": "apollo guidance computer",
+    "name": "Apollo Guidance Computer",
+    "color": "#0B3D91"
+  },
+  {
+    "id": "component pascal",
+    "name": "Component Pascal",
+    "color": "#B0CE4E"
+  },
+  {
+    "id": "objective-c++",
+    "name": "Objective-C++",
+    "color": "#6866fb"
+  },
+  {
+    "id": "odin",
+    "name": "Odin",
+    "color": "#60AFFE"
+  },
+  {
+    "id": "ston",
+    "name": "STON",
+    "color": ""
+  },
+  {
+    "id": "turtle",
+    "name": "Turtle",
+    "color": ""
+  },
+  {
+    "id": "gedcom",
+    "name": "GEDCOM",
+    "color": "#003058"
+  },
+  {
+    "id": "gradle kotlin dsl",
+    "name": "Gradle Kotlin DSL",
+    "color": "#02303a"
+  },
+  {
+    "id": "grammatical framework",
+    "name": "Grammatical Framework",
+    "color": "#ff0000"
+  },
+  {
+    "id": "lua",
+    "name": "Lua",
+    "color": "#000080"
+  },
+  {
+    "id": "runoff",
+    "name": "RUNOFF",
+    "color": "#665a4e"
+  },
+  {
+    "id": "ring",
+    "name": "Ring",
+    "color": "#2D54CB"
+  },
+  {
+    "id": "scheme",
+    "name": "Scheme",
+    "color": "#1e4aec"
+  },
+  {
+    "id": "unrealscript",
+    "name": "UnrealScript",
+    "color": "#a54c4d"
+  },
+  {
+    "id": "velocity template language",
+    "name": "Velocity Template Language",
+    "color": "#507cff"
+  },
+  {
+    "id": "apl",
+    "name": "APL",
+    "color": "#5A8164"
+  },
+  {
+    "id": "marko",
+    "name": "Marko",
+    "color": "#42bff2"
+  },
+  {
+    "id": "zephir",
+    "name": "Zephir",
+    "color": "#118f9e"
+  },
+  {
+    "id": "cloud firestore security rules",
+    "name": "Cloud Firestore Security Rules",
+    "color": "#FFA000"
+  },
+  {
+    "id": "csound document",
+    "name": "Csound Document",
+    "color": "#1a1a1a"
+  },
+  {
+    "id": "zenscript",
+    "name": "ZenScript",
+    "color": "#00BCD1"
+  },
+  {
+    "id": "bluespec bh",
+    "name": "Bluespec BH",
+    "color": "#12223c"
+  },
+  {
+    "id": "flux",
+    "name": "FLUX",
+    "color": "#88ccff"
+  },
+  {
+    "id": "hlsl",
+    "name": "HLSL",
+    "color": "#aace60"
+  },
+  {
+    "id": "cpp-objdump",
+    "name": "Cpp-ObjDump",
+    "color": ""
+  },
+  {
+    "id": "lean",
+    "name": "Lean",
+    "color": ""
+  },
+  {
+    "id": "oberon",
+    "name": "Oberon",
+    "color": ""
+  },
+  {
+    "id": "openqasm",
+    "name": "OpenQASM",
+    "color": "#AA70FF"
+  },
+  {
+    "id": "sage",
+    "name": "Sage",
+    "color": ""
+  },
+  {
+    "id": "soong",
+    "name": "Soong",
+    "color": ""
+  },
+  {
+    "id": "txl",
+    "name": "TXL",
+    "color": "#0178b8"
+  },
+  {
+    "id": "asymptote",
+    "name": "Asymptote",
+    "color": "#ff0000"
+  },
+  {
+    "id": "boogie",
+    "name": "Boogie",
+    "color": "#c80fa0"
+  },
+  {
+    "id": "formatted",
+    "name": "Formatted",
+    "color": ""
+  },
+  {
+    "id": "igor pro",
+    "name": "IGOR Pro",
+    "color": "#0000cc"
+  },
+  {
+    "id": "pike",
+    "name": "Pike",
+    "color": "#005390"
+  },
+  {
+    "id": "smithy",
+    "name": "Smithy",
+    "color": "#c44536"
+  },
+  {
+    "id": "spline font database",
+    "name": "Spline Font Database",
+    "color": ""
+  },
+  {
+    "id": "codeql",
+    "name": "CodeQL",
+    "color": "#140f46"
+  },
+  {
+    "id": "fluent",
+    "name": "Fluent",
+    "color": "#ffcc33"
+  },
+  {
+    "id": "gradle",
+    "name": "Gradle",
+    "color": "#02303a"
+  },
+  {
+    "id": "toml",
+    "name": "TOML",
+    "color": "#9c4221"
+  },
+  {
+    "id": "dafny",
+    "name": "Dafny",
+    "color": "#FFEC25"
+  },
+  {
+    "id": "dogescript",
+    "name": "Dogescript",
+    "color": "#cca760"
+  },
+  {
+    "id": "elixir",
+    "name": "Elixir",
+    "color": "#6e4a7e"
+  },
+  {
+    "id": "elvish transcript",
+    "name": "Elvish Transcript",
+    "color": "#55BB55"
+  },
+  {
+    "id": "filebench wml",
+    "name": "Filebench WML",
+    "color": "#F6B900"
+  },
+  {
+    "id": "ocaml",
+    "name": "OCaml",
+    "color": "#ef7a08"
+  },
+  {
+    "id": "yasnippet",
+    "name": "YASnippet",
+    "color": "#32AB90"
+  },
+  {
+    "id": "mupad",
+    "name": "mupad",
+    "color": "#244963"
+  },
+  {
+    "id": "dart",
+    "name": "Dart",
+    "color": "#00B4AB"
+  },
+  {
+    "id": "krl",
+    "name": "KRL",
+    "color": "#28430A"
+  },
+  {
+    "id": "ragel",
+    "name": "Ragel",
+    "color": "#9d5200"
+  },
+  {
+    "id": "hoon",
+    "name": "hoon",
+    "color": "#00b171"
+  },
+  {
+    "id": "nesc",
+    "name": "nesC",
+    "color": "#94B0C7"
+  },
+  {
+    "id": "4d",
+    "name": "4D",
+    "color": "#004289"
+  },
+  {
+    "id": "json with comments",
+    "name": "JSON with Comments",
+    "color": "#292929"
+  },
+  {
+    "id": "miniyaml",
+    "name": "MiniYAML",
+    "color": "#ff1111"
+  },
+  {
+    "id": "pure data",
+    "name": "Pure Data",
+    "color": ""
+  },
+  {
+    "id": "webassembly interface type",
+    "name": "WebAssembly Interface Type",
+    "color": "#6250e7"
+  },
+  {
+    "id": "java template engine",
+    "name": "Java Template Engine",
+    "color": "#2A6277"
+  },
+  {
+    "id": "ox",
+    "name": "Ox",
+    "color": ""
+  },
+  {
+    "id": "powershell",
+    "name": "PowerShell",
+    "color": "#012456"
+  },
+  {
+    "id": "shell",
+    "name": "Shell",
+    "color": "#89e051"
+  },
+  {
+    "id": "templ",
+    "name": "templ",
+    "color": "#66D0DD"
+  },
+  {
+    "id": "2-dimensional array",
+    "name": "2-Dimensional Array",
+    "color": "#38761D"
+  },
+  {
+    "id": "csv",
+    "name": "CSV",
+    "color": "#237346"
+  },
+  {
+    "id": "dylan",
+    "name": "Dylan",
+    "color": "#6c616e"
+  },
+  {
+    "id": "gleam",
+    "name": "Gleam",
+    "color": "#ffaff3"
+  },
+  {
+    "id": "ini",
+    "name": "INI",
+    "color": "#d1dbe0"
+  },
+  {
+    "id": "jcl",
+    "name": "JCL",
+    "color": "#d90e09"
+  },
+  {
+    "id": "moonscript",
+    "name": "MoonScript",
+    "color": "#ff4585"
+  },
+  {
+    "id": "public key",
+    "name": "Public Key",
+    "color": ""
+  },
+  {
+    "id": "tea",
+    "name": "Tea",
+    "color": ""
+  },
+  {
+    "id": "textgrid",
+    "name": "TextGrid",
+    "color": "#c8506d"
+  },
+  {
+    "id": "labview",
+    "name": "LabVIEW",
+    "color": "#fede06"
+  },
+  {
+    "id": "nasl",
+    "name": "NASL",
+    "color": ""
+  },
+  {
+    "id": "tsv",
+    "name": "TSV",
+    "color": "#237346"
+  },
+  {
+    "id": "terraform template",
+    "name": "Terraform Template",
+    "color": "#7b42bb"
+  },
+  {
+    "id": "julia",
+    "name": "Julia",
+    "color": "#a270ba"
+  },
+  {
+    "id": "sass",
+    "name": "Sass",
+    "color": "#a53b70"
+  },
+  {
+    "id": "snakemake",
+    "name": "Snakemake",
+    "color": "#419179"
+  },
+  {
+    "id": "factor",
+    "name": "Factor",
+    "color": "#636746"
+  },
+  {
+    "id": "gnuplot",
+    "name": "Gnuplot",
+    "color": "#f0a9f0"
+  },
+  {
+    "id": "haml",
+    "name": "Haml",
+    "color": "#ece2a9"
+  },
+  {
+    "id": "maven pom",
+    "name": "Maven POM",
+    "color": ""
+  },
+  {
+    "id": "cuda",
+    "name": "Cuda",
+    "color": "#3A4E3A"
+  },
+  {
+    "id": "gherkin",
+    "name": "Gherkin",
+    "color": "#5B2063"
+  },
+  {
+    "id": "lilypond",
+    "name": "LilyPond",
+    "color": "#9ccc7c"
+  },
+  {
+    "id": "numpy",
+    "name": "NumPy",
+    "color": "#9C8AF9"
+  },
+  {
+    "id": "oz",
+    "name": "Oz",
+    "color": "#fab738"
+  },
+  {
+    "id": "valve data format",
+    "name": "Valve Data Format",
+    "color": "#f26025"
+  },
+  {
+    "id": "wdl",
+    "name": "WDL",
+    "color": "#42f1f4"
+  },
+  {
+    "id": "xonsh",
+    "name": "Xonsh",
+    "color": "#285EEF"
+  },
+  {
+    "id": "bikeshed",
+    "name": "Bikeshed",
+    "color": "#5562ac"
+  },
+  {
+    "id": "mlir",
+    "name": "MLIR",
+    "color": "#5EC8DB"
+  },
+  {
+    "id": "sweave",
+    "name": "Sweave",
+    "color": "#198ce7"
+  },
+  {
+    "id": "terra",
+    "name": "Terra",
+    "color": "#00004c"
+  },
+  {
+    "id": "zil",
+    "name": "ZIL",
+    "color": "#dc75e5"
+  },
+  {
+    "id": "css",
+    "name": "CSS",
+    "color": "#563d7c"
+  },
+  {
+    "id": "clarity",
+    "name": "Clarity",
+    "color": "#5546ff"
+  },
+  {
+    "id": "npm config",
+    "name": "NPM Config",
+    "color": "#cb3837"
+  },
+  {
+    "id": "typescript",
+    "name": "TypeScript",
+    "color": "#3178c6"
+  },
+  {
+    "id": "yang",
+    "name": "YANG",
+    "color": ""
+  },
+  {
+    "id": "zig",
+    "name": "Zig",
+    "color": "#ec915c"
+  },
+  {
+    "id": "curl config",
+    "name": "cURL Config",
+    "color": ""
+  },
+  {
+    "id": "beef",
+    "name": "Beef",
+    "color": "#a52f4e"
+  },
+  {
+    "id": "piglatin",
+    "name": "PigLatin",
+    "color": "#fcd7de"
+  },
+  {
+    "id": "abap cds",
+    "name": "ABAP CDS",
+    "color": "#555e25"
+  },
+  {
+    "id": "cue sheet",
+    "name": "Cue Sheet",
+    "color": ""
+  },
+  {
+    "id": "d-objdump",
+    "name": "D-ObjDump",
+    "color": ""
+  },
+  {
+    "id": "kusto",
+    "name": "Kusto",
+    "color": ""
+  },
+  {
+    "id": "makefile",
+    "name": "Makefile",
+    "color": "#427819"
+  },
+  {
+    "id": "nwscript",
+    "name": "NWScript",
+    "color": "#111522"
+  },
+  {
+    "id": "scaml",
+    "name": "Scaml",
+    "color": "#bd181a"
+  },
+  {
+    "id": "groovy",
+    "name": "Groovy",
+    "color": "#4298b8"
+  },
+  {
+    "id": "imagej macro",
+    "name": "ImageJ Macro",
+    "color": "#99AAFF"
+  },
+  {
+    "id": "io",
+    "name": "Io",
+    "color": "#a9188d"
+  },
+  {
+    "id": "lfe",
+    "name": "LFE",
+    "color": "#4C3023"
+  },
+  {
+    "id": "lolcode",
+    "name": "LOLCODE",
+    "color": "#cc9900"
+  },
+  {
+    "id": "logos",
+    "name": "Logos",
+    "color": ""
+  },
+  {
+    "id": "modula-2",
+    "name": "Modula-2",
+    "color": "#10253f"
+  },
+  {
+    "id": "nix",
+    "name": "Nix",
+    "color": "#7e7eff"
+  },
+  {
+    "id": "sway",
+    "name": "Sway",
+    "color": "#00F58C"
+  },
+  {
+    "id": "vim snippet",
+    "name": "Vim Snippet",
+    "color": "#199f4b"
+  },
+  {
+    "id": "firrtl",
+    "name": "FIRRTL",
+    "color": "#2f632f"
+  },
+  {
+    "id": "jar manifest",
+    "name": "JAR Manifest",
+    "color": "#b07219"
+  },
+  {
+    "id": "netlogo",
+    "name": "NetLogo",
+    "color": "#ff6375"
+  },
+  {
+    "id": "pddl",
+    "name": "PDDL",
+    "color": "#0d00ff"
+  },
+  {
+    "id": "pickle",
+    "name": "Pickle",
+    "color": ""
+  },
+  {
+    "id": "web ontology language",
+    "name": "Web Ontology Language",
+    "color": "#5b70bd"
+  },
+  {
+    "id": "cameligo",
+    "name": "CameLIGO",
+    "color": "#3be133"
+  },
+  {
+    "id": "ebnf",
+    "name": "EBNF",
+    "color": ""
+  },
+  {
+    "id": "microsoft visual studio solution",
+    "name": "Microsoft Visual Studio Solution",
+    "color": ""
+  },
+  {
+    "id": "nemerle",
+    "name": "Nemerle",
+    "color": "#3d3c6e"
+  },
+  {
+    "id": "rexx",
+    "name": "REXX",
+    "color": "#d90e09"
+  },
+  {
+    "id": "xquery",
+    "name": "XQuery",
+    "color": "#5232e7"
+  },
+  {
+    "id": "icalendar",
+    "name": "iCalendar",
+    "color": "#ec564c"
+  },
+  {
+    "id": "jq",
+    "name": "jq",
+    "color": "#c7254e"
+  },
+  {
+    "id": "autoit",
+    "name": "AutoIt",
+    "color": "#1C3552"
+  },
+  {
+    "id": "gcc machine description",
+    "name": "GCC Machine Description",
+    "color": "#FFCFAB"
+  },
+  {
+    "id": "git revision list",
+    "name": "Git Revision List",
+    "color": "#F44D27"
+  },
+  {
+    "id": "javascript",
+    "name": "JavaScript",
+    "color": "#f1e05a"
+  },
+  {
+    "id": "ltspice symbol",
+    "name": "LTspice Symbol",
+    "color": ""
+  },
+  {
+    "id": "ligolang",
+    "name": "LigoLANG",
+    "color": "#0e74ff"
+  },
+  {
+    "id": "opencl",
+    "name": "OpenCL",
+    "color": "#ed2e2d"
+  },
+  {
+    "id": "perl",
+    "name": "Perl",
+    "color": "#0298c3"
+  },
+  {
+    "id": "volt",
+    "name": "Volt",
+    "color": "#1F1F1F"
+  },
+  {
+    "id": "json5",
+    "name": "JSON5",
+    "color": "#267CB9"
+  },
+  {
+    "id": "jsonld",
+    "name": "JSONLD",
+    "color": "#0c479c"
+  },
+  {
+    "id": "kaitai struct",
+    "name": "Kaitai Struct",
+    "color": "#773b37"
+  },
+  {
+    "id": "peg.js",
+    "name": "PEG.js",
+    "color": "#234d6b"
+  },
+  {
+    "id": "textmate properties",
+    "name": "TextMate Properties",
+    "color": "#df66e4"
+  },
+  {
+    "id": "twig",
+    "name": "Twig",
+    "color": "#c1d026"
+  },
+  {
+    "id": "visual basic .net",
+    "name": "Visual Basic .NET",
+    "color": "#945db7"
+  },
+  {
+    "id": "altium designer",
+    "name": "Altium Designer",
+    "color": "#A89663"
+  },
+  {
+    "id": "cap cds",
+    "name": "CAP CDS",
+    "color": "#0092d1"
+  },
+  {
+    "id": "groovy server pages",
+    "name": "Groovy Server Pages",
+    "color": "#4298b8"
+  },
+  {
+    "id": "hyphy",
+    "name": "HyPhy",
+    "color": ""
+  },
+  {
+    "id": "mql4",
+    "name": "MQL4",
+    "color": "#62A8D6"
+  },
+  {
+    "id": "supercollider",
+    "name": "SuperCollider",
+    "color": "#46390b"
+  },
+  {
+    "id": "win32 message file",
+    "name": "Win32 Message File",
+    "color": ""
+  },
+  {
+    "id": "creole",
+    "name": "Creole",
+    "color": ""
+  },
+  {
+    "id": "cylc",
+    "name": "Cylc",
+    "color": "#00b3fd"
+  },
+  {
+    "id": "eagle",
+    "name": "Eagle",
+    "color": ""
+  },
+  {
+    "id": "elm",
+    "name": "Elm",
+    "color": "#60B5CC"
+  },
+  {
+    "id": "fennel",
+    "name": "Fennel",
+    "color": "#fff3d7"
+  },
+  {
+    "id": "git config",
+    "name": "Git Config",
+    "color": "#F44D27"
+  },
+  {
+    "id": "java",
+    "name": "Java",
+    "color": "#b07219"
+  },
+  {
+    "id": "protocol buffer text format",
+    "name": "Protocol Buffer Text Format",
+    "color": ""
+  },
+  {
+    "id": "vba",
+    "name": "VBA",
+    "color": "#867db1"
+  },
+  {
+    "id": "arc",
+    "name": "Arc",
+    "color": "#aa2afe"
+  },
+  {
+    "id": "augeas",
+    "name": "Augeas",
+    "color": "#9CC134"
+  },
+  {
+    "id": "conll-u",
+    "name": "CoNLL-U",
+    "color": ""
+  },
+  {
+    "id": "python traceback",
+    "name": "Python traceback",
+    "color": "#3572A5"
+  },
+  {
+    "id": "texinfo",
+    "name": "Texinfo",
+    "color": ""
+  },
+  {
+    "id": "bicep",
+    "name": "Bicep",
+    "color": "#519aba"
+  },
+  {
+    "id": "browserslist",
+    "name": "Browserslist",
+    "color": "#ffd539"
+  },
+  {
+    "id": "common lisp",
+    "name": "Common Lisp",
+    "color": "#3fb68b"
+  },
+  {
+    "id": "diff",
+    "name": "Diff",
+    "color": ""
+  },
+  {
+    "id": "eclipse",
+    "name": "ECLiPSe",
+    "color": "#001d9d"
+  },
+  {
+    "id": "glyph",
+    "name": "Glyph",
+    "color": "#c1ac7f"
+  },
+  {
+    "id": "lasso",
+    "name": "Lasso",
+    "color": "#999999"
+  },
+  {
+    "id": "macaulay2",
+    "name": "Macaulay2",
+    "color": "#d8ffff"
+  },
+  {
+    "id": "microsoft developer studio project",
+    "name": "Microsoft Developer Studio Project",
+    "color": ""
+  },
+  {
+    "id": "nginx",
+    "name": "Nginx",
+    "color": "#009639"
+  },
+  {
+    "id": "routeros script",
+    "name": "RouterOS Script",
+    "color": "#DE3941"
+  },
+  {
+    "id": "zimpl",
+    "name": "Zimpl",
+    "color": "#d67711"
+  },
+  {
+    "id": "asl",
+    "name": "ASL",
+    "color": ""
+  },
+  {
+    "id": "applescript",
+    "name": "AppleScript",
+    "color": "#101F1F"
+  },
+  {
+    "id": "ballerina",
+    "name": "Ballerina",
+    "color": "#FF5000"
+  },
+  {
+    "id": "hcl",
+    "name": "HCL",
+    "color": "#844FBA"
+  },
+  {
+    "id": "parrot assembly",
+    "name": "Parrot Assembly",
+    "color": ""
+  },
+  {
+    "id": "praat",
+    "name": "Praat",
+    "color": "#c8506d"
+  },
+  {
+    "id": "reason",
+    "name": "Reason",
+    "color": "#ff5847"
+  },
+  {
+    "id": "sugarss",
+    "name": "SugarSS",
+    "color": "#2fcc9f"
+  },
+  {
+    "id": "textile",
+    "name": "Textile",
+    "color": "#ffe7ac"
+  },
+  {
+    "id": "gosu",
+    "name": "Gosu",
+    "color": "#82937f"
+  },
+  {
+    "id": "modula-3",
+    "name": "Modula-3",
+    "color": "#223388"
+  },
+  {
+    "id": "self",
+    "name": "Self",
+    "color": "#0579aa"
+  },
+  {
+    "id": "nanorc",
+    "name": "nanorc",
+    "color": "#2d004d"
+  },
+  {
+    "id": "imba",
+    "name": "Imba",
+    "color": "#16cec6"
+  },
+  {
+    "id": "lex",
+    "name": "Lex",
+    "color": "#DBCA00"
+  },
+  {
+    "id": "muf",
+    "name": "MUF",
+    "color": ""
+  },
+  {
+    "id": "oasv3-json",
+    "name": "OASv3-json",
+    "color": "#85ea2d"
+  },
+  {
+    "id": "parrot",
+    "name": "Parrot",
+    "color": "#f3ca0a"
+  },
+  {
+    "id": "raku",
+    "name": "Raku",
+    "color": "#0000fb"
+  },
+  {
+    "id": "shen",
+    "name": "Shen",
+    "color": "#120F14"
+  },
+  {
+    "id": "hosts file",
+    "name": "Hosts File",
+    "color": "#308888"
+  },
+  {
+    "id": "matlab",
+    "name": "MATLAB",
+    "color": "#e16737"
+  },
+  {
+    "id": "mojo",
+    "name": "Mojo",
+    "color": "#ff4c1f"
+  },
+  {
+    "id": "sqf",
+    "name": "SQF",
+    "color": "#3F3F3F"
+  },
+  {
+    "id": "talon",
+    "name": "Talon",
+    "color": "#333333"
+  },
+  {
+    "id": "vcard",
+    "name": "vCard",
+    "color": "#ee2647"
+  },
+  {
+    "id": "gerber image",
+    "name": "Gerber Image",
+    "color": "#d20b00"
+  },
+  {
+    "id": "hocon",
+    "name": "HOCON",
+    "color": "#9ff8ee"
+  },
+  {
+    "id": "jetbrains mps",
+    "name": "JetBrains MPS",
+    "color": "#21D789"
+  },
+  {
+    "id": "limbo",
+    "name": "Limbo",
+    "color": ""
+  },
+  {
+    "id": "netlinx",
+    "name": "NetLinx",
+    "color": "#0aa0ff"
+  },
+  {
+    "id": "openedge abl",
+    "name": "OpenEdge ABL",
+    "color": "#5ce600"
+  },
+  {
+    "id": "edn",
+    "name": "edn",
+    "color": ""
+  },
+  {
+    "id": "cap'n proto",
+    "name": "Cap'n Proto",
+    "color": "#c42727"
+  },
+  {
+    "id": "hiveql",
+    "name": "HiveQL",
+    "color": "#dce200"
+  },
+  {
+    "id": "ignore list",
+    "name": "Ignore List",
+    "color": "#000000"
+  },
+  {
+    "id": "jolie",
+    "name": "Jolie",
+    "color": "#843179"
+  },
+  {
+    "id": "mdx",
+    "name": "MDX",
+    "color": "#fcb32c"
+  },
+  {
+    "id": "mint",
+    "name": "Mint",
+    "color": "#02b046"
+  },
+  {
+    "id": "chuck",
+    "name": "ChucK",
+    "color": "#3f8000"
+  },
+  {
+    "id": "jinja",
+    "name": "Jinja",
+    "color": "#a52a22"
+  },
+  {
+    "id": "monkey c",
+    "name": "Monkey C",
+    "color": "#8D6747"
+  },
+  {
+    "id": "nu",
+    "name": "Nu",
+    "color": "#c9df40"
+  },
+  {
+    "id": "ron",
+    "name": "RON",
+    "color": "#a62c00"
+  },
+  {
+    "id": "smt",
+    "name": "SMT",
+    "color": ""
+  },
+  {
+    "id": "smpl",
+    "name": "SmPL",
+    "color": "#c94949"
+  },
+  {
+    "id": "starlark",
+    "name": "Starlark",
+    "color": "#76d275"
+  },
+  {
+    "id": "tsql",
+    "name": "TSQL",
+    "color": "#e38c00"
+  },
+  {
+    "id": "uno",
+    "name": "Uno",
+    "color": "#9933cc"
+  },
+  {
+    "id": "x pixmap",
+    "name": "X PixMap",
+    "color": ""
+  },
+  {
+    "id": "b4x",
+    "name": "B4X",
+    "color": "#00e4ff"
+  },
+  {
+    "id": "jison",
+    "name": "Jison",
+    "color": "#56b3cb"
+  },
+  {
+    "id": "mql5",
+    "name": "MQL5",
+    "color": "#4A76B8"
+  },
+  {
+    "id": "nl",
+    "name": "NL",
+    "color": ""
+  },
+  {
+    "id": "pkl",
+    "name": "Pkl",
+    "color": "#6b9543"
+  },
+  {
+    "id": "yul",
+    "name": "Yul",
+    "color": "#794932"
+  },
+  {
+    "id": "asn.1",
+    "name": "ASN.1",
+    "color": ""
+  },
+  {
+    "id": "asciidoc",
+    "name": "AsciiDoc",
+    "color": "#73a0c5"
+  },
+  {
+    "id": "c",
+    "name": "C",
+    "color": "#555555"
+  },
+  {
+    "id": "godot resource",
+    "name": "Godot Resource",
+    "color": "#355570"
+  },
+  {
+    "id": "livescript",
+    "name": "LiveScript",
+    "color": "#499886"
+  },
+  {
+    "id": "xml",
+    "name": "XML",
+    "color": "#0060ac"
+  },
+  {
+    "id": "charity",
+    "name": "Charity",
+    "color": ""
+  },
+  {
+    "id": "postscript",
+    "name": "PostScript",
+    "color": "#da291c"
+  },
+  {
+    "id": "rouge",
+    "name": "Rouge",
+    "color": "#cc0088"
+  },
+  {
+    "id": "smalltalk",
+    "name": "Smalltalk",
+    "color": "#596706"
+  },
+  {
+    "id": "aidl",
+    "name": "AIDL",
+    "color": "#34EB6B"
+  },
+  {
+    "id": "ant build system",
+    "name": "Ant Build System",
+    "color": "#A9157E"
+  },
+  {
+    "id": "cmake",
+    "name": "CMake",
+    "color": "#DA3434"
+  },
+  {
+    "id": "gap",
+    "name": "GAP",
+    "color": "#0000cc"
+  },
+  {
+    "id": "glimmer js",
+    "name": "Glimmer JS",
+    "color": "#F5835F"
+  },
+  {
+    "id": "go workspace",
+    "name": "Go Workspace",
+    "color": "#00ADD8"
+  },
+  {
+    "id": "m4sugar",
+    "name": "M4Sugar",
+    "color": ""
+  },
+  {
+    "id": "mask",
+    "name": "Mask",
+    "color": "#f97732"
+  },
+  {
+    "id": "open policy agent",
+    "name": "Open Policy Agent",
+    "color": "#7d9199"
+  },
+  {
+    "id": "plpgsql",
+    "name": "PLpgSQL",
+    "color": "#336790"
+  },
+  {
+    "id": "pogoscript",
+    "name": "PogoScript",
+    "color": "#d80074"
+  },
+  {
+    "id": "racket",
+    "name": "Racket",
+    "color": "#3c5caa"
+  },
+  {
+    "id": "regular expression",
+    "name": "Regular Expression",
+    "color": "#009a00"
+  },
+  {
+    "id": "v",
+    "name": "V",
+    "color": "#4f87c4"
+  },
+  {
+    "id": "cairo zero",
+    "name": "Cairo Zero",
+    "color": "#ff4a48"
+  },
+  {
+    "id": "lsl",
+    "name": "LSL",
+    "color": "#3d9970"
+  },
+  {
+    "id": "mustache",
+    "name": "Mustache",
+    "color": "#724b3b"
+  },
+  {
+    "id": "x bitmap",
+    "name": "X BitMap",
+    "color": ""
+  },
+  {
+    "id": "classic asp",
+    "name": "Classic ASP",
+    "color": "#6a40fd"
+  },
+  {
+    "id": "dockerfile",
+    "name": "Dockerfile",
+    "color": "#384d54"
+  },
+  {
+    "id": "nunjucks",
+    "name": "Nunjucks",
+    "color": "#3d8137"
+  },
+  {
+    "id": "plantuml",
+    "name": "PlantUML",
+    "color": "#fbbd16"
+  },
+  {
+    "id": "raml",
+    "name": "RAML",
+    "color": "#77d9fb"
+  },
+  {
+    "id": "sourcepawn",
+    "name": "SourcePawn",
+    "color": "#f69e1d"
+  },
+  {
+    "id": "cirru",
+    "name": "Cirru",
+    "color": "#ccccff"
+  },
+  {
+    "id": "dataweave",
+    "name": "DataWeave",
+    "color": "#003a52"
+  },
+  {
+    "id": "ceylon",
+    "name": "Ceylon",
+    "color": "#dfa535"
+  },
+  {
+    "id": "irc log",
+    "name": "IRC log",
+    "color": ""
+  },
+  {
+    "id": "jest snapshot",
+    "name": "Jest Snapshot",
+    "color": "#15c213"
+  },
+  {
+    "id": "lean 4",
+    "name": "Lean 4",
+    "color": ""
+  },
+  {
+    "id": "monkey",
+    "name": "Monkey",
+    "color": ""
+  },
+  {
+    "id": "selinux policy",
+    "name": "SELinux Policy",
+    "color": ""
+  },
+  {
+    "id": "whiley",
+    "name": "Whiley",
+    "color": "#d5c397"
+  },
+  {
+    "id": "yara",
+    "name": "YARA",
+    "color": "#220000"
+  },
+  {
+    "id": "antlr",
+    "name": "ANTLR",
+    "color": "#9DC3FF"
+  },
+  {
+    "id": "forth",
+    "name": "Forth",
+    "color": "#341708"
+  },
+  {
+    "id": "nsis",
+    "name": "NSIS",
+    "color": ""
+  },
+  {
+    "id": "sql",
+    "name": "SQL",
+    "color": "#e38c00"
+  },
+  {
+    "id": "squirrel",
+    "name": "Squirrel",
+    "color": "#800000"
+  },
+  {
+    "id": "cadence",
+    "name": "Cadence",
+    "color": "#00ef8b"
+  },
+  {
+    "id": "gn",
+    "name": "GN",
+    "color": ""
+  },
+  {
+    "id": "html",
+    "name": "HTML",
+    "color": "#e34c26"
+  },
+  {
+    "id": "opa",
+    "name": "Opa",
+    "color": ""
+  },
+  {
+    "id": "protocol buffer",
+    "name": "Protocol Buffer",
+    "color": ""
+  },
+  {
+    "id": "codeowners",
+    "name": "CODEOWNERS",
+    "color": ""
+  },
+  {
+    "id": "carbon",
+    "name": "Carbon",
+    "color": "#222222"
+  },
+  {
+    "id": "eiffel",
+    "name": "Eiffel",
+    "color": "#4d6977"
+  },
+  {
+    "id": "jison lex",
+    "name": "Jison Lex",
+    "color": "#56b3cb"
+  },
+  {
+    "id": "typst",
+    "name": "Typst",
+    "color": "#239dad"
+  },
+  {
+    "id": "1c enterprise",
+    "name": "1C Enterprise",
+    "color": "#814CCC"
+  },
+  {
+    "id": "omgrofl",
+    "name": "Omgrofl",
+    "color": "#cabbff"
+  },
+  {
+    "id": "picolisp",
+    "name": "PicoLisp",
+    "color": "#6067af"
+  },
+  {
+    "id": "unix assembly",
+    "name": "Unix Assembly",
+    "color": ""
+  },
+  {
+    "id": "xtend",
+    "name": "Xtend",
+    "color": "#24255d"
+  },
+  {
+    "id": "actionscript",
+    "name": "ActionScript",
+    "color": "#882B0F"
+  },
+  {
+    "id": "r",
+    "name": "R",
+    "color": "#198CE7"
+  },
+  {
+    "id": "alloy",
+    "name": "Alloy",
+    "color": "#64C800"
+  },
+  {
+    "id": "dotenv",
+    "name": "Dotenv",
+    "color": "#e5d559"
+  },
+  {
+    "id": "emberscript",
+    "name": "EmberScript",
+    "color": "#FFF4F3"
+  },
+  {
+    "id": "janet",
+    "name": "Janet",
+    "color": "#0886a5"
+  },
+  {
+    "id": "lookml",
+    "name": "LookML",
+    "color": "#652B81"
+  },
+  {
+    "id": "pic",
+    "name": "Pic",
+    "color": ""
+  },
+  {
+    "id": "solidity",
+    "name": "Solidity",
+    "color": "#AA6746"
+  },
+  {
+    "id": "tex",
+    "name": "TeX",
+    "color": "#3D6117"
+  },
+  {
+    "id": "asp.net",
+    "name": "ASP.NET",
+    "color": "#9400ff"
+  },
+  {
+    "id": "freebasic",
+    "name": "FreeBasic",
+    "color": "#141AC9"
+  },
+  {
+    "id": "minid",
+    "name": "MiniD",
+    "color": ""
+  },
+  {
+    "id": "objdump",
+    "name": "ObjDump",
+    "color": ""
+  },
+  {
+    "id": "mtml",
+    "name": "MTML",
+    "color": "#b7e1f4"
+  },
+  {
+    "id": "quake",
+    "name": "Quake",
+    "color": "#882233"
+  },
+  {
+    "id": "shellcheck config",
+    "name": "ShellCheck Config",
+    "color": "#cecfcb"
+  },
+  {
+    "id": "wgsl",
+    "name": "WGSL",
+    "color": "#1a5e9a"
+  },
+  {
+    "id": "x font directory index",
+    "name": "X Font Directory Index",
+    "color": ""
+  },
+  {
+    "id": "kvlang",
+    "name": "kvlang",
+    "color": "#1da6e0"
+  },
+  {
+    "id": "q",
+    "name": "q",
+    "color": "#0040cd"
+  },
+  {
+    "id": "alpine abuild",
+    "name": "Alpine Abuild",
+    "color": "#0D597F"
+  },
+  {
+    "id": "hack",
+    "name": "Hack",
+    "color": "#878787"
+  },
+  {
+    "id": "ampl",
+    "name": "AMPL",
+    "color": "#E6EFBB"
+  },
+  {
+    "id": "cython",
+    "name": "Cython",
+    "color": "#fedf5b"
+  },
+  {
+    "id": "f#",
+    "name": "F#",
+    "color": "#b845fc"
+  },
+  {
+    "id": "netlinx+erb",
+    "name": "NetLinx+ERB",
+    "color": "#747faa"
+  },
+  {
+    "id": "pod 6",
+    "name": "Pod 6",
+    "color": ""
+  },
+  {
+    "id": "rmarkdown",
+    "name": "RMarkdown",
+    "color": "#198ce7"
+  },
+  {
+    "id": "text",
+    "name": "Text",
+    "color": ""
+  },
+  {
+    "id": "angelscript",
+    "name": "AngelScript",
+    "color": "#C7D7DC"
+  },
+  {
+    "id": "dm",
+    "name": "DM",
+    "color": "#447265"
+  },
+  {
+    "id": "erlang",
+    "name": "Erlang",
+    "color": "#B83998"
+  },
+  {
+    "id": "python console",
+    "name": "Python console",
+    "color": "#3572A5"
+  },
+  {
+    "id": "unity3d asset",
+    "name": "Unity3D Asset",
+    "color": "#222c37"
+  },
+  {
+    "id": "d2",
+    "name": "D2",
+    "color": "#526ee8"
+  },
+  {
+    "id": "linker script",
+    "name": "Linker Script",
+    "color": ""
+  },
+  {
+    "id": "restructuredtext",
+    "name": "reStructuredText",
+    "color": "#141414"
+  },
+  {
+    "id": "g-code",
+    "name": "G-code",
+    "color": "#D08CF2"
+  },
+  {
+    "id": "game maker language",
+    "name": "Game Maker Language",
+    "color": "#71b417"
+  },
+  {
+    "id": "genshi",
+    "name": "Genshi",
+    "color": "#951531"
+  },
+  {
+    "id": "propeller spin",
+    "name": "Propeller Spin",
+    "color": "#7fa2a7"
+  },
+  {
+    "id": "swift",
+    "name": "Swift",
+    "color": "#F05138"
+  },
+  {
+    "id": "abnf",
+    "name": "ABNF",
+    "color": ""
+  },
+  {
+    "id": "eq",
+    "name": "EQ",
+    "color": "#a78649"
+  },
+  {
+    "id": "grace",
+    "name": "Grace",
+    "color": "#615f8b"
+  },
+  {
+    "id": "kickstart",
+    "name": "Kickstart",
+    "color": ""
+  },
+  {
+    "id": "literate haskell",
+    "name": "Literate Haskell",
+    "color": "#5e5086"
+  },
+  {
+    "id": "adobe font metrics",
+    "name": "Adobe Font Metrics",
+    "color": "#fa0f00"
+  },
+  {
+    "id": "csound",
+    "name": "Csound",
+    "color": "#1a1a1a"
+  },
+  {
+    "id": "figlet font",
+    "name": "FIGlet Font",
+    "color": "#FFDDBB"
+  },
+  {
+    "id": "loomscript",
+    "name": "LoomScript",
+    "color": ""
+  },
+  {
+    "id": "proguard",
+    "name": "Proguard",
+    "color": ""
+  },
+  {
+    "id": "subrip text",
+    "name": "SubRip Text",
+    "color": "#9e0101"
+  },
+  {
+    "id": "robots.txt",
+    "name": "robots.txt",
+    "color": ""
+  },
+  {
+    "id": "c++",
+    "name": "C++",
+    "color": "#f34b7d"
+  },
+  {
+    "id": "clarion",
+    "name": "Clarion",
+    "color": "#db901e"
+  },
+  {
+    "id": "redirect rules",
+    "name": "Redirect Rules",
+    "color": ""
+  },
+  {
+    "id": "world of warcraft addon data",
+    "name": "World of Warcraft Addon Data",
+    "color": "#f7e43f"
+  },
+  {
+    "id": "graph modeling language",
+    "name": "Graph Modeling Language",
+    "color": ""
+  },
+  {
+    "id": "meson",
+    "name": "Meson",
+    "color": "#007800"
+  },
+  {
+    "id": "opal",
+    "name": "Opal",
+    "color": "#f7ede0"
+  },
+  {
+    "id": "pyret",
+    "name": "Pyret",
+    "color": "#ee1e10"
+  },
+  {
+    "id": "kakounescript",
+    "name": "KakouneScript",
+    "color": "#6f8042"
+  },
+  {
+    "id": "nmodl",
+    "name": "NMODL",
+    "color": "#00356B"
+  },
+  {
+    "id": "scss",
+    "name": "SCSS",
+    "color": "#c6538c"
+  },
+  {
+    "id": "ti program",
+    "name": "TI Program",
+    "color": "#A0AA87"
+  },
+  {
+    "id": "vala",
+    "name": "Vala",
+    "color": "#a56de2"
+  },
+  {
+    "id": "wisp",
+    "name": "wisp",
+    "color": "#7582D1"
+  },
+  {
+    "id": "bitbake",
+    "name": "BitBake",
+    "color": "#00bce4"
+  },
+  {
+    "id": "coldfusion cfc",
+    "name": "ColdFusion CFC",
+    "color": "#ed2cd6"
+  },
+  {
+    "id": "editorconfig",
+    "name": "EditorConfig",
+    "color": "#fff1f2"
+  },
+  {
+    "id": "kicad schematic",
+    "name": "KiCad Schematic",
+    "color": "#2f4aab"
+  },
+  {
+    "id": "f*",
+    "name": "F*",
+    "color": "#572e30"
+  },
+  {
+    "id": "java server pages",
+    "name": "Java Server Pages",
+    "color": "#2A6277"
+  },
+  {
+    "id": "zap",
+    "name": "ZAP",
+    "color": "#0d665e"
+  },
+  {
+    "id": "befunge",
+    "name": "Befunge",
+    "color": ""
+  },
+  {
+    "id": "ecere projects",
+    "name": "Ecere Projects",
+    "color": "#913960"
+  },
+  {
+    "id": "harbour",
+    "name": "Harbour",
+    "color": "#0e60e3"
+  },
+  {
+    "id": "linux kernel module",
+    "name": "Linux Kernel Module",
+    "color": ""
+  },
+  {
+    "id": "openapi specification v3",
+    "name": "OpenAPI Specification v3",
+    "color": "#85ea2d"
+  },
+  {
+    "id": "option list",
+    "name": "Option List",
+    "color": "#476732"
+  },
+  {
+    "id": "powerbuilder",
+    "name": "PowerBuilder",
+    "color": "#8f0f8d"
+  },
+  {
+    "id": "roff",
+    "name": "Roff",
+    "color": "#ecdebe"
+  },
+  {
+    "id": "type language",
+    "name": "Type Language",
+    "color": ""
+  },
+  {
+    "id": "desktop",
+    "name": "desktop",
+    "color": ""
+  },
+  {
+    "id": "blitzmax",
+    "name": "BlitzMax",
+    "color": "#cd6400"
+  },
+  {
+    "id": "dns zone",
+    "name": "DNS Zone",
+    "color": ""
+  },
+  {
+    "id": "html+php",
+    "name": "HTML+PHP",
+    "color": "#4f5d95"
+  },
+  {
+    "id": "rascal",
+    "name": "Rascal",
+    "color": "#fffaa0"
+  },
+  {
+    "id": "rebol",
+    "name": "Rebol",
+    "color": "#358a5b"
+  },
+  {
+    "id": "berry",
+    "name": "Berry",
+    "color": "#15A13C"
+  },
+  {
+    "id": "cue",
+    "name": "CUE",
+    "color": "#5886E1"
+  },
+  {
+    "id": "dhall",
+    "name": "Dhall",
+    "color": "#dfafff"
+  },
+  {
+    "id": "motorola 68k assembly",
+    "name": "Motorola 68K Assembly",
+    "color": "#005daa"
+  },
+  {
+    "id": "openstep property list",
+    "name": "OpenStep Property List",
+    "color": ""
+  },
+  {
+    "id": "riot",
+    "name": "Riot",
+    "color": "#A71E49"
+  },
+  {
+    "id": "just",
+    "name": "Just",
+    "color": "#384d54"
+  },
+  {
+    "id": "p4",
+    "name": "P4",
+    "color": "#7055b5"
+  },
+  {
+    "id": "pip requirements",
+    "name": "Pip Requirements",
+    "color": "#FFD343"
+  },
+  {
+    "id": "polar",
+    "name": "Polar",
+    "color": "#ae81ff"
+  },
+  {
+    "id": "puppet",
+    "name": "Puppet",
+    "color": "#302B6D"
+  },
+  {
+    "id": "sas",
+    "name": "SAS",
+    "color": "#B34936"
+  },
+  {
+    "id": "wavefront material",
+    "name": "Wavefront Material",
+    "color": ""
+  },
+  {
+    "id": "genero 4gl",
+    "name": "Genero 4gl",
+    "color": "#63408e"
+  },
+  {
+    "id": "sieve",
+    "name": "Sieve",
+    "color": ""
+  },
+  {
+    "id": "zeek",
+    "name": "Zeek",
+    "color": ""
+  },
+  {
+    "id": "adblock filter list",
+    "name": "Adblock Filter List",
+    "color": "#800000"
+  },
+  {
+    "id": "kerboscript",
+    "name": "KerboScript",
+    "color": "#41adf0"
+  },
+  {
+    "id": "rescript",
+    "name": "ReScript",
+    "color": "#ed5051"
+  },
+  {
+    "id": "webassembly",
+    "name": "WebAssembly",
+    "color": "#04133b"
+  },
+  {
+    "id": "witcher script",
+    "name": "Witcher Script",
+    "color": "#ff0000"
+  },
+  {
+    "id": "autohotkey",
+    "name": "AutoHotkey",
+    "color": "#6594b9"
+  },
+  {
+    "id": "ejs",
+    "name": "EJS",
+    "color": "#a91e50"
+  },
+  {
+    "id": "javascript+erb",
+    "name": "JavaScript+ERB",
+    "color": "#f1e05a"
+  },
+  {
+    "id": "metal",
+    "name": "Metal",
+    "color": "#8f14e9"
+  },
+  {
+    "id": "pan",
+    "name": "Pan",
+    "color": "#cc0000"
+  },
+  {
+    "id": "pep8",
+    "name": "Pep8",
+    "color": "#C76F5B"
+  },
+  {
+    "id": "q#",
+    "name": "Q#",
+    "color": "#fed659"
+  },
+  {
+    "id": "coldfusion",
+    "name": "ColdFusion",
+    "color": "#ed2cd6"
+  },
+  {
+    "id": "frege",
+    "name": "Frege",
+    "color": "#00cafe"
+  },
+  {
+    "id": "gdb",
+    "name": "GDB",
+    "color": ""
+  },
+  {
+    "id": "graphql",
+    "name": "GraphQL",
+    "color": "#e10098"
+  },
+  {
+    "id": "julia repl",
+    "name": "Julia REPL",
+    "color": "#a270ba"
+  },
+  {
+    "id": "nasal",
+    "name": "Nasal",
+    "color": "#1d2c4e"
+  },
+  {
+    "id": "slice",
+    "name": "Slice",
+    "color": "#003fa2"
+  },
+  {
+    "id": "papyrus",
+    "name": "Papyrus",
+    "color": "#6600cc"
+  },
+  {
+    "id": "motoko",
+    "name": "Motoko",
+    "color": "#fbb03b"
+  },
+  {
+    "id": "objective-j",
+    "name": "Objective-J",
+    "color": "#ff0c5a"
+  },
+  {
+    "id": "promela",
+    "name": "Promela",
+    "color": "#de0000"
+  },
+  {
+    "id": "slint",
+    "name": "Slint",
+    "color": "#2379F4"
+  },
+  {
+    "id": "yacc",
+    "name": "Yacc",
+    "color": "#4B6C4B"
+  },
+  {
+    "id": "bibtex",
+    "name": "BibTeX",
+    "color": "#778899"
+  },
+  {
+    "id": "clojure",
+    "name": "Clojure",
+    "color": "#db5855"
+  },
+  {
+    "id": "standard ml",
+    "name": "Standard ML",
+    "color": "#dc566d"
+  },
+  {
+    "id": "xpages",
+    "name": "XPages",
+    "color": ""
+  },
+  {
+    "id": "yaml",
+    "name": "YAML",
+    "color": "#cb171e"
+  },
+  {
+    "id": "fancy",
+    "name": "Fancy",
+    "color": "#7b9db4"
+  },
+  {
+    "id": "go",
+    "name": "Go",
+    "color": "#00ADD8"
+  },
+  {
+    "id": "go checksums",
+    "name": "Go Checksums",
+    "color": "#00ADD8"
+  },
+  {
+    "id": "inform 7",
+    "name": "Inform 7",
+    "color": ""
+  },
+  {
+    "id": "j",
+    "name": "J",
+    "color": "#9EEDFF"
+  },
+  {
+    "id": "neon",
+    "name": "NEON",
+    "color": ""
+  },
+  {
+    "id": "robotframework",
+    "name": "RobotFramework",
+    "color": "#00c0b5"
+  },
+  {
+    "id": "brighterscript",
+    "name": "BrighterScript",
+    "color": "#66AABB"
+  },
+  {
+    "id": "cypher",
+    "name": "Cypher",
+    "color": "#34c0eb"
+  },
+  {
+    "id": "digital command language",
+    "name": "DIGITAL Command Language",
+    "color": ""
+  },
+  {
+    "id": "literate coffeescript",
+    "name": "Literate CoffeeScript",
+    "color": "#244776"
+  },
+  {
+    "id": "ninja",
+    "name": "Ninja",
+    "color": ""
+  },
+  {
+    "id": "portugol",
+    "name": "Portugol",
+    "color": "#f8bd00"
+  },
+  {
+    "id": "svg",
+    "name": "SVG",
+    "color": "#ff9900"
+  },
+  {
+    "id": "batchfile",
+    "name": "Batchfile",
+    "color": "#C1F12E"
+  },
+  {
+    "id": "filterscript",
+    "name": "Filterscript",
+    "color": ""
+  },
+  {
+    "id": "maxscript",
+    "name": "MAXScript",
+    "color": "#00a6a6"
+  },
+  {
+    "id": "purebasic",
+    "name": "PureBasic",
+    "color": "#5a6986"
+  },
+  {
+    "id": "bison",
+    "name": "Bison",
+    "color": "#6A463F"
+  },
+  {
+    "id": "clean",
+    "name": "Clean",
+    "color": "#3F85AF"
+  },
+  {
+    "id": "api blueprint",
+    "name": "API Blueprint",
+    "color": "#2ACCA8"
+  },
+  {
+    "id": "bqn",
+    "name": "BQN",
+    "color": "#2b7067"
+  },
+  {
+    "id": "holyc",
+    "name": "HolyC",
+    "color": "#ffefaf"
+  },
+  {
+    "id": "scilab",
+    "name": "Scilab",
+    "color": "#ca0f21"
+  },
+  {
+    "id": "chapel",
+    "name": "Chapel",
+    "color": "#8dc63f"
+  },
+  {
+    "id": "http",
+    "name": "HTTP",
+    "color": "#005C9C"
+  },
+  {
+    "id": "rez",
+    "name": "Rez",
+    "color": "#FFDAB3"
+  },
+  {
+    "id": "ecmarkup",
+    "name": "Ecmarkup",
+    "color": "#eb8131"
+  },
+  {
+    "id": "gemini",
+    "name": "Gemini",
+    "color": "#ff6900"
+  },
+  {
+    "id": "haskell",
+    "name": "Haskell",
+    "color": "#5e5086"
+  },
+  {
+    "id": "kicad layout",
+    "name": "KiCad Layout",
+    "color": "#2f4aab"
+  },
+  {
+    "id": "pact",
+    "name": "Pact",
+    "color": "#F7A8B8"
+  },
+  {
+    "id": "qmake",
+    "name": "QMake",
+    "color": ""
+  },
+  {
+    "id": "debian package control file",
+    "name": "Debian Package Control File",
+    "color": "#D70751"
+  },
+  {
+    "id": "pug",
+    "name": "Pug",
+    "color": "#a86454"
+  },
+  {
+    "id": "blade",
+    "name": "Blade",
+    "color": "#f7523f"
+  },
+  {
+    "id": "clips",
+    "name": "CLIPS",
+    "color": "#00A300"
+  },
+  {
+    "id": "csound score",
+    "name": "Csound Score",
+    "color": "#1a1a1a"
+  },
+  {
+    "id": "realbasic",
+    "name": "REALbasic",
+    "color": ""
+  },
+  {
+    "id": "smali",
+    "name": "Smali",
+    "color": ""
+  },
+  {
+    "id": "tsx",
+    "name": "TSX",
+    "color": "#3178c6"
+  },
+  {
+    "id": "thrift",
+    "name": "Thrift",
+    "color": "#D12127"
+  },
+  {
+    "id": "abap",
+    "name": "ABAP",
+    "color": "#E8274B"
+  },
+  {
+    "id": "curry",
+    "name": "Curry",
+    "color": "#531242"
+  },
+  {
+    "id": "fantom",
+    "name": "Fantom",
+    "color": "#14253c"
+  },
+  {
+    "id": "gentoo ebuild",
+    "name": "Gentoo Ebuild",
+    "color": "#9400ff"
+  },
+  {
+    "id": "rbs",
+    "name": "RBS",
+    "color": "#701516"
+  },
+  {
+    "id": "reasonligo",
+    "name": "ReasonLIGO",
+    "color": "#ff5847"
+  },
+  {
+    "id": "renderscript",
+    "name": "RenderScript",
+    "color": ""
+  },
+  {
+    "id": "vim help file",
+    "name": "Vim Help File",
+    "color": "#199f4b"
+  },
+  {
+    "id": "dircolors",
+    "name": "dircolors",
+    "color": ""
+  },
+  {
+    "id": "mirc script",
+    "name": "mIRC Script",
+    "color": "#3d57c3"
+  },
+  {
+    "id": "go module",
+    "name": "Go Module",
+    "color": "#00ADD8"
+  },
+  {
+    "id": "sqlpl",
+    "name": "SQLPL",
+    "color": "#e38c00"
+  },
+  {
+    "id": "scala",
+    "name": "Scala",
+    "color": "#c22d40"
+  },
+  {
+    "id": "ats",
+    "name": "ATS",
+    "color": "#1ac620"
+  },
+  {
+    "id": "c2hs haskell",
+    "name": "C2hs Haskell",
+    "color": ""
+  },
+  {
+    "id": "cson",
+    "name": "CSON",
+    "color": "#244776"
+  },
+  {
+    "id": "cool",
+    "name": "Cool",
+    "color": ""
+  },
+  {
+    "id": "freemarker",
+    "name": "FreeMarker",
+    "color": "#0050b2"
+  },
+  {
+    "id": "openapi specification v2",
+    "name": "OpenAPI Specification v2",
+    "color": "#85ea2d"
+  },
+  {
+    "id": "vcl",
+    "name": "VCL",
+    "color": "#148AA8"
+  },
+  {
+    "id": "ooc",
+    "name": "ooc",
+    "color": "#b0b77e"
+  },
+  {
+    "id": "parrot internal representation",
+    "name": "Parrot Internal Representation",
+    "color": ""
+  },
+  {
+    "id": "prolog",
+    "name": "Prolog",
+    "color": "#74283c"
+  },
+  {
+    "id": "record jar",
+    "name": "Record Jar",
+    "color": "#0673ba"
+  },
+  {
+    "id": "ags script",
+    "name": "AGS Script",
+    "color": "#B9D9FF"
+  },
+  {
+    "id": "assembly",
+    "name": "Assembly",
+    "color": "#6E4C13"
+  },
+  {
+    "id": "dune",
+    "name": "Dune",
+    "color": "#89421e"
+  },
+  {
+    "id": "ink",
+    "name": "Ink",
+    "color": ""
+  },
+  {
+    "id": "luau",
+    "name": "Luau",
+    "color": "#00A2FF"
+  },
+  {
+    "id": "nit",
+    "name": "Nit",
+    "color": "#009917"
+  },
+  {
+    "id": "tcl",
+    "name": "Tcl",
+    "color": "#e4cc98"
+  },
+  {
+    "id": "cycript",
+    "name": "Cycript",
+    "color": ""
+  },
+  {
+    "id": "fortran",
+    "name": "Fortran",
+    "color": "#4d41b1"
+  },
+  {
+    "id": "isabelle root",
+    "name": "Isabelle ROOT",
+    "color": "#FEFE00"
+  },
+  {
+    "id": "livecode script",
+    "name": "LiveCode Script",
+    "color": "#0c5ba5"
+  },
+  {
+    "id": "m4",
+    "name": "M4",
+    "color": ""
+  },
+  {
+    "id": "slash",
+    "name": "Slash",
+    "color": "#007eff"
+  },
+  {
+    "id": "apex",
+    "name": "Apex",
+    "color": "#1797c0"
+  },
+  {
+    "id": "collada",
+    "name": "COLLADA",
+    "color": "#F1A42B"
+  },
+  {
+    "id": "closure templates",
+    "name": "Closure Templates",
+    "color": "#0d948f"
+  },
+  {
+    "id": "e-mail",
+    "name": "E-mail",
+    "color": ""
+  },
+  {
+    "id": "tla",
+    "name": "TLA",
+    "color": "#4b0079"
+  },
+  {
+    "id": "wget config",
+    "name": "Wget Config",
+    "color": ""
+  },
+  {
+    "id": "wollok",
+    "name": "Wollok",
+    "color": "#a23738"
+  },
+  {
+    "id": "c#",
+    "name": "C#",
+    "color": "#178600"
+  },
+  {
+    "id": "jflex",
+    "name": "JFlex",
+    "color": "#DBCA00"
+  },
+  {
+    "id": "oxygene",
+    "name": "Oxygene",
+    "color": "#cdd0e3"
+  },
+  {
+    "id": "toit",
+    "name": "Toit",
+    "color": "#c2c9fb"
+  },
+  {
+    "id": "agda",
+    "name": "Agda",
+    "color": "#315665"
+  },
+  {
+    "id": "hy",
+    "name": "Hy",
+    "color": "#7790B2"
+  },
+  {
+    "id": "llvm",
+    "name": "LLVM",
+    "color": "#185619"
+  },
+  {
+    "id": "qml",
+    "name": "QML",
+    "color": "#44a51c"
+  },
+  {
+    "id": "verilog",
+    "name": "Verilog",
+    "color": "#b2b7f8"
+  },
+  {
+    "id": "webidl",
+    "name": "WebIDL",
+    "color": ""
+  },
+  {
+    "id": "ec",
+    "name": "eC",
+    "color": "#913960"
+  },
+  {
+    "id": "al",
+    "name": "AL",
+    "color": "#3AA2B5"
+  },
+  {
+    "id": "awk",
+    "name": "Awk",
+    "color": "#c30e9b"
+  },
+  {
+    "id": "html+razor",
+    "name": "HTML+Razor",
+    "color": "#512be4"
+  },
+  {
+    "id": "mirah",
+    "name": "Mirah",
+    "color": "#c7a938"
+  },
+  {
+    "id": "module management system",
+    "name": "Module Management System",
+    "color": ""
+  },
+  {
+    "id": "nushell",
+    "name": "Nushell",
+    "color": "#4E9906"
+  },
+  {
+    "id": "stylus",
+    "name": "Stylus",
+    "color": "#ff6347"
+  },
+  {
+    "id": "unified parallel c",
+    "name": "Unified Parallel C",
+    "color": "#4e3617"
+  },
+  {
+    "id": "windows registry entries",
+    "name": "Windows Registry Entries",
+    "color": "#52d5ff"
+  },
+  {
+    "id": "astro",
+    "name": "Astro",
+    "color": "#ff5a03"
+  },
+  {
+    "id": "gettext catalog",
+    "name": "Gettext Catalog",
+    "color": ""
+  },
+  {
+    "id": "html+erb",
+    "name": "HTML+ERB",
+    "color": "#701516"
+  },
+  {
+    "id": "logtalk",
+    "name": "Logtalk",
+    "color": "#295b9a"
+  },
+  {
+    "id": "rpgle",
+    "name": "RPGLE",
+    "color": "#2BDE21"
+  },
+  {
+    "id": "visual basic 6.0",
+    "name": "Visual Basic 6.0",
+    "color": "#2c6353"
+  },
+  {
+    "id": "wikitext",
+    "name": "Wikitext",
+    "color": "#fc5757"
+  },
+  {
+    "id": "xslt",
+    "name": "XSLT",
+    "color": "#EB8CEB"
+  },
+  {
+    "id": "elvish",
+    "name": "Elvish",
+    "color": "#55BB55"
+  },
+  {
+    "id": "euphoria",
+    "name": "Euphoria",
+    "color": "#FF790B"
+  },
+  {
+    "id": "glyph bitmap distribution format",
+    "name": "Glyph Bitmap Distribution Format",
+    "color": ""
+  },
+  {
+    "id": "latte",
+    "name": "Latte",
+    "color": "#f2a542"
+  },
+  {
+    "id": "mathematica",
+    "name": "Mathematica",
+    "color": "#dd1100"
+  },
+  {
+    "id": "mercury",
+    "name": "Mercury",
+    "color": "#ff2b2b"
+  },
+  {
+    "id": "mermaid",
+    "name": "Mermaid",
+    "color": "#ff3670"
+  },
+  {
+    "id": "turing",
+    "name": "Turing",
+    "color": "#cf142b"
+  }
+]

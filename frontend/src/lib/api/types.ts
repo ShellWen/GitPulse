@@ -1,17 +1,8 @@
 import { z } from 'zod'
 
-export const baseRequest = z.object({})
+export const errorResponse = z.object({
+  code: z.number(),
+  message: z.string(),
+})
 
-export type BaseRequest = z.infer<typeof baseRequest>
-
-export const baseResponse = <T extends z.ZodType>(data: T) =>
-  z.object({
-    code: z.number(),
-    message: z.string(),
-    data: data,
-  })
-
-export type BaseResponse<T extends z.ZodType> = z.infer<ReturnType<typeof baseResponse<T>>>
-
-export const baseResponseNull = baseResponse(z.null())
-export type BaseResponseNull = z.infer<ReturnType<typeof baseResponse<z.ZodNull>>>
+export type ErrorResponse = z.infer<typeof errorResponse>

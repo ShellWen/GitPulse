@@ -1,14 +1,67 @@
-import { getDeveloper } from '$/lib/api/endpoint/developer.ts'
+import {
+  getDeveloper,
+  getDeveloperLanguages,
+  getDeveloperPulsePoint,
+  getDeveloperRegion, searchDevelopers,
+} from '$/lib/api/endpoint/developer.ts'
 import { useQuery, useSuspenseQuery } from '@tanstack/react-query'
 
 export const useDeveloper = (username: string) =>
   useQuery({
-    queryKey: ['developer', username],
+    queryKey: ['developers', username],
     queryFn: () => getDeveloper(username),
   })
 
 export const useSuspenseDeveloper = (username: string) =>
   useSuspenseQuery({
-    queryKey: ['developer', username],
+    queryKey: ['developers', username],
     queryFn: () => getDeveloper(username),
+  })
+
+export const useDeveloperPulsePoint = (username: string) =>
+  useQuery({
+    queryKey: ['developers', username, 'pulse-point'],
+    queryFn: () => getDeveloperPulsePoint(username),
+  })
+
+export const useSuspenseDeveloperPulsePoint = (username: string) =>
+  useSuspenseQuery({
+    queryKey: ['developers', username, 'pulse-point'],
+    queryFn: () => getDeveloperPulsePoint(username),
+  })
+
+export const useDeveloperLanguages = (username: string) =>
+  useQuery({
+    queryKey: ['developers', username, 'languages'],
+    queryFn: () => getDeveloperLanguages(username),
+  })
+
+export const useSuspenseDeveloperLanguages = (username: string) =>
+  useSuspenseQuery({
+    queryKey: ['developers', username, 'languages'],
+    queryFn: () => getDeveloperLanguages(username),
+  })
+
+export const useDeveloperRegion = (username: string) =>
+  useQuery({
+    queryKey: ['developers', username, 'region'],
+    queryFn: () => getDeveloperRegion(username),
+  })
+
+export const useSuspenseDeveloperRegion = (username: string) =>
+  useSuspenseQuery({
+    queryKey: ['developers', username, 'region'],
+    queryFn: () => getDeveloperRegion(username),
+  })
+
+export const useSearchDevelopers = (languageId: string, region: string, limit: number) =>
+  useQuery({
+    queryKey: ['developers', languageId, region, limit],
+    queryFn: () => searchDevelopers(languageId, region, limit),
+  })
+
+export const useSuspenseSearchDevelopers = (languageId: string, region: string, limit: number) =>
+  useSuspenseQuery({
+    queryKey: ['developers', languageId, region, limit],
+    queryFn: () => searchDevelopers(languageId, region, limit),
   })

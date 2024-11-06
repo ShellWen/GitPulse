@@ -1,7 +1,6 @@
 import { BusinessError, HttpError } from '$/lib/api/error.ts'
+import { errorResponse } from '$/lib/api/types.ts'
 import { z } from 'zod'
-
-import { baseResponse, baseResponseNull } from './types.ts'
 
 const parseResponse = async <T extends z.ZodType>(response: Response, respZodObject: T): Promise<z.infer<T>> => {
   let resp: unknown
@@ -12,24 +11,23 @@ const parseResponse = async <T extends z.ZodType>(response: Response, respZodObj
     throw new HttpError(response, 'Failed to parse response: ' + response)
   }
 
-  const respWrapper = baseResponse(respZodObject)
-  const respObj = respWrapper.safeParse(resp)
-  if (respObj.success) return respObj.data.data
-
-  // if failed to parse response, we parse it as an error
-  const errorResp = baseResponseNull.safeParse(resp)
-  if (errorResp.success && errorResp.data.code !== 0) {
-    throw new BusinessError(errorResp.data.code, errorResp.data.message)
+  if (response.ok) {
+    return respZodObject.parse(resp)
   }
 
-  throw new HttpError(response, 'Failed to parse response: ' + resp)
+  // parse as errorResponse
+  const errorResp = errorResponse.safeParse(resp)
+  if (!errorResp.success) {
+    throw new HttpError(response, 'Failed to parse response: ' + resp)
+  }
+  throw new BusinessError(errorResp.data.code, errorResp.data.message)
 }
 
 /**
  * Fetch with type validating, error handling, and base URL
  */
 export const fetchWrapped = async <T extends z.ZodType>(
-  input: RequestInfo,
+  input: RequestInfo | URL,
   respZodObject: T,
   init?: RequestInit,
 ): Promise<z.infer<T>> => {

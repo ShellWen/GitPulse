@@ -4,8 +4,7 @@ import DeveloperGlance from '$/component/developer/DeveloperGlance.tsx'
 import DeveloperInfo from '$/component/developer/DeveloperInfo.tsx'
 import DeveloperInfoSkeleton from '$/component/developer/DeveloperInfoSkeleton.tsx'
 import { BusinessError } from '$/lib/api/error.ts'
-import { useSuspenseDeveloper } from '$/lib/query/hooks/useDeveloper.ts'
-import { usePulsePoint } from '$/lib/query/hooks/usePulsePoint.ts'
+import { useDeveloperPulsePoint, useSuspenseDeveloper } from '$/lib/query/hooks/useDeveloper.ts'
 import useDarkMode from '$/lib/useDarkMode.ts'
 import type { PieConfig } from '@ant-design/plots/es/components/pie'
 import { QueryErrorResetBoundary } from '@tanstack/react-query'
@@ -17,7 +16,7 @@ const route = getRouteApi('/u_/$username')
 
 const DeveloperInfoWrapper = ({ username }: { username: string }) => {
   const { data: user } = useSuspenseDeveloper(username)
-  const { data: pulsePoint } = usePulsePoint(username)
+  const { data: pulsePoint } = useDeveloperPulsePoint(username)
 
   return (
     <DeveloperInfo
