@@ -18,7 +18,7 @@ COPY ./repo ./repo
 COPY ./fetcher ./fetcher
 COPY ./fetcher/etc/fetcher.yaml /app/fetcher/etc/fetcher.yaml
 ENV GOCACHE=/root/.cache/go-build
-RUN --mount=type=cache,target="/root/.cache/go-build" go build -ldflags="-s -w" -o /app/fetcher ./fetcher
+RUN --mount=type=cache,target="/root/.cache/go-build" go build -ldflags="-s -w" -o /app/fetcher_exec ./fetcher
 
 
 FROM alpine:latest
@@ -29,6 +29,6 @@ WORKDIR /app
 
 VOLUME /app/fetcher/etc
 COPY --from=builder /app/fetcher/etc/fetcher.yaml /app/fetcher/etc/fetcher.yaml
-COPY --from=builder /app/fetcher /app/fetcher
+COPY --from=builder /app/fetcher_exec /app/fetcher_exec
 
-CMD ["./fetcher"]
+CMD ["./fetcher_exec"]
