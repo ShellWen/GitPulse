@@ -1,0 +1,34 @@
+FROM golang:alpine AS builder
+
+LABEL stage=gobuilder
+
+ENV CGO_ENABLED=0
+
+WORKDIR /build
+
+ADD go.mod .
+ADD go.sum .
+RUN go mod download
+COPY ./common ./common
+COPY ./analysis ./analysis
+COPY ./contribution ./contribution
+COPY ./developer ./developer
+COPY ./relation ./relation
+COPY ./repo ./repo
+COPY ./analysis/cmd/api/etc/analysis.yaml /app/analysis/cmd/api/etc/analysis.yaml
+ENV GOCACHE=/root/.cache/go-build
+RUN --mount=type=cache,target="/root/.cache/go-build" go build -ldflags="-s -w" -o /app/analysis_api ./analysis/cmd/api
+
+
+FROM alpine:latest
+
+RUN apk add --no-cache ca-certificates tzdata
+
+WORKDIR /app
+
+VOLUME /app/analyzer/cmd/api/etc
+COPY --from=builder /app/analysis/cmd/api/etc/analysis.yaml /app/analysis/cmd/api/etc/analysis.yaml
+COPY --from=builder /app/analysis_api /app/analysis_api
+COPY ./script/guess_region /app/script/guess_region
+
+CMD ["./analysis_api"]
