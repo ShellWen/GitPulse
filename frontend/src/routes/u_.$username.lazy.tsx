@@ -75,7 +75,7 @@ const LanguagePie = ({ data }: { data: DeveloperLanguages }) => {
         colorField: 'name',
         radius: 0.75,
         label: {
-          text: (d: LanguagePieItem) => `${d.name}\n ${d.percentage}`,
+          text: (d: LanguagePieItem) => `${d.name} ${d.percentage.toFixed(2)}%`,
           position: 'spider',
         },
         tooltip: {
