@@ -3,14 +3,21 @@ import { type ComponentProps, type PropsWithChildren, Suspense, lazy, useCallbac
 import DeveloperGlance from '$/component/developer/DeveloperGlance.tsx'
 import DeveloperInfo from '$/component/developer/DeveloperInfo.tsx'
 import DeveloperInfoSkeleton from '$/component/developer/DeveloperInfoSkeleton.tsx'
+import type { DeveloperLanguages } from '$/lib/api/endpoint/types.ts'
 import { BusinessError } from '$/lib/api/error.ts'
-import { useDeveloperPulsePoint, useSuspenseDeveloper } from '$/lib/query/hooks/useDeveloper.ts'
+import {
+  useDeveloperPulsePoint,
+  useSuspenseDeveloper,
+  useSuspenseDeveloperLanguages,
+  useSuspenseDeveloperRegion,
+} from '$/lib/query/hooks/useDeveloper.ts'
 import useDarkMode from '$/lib/useDarkMode.ts'
 import type { PieConfig } from '@ant-design/plots/es/components/pie'
 import { QueryErrorResetBoundary } from '@tanstack/react-query'
 import { createLazyFileRoute, getRouteApi } from '@tanstack/react-router'
 import { Button, Skeleton } from 'react-daisyui'
 import { ErrorBoundary, type FallbackProps } from 'react-error-boundary'
+import { getEmojiFlag, type TCountryCode } from 'countries-list'
 
 const route = getRouteApi('/u_/$username')
 
@@ -36,42 +43,48 @@ const DeveloperGlanceWrapper = ({ username }: { username: string }) => {
   return <DeveloperGlance developer={user} />
 }
 
-interface DataItem {
-  type: string
-  value: number
+interface LanguagePieItem {
+  id: string
+  color: string
+  name: string
+  percentage: number
 }
-
-const data = [
-  { type: '分类一', value: 27 },
-  { type: '分类二', value: 25 },
-  { type: '分类三', value: 18 },
-  { type: '分类四', value: 15 },
-  { type: '分类五', value: 10 },
-  { type: '其他', value: 5 },
-] as DataItem[]
 
 // It's too large to bundle the whole antd
 const Pie = lazy(() => import('@ant-design/plots/es/components/pie'))
 
-const DemoPie = () => {
+const LanguagePie = ({ data }: { data: DeveloperLanguages }) => {
   const isDarkMode = useDarkMode()
+  const flattenedData: LanguagePieItem[] = useMemo(
+    () => [
+      ...data.languages.map((language) => ({
+        id: language.language.id,
+        color: language.language.color,
+        name: language.language.name,
+        percentage: language.percentage,
+      })),
+    ],
+    [data],
+  )
+
   const config: PieConfig = useMemo(
     () =>
       ({
-        data,
-        angleField: 'value',
-        colorField: 'type',
-        radius: 0.6,
+        data: flattenedData,
+        angleField: 'percentage',
+        colorField: 'name',
+        radius: 0.75,
         label: {
-          text: (d: DataItem) => `${d.type}\n ${d.value}`,
+          text: (d: LanguagePieItem) => `${d.name}\n ${d.percentage}`,
           position: 'spider',
         },
         tooltip: {
-          title: 'type',
+          title: 'name',
           items: [
             {
-              name: '值',
-              field: 'value',
+              name: '百分比',
+              field: 'percentage',
+              valueFormatter: (v: number) => `${v.toFixed(2)}%`,
             },
           ],
         },
@@ -84,25 +97,122 @@ const DemoPie = () => {
         },
         theme: isDarkMode ? 'classicDark' : 'classic',
       }) satisfies ComponentProps<typeof Pie>,
-    [isDarkMode],
+    [flattenedData, isDarkMode],
   )
   return <Pie {...config} />
 }
 
-const DeveloperTable = () => {
+const DeveloperLanguageBlock = ({ username }: { username: string }) => {
+  const { data: developer } = useSuspenseDeveloper(username)
+  const { data } = useSuspenseDeveloperLanguages(username)
+  const mostUsedLanguage = useMemo(() => {
+    if (!data) {
+      return null
+    }
+    return data.languages.reduce((prev, current) => (prev.percentage > current.percentage ? prev : current))
+  }, [data])
+  return (
+    <>
+      <section className="w-full rounded bg-base-200 p-8 lg:col-span-2 lg:h-96">
+        <p>
+          {`${developer.name} 使用最多的语言是 ${mostUsedLanguage?.language.name}，占比 ${mostUsedLanguage?.percentage.toFixed(2)}%。`}
+          {/* TODO: Styles */}
+        </p>
+      </section>
+      <section className="w-full rounded bg-base-200 lg:col-span-3 lg:h-96">
+        <LanguagePie data={data} />
+      </section>
+    </>
+  )
+}
+
+const RegionNotSure = Symbol('RegionNotSure')
+
+const DeveloperRegionBlock = ({ username }: { username: string }) => {
+  const { data: developer } = useSuspenseDeveloper(username)
+  const { data } = useSuspenseDeveloperRegion(username)
+  const {
+    region, confidence
+  } = useMemo(() => {
+    if (!data) {
+      return { region: RegionNotSure, confidence: 0 }
+    }
+    if (data.confidence < 0.5) {
+      return { region: RegionNotSure, confidence: data.confidence }
+    }
+    return { region: data.region, confidence: data.confidence }
+  }, [data])
+  const regionName = useMemo(() => {
+    if (region === RegionNotSure) {
+      return '未知'
+    }
+
+    if (region === 'cn') {
+      return '中国'
+    } else if (region === 'hk') {
+      return '中国香港'
+    } else if (region === 'mo') {
+      return '中国澳门'
+    } else if (region === 'tw') {
+      return '中国台湾' // 🫠
+    } else {
+      return ` ${(region as string).toUpperCase()} `
+    }
+  }, [region])
+  const regionFlag = useMemo(() => {
+    if (region === RegionNotSure) {
+      return '❓'
+    }
+    if (region === 'cn') {
+      return '🇨🇳'
+    } else if (region === 'hk') {
+      return '🇭🇰'
+    } else if (region === 'mo') {
+      return '🇲🇴'
+    } else if (region === 'tw') {
+      return '🇨🇳' // 🫠
+    } else {
+      return getEmojiFlag((region as string).toUpperCase() as TCountryCode)
+    }
+  }, [region])
+
+  return (
+    <>
+      <section className="w-full rounded bg-base-200 p-8 lg:col-span-3 lg:h-96 text-8xl justify-center items-center flex flex-col">
+        {regionFlag}
+      </section>
+      <section className="w-full rounded bg-base-200 p-8 lg:col-span-2 lg:h-96">
+        {
+          region === RegionNotSure && confidence < 0.5 && (
+            <p>开发者地区可能是 {regionName}，但是置信度较低。</p>
+          )
+        }
+        {
+          region !== RegionNotSure && (
+            <p>{`${developer.name} 来自 ${regionName}。`}</p>
+          )
+        }
+      </section>
+    </>
+  )
+}
+
+const DeveloperBlockSuspense = ({ children }: PropsWithChildren) => {
+  return (
+    <Suspense fallback={<Skeleton className="h-64 w-full rounded bg-base-200 lg:col-span-5" />}>{children}</Suspense>
+  )
+}
+
+const DeveloperTable = ({ username }: { username: string }) => {
   return (
     <div className="flex w-full max-w-6xl flex-col">
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <Suspense fallback={<Skeleton className="h-64 w-full rounded bg-base-200" />}>
-          <section className="h-64 w-full rounded bg-base-200">
-            <DemoPie />
-          </section>
-        </Suspense>
-        <Skeleton className="h-64 w-full rounded bg-base-200" />
-        <Skeleton className="h-64 w-full rounded bg-base-200" />
-        <Skeleton className="h-64 w-full rounded bg-base-200" />
-        <Skeleton className="h-64 w-full rounded bg-base-200" />
-        <Skeleton className="h-64 w-full rounded bg-base-200" />
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-5">
+        <DeveloperBlockSuspense>
+          <DeveloperLanguageBlock username={username} />
+        </DeveloperBlockSuspense>
+        <DeveloperBlockSuspense>
+          <DeveloperRegionBlock username={username} />
+        </DeveloperBlockSuspense>
       </div>
     </div>
   )
@@ -159,7 +269,7 @@ const DeveloperPage = () => {
           </DeveloperInfoErrorBoundary>
           {/* TODO: Add ErrorBoundary */}
           <Suspense fallback={<>TODO</>}>
-            <DeveloperTable />
+            <DeveloperTable username={username} />
           </Suspense>
         </>
       </DeveloperNotFoundErrorBoundary>
