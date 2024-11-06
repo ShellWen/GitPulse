@@ -41,6 +41,6 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Handler: getLanguagesHandler(serverCtx),
 			},
 		},
-		rest.WithTimeout(60000*time.Millisecond),
+		rest.WithTimeout(300000*time.Millisecond),
 	)
 }

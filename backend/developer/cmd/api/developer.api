@@ -27,7 +27,7 @@ type (
 @server (
 	prefix:  /developers
 	group:   developer
-	timeout: 10s
+	timeout: 60s
 )
 service Developer {
 	@handler getDeveloper

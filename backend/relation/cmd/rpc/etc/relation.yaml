@@ -1,7 +1,7 @@
 Name: relation.rpc
 ListenOn: 127.0.0.1:2003
 Mode: dev
-Timeout: 120000
+Timeout: 180000
 
 Consul:
   Host: 127.0.0.1:8500

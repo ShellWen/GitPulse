@@ -1,7 +1,7 @@
 Name: developer.rpc
 ListenOn: 127.0.0.1:2001
 Mode: dev
-Timeout: 10000
+Timeout: 30000
 
 Consul:
   Host: 127.0.0.1:8500

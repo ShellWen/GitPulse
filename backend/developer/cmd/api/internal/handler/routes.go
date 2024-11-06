@@ -23,6 +23,6 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 		},
 		rest.WithPrefix("/developers"),
-		rest.WithTimeout(10000*time.Millisecond),
+		rest.WithTimeout(60000*time.Millisecond),
 	)
 }

@@ -1,7 +1,7 @@
 Name: contribution.rpc
 ListenOn: 127.0.0.1:2004
 Mode: dev
-Timeout: 180000
+Timeout: 300000
 
 Consul:
   Host: 127.0.0.1:8500
