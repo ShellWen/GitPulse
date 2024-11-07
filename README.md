@@ -6,6 +6,8 @@ GitPulse 是一个 GitHub 用户分析工具，通过利用 GitHub 开源项目�
 
 线上地址：[https://pulse.shellwen.com](https://pulse.shellwen.com)，欢迎体验！
 
+演示视频：[./docs/demo/demo.mp4](./docs/demo/demo.mp4)
+
 ⚡ 特点：
 
 - 前端采用 Vite + React.js，遵守诸如 code splitting 等最佳实践，美观又不失高效；
