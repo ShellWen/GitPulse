@@ -1,8 +1,18 @@
-RpcServerConf:
+Name: analysis.rpc
+ListenOn: 127.0.0.1:2005
+Timeout: 180000
+
+Log:
+  ServiceName: analysis.rpc
+  Mode: file
+  Encoding: json
+  Path: logs/analysis_rpc/
+
+Telemetry:
   Name: analysis.rpc
-  ListenOn: 127.0.0.1:2005
-  Mode: dev
-  Timeout: 180000
+  Endpoint: http://127.0.0.1:14268/api/traces
+  Sampler: 1.0
+  Batcher: jaeger
 
 Consul:
   Host: 127.0.0.1:8500 # consul endpoint
@@ -13,6 +23,10 @@ Consul:
   Tag:
     - tag
     - rpc
+
+DevServer:
+  Enabled: true
+  Port: 4005
 
 DeveloperRpcConf:
   Target: consul://localhost:8500/developer.rpc?wait=14s
@@ -30,7 +44,7 @@ RepoRpcConf:
   Target: consul://localhost:8500/repo.rpc?wait=14s
   Timeout: 30000
 
-Redis:
+RedisConf:
   Host: 127.0.0.1:6379
   Type: node
   Pass:

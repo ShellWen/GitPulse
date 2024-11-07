@@ -13,6 +13,22 @@ Consul:
     - tag
     - rpc
 
+DevServer:
+  Enabled: true
+  Port: 4004
+
+Telemetry:
+  Name: coontribution.rpc
+  Endpoint: http://127.0.0.1:14268/api/traces
+  Sampler: 1.0
+  Batcher: jaeger
+
+Log:
+  ServiceName: contribution.rpc
+  Mode: file
+  Encoding: json
+  Path: logs/contribution_rpc/
+
 Redis:
   Host: 127.0.0.1:6379
   Type: node

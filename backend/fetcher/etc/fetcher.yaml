@@ -15,8 +15,10 @@ RepoRpcConf:
   Timeout: 30000
 
 Log:
-  Mode: console
-  Encoding: plain
+  ServiceName: fetcher
+  Mode: file
+  Encoding: json
+  Path: logs/fetcher/
 
 KqDeveloperPusherConf:
   Name: developer-pusher

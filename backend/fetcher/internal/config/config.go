@@ -13,7 +13,7 @@ type Config struct {
 	ContributionRpcConf zrpc.RpcClientConf
 	RepoRpcConf         zrpc.RpcClientConf
 
-	logx.LogConf
+	Log                                    logx.LogConf
 	KqDeveloperPusherConf                  config.KqPusherConf
 	KqContributionPusherConf               config.KqPusherConf
 	KqCreateRepoPusherConf                 config.KqPusherConf

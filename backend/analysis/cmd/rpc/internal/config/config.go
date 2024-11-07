@@ -9,9 +9,8 @@ import (
 )
 
 type Config struct {
-	RpcServerConf zrpc.RpcServerConf
-	Consul        consul.Conf
-
+	zrpc.RpcServerConf
+	Consul              consul.Conf
 	DeveloperRpcConf    zrpc.RpcClientConf
 	RelationRpcConf     zrpc.RpcClientConf
 	RepoRpcConf         zrpc.RpcClientConf
@@ -21,6 +20,6 @@ type Config struct {
 		DataSource string
 	}
 	Cache          cache.CacheConf
-	Redis          redis.RedisConf
+	RedisConf      redis.RedisConf
 	SparkModelConf config.SparkModelConf
 }

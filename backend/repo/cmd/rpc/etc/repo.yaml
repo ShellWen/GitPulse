@@ -3,6 +3,22 @@ ListenOn: 127.0.0.1:2002
 Mode: dev
 Timeout: 30000
 
+Log:
+  ServiceName: repo.rpc
+  Mode: file
+  Encoding: json
+  Path: logs/repo_rpc/
+
+DevServer:
+  Enabled: true
+  Port: 4002
+
+Telemetry:
+  Name: repo.rpc
+  Endpoint: http://127.0.0.1:14268/api/traces
+  Sampler: 1.0
+  Batcher: jaeger
+
 Consul:
   Host: 127.0.0.1:8500
   Token:

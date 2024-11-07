@@ -24,7 +24,7 @@ func main() {
 	var c config.Config
 	conf.MustLoad(*configFile, &c)
 
-	logx.MustSetup(c.LogConf)
+	logx.MustSetup(c.Log)
 	logx.Info("fetcher started")
 
 	ctx := context.Background()

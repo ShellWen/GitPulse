@@ -1,0 +1,60 @@
+global:
+  scrape_interval:
+  external_labels:
+    monitor: 'codelab-monitor'
+
+scrape_configs:
+  - job_name: 'prometheus'
+    scrape_interval: 10s
+    static_configs:
+      - targets: ['127.0.0.1:9090']
+
+  - job_name: 'developer.rpc'
+    static_configs:
+      - targets: [ '127.0.0.1:4001' ]
+        labels:
+          job: developer.rpc
+          app: developer.rpc
+          env: dev
+  - job_name: 'developer.api'
+    static_configs:
+      - targets: ['127.0.0.1:5001']
+        labels:
+          job: developer.api
+          app: developer.api
+          env: dev
+  - job_name: 'repo.rpc'
+    static_configs:
+      - targets: ['127.0.0.1:4002']
+        labels:
+          job: repo.rpc
+          app: repo.rpc
+          env: dev
+  - job_name: 'relation.rpc'
+    static_configs:
+      - targets: ['127.0.0.1:4003']
+        labels:
+          job: relation.rpc
+          app: relation.rpc
+          env: dev
+  - job_name: 'contribution.rpc'
+    static_configs:
+      - targets: ['127.0.0.1:4004']
+        labels:
+          job: contribution.rpc
+          app: contribution.rpc
+          env: dev
+  - job_name: 'analysis.rpc'
+    static_configs:
+      - targets: ['127.0.0.1:4005']
+        labels:
+          job: analysis.rpc
+          app: analysis.rpc
+          env: dev
+  - job_name: 'analysis.api'
+    static_configs:
+      - targets: ['127.0.0.1:5005']
+        labels:
+          job: analysis.api
+          app: analysis.api
+          env: dev
