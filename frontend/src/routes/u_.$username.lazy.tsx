@@ -15,9 +15,9 @@ import useDarkMode from '$/lib/useDarkMode.ts'
 import type { PieConfig } from '@ant-design/plots/es/components/pie'
 import { QueryErrorResetBoundary } from '@tanstack/react-query'
 import { createLazyFileRoute, getRouteApi } from '@tanstack/react-router'
+import { type TCountryCode, getEmojiFlag } from 'countries-list'
 import { Button, Skeleton } from 'react-daisyui'
 import { ErrorBoundary, type FallbackProps } from 'react-error-boundary'
-import { getEmojiFlag, type TCountryCode } from 'countries-list'
 
 const route = getRouteApi('/u_/$username')
 
@@ -131,13 +131,11 @@ const RegionNotSure = Symbol('RegionNotSure')
 const DeveloperRegionBlock = ({ username }: { username: string }) => {
   const { data: developer } = useSuspenseDeveloper(username)
   const { data } = useSuspenseDeveloperRegion(username)
-  const {
-    region, confidence
-  } = useMemo(() => {
+  const { region, confidence } = useMemo(() => {
     if (!data) {
       return { region: RegionNotSure, confidence: 0 }
     }
-    if (data.region.confidence < 0.5) {
+    if (data.region.confidence < 0.2) {
       return { region: RegionNotSure, confidence: data.region.confidence }
     }
     return { region: data.region.region, confidence: data.region.confidence }
@@ -178,20 +176,15 @@ const DeveloperRegionBlock = ({ username }: { username: string }) => {
 
   return (
     <>
-      <section className="w-full rounded bg-base-200 p-8 lg:col-span-3 lg:h-96 text-8xl justify-center items-center flex flex-col">
+      <section className="flex w-full flex-col items-center justify-center rounded bg-base-200 p-8 text-8xl lg:col-span-3 lg:h-96">
         {regionFlag}
       </section>
       <section className="w-full rounded bg-base-200 p-8 lg:col-span-2 lg:h-96">
-        {
-          region === RegionNotSure && confidence < 0.5 && (
-            <p>开发者地区可能是 {regionName}，但是置信度较低。</p>
-          )
-        }
-        {
-          region !== RegionNotSure && (
-            <p>{`${developer.name} 来自 ${regionName}。`}</p>
-          )
-        }
+        {region === RegionNotSure ? (
+          <p>我们没有找到开发者可能所处的地区。</p>
+        ) : (
+          <p>{`${developer.name} 来自 ${regionName}，置信度为 ${(confidence * 100).toFixed(2)}%。`}</p>
+        )}
       </section>
     </>
   )
