@@ -42,7 +42,7 @@ func (l *GetLanguageUsageLogic) doGetLanguageUsage(req *types.GetLanguageUsageRe
 		id                     int64
 		usage                  map[string]float64
 		updatedAt              time.Time
-		languageWithPercentage []types.LanguageWithPercentage
+		languageWithPercentage = make([]types.LanguageWithPercentage, 0)
 	)
 
 	if id, err = customGithub.GetIdByLogin(l.ctx, req.Login); err != nil {

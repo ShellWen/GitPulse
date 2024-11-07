@@ -79,11 +79,15 @@ func (l *UpdateLanguageLogic) doUpdateLanguage(id int64) (err error) {
 		if repoResp, err = repoZrpcClient.GetRepoById(l.ctx, &repo.GetRepoByIdReq{
 			Id: repoId,
 		}); err != nil {
-			return
+			logx.Error(err)
+			err = nil
+			continue
 		}
 
 		if err = json.Unmarshal([]byte(repoResp.GetRepo().GetLanguage()), &languageBytes); err != nil {
-			return
+			logx.Error(err)
+			err = nil
+			continue
 		}
 
 		for language, bytes := range languageBytes {
