@@ -32,7 +32,7 @@ export const getDeveloperRegion = async (username: string): Promise<DeveloperReg
 
 export const searchDevelopers = async (
   languageId: Language['id'],
-  region: DeveloperRegion['region'],
+  region: DeveloperRegion['region']['region'],
   limit: number,
 ): Promise<Array<DeveloperWithPulsePoint>> => {
   const url = new URL(`${BASE_URL}/developers/`)
