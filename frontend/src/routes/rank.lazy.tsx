@@ -3,7 +3,7 @@ import { type FormEvent, Suspense, useCallback, useMemo, useState } from 'react'
 import QueryErrorBoundaryBlock from '$/component/QueryErrorBoundaryBlock.tsx'
 import { useSuspenseSearchDevelopers } from '$/lib/query/hooks/useDeveloper.ts'
 import { useLanguages } from '$/lib/query/hooks/useLanguage.ts'
-import { createLazyFileRoute, getRouteApi } from '@tanstack/react-router'
+import { Link, createLazyFileRoute, getRouteApi } from '@tanstack/react-router'
 import { getCountryDataList } from 'countries-list'
 import { Button, Form, Input, Select } from 'react-daisyui'
 
@@ -11,7 +11,36 @@ const route = getRouteApi('/rank')
 
 const RankResultWrapper = ({ language, region, limit }: { language?: string; region?: string; limit: number }) => {
   const { data } = useSuspenseSearchDevelopers(limit, language, region)
-  return <>{JSON.stringify(data)}</>
+
+  return (
+    <>
+      {data?.map(({ developer, pulse_point }, index) => (
+        <div key={developer.id} className="flex gap-4 items-center">
+          <div className="rounded bg-base-300 w-12 h-12 flex justify-center items-center">{index + 1}</div>
+          <div className="flex-shrink-0">
+            <Link to={`/u/${developer.login}`}>
+              <img src={developer.avatar_url} alt={developer.name} className="h-16 w-16 cursor-pointer rounded-full" />
+            </Link>
+          </div>
+          <div>
+            <div className="cursor-pointer text-lg">
+              <Link to={`/u/${developer.login}`}>
+                <span className="font-bold">{developer.name}</span>
+                <span className="pl-2">{`@${developer.login}`}</span>
+              </Link>
+            </div>
+            <div className="text-sm">
+              <Link to={`/u/${developer.login}`}>{developer.bio}</Link>
+            </div>
+          </div>
+          <div className="flex-1" />
+          <div className="text-4xl">
+            <Link to={`/u/${developer.login}`}>{`${pulse_point.pulse_point.pulse_point.toFixed(2)}pp`}</Link>
+          </div>
+        </div>
+      ))}
+    </>
+  )
 }
 
 const RankPage = () => {
@@ -117,7 +146,7 @@ const RankPage = () => {
       </section>
       <QueryErrorBoundaryBlock>
         <Suspense fallback={<section className="skeleton h-96 w-full rounded bg-base-200 md:flex-1" />}>
-          <section className="flex h-screen w-full flex-col rounded bg-base-200 p-8 md:flex-1">
+          <section className="flex min-h-screen w-full flex-col gap-6 rounded bg-base-200 p-8 md:flex-1">
             <RankResultWrapper
               language={searchLanguage === '_all' ? undefined : searchLanguage}
               region={searchRegion === '_all' ? undefined : searchRegion}
