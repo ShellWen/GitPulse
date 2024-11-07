@@ -5,6 +5,7 @@ cffi==1.17.1
 charset-normalizer==3.4.0
 cryptography==43.0.3
 Deprecated==1.2.14
+emoji-country-flag==2.0.1
 h11==0.14.0
 h2==4.1.0
 hpack==4.0.0
@@ -14,6 +15,7 @@ hyperframe==6.0.1
 idna==3.10
 iso3166==2.1.1
 loguru==0.7.2
+pycountry==24.6.1
 pycparser==2.22
 PyGithub==2.4.0
 PyJWT==2.9.0
@@ -26,5 +28,3 @@ typing_extensions==4.12.2
 tzdata==2024.2
 urllib3==2.2.3
 wrapt==1.16.0
-
-pycountry~=24.6.1
