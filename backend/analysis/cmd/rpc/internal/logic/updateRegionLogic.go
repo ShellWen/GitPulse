@@ -58,7 +58,7 @@ func (l *UpdateRegionLogic) UpdateRegion(in *pb.UpdateAnalysisReq) (resp *pb.Upd
 func (l *UpdateRegionLogic) doUpdateRegion(id int64) (err error) {
 	var (
 		login            string
-		regionConfidence map[string]float64
+		regionConfidence = make(map[string]float64)
 		regionItem       *model.Region
 
 		mostPossibleRegion     string
