@@ -44,7 +44,7 @@ func (l *GetPulsePointRankLogic) GetPulsePointRank(req *types.GetPulsePointRankR
 	}
 
 	for _, pair := range rank {
-		if req.Limit != 0 && int64(len(resp)) > req.Limit {
+		if req.Limit != 0 && int64(len(resp)) >= req.Limit {
 			break
 		}
 
@@ -71,7 +71,7 @@ func (l *GetPulsePointRankLogic) GetPulsePointRank(req *types.GetPulsePointRankR
 				logx.Error(err)
 				continue
 			}
-			if region != "" && region != req.Region {
+			if region != req.Region {
 				continue
 			}
 		}
@@ -140,7 +140,7 @@ func (l *GetPulsePointRankLogic) GetPulsePointRank(req *types.GetPulsePointRankR
 		resp = append(resp, result)
 	}
 
-	return
+	return resp, nil
 }
 
 func (l *GetPulsePointRankLogic) getRegionById(id int64) (region string, confidence float64, err error) {

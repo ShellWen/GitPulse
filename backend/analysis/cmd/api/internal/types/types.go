@@ -39,9 +39,9 @@ type GetLanguages struct {
 }
 
 type GetPulsePointRankReq struct {
-	Language string `query:"language"`
-	Region   string `query:"region"`
-	Limit    int64  `query:"limit"`
+	Language string `form:"language"`
+	Region   string `form:"region"`
+	Limit    int64  `form:"limit"`
 }
 
 type GetPulsePointReq struct {
