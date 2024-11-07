@@ -121,11 +121,11 @@ func (l *UpdateRegionLogic) getRegionWithConfidenceByPythonScript(login string) 
 
 	cmd = exec.Command("venv/bin/python", "script/guess_region/main.py", login)
 	if out, err = cmd.CombinedOutput(); err != nil {
+		err = errors.New(err.Error() + " : " + string(out))
 		return
 	}
 
 	if err = json.Unmarshal(out, &regionConfidence); err != nil {
-		err = errors.New(err.Error() + " : " + string(out))
 		return
 	}
 
