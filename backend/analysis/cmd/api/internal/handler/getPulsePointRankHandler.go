@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"github.com/google/go-github/v66/github"
 	"net/http"
 
 	"github.com/ShellWen/GitPulse/analysis/cmd/api/internal/logic"
@@ -20,6 +21,9 @@ func getPulsePointRankHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 		l := logic.NewGetPulsePointRankLogic(r.Context(), svcCtx)
 		resp, err := l.GetPulsePointRank(&req)
 		if err != nil {
+			if err.(*github.ErrorResponse) != nil {
+				w.WriteHeader(err.(*github.ErrorResponse).Response.StatusCode)
+			}
 			httpx.ErrorCtx(r.Context(), w, err)
 		} else {
 			httpx.OkJsonCtx(r.Context(), w, resp)
