@@ -179,12 +179,10 @@ export const handlers = [
     return HttpResponse.json<Array<DeveloperWithPulsePoint>>([{
       developer: fakeDeveloper,
       pulse_point: {
-        pulse_point: {
-          id: fakeDeveloper.id,
-          pulse_point: 233,
+        id: fakeDeveloper.id,
+        pulse_point: 233,
 
-          updated_at: new Date('2024-10-24T11:45:14Z'),
-        },
+        updated_at: new Date('2024-10-24T11:45:14Z'),
       }
     }], {
       status: 200,
