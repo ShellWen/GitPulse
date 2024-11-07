@@ -1,0 +1,286 @@
+name: gitpulse
+
+services:
+  frontend:
+    container_name: gitpulse_frontend
+    restart: on-failure
+    build:
+      context: ./GitPulse/frontend
+      dockerfile: Dockerfile
+      args:
+        ENABLE_MOCK: ""
+        BACKEND_BASEURL: https://api-pulse.shellwen.com
+    networks:
+      - web
+
+  consul:
+    container_name: gitpulse_consul
+    restart: on-failure
+    image: hashicorp/consul:1.20.1
+    networks:
+      - pulse
+    ports:
+      - "127.0.0.1:8500:8500" # Web UI
+    volumes:
+      - consul-data:/consul/data
+    command: "agent -server -ui -node=n1 -bootstrap-expect=1 -client=0.0.0.0 -data-dir=/consul/data -bind=0.0.0.0 && sleep 10s"
+
+  kafka:
+    container_name: gitpulse_kafka
+    restart: on-failure
+    image: apache/kafka:3.8.1
+    networks:
+      - pulse
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT'
+      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT_HOST://localhost:19092,PLAINTEXT://kafka:9092'
+      KAFKA_PROCESS_ROLES: 'broker,controller'
+      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka:29093'
+      KAFKA_LISTENERS: 'CONTROLLER://:29093,PLAINTEXT_HOST://:19092,PLAINTEXT://:9092'
+      KAFKA_INTER_BROKER_LISTENER_NAME: 'PLAINTEXT'
+      KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
+      CLUSTER_ID: '4L6g3nShT-eMCtK--X86sw'
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_LOG_DIRS: '/tmp/kraft-combined-logs'
+    volumes:
+      - kafka-data:/var/lib/kafka/data
+    healthcheck:
+      test: /opt/kafka/bin/kafka-topics.sh --list --bootstrap-server kafka:9092 || exit 1
+      interval: 1s
+      timeout: 60s
+      retries: 60
+
+  init-kafka:
+    image: apache/kafka:3.8.1
+    networks:
+      - pulse
+    depends_on:
+      kafka:
+          condition: service_healthy
+    entrypoint: [ '/bin/sh', '-c' ]
+    working_dir: /opt/kafka/bin
+    command: |
+      "
+      # blocks until kafka is reachable
+      ./kafka-topics.sh --bootstrap-server kafka:9092 --list
+
+      echo -e 'Creating kafka topics'
+      ./kafka-topics.sh --bootstrap-server kafka:9092 --create --if-not-exists --topic developer-update --replication-factor 1 --partitions 1
+      ./kafka-topics.sh --bootstrap-server kafka:9092 --create --if-not-exists --topic repo-update --replication-factor 1 --partitions 1
+      ./kafka-topics.sh --bootstrap-server kafka:9092 --create --if-not-exists --topic contribution-update --replication-factor 1 --partitions 1
+      ./kafka-topics.sh --bootstrap-server kafka:9092 --create --if-not-exists --topic create-repo-update --replication-factor 1 --partitions 1
+      ./kafka-topics.sh --bootstrap-server kafka:9092 --create --if-not-exists --topic fork-update --replication-factor 1 --partitions 1
+      ./kafka-topics.sh --bootstrap-server kafka:9092 --create --if-not-exists --topic star-update --replication-factor 1 --partitions 1
+      ./kafka-topics.sh --bootstrap-server kafka:9092 --create --if-not-exists --topic follow-update --replication-factor 1 --partitions 1
+
+      echo -e 'Successfully created the following topics:'
+      ./kafka-topics.sh --bootstrap-server kafka:9092 --list
+      " 
+ 
+  redis:
+    container_name: gitpulse_redis
+    restart: on-failure
+    image: redis:7.4.1-alpine
+    networks:
+      - pulse
+    volumes:
+      - redis-data:/data
+
+  postgres:
+    container_name: gitpulse_postgres
+    restart: on-failure
+    image: postgres:17.0-alpine
+    networks:
+      - pulse
+    ports:
+      - "127.0.0.1:5432:5432"
+    environment:
+      POSTGRES_USER: pulse # should use docker secrets
+      POSTGRES_PASSWORD: youguesswhatnobodyknows # should use docker secrets
+      POSTGRES_DB: pulse
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  backend-analysis-api:
+    container_name: gitpulse_backend_analysis_api
+    restart: on-failure
+    build:
+      context: ./GitPulse/backend
+      dockerfile: ./deployments/Dockerfile.analysis_api
+    volumes:
+      - ./files/etc/analysis-api.yaml:/app/analysis/cmd/api/etc/analysis.yaml:ro
+      - ./logs/analysis_api:/app/logs/analysis_api/
+    env_file:
+      - ./files/github_env
+    depends_on:
+      - consul
+      - postgres
+      - redis
+      - init-kafka
+      - backend-analysis-rpc
+      - backend-contribution-rpc
+      - backend-developer-rpc
+      - backend-relation-rpc
+      - backend-repo-rpc
+    networks:
+      - pulse
+      - web
+
+  backend-analysis-rpc:
+    container_name: gitpulse_backend_analysis_rpc
+    restart: on-failure
+    build:
+      context: ./GitPulse/backend
+      dockerfile: ./deployments/Dockerfile.analysis_rpc
+    volumes:
+      - ./files/etc/analysis-rpc.yaml:/app/analysis/cmd/rpc/etc/analysis.yaml:ro
+      - ./logs/analysis_rpc:/app/logs/analysis_rpc/
+    env_file:
+      - ./files/github_env
+    depends_on:
+      - consul
+      - postgres
+      - redis
+      - init-kafka
+      - backend-contribution-rpc
+      - backend-developer-rpc
+      - backend-relation-rpc
+      - backend-repo-rpc
+    networks:
+      - pulse
+
+  backend-contribution-rpc:
+    container_name: gitpulse_backend_contribution_rpc
+    restart: on-failure
+    build:
+      context: ./GitPulse/backend
+      dockerfile: ./deployments/Dockerfile.contribution_rpc
+    env_file:
+      - ./files/github_env
+    volumes:
+      - ./files/etc/contribution-rpc.yaml:/app/contribution/cmd/rpc/etc/contribution.yaml:ro
+      - ./logs/contribution_rpc:/app/logs/contribution_rpc/
+    depends_on:
+      - consul
+      - postgres
+      - redis
+      - init-kafka
+    networks:
+      - pulse
+
+  backend-developer-api:
+    container_name: gitpulse_backend_developer_api
+    restart: on-failure
+    build:
+      context: ./GitPulse/backend
+      dockerfile: ./deployments/Dockerfile.developer_api
+    env_file:
+      - ./files/github_env
+    volumes:
+      - ./files/etc/developer-api.yaml:/app/developer/cmd/api/etc/developer.yaml:ro
+      - ./logs/developer_api:/app/logs/developer_api/
+    depends_on:
+      - consul
+      - postgres
+      - redis
+      - init-kafka
+      - backend-developer-rpc
+    networks:
+      - pulse
+      - web
+
+  backend-developer-rpc:
+    container_name: gitpulse_backend_developer_rpc
+    restart: on-failure
+    build:
+      context: ./GitPulse/backend
+      dockerfile: ./deployments/Dockerfile.developer_rpc
+    env_file:
+      - ./files/github_env
+    volumes:
+      - ./files/etc/developer-rpc.yaml:/app/developer/cmd/rpc/etc/developer.yaml:ro
+      - ./logs/developer_rpc:/app/logs/developer_rpc/
+    depends_on:
+      - consul
+      - postgres
+      - redis
+      - init-kafka
+    networks:
+      - pulse
+
+  backend-relation-rpc:
+    container_name: gitpulse_backend_relation_rpc
+    restart: on-failure
+    build:
+      context: ./GitPulse/backend
+      dockerfile: ./deployments/Dockerfile.relation_rpc
+    env_file:
+      - ./files/github_env
+    volumes:
+      - ./files/etc/relation-rpc.yaml:/app/relation/cmd/rpc/etc/relation.yaml:ro
+      - ./logs/relation_rpc:/app/logs/relation_rpc/
+    depends_on:
+      - consul
+      - postgres
+      - redis
+      - init-kafka
+    networks:
+      - pulse
+
+  backend-repo-rpc:
+    container_name: gitpulse_backend_repo_rpc
+    restart: on-failure
+    build:
+      context: ./GitPulse/backend
+      dockerfile: ./deployments/Dockerfile.repo_rpc
+    env_file:
+      - ./files/github_env
+    volumes:
+      - ./files/etc/repo-rpc.yaml:/app/repo/cmd/rpc/etc/repo.yaml:ro
+      - ./logs/repo_rpc:/app/logs/repo_rpc/
+    depends_on:
+      - consul
+      - postgres
+      - redis
+      - init-kafka
+    networks:
+      - pulse
+
+  backend-fetcher:
+    container_name: gitpulse_backend_fetcher
+    restart: on-failure
+    build:
+      context: ./GitPulse/backend
+      dockerfile: ./deployments/Dockerfile.fetcher
+    env_file:
+      - ./files/github_env
+    volumes:
+      - ./files/etc/fetcher.yaml:/app/fetcher/etc/fetcher.yaml:ro
+      - ./logs/fetcher:/app/logs/fetcher/
+    depends_on:
+      - consul
+      - postgres
+      - redis
+      - init-kafka
+      - backend-developer-rpc
+      - backend-relation-rpc
+      - backend-repo-rpc
+    networks:
+      - pulse
+
+volumes:
+  consul-data:
+  kafka-data:
+  redis-data:
+  postgres-data:
+
+
+networks:
+  pulse:
+  web:
+    name: web
+    external: true

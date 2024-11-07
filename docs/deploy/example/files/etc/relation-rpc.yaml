@@ -1,0 +1,59 @@
+Name: relation.rpc
+ListenOn: 0.0.0.0:2003
+Timeout: 180000
+
+Log:
+  ServiceName: relation.rpc
+  Mode: file
+  Encoding: json
+  Path: logs/relation_rpc/
+
+Consul:
+  Host: consul:8500
+  Token:
+  Key: relation.rpc
+  Meta:
+    Protocol: grpc
+  Tag:
+    - tag
+    - rpc
+
+Redis:
+  Host: redis:6379
+  Type: node
+  Pass:
+  Key: developer-rpc
+
+DB:
+  DataSource: postgres://pulse:youguesswhatnobodyknows@postgres:5432/pulse?sslmode=disable
+Cache:
+  - Host: redis:6379
+    Pass:
+
+KqCreateRepoUpdateConsumerConf:
+  Name: create-repo-update-consumer
+  Brokers:
+    - kafka:9092
+  Group: create-repo
+  Topic: create-repo-update
+
+KqForkUpdateConsumerConf:
+  Name: fork-update-consumer
+  Brokers:
+    - kafka:9092
+  Group: fork
+  Topic: fork-update
+
+KqStarUpdateConsumerConf:
+    Name: star-update-consumer
+    Brokers:
+      - kafka:9092
+    Group: star
+    Topic: star-update
+
+KqFollowUpdateConsumerConf:
+    Name: follow-update-consumer
+    Brokers:
+      - kafka:9092
+    Group: follow
+    Topic: follow-update
