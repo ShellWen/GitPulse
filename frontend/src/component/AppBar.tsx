@@ -81,7 +81,7 @@ const NavbarItems = ({ menuData }: { menuData: MenuData }) => {
 
 export const AppBar = () => {
   return (
-    <header>
+    <header className="sticky top-0 z-50 bg-base-100">
       <Navbar className="mx-auto max-w-6xl">
         <Navbar.Start>
           <Dropdown>
