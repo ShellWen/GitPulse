@@ -125,6 +125,7 @@ func (l *UpdateRegionLogic) getRegionWithConfidenceByPythonScript(login string) 
 	}
 
 	if err = json.Unmarshal(out, &regionConfidence); err != nil {
+		err = errors.New(err.Error() + " : " + string(out))
 		return
 	}
 
