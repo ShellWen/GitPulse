@@ -5,7 +5,7 @@ import DeveloperGlance from '$/component/developer/DeveloperGlance.tsx'
 import DeveloperInfo from '$/component/developer/DeveloperInfo.tsx'
 import DeveloperInfoSkeleton from '$/component/developer/DeveloperInfoSkeleton.tsx'
 import type { DeveloperLanguages } from '$/lib/api/endpoint/types.ts'
-import { BusinessError } from '$/lib/api/error.ts'
+import { HttpError } from '$/lib/api/error.ts'
 import {
   useDeveloperPulsePoint,
   useSuspenseDeveloper,
@@ -237,7 +237,7 @@ const DeveloperTable = ({ username }: { username: string }) => {
 }
 const DeveloperNotFoundErrorBoundary = ({ children }: PropsWithChildren) => {
   const renderer = useCallback(({ error }: FallbackProps) => {
-    if (!(error instanceof BusinessError) || error.code !== 404) {
+    if (!(error instanceof HttpError) || error.response.status !== 404) {
       // Only handle 404 error
       throw error
     }
