@@ -74,6 +74,10 @@ func (l *UpdateRegionLogic) doUpdateRegion(id int64) (err error) {
 		err = nil
 	}
 
+	if regionConfidence == nil {
+		regionConfidence = make(map[string]float64)
+	}
+
 	if region, confidence, err := l.getRegionWithConfidenceByLLModel(id, login); err != nil {
 		return err
 	} else {
