@@ -35,7 +35,7 @@ const RankResultWrapper = ({ language, region, limit }: { language?: string; reg
           </div>
           <div className="flex-1" />
           <div className="text-4xl">
-            <Link to={`/u/${developer.login}`}>{`${pulse_point.pulse_point.pulse_point.toFixed(2)}pp`}</Link>
+            <Link to={`/u/${developer.login}`}>{`${pulse_point.pulse_point.toFixed(2)}pp`}</Link>
           </div>
         </div>
       ))}

@@ -23,18 +23,21 @@ export const developer = z.object({
 })
 export type Developer = z.infer<typeof developer>
 
+const pulsePoint = z.object({
+  id: z.number().nonnegative('Developer ID should be non-negative'),
+  pulse_point: z.number().nonnegative('Pulse Point should be non-negative'),
+  updated_at: z.coerce.date(),
+})
+export type PulsePoint = z.infer<typeof pulsePoint>
+
 export const developerPulsePoint = z.object({
-  pulse_point: z.object({
-    id: z.number().nonnegative('Developer ID should be non-negative'),
-    pulse_point: z.number().nonnegative('Pulse Point should be non-negative'),
-    updated_at: z.coerce.date(),
-  }),
+  pulse_point: pulsePoint,
 })
 export type DeveloperPulsePoint = z.infer<typeof developerPulsePoint>
 
 export const developerWithPulsePoint = z.object({
   developer: developer,
-  pulse_point: developerPulsePoint,
+  pulse_point: pulsePoint,
 })
 export type DeveloperWithPulsePoint = z.infer<typeof developerWithPulsePoint>
 
