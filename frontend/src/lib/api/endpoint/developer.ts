@@ -31,14 +31,14 @@ export const getDeveloperRegion = async (username: string): Promise<DeveloperReg
 }
 
 export const searchDevelopers = async (
-  languageId: Language['id'],
-  region: DeveloperRegion['region']['region'],
   limit: number,
+  languageId?: Language['id'],
+  region?: DeveloperRegion['region']['region'],
 ): Promise<Array<DeveloperWithPulsePoint>> => {
   const url = new URL(`${BASE_URL}/developers/`)
-  url.searchParams.set('language', languageId)
-  url.searchParams.set('region', region)
-  url.searchParams.set('limit', limit.toString())
+  url.searchParams.set('limit', (limit ?? "").toString())
+  url.searchParams.set('language', languageId ?? "")
+  url.searchParams.set('region', region ?? "")
   return fetchWrapped(url, developerWithPulsePoint.array(), {
     method: 'GET',
   })

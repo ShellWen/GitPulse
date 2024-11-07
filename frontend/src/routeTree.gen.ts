@@ -13,16 +13,16 @@ import { createFileRoute } from '@tanstack/react-router'
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as RankImport } from './routes/rank'
 import { Route as UUsernameImport } from './routes/u_.$username'
 
 // Create Virtual Routes
 
-const RankLazyImport = createFileRoute('/rank')()
 const IndexLazyImport = createFileRoute('/')()
 
 // Create/Update Routes
 
-const RankLazyRoute = RankLazyImport.update({
+const RankRoute = RankImport.update({
   id: '/rank',
   path: '/rank',
   getParentRoute: () => rootRoute,
@@ -55,7 +55,7 @@ declare module '@tanstack/react-router' {
       id: '/rank'
       path: '/rank'
       fullPath: '/rank'
-      preLoaderRoute: typeof RankLazyImport
+      preLoaderRoute: typeof RankImport
       parentRoute: typeof rootRoute
     }
     '/u_/$username': {
@@ -72,20 +72,20 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexLazyRoute
-  '/rank': typeof RankLazyRoute
+  '/rank': typeof RankRoute
   '/u/$username': typeof UUsernameRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexLazyRoute
-  '/rank': typeof RankLazyRoute
+  '/rank': typeof RankRoute
   '/u/$username': typeof UUsernameRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexLazyRoute
-  '/rank': typeof RankLazyRoute
+  '/rank': typeof RankRoute
   '/u_/$username': typeof UUsernameRoute
 }
 
@@ -100,13 +100,13 @@ export interface FileRouteTypes {
 
 export interface RootRouteChildren {
   IndexLazyRoute: typeof IndexLazyRoute
-  RankLazyRoute: typeof RankLazyRoute
+  RankRoute: typeof RankRoute
   UUsernameRoute: typeof UUsernameRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexLazyRoute: IndexLazyRoute,
-  RankLazyRoute: RankLazyRoute,
+  RankRoute: RankRoute,
   UUsernameRoute: UUsernameRoute,
 }
 
@@ -131,7 +131,7 @@ export const routeTree = rootRoute
       "filePath": "index.lazy.tsx"
     },
     "/rank": {
-      "filePath": "rank.lazy.tsx"
+      "filePath": "rank.tsx"
     },
     "/u_/$username": {
       "filePath": "u_.$username.tsx"

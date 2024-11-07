@@ -54,14 +54,14 @@ export const useSuspenseDeveloperRegion = (username: string) =>
     queryFn: () => getDeveloperRegion(username),
   })
 
-export const useSearchDevelopers = (languageId: string, region: string, limit: number) =>
+export const useSearchDevelopers = (limit: number, languageId?: string, region?: string) =>
   useQuery({
-    queryKey: ['developers', languageId, region, limit],
-    queryFn: () => searchDevelopers(languageId, region, limit),
+    queryKey: ['developers', limit, languageId, region],
+    queryFn: () => searchDevelopers(limit, languageId, region),
   })
 
-export const useSuspenseSearchDevelopers = (languageId: string, region: string, limit: number) =>
+export const useSuspenseSearchDevelopers = (limit: number, languageId?: string, region?: string) =>
   useSuspenseQuery({
-    queryKey: ['developers', languageId, region, limit],
-    queryFn: () => searchDevelopers(languageId, region, limit),
+    queryKey: ['developers', limit, languageId, region],
+    queryFn: () => searchDevelopers(limit, languageId, region),
   })

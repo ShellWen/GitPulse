@@ -1,5 +1,6 @@
 import { type ComponentProps, type PropsWithChildren, Suspense, lazy, useCallback, useMemo } from 'react'
 
+import QueryErrorBoundaryBlock from '$/component/QueryErrorBoundaryBlock.tsx'
 import DeveloperGlance from '$/component/developer/DeveloperGlance.tsx'
 import DeveloperInfo from '$/component/developer/DeveloperInfo.tsx'
 import DeveloperInfoSkeleton from '$/component/developer/DeveloperInfoSkeleton.tsx'
@@ -13,10 +14,9 @@ import {
 } from '$/lib/query/hooks/useDeveloper.ts'
 import useDarkMode from '$/lib/useDarkMode.ts'
 import type { PieConfig } from '@ant-design/plots/es/components/pie'
-import { QueryErrorResetBoundary } from '@tanstack/react-query'
 import { createLazyFileRoute, getRouteApi } from '@tanstack/react-router'
 import { type TCountryCode, getEmojiFlag } from 'countries-list'
-import { Button, Skeleton } from 'react-daisyui'
+import { Skeleton } from 'react-daisyui'
 import { ErrorBoundary, type FallbackProps } from 'react-error-boundary'
 
 const route = getRouteApi('/u_/$username')
@@ -171,13 +171,13 @@ const DeveloperRegionBlock = ({ username }: { username: string }) => {
     }
 
     if (region === 'cn') {
-      return '中国'
+      return '中国大陆'
     } else if (region === 'hk') {
       return '中国香港'
     } else if (region === 'mo') {
       return '中国澳门'
     } else if (region === 'tw') {
-      return '中国台湾' // 🫠
+      return '中国台湾'
     } else {
       return ` ${(region as string).toUpperCase()} `
     }
@@ -193,7 +193,7 @@ const DeveloperRegionBlock = ({ username }: { username: string }) => {
     } else if (region === 'mo') {
       return '🇲🇴'
     } else if (region === 'tw') {
-      return '🇨🇳' // 🫠
+      return '🇨🇳'
     } else {
       return getEmojiFlag((region as string).toUpperCase() as TCountryCode)
     }
@@ -247,50 +247,25 @@ const DeveloperNotFoundErrorBoundary = ({ children }: PropsWithChildren) => {
   return <ErrorBoundary fallbackRender={renderer}>{children}</ErrorBoundary>
 }
 
-const ErrorBoundaryBlock = ({ children }: PropsWithChildren) => {
-  const renderer = useCallback(({ resetErrorBoundary, error }: FallbackProps) => {
-    if (error instanceof BusinessError && error.code === 404) {
-      // When the developer not found, the DeveloperNotFoundErrorBoundary will handle it
-      throw error
-    }
-    const errorMsg = error instanceof Error ? error.message : '未知错误'
-    return (
-      <div>
-        请求开发者信息失败：{errorMsg}
-        <Button onClick={() => resetErrorBoundary()}>重试</Button>
-      </div>
-    )
-  }, [])
-  return (
-    <QueryErrorResetBoundary>
-      {({ reset }) => (
-        <ErrorBoundary onReset={reset} fallbackRender={renderer}>
-          {children}
-        </ErrorBoundary>
-      )}
-    </QueryErrorResetBoundary>
-  )
-}
-
 const DeveloperPage = () => {
   const { username } = route.useParams()
 
   return (
-    <section className="flex w-full flex-col items-center gap-8 px-4 pt-8">
+    <div className="flex w-full flex-col items-center gap-8 px-4 pt-8">
       <DeveloperNotFoundErrorBoundary>
         <>
-          <ErrorBoundaryBlock>
+          <QueryErrorBoundaryBlock>
             <Suspense fallback={<DeveloperInfoSkeleton />}>
               <DeveloperInfoWrapper username={username} />
               <DeveloperGlanceWrapper username={username} />
             </Suspense>
-          </ErrorBoundaryBlock>
-          <ErrorBoundaryBlock>
+          </QueryErrorBoundaryBlock>
+          <QueryErrorBoundaryBlock>
             <DeveloperTable username={username} />
-          </ErrorBoundaryBlock>
+          </QueryErrorBoundaryBlock>
         </>
       </DeveloperNotFoundErrorBoundary>
-    </section>
+    </div>
   )
 }
 

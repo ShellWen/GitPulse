@@ -7,7 +7,7 @@ import {
   developer,
   developerLanguages,
   developerPulsePoint,
-  developerRegion,
+  developerRegion, type DeveloperWithPulsePoint,
 } from '$/lib/api/endpoint/types.ts'
 import { type ErrorResponse, errorResponse } from '$/lib/api/types.ts'
 import { HttpHandler, HttpResponse, delay, http } from 'msw'
@@ -160,7 +160,11 @@ export const handlers = [
     const region = url.searchParams.get('region')
     const limit = Number(url.searchParams.get('limit'))
 
-    if (!languageId || !region || !limit) {
+    // just let the linter happy
+    void(languageId)
+    void(region)
+
+    if (!limit) {
       return HttpResponse.json(
         errorResponse.parse({
           code: 400,
@@ -172,7 +176,17 @@ export const handlers = [
       )
     }
 
-    return HttpResponse.json<Array<Developer>>([fakeDeveloper], {
+    return HttpResponse.json<Array<DeveloperWithPulsePoint>>([{
+      developer: fakeDeveloper,
+      pulse_point: {
+        pulse_point: {
+          id: fakeDeveloper.id,
+          pulse_point: 233,
+
+          updated_at: new Date('2024-10-24T11:45:14Z'),
+        },
+      }
+    }], {
       status: 200,
     })
   }),
