@@ -41,7 +41,7 @@ export type DeveloperWithPulsePoint = z.infer<typeof developerWithPulsePoint>
 export const language = z.object({
   id: z.string().min(1, 'Language ID should not be empty'),
   name: z.string().min(1, 'Language name should not be empty'),
-  color: z.string().min(1, 'Language color should not be empty'),
+  color: z.string().optional(),
 })
 export type Language = z.infer<typeof language>
 
