@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"errors"
 	"github.com/google/go-github/v66/github"
 	"net/http"
 
@@ -21,8 +22,10 @@ func getPulsePointRankHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 		l := logic.NewGetPulsePointRankLogic(r.Context(), svcCtx)
 		resp, err := l.GetPulsePointRank(&req)
 		if err != nil {
-			if err.(*github.ErrorResponse) != nil {
-				w.WriteHeader(err.(*github.ErrorResponse).Response.StatusCode)
+			var value *github.ErrorResponse
+			ok := errors.As(err, &value)
+			if ok {
+				w.WriteHeader(value.Response.StatusCode)
 			}
 			httpx.ErrorCtx(r.Context(), w, err)
 		} else {

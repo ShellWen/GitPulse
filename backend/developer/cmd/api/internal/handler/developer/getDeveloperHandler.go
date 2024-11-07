@@ -1,6 +1,7 @@
 package developer
 
 import (
+	"errors"
 	"github.com/ShellWen/GitPulse/developer/cmd/api/internal/logic/developer"
 	"github.com/ShellWen/GitPulse/developer/cmd/api/internal/svc"
 	"github.com/ShellWen/GitPulse/developer/cmd/api/internal/types"
@@ -21,8 +22,10 @@ func GetDeveloperHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 		l := developer.NewGetDeveloperLogic(r.Context(), svcCtx)
 		resp, err := l.GetDeveloper(&req)
 		if err != nil {
-			if err.(*github.ErrorResponse) != nil {
-				w.WriteHeader(err.(*github.ErrorResponse).Response.StatusCode)
+			var value *github.ErrorResponse
+			ok := errors.As(err, &value)
+			if ok {
+				w.WriteHeader(value.Response.StatusCode)
 			}
 			httpx.ErrorCtx(r.Context(), w, err)
 		} else {
