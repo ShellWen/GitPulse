@@ -137,13 +137,22 @@ const DeveloperLanguageBlock = ({ username }: { username: string }) => {
     if (!data) {
       return null
     }
+    if (data.languages.languages.length === 0) {
+      return null
+    }
     return data.languages.languages.reduce((prev, current) => (prev.percentage > current.percentage ? prev : current))
   }, [data])
   return (
     <>
       <section className="w-full rounded bg-base-200 p-8 lg:col-span-2 lg:h-96">
         <p>
-          {`${developer.name} 使用最多的语言是 ${mostUsedLanguage?.language.name}，占比 ${mostUsedLanguage?.percentage.toFixed(2)}%。`}
+          {
+            mostUsedLanguage ? (
+              `${developer.name} 使用最多的语言是 ${mostUsedLanguage?.language.name}，占比 ${mostUsedLanguage?.percentage.toFixed(2)}%。`
+            ) : (
+              `我们暂时没有找到 ${developer.name} 使用最多的语言。`
+            )
+          }
           {/* TODO: Styles */}
         </p>
       </section>
