@@ -70,7 +70,8 @@ func (l *UpdateRegionLogic) doUpdateRegion(id int64) (err error) {
 	}
 
 	if regionConfidence, err = l.getRegionWithConfidenceByPythonScript(login); err != nil {
-		return
+		logx.Error(err)
+		err = nil
 	}
 
 	if region, confidence, err := l.getRegionWithConfidenceByLLModel(id, login); err != nil {
