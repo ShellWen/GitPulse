@@ -1,5 +1,4 @@
-import { z } from 'zod';
-
+import { z } from 'zod'
 
 export const developer = z.object({
   id: z.number().nonnegative('Developer ID should be non-negative'),
@@ -66,11 +65,13 @@ export const developerLanguages = z.object({
 export type DeveloperLanguages = z.infer<typeof developerLanguages>
 
 export const developerRegion = z.object({
-  id: z.number().nonnegative('Developer ID should be non-negative'),
-  region: z.string().min(1, 'Region should not be empty'),
-  confidence: z
-    .number()
-    .min(0, 'Region confidence should be non-negative')
-    .max(1, 'Region confidence should be less than 1'),
+  region: z.object({
+    id: z.number().nonnegative('Developer ID should be non-negative'),
+    region: z.string().min(1, 'Region should not be empty'),
+    confidence: z
+      .number()
+      .min(0, 'Region confidence should be non-negative')
+      .max(1, 'Region confidence should be less than 1'),
+  }),
 })
 export type DeveloperRegion = z.infer<typeof developerRegion>
