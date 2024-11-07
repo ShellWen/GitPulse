@@ -146,9 +146,11 @@ export const handlers = [
     }
 
     const resp = developerRegion.parse({
-      id: fakeDeveloper.id,
-      region: 'cn',
-      confidence: 0.9,
+      region: {
+        id: fakeDeveloper.id,
+        region: 'cn',
+        confidence: 0.9,
+      },
     } satisfies DeveloperRegion)
     return HttpResponse.json(resp)
   }),

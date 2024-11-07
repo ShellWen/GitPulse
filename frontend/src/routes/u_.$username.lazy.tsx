@@ -137,10 +137,10 @@ const DeveloperRegionBlock = ({ username }: { username: string }) => {
     if (!data) {
       return { region: RegionNotSure, confidence: 0 }
     }
-    if (data.confidence < 0.5) {
-      return { region: RegionNotSure, confidence: data.confidence }
+    if (data.region.confidence < 0.5) {
+      return { region: RegionNotSure, confidence: data.region.confidence }
     }
-    return { region: data.region, confidence: data.confidence }
+    return { region: data.region.region, confidence: data.region.confidence }
   }, [data])
   const regionName = useMemo(() => {
     if (region === RegionNotSure) {
