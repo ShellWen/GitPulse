@@ -137,6 +137,7 @@ func (l *UpdateRegionLogic) getRegionWithConfidenceByLLModel(id int64, login str
 		httpClient     = &http.Client{}
 		sparkModelData llm.SparkModelData
 		sparkModelResp llm.SparkModelResp
+		respStr        string
 		req            *http.Request
 		resp           *http.Response
 		role           = "你是一名专业的 GitHub 数据分析师，对不同地区、语言和文化有深刻了解。GitHub 的主要语言为英语，但你可以通过用户使用的非英语语言、地名和位置等信息来推测其国籍或地区。" +
@@ -203,7 +204,11 @@ func (l *UpdateRegionLogic) getRegionWithConfidenceByLLModel(id int64, login str
 		return
 	}
 
-	if err = json.Unmarshal([]byte(sparkModelResp.Choices[0].Message.Content), &regionConfidence); err != nil {
+	respStr = sparkModelResp.Choices[0].Message.Content
+
+	respStr = l.extractJson(respStr)
+
+	if err = json.Unmarshal([]byte(respStr), &regionConfidence); err != nil {
 		return
 	}
 
@@ -265,6 +270,28 @@ func (l *UpdateRegionLogic) getTextFromProfile(id int64) (text string, err error
 	text += "|Developer Profile Start|" + "|Name:" +
 		theDeveloper.Name + "|Bio:" + theDeveloper.Bio + "|TwitterUsername:" + theDeveloper.TwitterUsername +
 		"|Company:" + theDeveloper.Company + "|Location:" + theDeveloper.Location + "|Developer Profile End|"
+
+	return
+}
+
+func (l *UpdateRegionLogic) extractJson(text string) (newText string) {
+	splitted := strings.Split(text, "{")
+
+	if len(splitted) < 2 {
+		return
+	}
+
+	text = "{" + splitted[1]
+
+	splitted = strings.Split(text, "}")
+
+	if len(splitted) < 2 {
+		return
+	}
+
+	text = splitted[0] + "}"
+
+	newText = text
 
 	return
 }
