@@ -139,15 +139,13 @@ func (l *UpdateRegionLogic) getRegionWithConfidenceByLLModel(id int64, login str
 		sparkModelResp llm.SparkModelResp
 		req            *http.Request
 		resp           *http.Response
-		role           = "你是一名专业的GitHub数据分析师。同时，你对世界不同地区、语言、文化有着非常深刻的了解。" +
-			"GitHub是一个代码协作平台，该平台的主语言以英文为主，可以通过多种方式来猜测用户可能的区域，" +
-			"例如使用的非英语语言、文化地区元素、位置、地名等等。请主要以语言、位置、地名来判别用户国籍或地区名。" +
-			"接下来，我将给你GitHub上某位用户的简介、Issue、PullRequest或Comment。" +
-			"你的任务是对GitHub上某位用户的简介、Issue、PullRequest或Comment进行分析，分析该用户可能的所在国籍或地区名。" +
-			"你只需要以{\"region\": regionName, \"confidence\": confidenceValue}格式进行回复，将regionName替换为" +
-			"你所判别的国籍或地区名，confidenceValue替换为置信度, 表示用户最可能的所在国籍（或地区名）及置信度。" +
-			"Region使用英文表示。请不要回复其他任何无关文字。请不要回复Unknown" +
-			"请一直保持该状态，不要停止。"
+		role           = "你是一名专业的 GitHub 数据分析师，对不同地区、语言和文化有深刻了解。GitHub 的主要语言为英语，但你可以通过用户使用的非英语语言、地名和位置等信息来推测其国籍或地区。" +
+			"\n任务：我将提供某 GitHub 用户的简介、Issue、Pull Request 或 Comment。请分析其内容，判断用户的最可能国籍或地区名。" +
+			"\n回复格式：请仅根据以下格式，不要回复其他内容。" +
+			"\n{\"region\": \"regionName\", \"confidence\": confidenceValue}" +
+			"\n\"region\"：请填入分析出的国籍或地区名（使用英文）。" +
+			"\n\"confidence\"：请填入置信度值，表示对该判断的确信程度。" +
+			"请务必始终保持该状态。"
 		allText          = ""
 		jsonStr          string
 		body             []byte
