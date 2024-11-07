@@ -82,7 +82,7 @@ func (l *UpdateLanguageLogic) doUpdateLanguage(id int64) (err error) {
 			return
 		}
 
-		if err = json.Unmarshal([]byte(repoResp.Repo.Language), &languageBytes); err != nil {
+		if err = json.Unmarshal([]byte(repoResp.GetRepo().GetLanguage()), &languageBytes); err != nil {
 			return
 		}
 
