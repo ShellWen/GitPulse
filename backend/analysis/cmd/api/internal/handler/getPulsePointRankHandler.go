@@ -19,6 +19,12 @@ func getPulsePointRankHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			return
 		}
 
+		if req.Limit < 1 {
+			req.Limit = 1
+		} else if req.Limit > 100 {
+			req.Limit = 100
+		}
+
 		l := logic.NewGetPulsePointRankLogic(r.Context(), svcCtx)
 		resp, err := l.GetPulsePointRank(&req)
 		if err != nil {
