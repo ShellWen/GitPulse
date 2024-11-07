@@ -122,8 +122,11 @@ const LanguagePie = ({ data }: { data: DeveloperLanguages }) => {
         },
         theme: isDarkMode ? 'classicDark' : 'classic',
       }) satisfies ComponentProps<typeof Pie>,
-    [flattenedData, isDarkMode],
+    [isDarkMode, limitedData],
   )
+  if (limitedData.length === 0) {
+    return <div className="flex h-full w-full flex-col items-center justify-center">暂无数据</div>
+  }
   return <Pie {...config} />
 }
 
