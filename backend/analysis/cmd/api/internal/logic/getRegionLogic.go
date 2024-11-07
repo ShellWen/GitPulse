@@ -111,6 +111,27 @@ func (l *GetRegionLogic) updateRegion(id int64) (err error) {
 		updateAnalysisResp *analysis.UpdateAnalysisResp
 	)
 
+	if l.svcCtx.RegionUpdatedChan[id] == nil {
+		l.svcCtx.RegionUpdatedChan[id] = make(chan struct{})
+	}
+
+	if l.svcCtx.RegionUpdating {
+		<-l.svcCtx.RegionUpdatedChan[id]
+		return
+	} else {
+		l.svcCtx.RegionUpdating = true
+		defer func() {
+			l.svcCtx.RegionUpdating = false
+			for stillHasBlock := true; stillHasBlock; {
+				select {
+				case l.svcCtx.RegionUpdatedChan[id] <- struct{}{}:
+				default:
+					stillHasBlock = false
+				}
+			}
+		}()
+	}
+
 	if needUpdate, err := checkIfNeedUpdateDeveloper(l.ctx, l.svcCtx, id); err != nil {
 		return err
 	} else if needUpdate {

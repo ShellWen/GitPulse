@@ -38,13 +38,17 @@ func (l *UnblockRepoLogic) UnblockRepo(in *pb.UnblockRepoReq) (*pb.UnblockRepoRe
 		l.svcCtx.RepoUpdatedChan[in.Id] = make(chan struct{})
 	}
 
-	select {
-	case l.svcCtx.RepoUpdatedChan[in.Id] <- struct{}{}:
-	default:
+	for stillHasBlock := true; stillHasBlock; {
+		select {
+		case l.svcCtx.RepoUpdatedChan[in.Id] <- struct{}{}:
+			stillHasBlock = true
+		default:
+			stillHasBlock = false
+		}
 	}
 
 	return &pb.UnblockRepoResp{
 		Code:    http.StatusOK,
-		Message: "UnblockRepoed",
+		Message: "UnblockRepo",
 	}, nil
 }

@@ -122,7 +122,11 @@ func (l *GetDeveloperLogic) updateDeveloperWithBlock(id int64) (err error) {
 	}
 
 	if _, err = l.svcCtx.AsynqClient.Enqueue(task, asynq.TaskID(strconv.Itoa(tasks.FetchDeveloper)+","+strconv.Itoa(int(id)))); err != nil {
-		return
+		if errors.Is(err, asynq.ErrTaskIDConflict) {
+			err = nil
+		} else {
+			return
+		}
 	}
 
 	logx.Info("Successfully pushed task ", task.Payload(), " to fetcher, waiting for developer updated")

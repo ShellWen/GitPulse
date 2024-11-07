@@ -134,6 +134,27 @@ func (l *GetLanguageUsageLogic) updateLanguageUsage(id int64) (err error) {
 		updateAnalysisResp *analysis.UpdateAnalysisResp
 	)
 
+	if l.svcCtx.LanguagesUpdatedChan[id] == nil {
+		l.svcCtx.LanguagesUpdatedChan[id] = make(chan struct{})
+	}
+
+	if l.svcCtx.LanguageUpdating {
+		<-l.svcCtx.LanguagesUpdatedChan[id]
+		return
+	} else {
+		l.svcCtx.LanguageUpdating = true
+		defer func() {
+			l.svcCtx.LanguageUpdating = false
+			for stillHasBlock := true; stillHasBlock; {
+				select {
+				case l.svcCtx.LanguagesUpdatedChan[id] <- struct{}{}:
+				default:
+					stillHasBlock = false
+				}
+			}
+		}()
+	}
+
 	if needUpdate, err = checkIfNeedUpdateCreatedRepo(l.ctx, l.svcCtx, id); err != nil {
 		return
 	} else if needUpdate {

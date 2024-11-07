@@ -38,13 +38,17 @@ func (l *UnblockDeveloperLogic) UnblockDeveloper(in *pb.UnblockDeveloperReq) (*p
 		l.svcCtx.DeveloperUpdatedChan[in.Id] = make(chan struct{})
 	}
 
-	select {
-	case l.svcCtx.DeveloperUpdatedChan[in.Id] <- struct{}{}:
-	default:
+	for stillHasBlock := true; stillHasBlock; {
+		select {
+		case l.svcCtx.DeveloperUpdatedChan[in.Id] <- struct{}{}:
+			stillHasBlock = true
+		default:
+			stillHasBlock = false
+		}
 	}
 
 	return &pb.UnblockDeveloperResp{
 		Code:    http.StatusOK,
-		Message: "UnblockDevelopered",
+		Message: "UnblockDeveloper",
 	}, nil
 }

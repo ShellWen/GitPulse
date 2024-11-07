@@ -56,9 +56,13 @@ func (l *UnblockRelationLogic) syncCreatedRepo(id int64) {
 		l.svcCtx.CreatedRepoUpdatedChan[id] = make(chan struct{})
 	}
 
-	select {
-	case l.svcCtx.CreatedRepoUpdatedChan[id] <- struct{}{}:
-	default:
+	for stillHasBlock := true; stillHasBlock; {
+		select {
+		case l.svcCtx.CreatedRepoUpdatedChan[id] <- struct{}{}:
+			stillHasBlock = true
+		default:
+			stillHasBlock = false
+		}
 	}
 }
 
@@ -67,9 +71,13 @@ func (l *UnblockRelationLogic) syncStarredRepo(id int64) {
 		l.svcCtx.StarredRepoUpdatedChan[id] = make(chan struct{})
 	}
 
-	select {
-	case l.svcCtx.StarredRepoUpdatedChan[id] <- struct{}{}:
-	default:
+	for stillHasBlock := true; stillHasBlock; {
+		select {
+		case l.svcCtx.StarredRepoUpdatedChan[id] <- struct{}{}:
+			stillHasBlock = true
+		default:
+			stillHasBlock = false
+		}
 	}
 }
 
@@ -78,9 +86,13 @@ func (l *UnblockRelationLogic) syncFork(id int64) {
 		l.svcCtx.ForkUpdatedChan[id] = make(chan struct{})
 	}
 
-	select {
-	case l.svcCtx.ForkUpdatedChan[id] <- struct{}{}:
-	default:
+	for stillHasBlock := true; stillHasBlock; {
+		select {
+		case l.svcCtx.ForkUpdatedChan[id] <- struct{}{}:
+			stillHasBlock = true
+		default:
+			stillHasBlock = false
+		}
 	}
 }
 
@@ -89,9 +101,13 @@ func (l *UnblockRelationLogic) syncFollowing(id int64) {
 		l.svcCtx.FollowingUpdatedChan[id] = make(chan struct{})
 	}
 
-	select {
-	case l.svcCtx.FollowingUpdatedChan[id] <- struct{}{}:
-	default:
+	for stillHasBlock := true; stillHasBlock; {
+		select {
+		case l.svcCtx.FollowingUpdatedChan[id] <- struct{}{}:
+			stillHasBlock = true
+		default:
+			stillHasBlock = false
+		}
 	}
 }
 
@@ -100,8 +116,12 @@ func (l *UnblockRelationLogic) syncFollower(id int64) {
 		l.svcCtx.FollowerUpdatedChan[id] = make(chan struct{})
 	}
 
-	select {
-	case l.svcCtx.FollowerUpdatedChan[id] <- struct{}{}:
-	default:
+	for stillHasBlock := true; stillHasBlock; {
+		select {
+		case l.svcCtx.FollowerUpdatedChan[id] <- struct{}{}:
+			stillHasBlock = true
+		default:
+			stillHasBlock = false
+		}
 	}
 }

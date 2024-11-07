@@ -22,6 +22,14 @@ type ServiceContext struct {
 	ContributionRpcClient contribution.ContributionZrpcClient
 	RelationRpcClient     relation.Relation
 	AnalysisRpcClient     analysis.Analysis
+
+	LanguageUpdating   bool
+	PulsePointUpdating bool
+	RegionUpdating     bool
+
+	LanguagesUpdatedChan  map[int64]chan struct{}
+	PulsePointUpdatedChan map[int64]chan struct{}
+	RegionUpdatedChan     map[int64]chan struct{}
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -33,6 +41,14 @@ func NewServiceContext(c config.Config) *ServiceContext {
 			DB:       c.AsynqRedisConf.DB,
 		}),
 		RedisClient: redis.MustNewRedis(c.Redis),
+
+		LanguagesUpdatedChan:  make(map[int64]chan struct{}),
+		PulsePointUpdatedChan: make(map[int64]chan struct{}),
+		RegionUpdatedChan:     make(map[int64]chan struct{}),
+
+		LanguageUpdating:   false,
+		PulsePointUpdating: false,
+		RegionUpdating:     false,
 
 		DeveloperRpcClient:    developer.NewDeveloperZrpcClient(zrpc.MustNewClient(c.DeveloperRpcConf)),
 		RepoRpcClient:         repo.NewRepoZrpcClient(zrpc.MustNewClient(c.RepoRpcConf)),

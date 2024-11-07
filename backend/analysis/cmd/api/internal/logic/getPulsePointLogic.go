@@ -114,6 +114,27 @@ func (l *GetPulsePointLogic) updatePulsePoint(id int64) (err error) {
 		updateAnalysisResp *analysis.UpdateAnalysisResp
 	)
 
+	if l.svcCtx.PulsePointUpdatedChan[id] == nil {
+		l.svcCtx.PulsePointUpdatedChan[id] = make(chan struct{})
+	}
+
+	if l.svcCtx.PulsePointUpdating {
+		<-l.svcCtx.PulsePointUpdatedChan[id]
+		return
+	} else {
+		l.svcCtx.PulsePointUpdating = true
+		defer func() {
+			l.svcCtx.PulsePointUpdating = false
+			for stillHasBlock := true; stillHasBlock; {
+				select {
+				case l.svcCtx.PulsePointUpdatedChan[id] <- struct{}{}:
+				default:
+					stillHasBlock = false
+				}
+			}
+		}()
+	}
+
 	if needUpdate, err = checkIfNeedUpdateContribution(l.ctx, l.svcCtx, id); err != nil {
 		return
 	} else if needUpdate {

@@ -52,9 +52,13 @@ func (l *UnblockContributionLogic) syncIssuePr(id int64) {
 		l.svcCtx.IssuePrUpdatedChan[id] = make(chan struct{})
 	}
 
-	select {
-	case l.svcCtx.IssuePrUpdatedChan[id] <- struct{}{}:
-	default:
+	for stillHasBlock := true; stillHasBlock; {
+		select {
+		case l.svcCtx.IssuePrUpdatedChan[id] <- struct{}{}:
+			stillHasBlock = true
+		default:
+			stillHasBlock = false
+		}
 	}
 }
 
@@ -63,10 +67,15 @@ func (l *UnblockContributionLogic) syncCommentReview(id int64) {
 		l.svcCtx.CommentReviewUpdatedChan[id] = make(chan struct{})
 	}
 
-	select {
-	case l.svcCtx.CommentReviewUpdatedChan[id] <- struct{}{}:
-	default:
+	for stillHasBlock := true; stillHasBlock; {
+		select {
+		case l.svcCtx.CommentReviewUpdatedChan[id] <- struct{}{}:
+			stillHasBlock = true
+		default:
+			stillHasBlock = false
+		}
 	}
+
 }
 
 func (l *UnblockContributionLogic) syncAllContribution(id int64) {
@@ -74,9 +83,14 @@ func (l *UnblockContributionLogic) syncAllContribution(id int64) {
 		l.svcCtx.AllUpdatedChan[id] = make(chan struct{})
 	}
 
-	select {
-	case l.svcCtx.AllUpdatedChan[id] <- struct{}{}:
-	default:
+	for stillHasBlock := true; stillHasBlock; {
+		select {
+		case l.svcCtx.AllUpdatedChan[id] <- struct{}{}:
+			stillHasBlock = true
+		default:
+			stillHasBlock = false
+		}
 	}
+
 	return
 }

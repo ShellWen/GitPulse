@@ -103,7 +103,11 @@ func updateDeveloper(ctx context.Context, svcCtx *svc.ServiceContext, id int64) 
 	}
 
 	if _, err = svcCtx.AsynqClient.Enqueue(task, asynq.TaskID(strconv.Itoa(tasks.FetchDeveloper)+","+strconv.Itoa(int(id)))); err != nil {
-		return
+		if errors.Is(err, asynq.ErrTaskIDConflict) {
+			err = nil
+		} else {
+			return
+		}
 	}
 	logx.Info("Successfully pushed task ", jsonStr, " to fetcher, waiting for developer updated")
 
@@ -132,7 +136,11 @@ func updateContribution(ctx context.Context, svcCtx *svc.ServiceContext, id int6
 	}
 
 	if _, err = svcCtx.AsynqClient.Enqueue(fetcherTask, asynq.TaskID(strconv.Itoa(tasks.FetchContributionOfUser)+","+strconv.Itoa(int(id)))); err != nil {
-		return
+		if errors.Is(err, asynq.ErrTaskIDConflict) {
+			err = nil
+		} else {
+			return
+		}
 	}
 
 	logx.Info("Successfully pushed task ", fetcherTask.Payload(), " to fetcher, waiting for contribution updated")
@@ -164,7 +172,11 @@ func updateCreatedRepo(ctx context.Context, svcCtx *svc.ServiceContext, id int64
 	}
 
 	if _, err = svcCtx.AsynqClient.Enqueue(fetcherTask, asynq.TaskID(strconv.Itoa(tasks.FetchCreatedRepo)+","+strconv.Itoa(int(id)))); err != nil {
-		return
+		if errors.Is(err, asynq.ErrTaskIDConflict) {
+			err = nil
+		} else {
+			return
+		}
 	}
 
 	if blockResp, err = relationRpcClient.BlockUntilCreatedRepoUpdated(ctx, &relation.BlockUntilCreatedRepoUpdatedReq{
