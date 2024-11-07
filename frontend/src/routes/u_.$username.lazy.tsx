@@ -247,7 +247,7 @@ const DeveloperNotFoundErrorBoundary = ({ children }: PropsWithChildren) => {
   return <ErrorBoundary fallbackRender={renderer}>{children}</ErrorBoundary>
 }
 
-const DeveloperInfoErrorBoundary = ({ children }: PropsWithChildren) => {
+const ErrorBoundaryBlock = ({ children }: PropsWithChildren) => {
   const renderer = useCallback(({ resetErrorBoundary, error }: FallbackProps) => {
     if (error instanceof BusinessError && error.code === 404) {
       // When the developer not found, the DeveloperNotFoundErrorBoundary will handle it
@@ -279,16 +279,15 @@ const DeveloperPage = () => {
     <section className="flex w-full flex-col items-center gap-8 px-4 pt-8">
       <DeveloperNotFoundErrorBoundary>
         <>
-          <DeveloperInfoErrorBoundary>
+          <ErrorBoundaryBlock>
             <Suspense fallback={<DeveloperInfoSkeleton />}>
               <DeveloperInfoWrapper username={username} />
               <DeveloperGlanceWrapper username={username} />
             </Suspense>
-          </DeveloperInfoErrorBoundary>
-          {/* TODO: Add ErrorBoundary */}
-          <Suspense fallback={<>TODO</>}>
+          </ErrorBoundaryBlock>
+          <ErrorBoundaryBlock>
             <DeveloperTable username={username} />
-          </Suspense>
+          </ErrorBoundaryBlock>
         </>
       </DeveloperNotFoundErrorBoundary>
     </section>
