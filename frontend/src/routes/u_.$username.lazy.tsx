@@ -135,7 +135,7 @@ const DeveloperRegionBlock = ({ username }: { username: string }) => {
     if (!data) {
       return { region: RegionNotSure, confidence: 0 }
     }
-    if (data.region.confidence < 0.2) {
+    if (data.region.confidence < 0.1) {
       return { region: RegionNotSure, confidence: data.region.confidence }
     }
     return { region: data.region.region, confidence: data.region.confidence }
