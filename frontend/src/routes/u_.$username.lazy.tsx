@@ -45,7 +45,7 @@ const DeveloperGlanceWrapper = ({ username }: { username: string }) => {
 
 interface LanguagePieItem {
   id: string
-  color: string
+  color?: string
   name: string
   percentage: number
 }
