@@ -99,6 +99,7 @@ func (l *GetPulsePointRankLogic) GetPulsePointRank(req *types.GetPulsePointRankR
 
 		typeDeveloper = types.Developer{
 			Id:        getDeveloperResp.Developer.Id,
+			Name:      getDeveloperResp.Developer.Name,
 			Login:     getDeveloperResp.Developer.Login,
 			AvatarUrl: getDeveloperResp.Developer.AvatarUrl,
 			Company:   getDeveloperResp.Developer.Company,
