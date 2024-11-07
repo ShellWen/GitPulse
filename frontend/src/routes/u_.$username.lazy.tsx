@@ -67,10 +67,35 @@ const LanguagePie = ({ data }: { data: DeveloperLanguages }) => {
     [data],
   )
 
+  // Limit the data to 10 items
+  const limitedData = useMemo(() => {
+    if (flattenedData.length <= 10) {
+      return flattenedData
+    }
+    const top10 = flattenedData.slice(0, 10)
+    const rest = flattenedData.slice(10)
+    const restPercentage = rest.reduce((prev, current) => prev + current.percentage, 0)
+    return [
+      ...top10,
+      {
+        id: 'rest',
+        name: '其它',
+        percentage: restPercentage,
+      },
+    ]
+  }, [flattenedData])
+
+  // Sort the data by percentage
+  const sortedData = useMemo(() => {
+    const newLimitedData = [...limitedData]
+    newLimitedData.sort((a, b) => b.percentage - a.percentage)
+    return newLimitedData
+  }, [limitedData])
+
   const config: PieConfig = useMemo(
     () =>
       ({
-        data: flattenedData,
+        data: sortedData,
         angleField: 'percentage',
         colorField: 'name',
         radius: 0.75,
