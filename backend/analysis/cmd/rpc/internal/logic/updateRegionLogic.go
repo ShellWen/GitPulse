@@ -150,7 +150,7 @@ func (l *UpdateRegionLogic) getRegionWithConfidenceByLLModel(id int64, login str
 			"\n回复格式：请仅根据以下格式，不要回复其他内容。" +
 			"\n{\"region\": \"regionName\", \"confidence\": confidenceValue}" +
 			"\n\"region\"：请填入分析出的国籍或地区名（使用英文）。" +
-			"\n\"confidence\"：请填入置信度值，表示对该判断的确信程度。" +
+			"\n\"confidence\"：请填入置信度值，表示对该判断的确信程度。该数值应在 0 到 1 之间，且小数点后最多保留 2 位。" +
 			"请务必始终保持该状态。"
 		allText          = ""
 		jsonStr          string
@@ -220,6 +220,7 @@ func (l *UpdateRegionLogic) getRegionWithConfidenceByLLModel(id int64, login str
 	region = regionConfidence.Region
 	region = strings.ToLower(countries.ByName(region).Alpha2())
 	confidence = regionConfidence.Confidence
+	confidence = l.restrictConfidence(confidence)
 
 	return
 }
@@ -298,5 +299,16 @@ func (l *UpdateRegionLogic) extractJson(text string) (newText string) {
 
 	newText = text
 
+	return
+}
+
+func (l *UpdateRegionLogic) restrictConfidence(confidence float64) (restrictedConfidence float64) {
+	if confidence < 0 {
+		restrictedConfidence = 0
+	} else if confidence > 1 {
+		restrictedConfidence = 1
+	} else {
+		restrictedConfidence = confidence
+	}
 	return
 }
