@@ -28,9 +28,9 @@ const Root = () => {
 
   return (
     <>
-      <div className="w-full max-w-[100vw] overflow-clip">
+      <div className="flex min-h-screen w-full max-w-[100vw] flex-col overflow-clip">
         <AppBar />
-        <main className="min-h-screen w-full">
+        <main className="flex flex-1 flex-col justify-center">
           <Outlet />
         </main>
         <AppFooter />

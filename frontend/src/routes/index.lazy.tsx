@@ -34,7 +34,7 @@ function Index() {
   )
   // const redirectToUserPage = () => {}
   return (
-    <section className="flex h-screen w-full flex-col items-center justify-center">
+    <section className="flex h-full w-full flex-1 flex-col items-center justify-center">
       <Hero>
         <Hero.Content className="text-center">
           <div className="max-w-md">

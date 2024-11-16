@@ -15,8 +15,10 @@ const RankResultWrapper = ({ language, region, limit }: { language?: string; reg
   return (
     <>
       {data?.map(({ developer, pulse_point }, index) => (
-        <div key={developer.id} className="flex gap-4 items-center">
-          <div className="rounded bg-base-300 w-12 h-12 flex justify-center items-center flex-shrink-0">{index + 1}</div>
+        <div key={developer.id} className="flex items-center gap-4">
+          <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded bg-base-300">
+            {index + 1}
+          </div>
           <div className="flex-shrink-0">
             <Link to={`/u/${developer.login}`}>
               <img src={developer.avatar_url} alt={developer.name} className="h-16 w-16 cursor-pointer rounded-full" />
@@ -34,7 +36,7 @@ const RankResultWrapper = ({ language, region, limit }: { language?: string; reg
             </div>
           </div>
           <div className="flex-1" />
-          <div className="text-4xl flex-shrink-0">
+          <div className="flex-shrink-0 text-4xl">
             <Link to={`/u/${developer.login}`}>{`${pulse_point.pulse_point.toFixed(2)}pp`}</Link>
           </div>
         </div>
@@ -85,7 +87,7 @@ const RankPage = () => {
   )
 
   return (
-    <div className="mx-auto flex w-full max-w-6xl flex-col items-center gap-8 px-4 pt-8 md:flex-row md:items-start">
+    <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col items-center gap-8 px-4 py-8 md:flex-row md:items-start">
       <section className="w-full md:max-w-xs">
         {sortedLanguages && (
           <Form className="w-full gap-2" onSubmit={onFormSubmit}>
@@ -146,7 +148,7 @@ const RankPage = () => {
       </section>
       <QueryErrorBoundaryBlock>
         <Suspense fallback={<section className="skeleton h-96 w-full rounded bg-base-200 md:flex-1" />}>
-          <section className="flex min-h-screen w-full flex-col gap-6 rounded bg-base-200 p-8 md:flex-1">
+          <section className="flex w-full flex-col gap-6 rounded bg-base-200 p-8 md:flex-1">
             <RankResultWrapper
               language={searchParams.language}
               region={searchParams.region}
