@@ -148,9 +148,9 @@ const RankPage = () => {
         <Suspense fallback={<section className="skeleton h-96 w-full rounded bg-base-200 md:flex-1" />}>
           <section className="flex min-h-screen w-full flex-col gap-6 rounded bg-base-200 p-8 md:flex-1">
             <RankResultWrapper
-              language={searchLanguage === '_all' ? undefined : searchLanguage}
-              region={searchRegion === '_all' ? undefined : searchRegion}
-              limit={searchLimit}
+              language={searchParams.language}
+              region={searchParams.region}
+              limit={searchParams.limit}
             />
           </section>
         </Suspense>
