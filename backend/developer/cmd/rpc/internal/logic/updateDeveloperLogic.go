@@ -3,12 +3,19 @@ package logic
 import (
 	"context"
 	"errors"
-	"github.com/ShellWen/GitPulse/developer/model"
-	"net/http"
-	"time"
-
+	customGithub "github.com/ShellWen/GitPulse/common/github"
+	locks "github.com/ShellWen/GitPulse/common/lock"
+	"github.com/ShellWen/GitPulse/common/tasks"
 	"github.com/ShellWen/GitPulse/developer/cmd/rpc/internal/svc"
 	"github.com/ShellWen/GitPulse/developer/cmd/rpc/pb"
+	"github.com/ShellWen/GitPulse/relation/model"
+	"github.com/google/uuid"
+	"github.com/hashicorp/consul/api"
+	"github.com/hibiken/asynq"
+	"github.com/zeromicro/go-zero/core/stores/redis"
+	"net/http"
+	"strconv"
+	"time"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -27,58 +34,136 @@ func NewUpdateDeveloperLogic(ctx context.Context, svcCtx *svc.ServiceContext) *U
 	}
 }
 
-func (l *UpdateDeveloperLogic) UpdateDeveloper(in *pb.UpdateDeveloperReq) (resp *pb.UpdateDeveloperResp, err error) {
-	var developer *model.Developer
-	if developer, err = l.svcCtx.DeveloperModel.FindOneById(l.ctx, in.Id); err != nil {
-		if errors.Is(err, model.ErrNotFound) {
-			resp = &pb.UpdateDeveloperResp{
-				Code:    http.StatusNotFound,
-				Message: err.Error(),
-			}
-		} else {
-			resp = &pb.UpdateDeveloperResp{
-				Code:    http.StatusInternalServerError,
-				Message: err.Error(),
-			}
-		}
-	} else if err = l.doUpdateDeveloper(developer, in); err != nil {
-		resp = &pb.UpdateDeveloperResp{
+func (l *UpdateDeveloperLogic) UpdateDeveloper(in *pb.UpdateDeveloperReq) (*pb.UpdateDeveloperResp, error) {
+	err := l.doUpdateDeveloper(in)
+	if err != nil {
+		return &pb.UpdateDeveloperResp{
 			Code:    http.StatusInternalServerError,
 			Message: err.Error(),
-		}
-	} else {
-		resp = &pb.UpdateDeveloperResp{
-			Code:    http.StatusOK,
-			Message: http.StatusText(http.StatusOK),
+		}, nil
+	}
+
+	return &pb.UpdateDeveloperResp{
+		Code:    http.StatusOK,
+		Message: "Successfully updated developer",
+	}, nil
+}
+
+func (l *UpdateDeveloperLogic) doUpdateDeveloper(in *pb.UpdateDeveloperReq) error {
+	lock, err := l.acquireUpdateDeveloperLock()
+	if err != nil {
+		return err
+	}
+	defer lock.Unlock()
+
+	needUpdate, err := l.checkIfNeedUpdateDeveloper(in.Id)
+	if err != nil {
+		return err
+	}
+
+	if !needUpdate {
+		return nil
+	}
+
+	if _, err = l.svcCtx.RedisClient.DelCtx(l.ctx, locks.GetNewLockKey(locks.UpdateDeveloper, in.Id)); err != nil {
+		return err
+	}
+
+	err = l.pushUpdateDeveloperTask(in.Id)
+
+	if err != nil {
+		logx.Error("Failed to push update developer task: ", err)
+		return err
+	}
+
+	err = l.blockUntilDeveloperUpdated(in.Id)
+
+	if err != nil {
+		logx.Error("Failed to block until developer updated: ", err)
+		return err
+	}
+
+	return nil
+}
+
+func (l *UpdateDeveloperLogic) acquireUpdateDeveloperLock() (*api.Lock, error) {
+	lock, err := l.svcCtx.ConsulClient.LockOpts(&api.LockOptions{
+		Key:         strconv.Itoa(tasks.FetchDeveloper),
+		Value:       []byte("locked"),
+		SessionTTL:  "10s",
+		SessionName: uuid.Must(uuid.NewV7()).String(),
+	})
+
+	if err != nil {
+		logx.Error("Failed to create lock: ", err)
+		return nil, err
+	}
+
+	_, err = lock.Lock(nil)
+
+	if err != nil {
+		logx.Error("Failed to accquire lock: ", err)
+		return nil, err
+	}
+
+	return lock, nil
+}
+
+func (l *UpdateDeveloperLogic) pushUpdateDeveloperTask(id int64) (err error) {
+	var (
+		task   *asynq.Task
+		taskId string
+	)
+
+	if task, taskId, err = tasks.NewFetcherTask(tasks.FetchDeveloper, id, "", 0); err != nil {
+		return
+	}
+
+	if _, err = l.svcCtx.AsynqClient.Enqueue(task, asynq.TaskID(taskId)); err != nil {
+		if errors.Is(err, asynq.ErrTaskIDConflict) {
+			err = nil
+		} else {
+			return
 		}
 	}
 
-	err = nil
+	logx.Info("Successfully pushed task ", task.Payload(), " to fetcher, waiting for developer updated")
 	return
 }
 
-func (l *UpdateDeveloperLogic) doUpdateDeveloper(developer *model.Developer, in *pb.UpdateDeveloperReq) (err error) {
-	developer.Name = in.Name
-	developer.Login = in.Login
-	developer.AvatarUrl = in.AvatarUrl
-	developer.Company = in.Company
-	developer.Location = in.Location
-	developer.Bio = in.Bio
-	developer.Blog = in.Blog
-	developer.Email = in.Email
-	developer.TwitterUsername = in.TwitterUsername
-	developer.Followers = in.Followers
-	developer.Following = in.Following
-	developer.Repos = in.Repos
-	developer.Stars = in.Stars
-	developer.Gists = in.Gists
-	developer.CreatedAt = time.Unix(in.CreatedAt, 0)
-	developer.UpdatedAt = time.Unix(in.UpdatedAt, 0)
-	developer.LastFetchCreateRepoAt = time.Unix(in.LastFetchCreateRepoAt, 0)
-	developer.LastFetchFollowAt = time.Unix(in.LastFetchFollowAt, 0)
-	developer.LastFetchStarAt = time.Unix(in.LastFetchStarAt, 0)
-	developer.LastFetchContributionAt = time.Unix(in.LastFetchContributionAt, 0)
+func (l *UpdateDeveloperLogic) blockUntilDeveloperUpdated(id int64) (err error) {
+	var (
+		node   redis.ClosableNode
+		result string
+	)
 
-	err = l.svcCtx.DeveloperModel.Update(l.ctx, developer)
+	if node, err = redis.CreateBlockingNode(l.svcCtx.RedisClient); err != nil {
+		return
+	}
+	defer node.Close()
+
+	if result, err = l.svcCtx.RedisClient.BlpopWithTimeoutCtx(l.ctx, node, time.Duration(l.svcCtx.Config.Timeout)*time.Millisecond, locks.GetNewLockKey(locks.UpdateDeveloper, id)); err != nil {
+		return
+	}
+
+	logx.Info("Developer updated: ", result)
 	return
+}
+
+func (l *UpdateDeveloperLogic) checkIfNeedUpdateDeveloper(id int64) (bool, error) {
+	if developer, err := l.svcCtx.DeveloperModel.FindOneById(l.ctx, id); err != nil {
+		switch {
+		case errors.Is(err, model.ErrNotFound):
+			return true, nil
+		default:
+			logx.Error("FindOneById error: ", err)
+			return false, err
+		}
+	} else {
+		if customGithub.CheckIfDataExpired(developer.DataUpdatedAt) {
+			return true, nil
+		} else {
+			return false, nil
+		}
+	}
 }

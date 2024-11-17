@@ -7,6 +7,7 @@ import (
 	"github.com/ShellWen/GitPulse/developer/cmd/rpc/developer"
 	"github.com/ShellWen/GitPulse/relation/cmd/rpc/relation"
 	"github.com/ShellWen/GitPulse/repo/cmd/rpc/repo"
+	"github.com/hashicorp/consul/api"
 	_ "github.com/jackc/pgx/v5/stdlib"
 	"github.com/zeromicro/go-zero/core/stores/redis"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
@@ -24,6 +25,8 @@ type ServiceContext struct {
 	RepoRpcClient         repo.RepoZrpcClient
 	ContributionRpcClient contribution.ContributionZrpcClient
 	RelationRpcClient     relation.Relation
+
+	ConsulClient *api.Client
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -38,5 +41,17 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		RepoRpcClient:         repo.NewRepoZrpcClient(zrpc.MustNewClient(c.RepoRpcConf)),
 		ContributionRpcClient: contribution.NewContributionZrpcClient(zrpc.MustNewClient(c.ContributionRpcConf)),
 		RelationRpcClient:     relation.NewRelation(zrpc.MustNewClient(c.RelationRpcConf)),
+
+		ConsulClient: func() *api.Client {
+			client, err := api.NewClient(&api.Config{
+				Address: c.Consul.Host,
+			})
+
+			if err != nil {
+				panic(err)
+			}
+
+			return client
+		}(),
 	}
 }

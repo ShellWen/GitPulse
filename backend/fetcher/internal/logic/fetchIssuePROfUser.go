@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"github.com/ShellWen/GitPulse/common/tasks"
 	"github.com/ShellWen/GitPulse/contribution/model"
 	"github.com/ShellWen/GitPulse/fetcher/internal/svc"
 	"github.com/google/go-github/v66/github"
@@ -77,6 +78,10 @@ func doFetchIssuePROfUser(ctx context.Context, svcContext *svc.ServiceContext, u
 		if err = buildAndPushRepoByGithubRepo(ctx, svcContext, githubClient, repo); err != nil {
 			continue
 		}
+	}
+
+	if err = pushFetchIssuePROfUserCompleted(ctx, svcContext, userId); err != nil {
+		return
 	}
 
 	logx.Info("Successfully push all update tasks of issues and PRs")
@@ -203,6 +208,16 @@ func buildIssuePR(githubIssuePR *github.Issue, userId int64, merged bool, repo *
 		CreatedAt:      githubIssuePR.GetCreatedAt().Time,
 		UpdatedAt:      githubIssuePR.GetUpdatedAt().Time,
 		ContributionId: githubIssuePR.GetID(),
+	}
+	return
+}
+
+func pushFetchIssuePROfUserCompleted(ctx context.Context, svcContext *svc.ServiceContext, userId int64) (err error) {
+	if err = pushContribution(ctx, svcContext, &model.Contribution{
+		DataId: tasks.FetchIssuePROfUserCompletedDataId,
+		UserId: userId,
+	}); err != nil {
+		return
 	}
 	return
 }

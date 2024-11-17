@@ -5,8 +5,12 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/ShellWen/GitPulse/analysis/model"
+	customGithub "github.com/ShellWen/GitPulse/common/github"
+	locks "github.com/ShellWen/GitPulse/common/lock"
 	"github.com/ShellWen/GitPulse/relation/cmd/rpc/relation"
 	"github.com/ShellWen/GitPulse/repo/cmd/rpc/repo"
+	"github.com/google/uuid"
+	"github.com/hashicorp/consul/api"
 	"math"
 	"net/http"
 	"time"
@@ -50,6 +54,7 @@ func (l *UpdateLanguageLogic) doUpdateLanguage(id int64) (err error) {
 	var (
 		relationZrpcClient   = l.svcCtx.RelationRpcClient
 		repoZrpcClient       = l.svcCtx.RepoRpcClient
+		updateCreateRepoResp *relation.UpdateCreateRepoResp
 		createRepoResp       *relation.SearchCreatedRepoResp
 		createRepoIds        []int64
 		allLanguageBytes     = make(map[string]int64)
@@ -60,11 +65,35 @@ func (l *UpdateLanguageLogic) doUpdateLanguage(id int64) (err error) {
 		jsonBytes            []byte
 	)
 
+	lock, err := l.acquireUpdateLanguageLock(id)
+	if err != nil {
+		return
+	}
+	defer lock.Unlock()
+
+	needUpdate, err := l.checkIfNeedUpdateLanguages(id)
+	if err != nil {
+		return
+	}
+
+	if !needUpdate {
+		return
+	}
+
+	if updateCreateRepoResp, err = relationZrpcClient.UpdateCreateRepo(l.ctx, &relation.UpdateCreateRepoReq{
+		DeveloperId: id,
+	}); err != nil || updateCreateRepoResp.Code != http.StatusOK {
+		return
+	}
+
 	if createRepoResp, err = relationZrpcClient.SearchCreatedRepo(l.ctx, &relation.SearchCreatedRepoReq{
 		DeveloperId: id,
 		Limit:       1000,
 		Page:        1,
 	}); err != nil {
+		return
+	} else if createRepoResp.Code == http.StatusInternalServerError {
+		err = errors.New(createRepoResp.Message)
 		return
 	}
 
@@ -132,4 +161,44 @@ func (l *UpdateLanguageLogic) doUpdateLanguage(id int64) (err error) {
 	}
 
 	return
+}
+
+func (l *UpdateLanguageLogic) acquireUpdateLanguageLock(id int64) (*api.Lock, error) {
+	lock, err := l.svcCtx.ConsulClient.LockOpts(&api.LockOptions{
+		Key:         locks.GetNewLockKey(locks.UpdateLanguages, id),
+		Value:       []byte("locked"),
+		SessionTTL:  "10s",
+		SessionName: uuid.Must(uuid.NewV7()).String(),
+	})
+
+	if err != nil {
+		logx.Error("Failed to create lock: ", err)
+		return nil, err
+	}
+
+	_, err = lock.Lock(nil)
+
+	if err != nil {
+		logx.Error("Failed to acquire lock: ", err)
+		return nil, err
+	}
+
+	return lock, nil
+}
+
+func (l *UpdateLanguageLogic) checkIfNeedUpdateLanguages(id int64) (bool, error) {
+	if languagesUpdatedAt, err := l.svcCtx.LanguagesModel.FindOneByDeveloperId(l.ctx, id); err != nil {
+		switch {
+		case errors.Is(err, model.ErrNotFound):
+			return true, nil
+		default:
+			return false, err
+		}
+	} else {
+		if customGithub.CheckIfDataExpired(languagesUpdatedAt.DataUpdatedAt) {
+			return true, nil
+		} else {
+			return false, nil
+		}
+	}
 }

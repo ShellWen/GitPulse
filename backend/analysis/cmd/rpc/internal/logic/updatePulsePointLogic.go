@@ -4,8 +4,12 @@ import (
 	"context"
 	"errors"
 	"github.com/ShellWen/GitPulse/analysis/model"
+	customGithub "github.com/ShellWen/GitPulse/common/github"
+	locks "github.com/ShellWen/GitPulse/common/lock"
 	"github.com/ShellWen/GitPulse/contribution/cmd/rpc/contribution"
 	"github.com/ShellWen/GitPulse/repo/cmd/rpc/repo"
+	"github.com/google/uuid"
+	"github.com/hashicorp/consul/api"
 	"math"
 	"net/http"
 	"strconv"
@@ -59,12 +63,34 @@ func (l *UpdatePulsePointLogic) doUpdatePulsePoint(id int64) (err error) {
 	var (
 		contributionZrpcClient              = l.svcCtx.ContributionRpcClient
 		repositoryZrpcClient                = l.svcCtx.RepoRpcClient
+		updateAllContributionResp           *contribution.UpdateContributionOfUserResp
 		allContributionResp                 *contribution.SearchByUserIdResp
 		allContributions                    []*contribution.Contribution
 		allContributionsCategorizedByRepoId = make(map[int64][]*contribution.Contribution)
 		pulsePoint                          float64
 		pulsePointItem                      *model.PulsePoint
 	)
+
+	lock, err := l.acquireUpdatePulsePointLock(id)
+	if err != nil {
+		return
+	}
+	defer lock.Unlock()
+
+	needUpdate, err := l.checkIfNeedUpdatePulsePoint(id)
+	if err != nil {
+		return
+	}
+
+	if !needUpdate {
+		return
+	}
+
+	if updateAllContributionResp, err = contributionZrpcClient.UpdateContributionOfUser(l.ctx, &contribution.UpdateContributionOfUserReq{
+		UserId: id,
+	}); err != nil || updateAllContributionResp.Code != http.StatusOK {
+		return
+	}
 
 	if allContributionResp, err = contributionZrpcClient.SearchByUserId(l.ctx, &contribution.SearchByUserIdReq{
 		UserId: id,
@@ -152,4 +178,44 @@ func (l *UpdatePulsePointLogic) doUpdatePulsePoint(id int64) (err error) {
 	}
 
 	return
+}
+
+func (l *UpdatePulsePointLogic) acquireUpdatePulsePointLock(id int64) (*api.Lock, error) {
+	lock, err := l.svcCtx.ConsulClient.LockOpts(&api.LockOptions{
+		Key:         locks.GetNewLockKey(locks.UpdatePulsePoint, id),
+		Value:       []byte("locked"),
+		SessionTTL:  "10s",
+		SessionName: uuid.Must(uuid.NewV7()).String(),
+	})
+
+	if err != nil {
+		logx.Error("Failed to create lock: ", err)
+		return nil, err
+	}
+
+	_, err = lock.Lock(nil)
+
+	if err != nil {
+		logx.Error("Failed to acquire lock: ", err)
+		return nil, err
+	}
+
+	return lock, nil
+}
+
+func (l *UpdatePulsePointLogic) checkIfNeedUpdatePulsePoint(id int64) (bool, error) {
+	if pulsePoint, err := l.svcCtx.PulsePointModel.FindOneByDeveloperId(l.ctx, id); err != nil {
+		switch {
+		case errors.Is(err, model.ErrNotFound):
+			return true, nil
+		default:
+			return false, err
+		}
+	} else {
+		if customGithub.CheckIfDataExpired(pulsePoint.DataUpdatedAt) {
+			return true, nil
+		} else {
+			return false, nil
+		}
+	}
 }

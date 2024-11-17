@@ -29,11 +29,6 @@ func (s *ContributionServer) AddContribution(ctx context.Context, in *pb.AddCont
 	return l.AddContribution(in)
 }
 
-func (s *ContributionServer) UpdateContribution(ctx context.Context, in *pb.UpdateContributionReq) (*pb.UpdateContributionResp, error) {
-	l := logic.NewUpdateContributionLogic(ctx, s.svcCtx)
-	return l.UpdateContribution(in)
-}
-
 func (s *ContributionServer) DelContribution(ctx context.Context, in *pb.DelContributionReq) (*pb.DelContributionResp, error) {
 	l := logic.NewDelContributionLogic(ctx, s.svcCtx)
 	return l.DelContribution(in)
@@ -64,22 +59,37 @@ func (s *ContributionServer) SearchByRepoId(ctx context.Context, in *pb.SearchBy
 	return l.SearchByRepoId(in)
 }
 
-func (s *ContributionServer) BlockUntilIssuePrOfUserUpdated(ctx context.Context, in *pb.BlockUntilIssuePrOfUserUpdatedReq) (*pb.BlockUntilIssuePrOfUserUpdatedResp, error) {
-	l := logic.NewBlockUntilIssuePrOfUserUpdatedLogic(ctx, s.svcCtx)
-	return l.BlockUntilIssuePrOfUserUpdated(in)
+func (s *ContributionServer) UpdateContributionOfUser(ctx context.Context, in *pb.UpdateContributionOfUserReq) (*pb.UpdateContributionOfUserResp, error) {
+	l := logic.NewUpdateContributionOfUserLogic(ctx, s.svcCtx)
+	return l.UpdateContributionOfUser(in)
 }
 
-func (s *ContributionServer) BlockUntilCommentReviewOfUserUpdated(ctx context.Context, in *pb.BlockUntilCommentReviewOfUserUpdatedReq) (*pb.BlockUntilCommentReviewOfUserUpdatedResp, error) {
-	l := logic.NewBlockUntilCommentReviewOfUserUpdatedLogic(ctx, s.svcCtx)
-	return l.BlockUntilCommentReviewOfUserUpdated(in)
+func (s *ContributionServer) UpdateIssuePROfUser(ctx context.Context, in *pb.UpdateIssuePROfUserReq) (*pb.UpdateIssuePROfUserResp, error) {
+	l := logic.NewUpdateIssuePROfUserLogic(ctx, s.svcCtx)
+	return l.UpdateIssuePROfUser(in)
 }
 
-func (s *ContributionServer) BlockUntilAllUpdated(ctx context.Context, in *pb.BlockUntilAllUpdatedReq) (*pb.BlockUntilAllUpdatedResp, error) {
-	l := logic.NewBlockUntilAllUpdatedLogic(ctx, s.svcCtx)
-	return l.BlockUntilAllUpdated(in)
+func (s *ContributionServer) UpdateCommentOfUser(ctx context.Context, in *pb.UpdateCommentOfUserReq) (*pb.UpdateCommentOfUserResp, error) {
+	l := logic.NewUpdateCommentOfUserLogic(ctx, s.svcCtx)
+	return l.UpdateCommentOfUser(in)
 }
 
-func (s *ContributionServer) UnblockContribution(ctx context.Context, in *pb.UnblockContributionReq) (*pb.UnblockContributionResp, error) {
-	l := logic.NewUnblockContributionLogic(ctx, s.svcCtx)
-	return l.UnblockContribution(in)
+func (s *ContributionServer) UpdateReviewOfUser(ctx context.Context, in *pb.UpdateReviewOfUserReq) (*pb.UpdateReviewOfUserResp, error) {
+	l := logic.NewUpdateReviewOfUserLogic(ctx, s.svcCtx)
+	return l.UpdateReviewOfUser(in)
+}
+
+func (s *ContributionServer) GetIssuePROfUserUpdatedAt(ctx context.Context, in *pb.GetIssuePROfUserUpdatedAtReq) (*pb.GetIssuePROfUserUpdatedAtResp, error) {
+	l := logic.NewGetIssuePROfUserUpdatedAtLogic(ctx, s.svcCtx)
+	return l.GetIssuePROfUserUpdatedAt(in)
+}
+
+func (s *ContributionServer) GetCommentOfUserUpdatedAt(ctx context.Context, in *pb.GetCommentOfUserUpdatedAtReq) (*pb.GetCommentOfUserUpdatedAtResp, error) {
+	l := logic.NewGetCommentOfUserUpdatedAtLogic(ctx, s.svcCtx)
+	return l.GetCommentOfUserUpdatedAt(in)
+}
+
+func (s *ContributionServer) GetReviewOfUserUpdatedAt(ctx context.Context, in *pb.GetReviewOfUserUpdatedAtReq) (*pb.GetReviewOfUserUpdatedAtResp, error) {
+	l := logic.NewGetReviewOfUserUpdatedAtLogic(ctx, s.svcCtx)
+	return l.GetReviewOfUserUpdatedAt(in)
 }

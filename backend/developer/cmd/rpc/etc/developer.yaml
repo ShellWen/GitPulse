@@ -41,10 +41,14 @@ Cache:
   - Host: 127.0.0.1:6379
     Pass:
 
-
 KqDeveloperUpdateConsumerConf:
   Name: developer-update-consumer
   Brokers:
     - 127.0.0.1:9092
   Group: developer
   Topic: developer-update
+
+AsynqRedisConf:
+  Addr: 127.0.0.1:6379
+  Password:
+  DB: 0

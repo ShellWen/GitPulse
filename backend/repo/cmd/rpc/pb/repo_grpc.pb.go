@@ -19,12 +19,10 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Repo_AddRepo_FullMethodName               = "/pb.repo/AddRepo"
-	Repo_UpdateRepo_FullMethodName            = "/pb.repo/UpdateRepo"
-	Repo_DelRepoById_FullMethodName           = "/pb.repo/DelRepoById"
-	Repo_GetRepoById_FullMethodName           = "/pb.repo/GetRepoById"
-	Repo_BlockUntilRepoUpdated_FullMethodName = "/pb.repo/BlockUntilRepoUpdated"
-	Repo_UnblockRepo_FullMethodName           = "/pb.repo/UnblockRepo"
+	Repo_AddRepo_FullMethodName     = "/pb.repo/AddRepo"
+	Repo_UpdateRepo_FullMethodName  = "/pb.repo/UpdateRepo"
+	Repo_DelRepoById_FullMethodName = "/pb.repo/DelRepoById"
+	Repo_GetRepoById_FullMethodName = "/pb.repo/GetRepoById"
 )
 
 // RepoClient is the client API for Repo service.
@@ -36,8 +34,6 @@ type RepoClient interface {
 	UpdateRepo(ctx context.Context, in *UpdateRepoReq, opts ...grpc.CallOption) (*UpdateRepoResp, error)
 	DelRepoById(ctx context.Context, in *DelRepoByIdReq, opts ...grpc.CallOption) (*DelRepoByIdResp, error)
 	GetRepoById(ctx context.Context, in *GetRepoByIdReq, opts ...grpc.CallOption) (*GetRepoByIdResp, error)
-	BlockUntilRepoUpdated(ctx context.Context, in *BlockUntilRepoUpdatedReq, opts ...grpc.CallOption) (*BlockUntilRepoUpdatedResp, error)
-	UnblockRepo(ctx context.Context, in *UnblockRepoReq, opts ...grpc.CallOption) (*UnblockRepoResp, error)
 }
 
 type repoClient struct {
@@ -88,26 +84,6 @@ func (c *repoClient) GetRepoById(ctx context.Context, in *GetRepoByIdReq, opts .
 	return out, nil
 }
 
-func (c *repoClient) BlockUntilRepoUpdated(ctx context.Context, in *BlockUntilRepoUpdatedReq, opts ...grpc.CallOption) (*BlockUntilRepoUpdatedResp, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(BlockUntilRepoUpdatedResp)
-	err := c.cc.Invoke(ctx, Repo_BlockUntilRepoUpdated_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *repoClient) UnblockRepo(ctx context.Context, in *UnblockRepoReq, opts ...grpc.CallOption) (*UnblockRepoResp, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(UnblockRepoResp)
-	err := c.cc.Invoke(ctx, Repo_UnblockRepo_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // RepoServer is the server API for Repo service.
 // All implementations must embed UnimplementedRepoServer
 // for forward compatibility.
@@ -117,8 +93,6 @@ type RepoServer interface {
 	UpdateRepo(context.Context, *UpdateRepoReq) (*UpdateRepoResp, error)
 	DelRepoById(context.Context, *DelRepoByIdReq) (*DelRepoByIdResp, error)
 	GetRepoById(context.Context, *GetRepoByIdReq) (*GetRepoByIdResp, error)
-	BlockUntilRepoUpdated(context.Context, *BlockUntilRepoUpdatedReq) (*BlockUntilRepoUpdatedResp, error)
-	UnblockRepo(context.Context, *UnblockRepoReq) (*UnblockRepoResp, error)
 	mustEmbedUnimplementedRepoServer()
 }
 
@@ -140,12 +114,6 @@ func (UnimplementedRepoServer) DelRepoById(context.Context, *DelRepoByIdReq) (*D
 }
 func (UnimplementedRepoServer) GetRepoById(context.Context, *GetRepoByIdReq) (*GetRepoByIdResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetRepoById not implemented")
-}
-func (UnimplementedRepoServer) BlockUntilRepoUpdated(context.Context, *BlockUntilRepoUpdatedReq) (*BlockUntilRepoUpdatedResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method BlockUntilRepoUpdated not implemented")
-}
-func (UnimplementedRepoServer) UnblockRepo(context.Context, *UnblockRepoReq) (*UnblockRepoResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UnblockRepo not implemented")
 }
 func (UnimplementedRepoServer) mustEmbedUnimplementedRepoServer() {}
 func (UnimplementedRepoServer) testEmbeddedByValue()              {}
@@ -240,42 +208,6 @@ func _Repo_GetRepoById_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Repo_BlockUntilRepoUpdated_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(BlockUntilRepoUpdatedReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(RepoServer).BlockUntilRepoUpdated(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Repo_BlockUntilRepoUpdated_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RepoServer).BlockUntilRepoUpdated(ctx, req.(*BlockUntilRepoUpdatedReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Repo_UnblockRepo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UnblockRepoReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(RepoServer).UnblockRepo(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Repo_UnblockRepo_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RepoServer).UnblockRepo(ctx, req.(*UnblockRepoReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // Repo_ServiceDesc is the grpc.ServiceDesc for Repo service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -298,14 +230,6 @@ var Repo_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetRepoById",
 			Handler:    _Repo_GetRepoById_Handler,
-		},
-		{
-			MethodName: "BlockUntilRepoUpdated",
-			Handler:    _Repo_BlockUntilRepoUpdated_Handler,
-		},
-		{
-			MethodName: "UnblockRepo",
-			Handler:    _Repo_UnblockRepo_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

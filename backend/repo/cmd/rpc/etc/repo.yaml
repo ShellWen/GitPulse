@@ -47,3 +47,8 @@ KqRepoUpdateConsumerConf:
     - 127.0.0.1:9092
   Group: repo
   Topic: repo-update
+
+AsynqRedisConf:
+  Addr: 127.0.0.1:6379
+  Password:
+  DB: 0

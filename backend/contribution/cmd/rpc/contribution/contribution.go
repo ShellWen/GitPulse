@@ -16,44 +16,50 @@ import (
 type (
 	AddContributionReq                       = pb.AddContributionReq
 	AddContributionResp                      = pb.AddContributionResp
-	BlockUntilAllUpdatedReq                  = pb.BlockUntilAllUpdatedReq
-	BlockUntilAllUpdatedResp                 = pb.BlockUntilAllUpdatedResp
-	BlockUntilCommentReviewOfUserUpdatedReq  = pb.BlockUntilCommentReviewOfUserUpdatedReq
-	BlockUntilCommentReviewOfUserUpdatedResp = pb.BlockUntilCommentReviewOfUserUpdatedResp
-	BlockUntilIssuePrOfUserUpdatedReq        = pb.BlockUntilIssuePrOfUserUpdatedReq
-	BlockUntilIssuePrOfUserUpdatedResp       = pb.BlockUntilIssuePrOfUserUpdatedResp
 	Contribution                             = pb.Contribution
 	DelAllContributionInCategoryByUserIdReq  = pb.DelAllContributionInCategoryByUserIdReq
 	DelAllContributionInCategoryByUserIdResp = pb.DelAllContributionInCategoryByUserIdResp
 	DelContributionReq                       = pb.DelContributionReq
 	DelContributionResp                      = pb.DelContributionResp
+	GetCommentOfUserUpdatedAtReq             = pb.GetCommentOfUserUpdatedAtReq
+	GetCommentOfUserUpdatedAtResp            = pb.GetCommentOfUserUpdatedAtResp
 	GetContributionReq                       = pb.GetContributionReq
 	GetContributionResp                      = pb.GetContributionResp
+	GetIssuePROfUserUpdatedAtReq             = pb.GetIssuePROfUserUpdatedAtReq
+	GetIssuePROfUserUpdatedAtResp            = pb.GetIssuePROfUserUpdatedAtResp
+	GetReviewOfUserUpdatedAtReq              = pb.GetReviewOfUserUpdatedAtReq
+	GetReviewOfUserUpdatedAtResp             = pb.GetReviewOfUserUpdatedAtResp
 	SearchByCategoryReq                      = pb.SearchByCategoryReq
 	SearchByCategoryResp                     = pb.SearchByCategoryResp
 	SearchByRepoIdReq                        = pb.SearchByRepoIdReq
 	SearchByRepoIdResp                       = pb.SearchByRepoIdResp
 	SearchByUserIdReq                        = pb.SearchByUserIdReq
 	SearchByUserIdResp                       = pb.SearchByUserIdResp
-	UnblockContributionReq                   = pb.UnblockContributionReq
-	UnblockContributionResp                  = pb.UnblockContributionResp
-	UpdateContributionReq                    = pb.UpdateContributionReq
-	UpdateContributionResp                   = pb.UpdateContributionResp
+	UpdateCommentOfUserReq                   = pb.UpdateCommentOfUserReq
+	UpdateCommentOfUserResp                  = pb.UpdateCommentOfUserResp
+	UpdateContributionOfUserReq              = pb.UpdateContributionOfUserReq
+	UpdateContributionOfUserResp             = pb.UpdateContributionOfUserResp
+	UpdateIssuePROfUserReq                   = pb.UpdateIssuePROfUserReq
+	UpdateIssuePROfUserResp                  = pb.UpdateIssuePROfUserResp
+	UpdateReviewOfUserReq                    = pb.UpdateReviewOfUserReq
+	UpdateReviewOfUserResp                   = pb.UpdateReviewOfUserResp
 
 	ContributionZrpcClient interface {
 		// -----------------------contribution-----------------------
 		AddContribution(ctx context.Context, in *AddContributionReq, opts ...grpc.CallOption) (*AddContributionResp, error)
-		UpdateContribution(ctx context.Context, in *UpdateContributionReq, opts ...grpc.CallOption) (*UpdateContributionResp, error)
 		DelContribution(ctx context.Context, in *DelContributionReq, opts ...grpc.CallOption) (*DelContributionResp, error)
 		DelAllContributionInCategoryByUserId(ctx context.Context, in *DelAllContributionInCategoryByUserIdReq, opts ...grpc.CallOption) (*DelAllContributionInCategoryByUserIdResp, error)
 		GetContribution(ctx context.Context, in *GetContributionReq, opts ...grpc.CallOption) (*GetContributionResp, error)
 		SearchByCategory(ctx context.Context, in *SearchByCategoryReq, opts ...grpc.CallOption) (*SearchByCategoryResp, error)
 		SearchByUserId(ctx context.Context, in *SearchByUserIdReq, opts ...grpc.CallOption) (*SearchByUserIdResp, error)
 		SearchByRepoId(ctx context.Context, in *SearchByRepoIdReq, opts ...grpc.CallOption) (*SearchByRepoIdResp, error)
-		BlockUntilIssuePrOfUserUpdated(ctx context.Context, in *BlockUntilIssuePrOfUserUpdatedReq, opts ...grpc.CallOption) (*BlockUntilIssuePrOfUserUpdatedResp, error)
-		BlockUntilCommentReviewOfUserUpdated(ctx context.Context, in *BlockUntilCommentReviewOfUserUpdatedReq, opts ...grpc.CallOption) (*BlockUntilCommentReviewOfUserUpdatedResp, error)
-		BlockUntilAllUpdated(ctx context.Context, in *BlockUntilAllUpdatedReq, opts ...grpc.CallOption) (*BlockUntilAllUpdatedResp, error)
-		UnblockContribution(ctx context.Context, in *UnblockContributionReq, opts ...grpc.CallOption) (*UnblockContributionResp, error)
+		UpdateContributionOfUser(ctx context.Context, in *UpdateContributionOfUserReq, opts ...grpc.CallOption) (*UpdateContributionOfUserResp, error)
+		UpdateIssuePROfUser(ctx context.Context, in *UpdateIssuePROfUserReq, opts ...grpc.CallOption) (*UpdateIssuePROfUserResp, error)
+		UpdateCommentOfUser(ctx context.Context, in *UpdateCommentOfUserReq, opts ...grpc.CallOption) (*UpdateCommentOfUserResp, error)
+		UpdateReviewOfUser(ctx context.Context, in *UpdateReviewOfUserReq, opts ...grpc.CallOption) (*UpdateReviewOfUserResp, error)
+		GetIssuePROfUserUpdatedAt(ctx context.Context, in *GetIssuePROfUserUpdatedAtReq, opts ...grpc.CallOption) (*GetIssuePROfUserUpdatedAtResp, error)
+		GetCommentOfUserUpdatedAt(ctx context.Context, in *GetCommentOfUserUpdatedAtReq, opts ...grpc.CallOption) (*GetCommentOfUserUpdatedAtResp, error)
+		GetReviewOfUserUpdatedAt(ctx context.Context, in *GetReviewOfUserUpdatedAtReq, opts ...grpc.CallOption) (*GetReviewOfUserUpdatedAtResp, error)
 	}
 
 	defaultContributionZrpcClient struct {
@@ -71,11 +77,6 @@ func NewContributionZrpcClient(cli zrpc.Client) ContributionZrpcClient {
 func (m *defaultContributionZrpcClient) AddContribution(ctx context.Context, in *AddContributionReq, opts ...grpc.CallOption) (*AddContributionResp, error) {
 	client := pb.NewContributionClient(m.cli.Conn())
 	return client.AddContribution(ctx, in, opts...)
-}
-
-func (m *defaultContributionZrpcClient) UpdateContribution(ctx context.Context, in *UpdateContributionReq, opts ...grpc.CallOption) (*UpdateContributionResp, error) {
-	client := pb.NewContributionClient(m.cli.Conn())
-	return client.UpdateContribution(ctx, in, opts...)
 }
 
 func (m *defaultContributionZrpcClient) DelContribution(ctx context.Context, in *DelContributionReq, opts ...grpc.CallOption) (*DelContributionResp, error) {
@@ -108,22 +109,37 @@ func (m *defaultContributionZrpcClient) SearchByRepoId(ctx context.Context, in *
 	return client.SearchByRepoId(ctx, in, opts...)
 }
 
-func (m *defaultContributionZrpcClient) BlockUntilIssuePrOfUserUpdated(ctx context.Context, in *BlockUntilIssuePrOfUserUpdatedReq, opts ...grpc.CallOption) (*BlockUntilIssuePrOfUserUpdatedResp, error) {
+func (m *defaultContributionZrpcClient) UpdateContributionOfUser(ctx context.Context, in *UpdateContributionOfUserReq, opts ...grpc.CallOption) (*UpdateContributionOfUserResp, error) {
 	client := pb.NewContributionClient(m.cli.Conn())
-	return client.BlockUntilIssuePrOfUserUpdated(ctx, in, opts...)
+	return client.UpdateContributionOfUser(ctx, in, opts...)
 }
 
-func (m *defaultContributionZrpcClient) BlockUntilCommentReviewOfUserUpdated(ctx context.Context, in *BlockUntilCommentReviewOfUserUpdatedReq, opts ...grpc.CallOption) (*BlockUntilCommentReviewOfUserUpdatedResp, error) {
+func (m *defaultContributionZrpcClient) UpdateIssuePROfUser(ctx context.Context, in *UpdateIssuePROfUserReq, opts ...grpc.CallOption) (*UpdateIssuePROfUserResp, error) {
 	client := pb.NewContributionClient(m.cli.Conn())
-	return client.BlockUntilCommentReviewOfUserUpdated(ctx, in, opts...)
+	return client.UpdateIssuePROfUser(ctx, in, opts...)
 }
 
-func (m *defaultContributionZrpcClient) BlockUntilAllUpdated(ctx context.Context, in *BlockUntilAllUpdatedReq, opts ...grpc.CallOption) (*BlockUntilAllUpdatedResp, error) {
+func (m *defaultContributionZrpcClient) UpdateCommentOfUser(ctx context.Context, in *UpdateCommentOfUserReq, opts ...grpc.CallOption) (*UpdateCommentOfUserResp, error) {
 	client := pb.NewContributionClient(m.cli.Conn())
-	return client.BlockUntilAllUpdated(ctx, in, opts...)
+	return client.UpdateCommentOfUser(ctx, in, opts...)
 }
 
-func (m *defaultContributionZrpcClient) UnblockContribution(ctx context.Context, in *UnblockContributionReq, opts ...grpc.CallOption) (*UnblockContributionResp, error) {
+func (m *defaultContributionZrpcClient) UpdateReviewOfUser(ctx context.Context, in *UpdateReviewOfUserReq, opts ...grpc.CallOption) (*UpdateReviewOfUserResp, error) {
 	client := pb.NewContributionClient(m.cli.Conn())
-	return client.UnblockContribution(ctx, in, opts...)
+	return client.UpdateReviewOfUser(ctx, in, opts...)
+}
+
+func (m *defaultContributionZrpcClient) GetIssuePROfUserUpdatedAt(ctx context.Context, in *GetIssuePROfUserUpdatedAtReq, opts ...grpc.CallOption) (*GetIssuePROfUserUpdatedAtResp, error) {
+	client := pb.NewContributionClient(m.cli.Conn())
+	return client.GetIssuePROfUserUpdatedAt(ctx, in, opts...)
+}
+
+func (m *defaultContributionZrpcClient) GetCommentOfUserUpdatedAt(ctx context.Context, in *GetCommentOfUserUpdatedAtReq, opts ...grpc.CallOption) (*GetCommentOfUserUpdatedAtResp, error) {
+	client := pb.NewContributionClient(m.cli.Conn())
+	return client.GetCommentOfUserUpdatedAt(ctx, in, opts...)
+}
+
+func (m *defaultContributionZrpcClient) GetReviewOfUserUpdatedAt(ctx context.Context, in *GetReviewOfUserUpdatedAtReq, opts ...grpc.CallOption) (*GetReviewOfUserUpdatedAtResp, error) {
+	client := pb.NewContributionClient(m.cli.Conn())
+	return client.GetReviewOfUserUpdatedAt(ctx, in, opts...)
 }

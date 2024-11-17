@@ -4,13 +4,10 @@ import (
 	"context"
 	"errors"
 	customGithub "github.com/ShellWen/GitPulse/common/github"
-	"github.com/ShellWen/GitPulse/common/tasks"
 	"github.com/ShellWen/GitPulse/developer/cmd/api/internal/svc"
 	"github.com/ShellWen/GitPulse/developer/cmd/api/internal/types"
 	"github.com/ShellWen/GitPulse/developer/cmd/rpc/developer"
-	"github.com/hibiken/asynq"
 	"net/http"
-	"strconv"
 	"time"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -44,36 +41,18 @@ func (l *GetDeveloperLogic) doGetDeveloper(req *types.GetDeveloperReq) (resp *ty
 	resp = &types.GetDeveloperResp{}
 
 	if id, err = customGithub.GetIdByLogin(l.ctx, req.Login); err != nil {
+		logx.Error("Failed to get id by login ", req.Login, err)
+		return
+	}
+
+	if _, err = l.rpcUpdateDeveloperById(id); err != nil {
+		logx.Error("Failed to update developer by id ", id, err)
 		return
 	}
 
 	if rpcResp, err = l.rpcGetDeveloperById(id); err != nil {
+		logx.Error("Failed to get developer by id ", id, err)
 		return
-	}
-
-	switch rpcResp.Code {
-	case http.StatusOK:
-		logx.Info("Found in local cache")
-		if time.Now().Unix()-rpcResp.Developer.GetDataUpdatedAt() < int64(time.Hour.Seconds()*24) {
-			break
-		}
-		logx.Info("Local cache expired, fetching from github")
-		fallthrough
-	case http.StatusNotFound:
-		logx.Info("Not found in local cache, fetching from github")
-		if err = l.updateDeveloperWithBlock(id); err != nil {
-			return
-		}
-
-		if rpcResp, err = l.rpcGetDeveloperById(id); err != nil {
-			return
-		}
-		fallthrough
-	default:
-		if rpcResp.Code != http.StatusOK {
-			err = errors.New(rpcResp.Message)
-			return
-		}
 	}
 
 	resp = &types.GetDeveloperResp{
@@ -94,47 +73,35 @@ func (l *GetDeveloperLogic) doGetDeveloper(req *types.GetDeveloperReq) (resp *ty
 		CreatedAt: time.Unix(rpcResp.Developer.CreatedAt, 0).Format(time.RFC3339),
 		UpdatedAt: time.Unix(rpcResp.Developer.UpdatedAt, 0).Format(time.RFC3339),
 	}
+
+	logx.Info("Successfully get developer by login ", req.Login)
+	return
+}
+
+func (l *GetDeveloperLogic) rpcUpdateDeveloperById(id int64) (resp *developer.UpdateDeveloperResp, err error) {
+	if resp, err = l.svcCtx.DeveloperRpc.UpdateDeveloper(l.ctx, &developer.UpdateDeveloperReq{
+		Id: id,
+	}); err != nil {
+		return
+	} else if resp.Code != http.StatusOK {
+		err = errors.New(resp.Message)
+		return
+	}
+
+	logx.Info("Successfully update developer by id ", id)
 	return
 }
 
 func (l *GetDeveloperLogic) rpcGetDeveloperById(id int64) (resp *developer.GetDeveloperByIdResp, err error) {
-	var rpcResp *developer.GetDeveloperByIdResp
-	if rpcResp, err = l.svcCtx.DeveloperRpc.GetDeveloperById(l.ctx, &developer.GetDeveloperByIdReq{
+	if resp, err = l.svcCtx.DeveloperRpc.GetDeveloperById(l.ctx, &developer.GetDeveloperByIdReq{
 		Id: id,
 	}); err != nil {
-		resp = &developer.GetDeveloperByIdResp{
-			Code:    http.StatusInternalServerError,
-			Message: err.Error(),
-		}
+		return
+	} else if resp.Code != http.StatusOK {
+		err = errors.New(resp.Message)
 		return
 	}
 
 	logx.Info("Successfully get developer by id ", id)
-	resp = rpcResp
-	return
-}
-
-func (l *GetDeveloperLogic) updateDeveloperWithBlock(id int64) (err error) {
-	var task *asynq.Task
-
-	if task, err = tasks.NewFetcherTask(tasks.FetchDeveloper, id); err != nil {
-		return
-	}
-
-	if _, err = l.svcCtx.AsynqClient.Enqueue(task, asynq.TaskID(strconv.Itoa(tasks.FetchDeveloper)+","+strconv.Itoa(int(id)))); err != nil {
-		if errors.Is(err, asynq.ErrTaskIDConflict) {
-			err = nil
-		} else {
-			return
-		}
-	}
-
-	logx.Info("Successfully pushed task ", task.Payload(), " to fetcher, waiting for developer updated")
-
-	if _, err = l.svcCtx.DeveloperRpc.BlockUntilDeveloperUpdated(l.ctx, &developer.BlockUntilDeveloperUpdatedReq{Id: id}); err != nil {
-		return
-	}
-	logx.Info("Developer successfully updated")
-
 	return
 }

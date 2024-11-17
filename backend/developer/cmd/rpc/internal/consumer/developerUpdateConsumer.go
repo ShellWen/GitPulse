@@ -3,6 +3,7 @@ package consumer
 import (
 	"context"
 	"errors"
+	locks "github.com/ShellWen/GitPulse/common/lock"
 	"github.com/ShellWen/GitPulse/developer/cmd/rpc/internal/svc"
 	"github.com/ShellWen/GitPulse/developer/model"
 	"github.com/zeromicro/go-zero/core/jsonx"
@@ -40,11 +41,20 @@ func (c *DeveloperUpdateConsumer) Consume(ctx context.Context, key string, value
 	}
 
 	if exist {
-		err = updateOldDeveloper(c, oldDeveloper, newDeveloper)
+		if err = updateOldDeveloper(c, oldDeveloper, newDeveloper); err != nil {
+			return
+		}
 	} else {
-		err = insertNewDeveloper(c, newDeveloper)
+		if err = insertNewDeveloper(c, newDeveloper); err != nil {
+			return
+		}
 	}
 
+	if err = unblockDeveloperUpdateLock(c, newDeveloper.Id); err != nil {
+		return
+	}
+
+	logx.Info("Update developer: ", newDeveloper.Id, " success")
 	return
 }
 
@@ -52,12 +62,14 @@ func getOldDeveloper(c *DeveloperUpdateConsumer, newDeveloper *model.Developer) 
 	if oldDeveloper, err := c.svc.DeveloperModel.FindOneById(c.ctx, newDeveloper.Id); err != nil {
 		switch {
 		case errors.Is(err, model.ErrNotFound):
+			logx.Info("Developer not found")
 			return nil, false, nil
 		default:
 			logx.Error("FindOneById error: ", err)
 			return nil, false, err
 		}
 	} else {
+		logx.Info("Find old developer success")
 		return oldDeveloper, true, nil
 	}
 }
@@ -85,6 +97,7 @@ func updateOldDeveloper(c *DeveloperUpdateConsumer, oldDeveloper *model.Develope
 		return err
 	}
 
+	logx.Info("Update developer success")
 	return nil
 }
 
@@ -94,5 +107,16 @@ func insertNewDeveloper(c *DeveloperUpdateConsumer, newDeveloper *model.Develope
 		return err
 	}
 
+	logx.Info("Insert new developer success")
 	return nil
+}
+
+func unblockDeveloperUpdateLock(c *DeveloperUpdateConsumer, developerId int64) (err error) {
+	if _, err = c.svc.RedisClient.LpushCtx(c.ctx, locks.GetNewLockKey(locks.UpdateDeveloper, developerId), ""); err != nil {
+		logx.Error("LpushCtx error: ", err)
+		return
+	}
+
+	logx.Info("Unblock developer update lock success")
+	return
 }

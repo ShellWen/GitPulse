@@ -37,17 +37,46 @@ message AddContributionResp {
   string message = 2;
 }
 
-message UpdateContributionReq {
-  int64 userId = 1; //userId
-  int64 repoId = 2; //repoId
-  string category = 3; //category
-  string content = 4; //content
-  int64 createdAt = 5; //createdAt
-  int64 updatedAt = 6; //updatedAt
-  int64 contributionId = 7; //contributionId
+message UpdateContributionOfUserReq {
+  int64 userId = 1;
+  string updateAfter = 2;
+  int64 searchLimit = 3;
 }
 
-message UpdateContributionResp {
+message UpdateContributionOfUserResp {
+  int64 code = 1;
+  string message = 2;
+}
+
+message UpdateIssuePROfUserReq {
+  int64 userId = 1;
+  string updateAfter = 2;
+  int64 searchLimit = 3;
+}
+
+message UpdateIssuePROfUserResp {
+  int64 code = 1;
+  string message = 2;
+}
+
+message UpdateCommentOfUserReq {
+  int64 userId = 1;
+  string updateAfter = 2;
+  int64 searchLimit = 3;
+}
+
+message UpdateCommentOfUserResp {
+  int64 code = 1;
+  string message = 2;
+}
+
+message UpdateReviewOfUserReq {
+  int64 userId = 1;
+  string updateAfter = 2;
+  int64 searchLimit = 3;
+}
+
+message UpdateReviewOfUserResp {
   int64 code = 1;
   string message = 2;
 }
@@ -121,41 +150,34 @@ message SearchByRepoIdResp {
   repeated Contribution contributions = 3; //contributions
 }
 
-message BlockUntilIssuePrOfUserUpdatedReq {
-  int64 userId = 1; //userId
+message GetIssuePROfUserUpdatedAtReq {
+  int64 userId = 1;
 }
 
-message BlockUntilIssuePrOfUserUpdatedResp {
+message GetIssuePROfUserUpdatedAtResp {
   int64 code = 1;
   string message = 2;
+  int64 updatedAt = 3;
 }
 
-message BlockUntilCommentReviewOfUserUpdatedReq {
-  int64 userId = 1; //userId
+message GetCommentOfUserUpdatedAtReq {
+  int64 userId = 1;
 }
 
-message BlockUntilCommentReviewOfUserUpdatedResp {
+message GetCommentOfUserUpdatedAtResp {
   int64 code = 1;
   string message = 2;
+  int64 updatedAt = 3;
 }
 
-message BlockUntilAllUpdatedReq {
-  int64 userId = 1; //userId
+message GetReviewOfUserUpdatedAtReq {
+  int64 userId = 1;
 }
 
-message BlockUntilAllUpdatedResp {
+message GetReviewOfUserUpdatedAtResp {
   int64 code = 1;
   string message = 2;
-}
-
-message UnblockContributionReq {
-  int64 fetchType = 1; //fetchType
-  int64 id = 2; //id
-}
-
-message UnblockContributionResp {
-  int64 code = 1;
-  string message = 2;
+  int64 updatedAt = 3;
 }
 
 // ------------------------------------ 
@@ -166,15 +188,17 @@ service contribution{
 
 	  //-----------------------contribution-----------------------
 	  rpc AddContribution(AddContributionReq) returns (AddContributionResp);
-	  rpc UpdateContribution(UpdateContributionReq) returns (UpdateContributionResp);
 	  rpc DelContribution(DelContributionReq) returns (DelContributionResp);
     rpc DelAllContributionInCategoryByUserId(DelAllContributionInCategoryByUserIdReq) returns (DelAllContributionInCategoryByUserIdResp);
 	  rpc GetContribution(GetContributionReq) returns (GetContributionResp);
     rpc SearchByCategory(SearchByCategoryReq) returns (SearchByCategoryResp);
     rpc SearchByUserId(SearchByUserIdReq) returns (SearchByUserIdResp);
     rpc SearchByRepoId(SearchByRepoIdReq) returns (SearchByRepoIdResp);
-    rpc BlockUntilIssuePrOfUserUpdated(BlockUntilIssuePrOfUserUpdatedReq) returns (BlockUntilIssuePrOfUserUpdatedResp);
-    rpc BlockUntilCommentReviewOfUserUpdated(BlockUntilCommentReviewOfUserUpdatedReq) returns (BlockUntilCommentReviewOfUserUpdatedResp);
-    rpc BlockUntilAllUpdated(BlockUntilAllUpdatedReq) returns (BlockUntilAllUpdatedResp);
-    rpc UnblockContribution(UnblockContributionReq) returns (UnblockContributionResp);
+    rpc UpdateContributionOfUser(UpdateContributionOfUserReq) returns (UpdateContributionOfUserResp);
+    rpc UpdateIssuePROfUser(UpdateIssuePROfUserReq) returns (UpdateIssuePROfUserResp);
+    rpc UpdateCommentOfUser(UpdateCommentOfUserReq) returns (UpdateCommentOfUserResp);
+    rpc UpdateReviewOfUser(UpdateReviewOfUserReq) returns (UpdateReviewOfUserResp);
+    rpc GetIssuePROfUserUpdatedAt(GetIssuePROfUserUpdatedAtReq) returns (GetIssuePROfUserUpdatedAtResp);
+    rpc GetCommentOfUserUpdatedAt(GetCommentOfUserUpdatedAtReq) returns (GetCommentOfUserUpdatedAtResp);
+    rpc GetReviewOfUserUpdatedAt(GetReviewOfUserUpdatedAtReq) returns (GetReviewOfUserUpdatedAtResp);
 }

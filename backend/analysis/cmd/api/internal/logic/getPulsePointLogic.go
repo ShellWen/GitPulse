@@ -2,7 +2,6 @@ package logic
 
 import (
 	"context"
-	"errors"
 	"github.com/ShellWen/GitPulse/analysis/cmd/rpc/analysis"
 	customGithub "github.com/ShellWen/GitPulse/common/github"
 	"net/http"
@@ -67,93 +66,24 @@ func (l *GetPulsePointLogic) doGetPulsePoint(req *types.GetPulsePointReq) (resp 
 func (l *GetPulsePointLogic) getPulsePointFromRpc(id int64) (pulsePoint float64, updatedAt time.Time, err error) {
 	var (
 		analysisRpcClient = l.svcCtx.AnalysisRpcClient
-		rpcResp           *analysis.GetPulsePointResp
+		rpcUpdateResp     *analysis.UpdateAnalysisResp
+		rpcGetResp        *analysis.GetPulsePointResp
 	)
 
-	if rpcResp, err = analysisRpcClient.GetPulsePoint(l.ctx, &analysis.GetAnalysisReq{
+	if rpcUpdateResp, err = analysisRpcClient.UpdatePulsePoint(l.ctx, &analysis.UpdateAnalysisReq{
 		DeveloperId: id,
-	}); err != nil {
+	}); err != nil || rpcUpdateResp.Code != http.StatusOK {
 		return
 	}
 
-	switch rpcResp.Code {
-	case http.StatusOK:
-		logx.Info("Found in local cache")
-		if time.Now().Unix()-rpcResp.PulsePoint.GetDataUpdatedAt() < int64(time.Hour.Seconds()*24) {
-			break
-		}
-		logx.Info("Local cache expired, fetching from github")
-		fallthrough
-	case http.StatusNotFound:
-		if err = l.updatePulsePoint(id); err != nil {
-			return
-		}
-		if rpcResp, err = analysisRpcClient.GetPulsePoint(l.ctx, &analysis.GetAnalysisReq{
-			DeveloperId: id,
-		}); err != nil {
-			return
-		}
-		fallthrough
-	default:
-		if rpcResp.Code != http.StatusOK {
-			err = errors.New(rpcResp.Message)
-			return
-		}
-	}
-
-	pulsePoint = rpcResp.PulsePoint.PulsePoint
-	updatedAt = time.Unix(rpcResp.PulsePoint.DataUpdatedAt, 0)
-
-	return
-}
-
-func (l *GetPulsePointLogic) updatePulsePoint(id int64) (err error) {
-	var (
-		needUpdate         bool
-		analysisRpcClient  = l.svcCtx.AnalysisRpcClient
-		updateAnalysisResp *analysis.UpdateAnalysisResp
-	)
-
-	if l.svcCtx.PulsePointUpdatedChan[id] == nil {
-		l.svcCtx.PulsePointUpdatedChan[id] = make(chan struct{})
-	}
-
-	if l.svcCtx.PulsePointUpdating {
-		<-l.svcCtx.PulsePointUpdatedChan[id]
-		return
-	} else {
-		l.svcCtx.PulsePointUpdating = true
-		defer func() {
-			l.svcCtx.PulsePointUpdating = false
-			for stillHasBlock := true; stillHasBlock; {
-				select {
-				case l.svcCtx.PulsePointUpdatedChan[id] <- struct{}{}:
-				default:
-					stillHasBlock = false
-				}
-			}
-		}()
-	}
-
-	if needUpdate, err = checkIfNeedUpdateContribution(l.ctx, l.svcCtx, id); err != nil {
-		return
-	} else if needUpdate {
-		if err = updateContribution(l.ctx, l.svcCtx, id); err != nil {
-			return
-		}
-	}
-
-	if updateAnalysisResp, err = analysisRpcClient.UpdatePulsePoint(l.ctx, &analysis.UpdateAnalysisReq{
+	if rpcGetResp, err = analysisRpcClient.GetPulsePoint(l.ctx, &analysis.GetAnalysisReq{
 		DeveloperId: id,
-	}); err != nil {
+	}); err != nil || rpcGetResp.Code != http.StatusOK {
 		return
 	}
 
-	switch updateAnalysisResp.Code {
-	case http.StatusOK:
-	default:
-		err = errors.New(updateAnalysisResp.Message)
-	}
+	pulsePoint = rpcGetResp.PulsePoint.PulsePoint
+	updatedAt = time.Unix(rpcGetResp.PulsePoint.DataUpdatedAt, 0)
 
 	return
 }

@@ -3,7 +3,7 @@ package logic
 import (
 	"context"
 	"errors"
-	"github.com/ShellWen/GitPulse/developer/cmd/rpc/developer"
+	"github.com/ShellWen/GitPulse/common/tasks"
 	"github.com/ShellWen/GitPulse/fetcher/internal/svc"
 	"github.com/ShellWen/GitPulse/relation/cmd/rpc/relation"
 	"github.com/ShellWen/GitPulse/relation/model"
@@ -12,15 +12,10 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 	"net/http"
 	"os"
-	"time"
 )
 
 func FetchStarredRepo(ctx context.Context, svcContext *svc.ServiceContext, userId int64) (err error) {
 	if err = doFetchStarredRepo(ctx, svcContext, userId); err != nil {
-		return
-	}
-
-	if err = updateStarredRepoFetchTimeOfDeveloper(ctx, svcContext, userId); err != nil {
 		return
 	}
 
@@ -60,6 +55,10 @@ func doFetchStarredRepo(ctx context.Context, svcContext *svc.ServiceContext, use
 		}
 	}
 
+	if err = pushFetchStarredRepoCompleted(ctx, svcContext, userId); err != nil {
+		return
+	}
+
 	logx.Info("Successfully push all update tasks of starred repo")
 	return
 }
@@ -96,23 +95,6 @@ func getAllGithubStarredReposByLogin(ctx context.Context, githubClient *github.C
 	return
 }
 
-func getLastFetchTimeOfStarredRepo(ctx context.Context, svcContext *svc.ServiceContext, userId int64) (lastModified string, err error) {
-	var (
-		existingDeveloperResp *developer.GetDeveloperByIdResp
-		developerZrpcClient   = svcContext.DeveloperRpcClient
-	)
-
-	if existingDeveloperResp, err = developerZrpcClient.GetDeveloperById(ctx, &developer.GetDeveloperByIdReq{Id: userId}); err != nil {
-		logx.Error(errors.New("Unexpected error when fetching developer profile: " + err.Error()))
-	} else if existingDeveloperResp.Code == http.StatusOK {
-		lastModified = time.Unix(existingDeveloperResp.Developer.LastFetchStarAt, 0).Format(http.TimeFormat)
-	} else {
-		lastModified = ""
-	}
-
-	return
-}
-
 func buildStarredRepo(ctx context.Context, svcContext *svc.ServiceContext, githubStarredRepo *github.StarredRepository, userId int64) (newStarredRepo *model.Star) {
 	newStarredRepo = &model.Star{
 		DeveloperId: userId,
@@ -137,50 +119,12 @@ func pushStarredRepo(ctx context.Context, svcContext *svc.ServiceContext, newSta
 	return
 }
 
-func updateStarredRepoFetchTimeOfDeveloper(ctx context.Context, svcContext *svc.ServiceContext, userId int64) (err error) {
-	developerZrpcClient := svcContext.DeveloperRpcClient
-	var resp *developer.GetDeveloperByIdResp
-	var theDeveloper *developer.Developer
-
-	if resp, err = developerZrpcClient.GetDeveloperById(ctx, &developer.GetDeveloperByIdReq{Id: userId}); err != nil {
-		return
-	}
-
-	switch resp.Code {
-	case http.StatusOK:
-		theDeveloper = resp.Developer
-	case http.StatusNotFound:
-		err = errors.New("Developer not found")
-		return
-	default:
-		err = errors.New("Unexpected error when getting developer: " + resp.Message)
-		return
-	}
-
-	theDeveloper.LastFetchStarAt = time.Now().Unix()
-	if _, err = developerZrpcClient.UpdateDeveloper(ctx, &developer.UpdateDeveloperReq{
-		Id:                      userId,
-		Name:                    theDeveloper.Name,
-		Login:                   theDeveloper.Login,
-		AvatarUrl:               theDeveloper.AvatarUrl,
-		Company:                 theDeveloper.Company,
-		Location:                theDeveloper.Location,
-		Bio:                     theDeveloper.Bio,
-		Blog:                    theDeveloper.Blog,
-		Email:                   theDeveloper.Email,
-		CreatedAt:               theDeveloper.CreatedAt,
-		UpdatedAt:               theDeveloper.UpdatedAt,
-		TwitterUsername:         theDeveloper.TwitterUsername,
-		Repos:                   theDeveloper.Repos,
-		Following:               theDeveloper.Following,
-		Followers:               theDeveloper.Followers,
-		Gists:                   theDeveloper.Gists,
-		Stars:                   theDeveloper.Stars,
-		LastFetchContributionAt: theDeveloper.LastFetchContributionAt,
-		LastFetchFollowAt:       theDeveloper.LastFetchFollowAt,
-		LastFetchStarAt:         theDeveloper.LastFetchStarAt,
-		LastFetchCreateRepoAt:   theDeveloper.LastFetchCreateRepoAt,
+func pushFetchStarredRepoCompleted(ctx context.Context, svcContext *svc.ServiceContext, userId int64) (err error) {
+	if err = pushStarredRepo(ctx, svcContext, &model.Star{
+		DataId:      tasks.FetchStarredRepoCompletedDataId,
+		DeveloperId: userId,
 	}); err != nil {
+		logx.Error("Push fetch starred repo completed error: ", err)
 		return
 	}
 

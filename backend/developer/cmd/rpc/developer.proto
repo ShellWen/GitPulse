@@ -30,10 +30,6 @@ message Developer {
   int64 gists = 18; //gists_count
   int64 createdAt = 19; //createdAt
   int64 updatedAt = 20; //updatedAt
-  int64 lastFetchCreateRepoAt = 21; //lastFetchCreateRepoAt
-  int64 lastFetchFollowAt = 22; //lastFetchFollowAt
-  int64 lastFetchStarAt = 23; //lastFetchStarAt
-  int64 lastFetchContributionAt = 24; //lastFetchContributionAt
 }
 
 message AddDeveloperReq {
@@ -62,27 +58,7 @@ message AddDeveloperResp {
 }
 
 message UpdateDeveloperReq {
-  int64 id = 1; //Unique id of GitHub user.
-  string name = 2; //name
-  string login = 3; //login
-  string avatarUrl = 4; //avatarUrl
-  string company = 5; //company
-  string location = 6; //location
-  string bio = 7; //bio
-  string blog = 8; //blog
-  string email = 9; //email
-  string twitterUsername = 10; //twitterUsername
-  int64 repos = 11; //repo_count
-  int64 following = 12; //following_count
-  int64 followers = 13; //followers_count
-  int64 stars = 14; //star_count
-  int64 gists = 15; //gists_c
-  int64 createdAt = 16; //createdAt
-  int64 updatedAt = 17; //updatedAt
-  int64 lastFetchCreateRepoAt = 18; //lastFetchCreateRepoAt
-  int64 lastFetchFollowAt = 19; //lastFetchFollowAt
-  int64 lastFetchStarAt = 20; //lastFetchStarAt
-  int64 lastFetchContributionAt = 21; //lastFetchContributionAt
+  int64 id = 1;
 }
 
 message UpdateDeveloperResp {
@@ -128,25 +104,6 @@ message GetDeveloperByLoginResp {
   Developer developer = 3; //developer
 }
 
-message BlockUntilDeveloperUpdatedReq {
-  int64 id = 1; //id
-}
-
-message BlockUntilDeveloperUpdatedResp {
-  int64 code = 1;
-  string message = 2;
-}
-
-message UnblockDeveloperReq {
-  int64 fetchType = 1; //fetchType
-  int64 id = 2; //id
-}
-
-message UnblockDeveloperResp {
-  int64 code = 1;
-  string message = 2;
-}
-
 // ------------------------------------ 
 // Rpc Func
 // ------------------------------------ 
@@ -159,6 +116,4 @@ service developer{
   rpc DelDeveloperByLogin(DelDeveloperByLoginReq) returns (DelDeveloperByLoginResp);
   rpc GetDeveloperById(GetDeveloperByIdReq) returns (GetDeveloperByIdResp);
   rpc GetDeveloperByLogin(GetDeveloperByLoginReq) returns (GetDeveloperByLoginResp);
-  rpc BlockUntilDeveloperUpdated(BlockUntilDeveloperUpdatedReq) returns (BlockUntilDeveloperUpdatedResp);
-  rpc UnblockDeveloper(UnblockDeveloperReq) returns (UnblockDeveloperResp);
 }

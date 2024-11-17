@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"github.com/ShellWen/GitPulse/common/tasks"
 	"github.com/ShellWen/GitPulse/contribution/model"
 	"github.com/ShellWen/GitPulse/fetcher/internal/svc"
 	"github.com/google/go-github/v66/github"
@@ -62,6 +63,10 @@ func doFetchCommentOfUser(ctx context.Context, svcContext *svc.ServiceContext, u
 		if err = buildAndPushRepoByGithubRepo(ctx, svcContext, githubClient, repo); err != nil {
 			continue
 		}
+	}
+
+	if err = pushFetchCommentOfUserCompleted(ctx, svcContext, userId); err != nil {
+		return
 	}
 
 	logx.Info("Successfully pushed comment of user: ", githubUser.GetLogin()+", total comment: "+strconv.Itoa(successPush))
@@ -177,6 +182,16 @@ func buildComment(ctx context.Context, svcContext *svc.ServiceContext, githubCom
 			UpdatedAt:      githubCommentWithRepoId.prComment.GetUpdatedAt().Time,
 			ContributionId: githubCommentWithRepoId.prComment.GetID(),
 		}
+	}
+	return
+}
+
+func pushFetchCommentOfUserCompleted(ctx context.Context, svcContext *svc.ServiceContext, userId int64) (err error) {
+	if err = pushContribution(ctx, svcContext, &model.Contribution{
+		DataId: tasks.FetchCommentOfUserCompletedDataId,
+		UserId: userId,
+	}); err != nil {
+		return
 	}
 	return
 }

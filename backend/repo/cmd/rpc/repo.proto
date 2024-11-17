@@ -54,21 +54,7 @@ message AddRepoResp {
 }
 
 message UpdateRepoReq {
-  int64 id = 1; //id
-  string name = 2; //name
-  int64 starCount = 3; //starCount
-  int64 forkCount = 4; //forkCount
-  int64 issueCount = 5; //issueCount
-  int64 commitCount = 6; //commitCount
-  int64 prCount = 7; //prCount
-  string language = 8; //language
-  string description = 9; //description
-  int64 lastFetchForkAt = 10; //lastFetchForkAt
-  int64 lastFetchContributionAt = 11; //lastFetchContributionAt
-  int64 mergedPrCount = 12; //mergedPrCount
-  int64 openPrCount = 13; //openPrCount
-  int64 commentCount = 14; //commentCount
-  int64 reviewCount = 15; //reviewCount
+  int64 id = 1;
 }
 
 message UpdateRepoResp {
@@ -95,25 +81,6 @@ message GetRepoByIdResp {
   Repo repo = 3; //repo
 }
 
-message BlockUntilRepoUpdatedReq {
-  int64 id = 1; //id
-}
-
-message BlockUntilRepoUpdatedResp {
-  int64 code = 1;
-  string message = 2;
-}
-
-message UnblockRepoReq {
-  int64 fetchType = 1; //fetchType
-  int64 id = 2; //id
-}
-
-message UnblockRepoResp {
-  int64 code = 1;
-  string message = 2;
-}
-
 // ------------------------------------ 
 // Rpc Func
 // ------------------------------------ 
@@ -125,7 +92,5 @@ service repo{
 	 rpc UpdateRepo(UpdateRepoReq) returns (UpdateRepoResp); 
 	 rpc DelRepoById(DelRepoByIdReq) returns (DelRepoByIdResp);
 	 rpc GetRepoById(GetRepoByIdReq) returns (GetRepoByIdResp);
-    rpc BlockUntilRepoUpdated(BlockUntilRepoUpdatedReq) returns (BlockUntilRepoUpdatedResp);
-    rpc UnblockRepo(UnblockRepoReq) returns (UnblockRepoResp);
 
 }

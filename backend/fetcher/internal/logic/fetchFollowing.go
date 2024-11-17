@@ -3,8 +3,10 @@ package logic
 import (
 	"context"
 	"errors"
+	"github.com/ShellWen/GitPulse/common/tasks"
 	"github.com/ShellWen/GitPulse/fetcher/internal/svc"
 	"github.com/ShellWen/GitPulse/relation/cmd/rpc/relation"
+	"github.com/ShellWen/GitPulse/relation/model"
 	"github.com/google/go-github/v66/github"
 	"github.com/zeromicro/go-zero/core/logx"
 	"net/http"
@@ -13,10 +15,6 @@ import (
 
 func FetchFollowing(ctx context.Context, svcContext *svc.ServiceContext, userId int64) (err error) {
 	if err = doFetchFollowing(ctx, svcContext, userId); err != nil {
-		return
-	}
-
-	if err = updateFollowFetchTimeOfDeveloper(ctx, svcContext, userId); err != nil {
 		return
 	}
 
@@ -56,6 +54,9 @@ func doFetchFollowing(ctx context.Context, svcContext *svc.ServiceContext, userI
 		}
 	}
 
+	if err = pushFetchFollowingCompleted(ctx, svcContext, userId); err != nil {
+		return
+	}
 	logx.Info("Successfully push all update tasks of following")
 	return
 }
@@ -87,6 +88,19 @@ func delAllOldFollowing(ctx context.Context, svcContext *svc.ServiceContext, use
 	} else if delAllFollowingResp.Code != http.StatusOK {
 		logx.Error(errors.New("Unexpected error when deleting old following: " + delAllFollowingResp.Message))
 		return errors.New("Unexpected error when deleting old following: " + delAllFollowingResp.Message)
+	}
+
+	return
+}
+
+func pushFetchFollowingCompleted(ctx context.Context, svcContext *svc.ServiceContext, userId int64) (err error) {
+	if err = pushFollow(ctx, svcContext, &model.Follow{
+		DataId:      tasks.FetchFollowingCompletedDataId,
+		FollowerId:  userId,
+		FollowingId: userId,
+	}); err != nil {
+		logx.Error("Push fetch following completed error: ", err)
+		return
 	}
 
 	return

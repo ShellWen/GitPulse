@@ -49,9 +49,14 @@ func (s *RelationServer) SearchCreatedRepo(ctx context.Context, in *pb.SearchCre
 	return l.SearchCreatedRepo(in)
 }
 
-func (s *RelationServer) BlockUntilCreatedRepoUpdated(ctx context.Context, in *pb.BlockUntilCreatedRepoUpdatedReq) (*pb.BlockUntilCreatedRepoUpdatedResp, error) {
-	l := logic.NewBlockUntilCreatedRepoUpdatedLogic(ctx, s.svcCtx)
-	return l.BlockUntilCreatedRepoUpdated(in)
+func (s *RelationServer) UpdateCreateRepo(ctx context.Context, in *pb.UpdateCreateRepoReq) (*pb.UpdateCreateRepoResp, error) {
+	l := logic.NewUpdateCreateRepoLogic(ctx, s.svcCtx)
+	return l.UpdateCreateRepo(in)
+}
+
+func (s *RelationServer) GetCreatedRepoUpdatedAt(ctx context.Context, in *pb.GetCreatedRepoUpdatedAtReq) (*pb.GetCreatedRepoUpdatedAtResp, error) {
+	l := logic.NewGetCreatedRepoUpdatedAtLogic(ctx, s.svcCtx)
+	return l.GetCreatedRepoUpdatedAt(in)
 }
 
 // -----------------------follow-----------------------
@@ -90,14 +95,24 @@ func (s *RelationServer) SearchFollowerByDeveloperId(ctx context.Context, in *pb
 	return l.SearchFollowerByDeveloperId(in)
 }
 
-func (s *RelationServer) BlockUntilFollowingUpdated(ctx context.Context, in *pb.BlockUntilFollowingUpdatedReq) (*pb.BlockUntilFollowingUpdatedResp, error) {
-	l := logic.NewBlockUntilFollowingUpdatedLogic(ctx, s.svcCtx)
-	return l.BlockUntilFollowingUpdated(in)
+func (s *RelationServer) UpdateFollowing(ctx context.Context, in *pb.UpdateFollowingReq) (*pb.UpdateFollowingResp, error) {
+	l := logic.NewUpdateFollowingLogic(ctx, s.svcCtx)
+	return l.UpdateFollowing(in)
 }
 
-func (s *RelationServer) BlockUntilFollowerUpdated(ctx context.Context, in *pb.BlockUntilFollowerUpdatedReq) (*pb.BlockUntilFollowerUpdatedResp, error) {
-	l := logic.NewBlockUntilFollowerUpdatedLogic(ctx, s.svcCtx)
-	return l.BlockUntilFollowerUpdated(in)
+func (s *RelationServer) UpdateFollower(ctx context.Context, in *pb.UpdateFollowerReq) (*pb.UpdateFollowerResp, error) {
+	l := logic.NewUpdateFollowerLogic(ctx, s.svcCtx)
+	return l.UpdateFollower(in)
+}
+
+func (s *RelationServer) GetFollowingUpdatedAt(ctx context.Context, in *pb.GetFollowingUpdatedAtReq) (*pb.GetFollowingUpdatedAtResp, error) {
+	l := logic.NewGetFollowingUpdatedAtLogic(ctx, s.svcCtx)
+	return l.GetFollowingUpdatedAt(in)
+}
+
+func (s *RelationServer) GetFollowerUpdatedAt(ctx context.Context, in *pb.GetFollowerUpdatedAtReq) (*pb.GetFollowerUpdatedAtResp, error) {
+	l := logic.NewGetFollowerUpdatedAtLogic(ctx, s.svcCtx)
+	return l.GetFollowerUpdatedAt(in)
 }
 
 // -----------------------fork-----------------------
@@ -126,9 +141,14 @@ func (s *RelationServer) SearchFork(ctx context.Context, in *pb.SearchForkReq) (
 	return l.SearchFork(in)
 }
 
-func (s *RelationServer) BlockUntilForkUpdated(ctx context.Context, in *pb.BlockUntilForkUpdatedReq) (*pb.BlockUntilForkUpdatedResp, error) {
-	l := logic.NewBlockUntilForkUpdatedLogic(ctx, s.svcCtx)
-	return l.BlockUntilForkUpdated(in)
+func (s *RelationServer) UpdateFork(ctx context.Context, in *pb.UpdateForkReq) (*pb.UpdateForkResp, error) {
+	l := logic.NewUpdateForkLogic(ctx, s.svcCtx)
+	return l.UpdateFork(in)
+}
+
+func (s *RelationServer) GetForkUpdatedAt(ctx context.Context, in *pb.GetForkUpdatedAtReq) (*pb.GetForkUpdatedAtResp, error) {
+	l := logic.NewGetForkUpdatedAtLogic(ctx, s.svcCtx)
+	return l.GetForkUpdatedAt(in)
 }
 
 // -----------------------star-----------------------
@@ -167,12 +187,12 @@ func (s *RelationServer) SearchStaringDev(ctx context.Context, in *pb.SearchStar
 	return l.SearchStaringDev(in)
 }
 
-func (s *RelationServer) BlockUntilStarredRepoUpdated(ctx context.Context, in *pb.BlockUntilStarredRepoUpdatedReq) (*pb.BlockUntilStarredRepoUpdatedResp, error) {
-	l := logic.NewBlockUntilStarredRepoUpdatedLogic(ctx, s.svcCtx)
-	return l.BlockUntilStarredRepoUpdated(in)
+func (s *RelationServer) UpdateStarredRepo(ctx context.Context, in *pb.UpdateStarredRepoReq) (*pb.UpdateStarredRepoResp, error) {
+	l := logic.NewUpdateStarredRepoLogic(ctx, s.svcCtx)
+	return l.UpdateStarredRepo(in)
 }
 
-func (s *RelationServer) UnblockRelation(ctx context.Context, in *pb.UnblockRelationReq) (*pb.UnblockRelationResp, error) {
-	l := logic.NewUnblockRelationLogic(ctx, s.svcCtx)
-	return l.UnblockRelation(in)
+func (s *RelationServer) GetStarredRepoUpdatedAt(ctx context.Context, in *pb.GetStarredRepoUpdatedAtReq) (*pb.GetStarredRepoUpdatedAtResp, error) {
+	l := logic.NewGetStarredRepoUpdatedAtLogic(ctx, s.svcCtx)
+	return l.GetStarredRepoUpdatedAt(in)
 }

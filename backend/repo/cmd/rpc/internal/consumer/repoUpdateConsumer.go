@@ -3,6 +3,7 @@ package consumer
 import (
 	"context"
 	"errors"
+	"github.com/ShellWen/GitPulse/common/lock"
 	"github.com/ShellWen/GitPulse/repo/cmd/rpc/internal/svc"
 	"github.com/ShellWen/GitPulse/repo/model"
 	"github.com/zeromicro/go-zero/core/jsonx"
@@ -40,9 +41,17 @@ func (c *RepoUpdateConsumer) Consume(ctx context.Context, key string, value stri
 	}
 
 	if exist {
-		err = updateOldRepo(c, oldRepo, newRepo)
+		if err = updateOldRepo(c, oldRepo, newRepo); err != nil {
+			return
+		}
 	} else {
-		err = insertNewRepo(c, newRepo)
+		if err = insertNewRepo(c, newRepo); err != nil {
+			return
+		}
+	}
+
+	if err = unblockRepoUpdateLock(c, newRepo.Id); err != nil {
+		return
 	}
 
 	return
@@ -89,6 +98,15 @@ func updateOldRepo(c *RepoUpdateConsumer, oldRepo *model.Repo, newRepo *model.Re
 func insertNewRepo(c *RepoUpdateConsumer, newRepo *model.Repo) error {
 	if _, err := c.svc.RepoModel.Insert(c.ctx, newRepo); err != nil {
 		logx.Error("Insert error: ", err)
+		return err
+	}
+
+	return nil
+}
+
+func unblockRepoUpdateLock(c *RepoUpdateConsumer, id int64) error {
+	if _, err := c.svc.RedisClient.LpushCtx(c.ctx, locks.GetNewLockKey(locks.UpdateRepo, id), ""); err != nil {
+		logx.Error("DelCtx error: ", err)
 		return err
 	}
 

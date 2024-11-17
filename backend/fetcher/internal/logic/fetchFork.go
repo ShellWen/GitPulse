@@ -3,6 +3,7 @@ package logic
 import (
 	"context"
 	"errors"
+	"github.com/ShellWen/GitPulse/common/tasks"
 	"github.com/ShellWen/GitPulse/fetcher/internal/svc"
 	"github.com/ShellWen/GitPulse/relation/cmd/rpc/relation"
 	"github.com/ShellWen/GitPulse/relation/model"
@@ -49,6 +50,10 @@ func doFetchFork(ctx context.Context, svcContext *svc.ServiceContext, repoId int
 		if err = buildAndPushRepoByGithubRepo(ctx, svcContext, githubClient, githubRepo); err != nil {
 			continue
 		}
+	}
+
+	if err = pushFetchForkCompleted(ctx, svcContext, repoId); err != nil {
+		return
 	}
 
 	logx.Info("Successfully push all update tasks of forks")
@@ -106,6 +111,18 @@ func pushFork(ctx context.Context, svcContext *svc.ServiceContext, newFork *mode
 
 	if err = svcContext.KqForkPusher.Push(ctx, jsonStr); err != nil {
 		logx.Error(errors.New("Unexpected error when pushing fork: " + err.Error()))
+		return
+	}
+
+	return
+}
+
+func pushFetchForkCompleted(ctx context.Context, svcContext *svc.ServiceContext, repoId int64) (err error) {
+	if err = pushFork(ctx, svcContext, &model.Fork{
+		DataId:         tasks.FetchForkCompletedDataId,
+		OriginalRepoId: repoId,
+	}); err != nil {
+		logx.Error("Push fetch fork completed error: ", err)
 		return
 	}
 

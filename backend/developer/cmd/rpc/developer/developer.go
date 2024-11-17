@@ -14,23 +14,19 @@ import (
 )
 
 type (
-	AddDeveloperReq                = pb.AddDeveloperReq
-	AddDeveloperResp               = pb.AddDeveloperResp
-	BlockUntilDeveloperUpdatedReq  = pb.BlockUntilDeveloperUpdatedReq
-	BlockUntilDeveloperUpdatedResp = pb.BlockUntilDeveloperUpdatedResp
-	DelDeveloperByIdReq            = pb.DelDeveloperByIdReq
-	DelDeveloperByIdResp           = pb.DelDeveloperByIdResp
-	DelDeveloperByLoginReq         = pb.DelDeveloperByLoginReq
-	DelDeveloperByLoginResp        = pb.DelDeveloperByLoginResp
-	Developer                      = pb.Developer
-	GetDeveloperByIdReq            = pb.GetDeveloperByIdReq
-	GetDeveloperByIdResp           = pb.GetDeveloperByIdResp
-	GetDeveloperByLoginReq         = pb.GetDeveloperByLoginReq
-	GetDeveloperByLoginResp        = pb.GetDeveloperByLoginResp
-	UnblockDeveloperReq            = pb.UnblockDeveloperReq
-	UnblockDeveloperResp           = pb.UnblockDeveloperResp
-	UpdateDeveloperReq             = pb.UpdateDeveloperReq
-	UpdateDeveloperResp            = pb.UpdateDeveloperResp
+	AddDeveloperReq         = pb.AddDeveloperReq
+	AddDeveloperResp        = pb.AddDeveloperResp
+	DelDeveloperByIdReq     = pb.DelDeveloperByIdReq
+	DelDeveloperByIdResp    = pb.DelDeveloperByIdResp
+	DelDeveloperByLoginReq  = pb.DelDeveloperByLoginReq
+	DelDeveloperByLoginResp = pb.DelDeveloperByLoginResp
+	Developer               = pb.Developer
+	GetDeveloperByIdReq     = pb.GetDeveloperByIdReq
+	GetDeveloperByIdResp    = pb.GetDeveloperByIdResp
+	GetDeveloperByLoginReq  = pb.GetDeveloperByLoginReq
+	GetDeveloperByLoginResp = pb.GetDeveloperByLoginResp
+	UpdateDeveloperReq      = pb.UpdateDeveloperReq
+	UpdateDeveloperResp     = pb.UpdateDeveloperResp
 
 	DeveloperZrpcClient interface {
 		// -----------------------developer-----------------------
@@ -40,8 +36,6 @@ type (
 		DelDeveloperByLogin(ctx context.Context, in *DelDeveloperByLoginReq, opts ...grpc.CallOption) (*DelDeveloperByLoginResp, error)
 		GetDeveloperById(ctx context.Context, in *GetDeveloperByIdReq, opts ...grpc.CallOption) (*GetDeveloperByIdResp, error)
 		GetDeveloperByLogin(ctx context.Context, in *GetDeveloperByLoginReq, opts ...grpc.CallOption) (*GetDeveloperByLoginResp, error)
-		BlockUntilDeveloperUpdated(ctx context.Context, in *BlockUntilDeveloperUpdatedReq, opts ...grpc.CallOption) (*BlockUntilDeveloperUpdatedResp, error)
-		UnblockDeveloper(ctx context.Context, in *UnblockDeveloperReq, opts ...grpc.CallOption) (*UnblockDeveloperResp, error)
 	}
 
 	defaultDeveloperZrpcClient struct {
@@ -84,14 +78,4 @@ func (m *defaultDeveloperZrpcClient) GetDeveloperById(ctx context.Context, in *G
 func (m *defaultDeveloperZrpcClient) GetDeveloperByLogin(ctx context.Context, in *GetDeveloperByLoginReq, opts ...grpc.CallOption) (*GetDeveloperByLoginResp, error) {
 	client := pb.NewDeveloperClient(m.cli.Conn())
 	return client.GetDeveloperByLogin(ctx, in, opts...)
-}
-
-func (m *defaultDeveloperZrpcClient) BlockUntilDeveloperUpdated(ctx context.Context, in *BlockUntilDeveloperUpdatedReq, opts ...grpc.CallOption) (*BlockUntilDeveloperUpdatedResp, error) {
-	client := pb.NewDeveloperClient(m.cli.Conn())
-	return client.BlockUntilDeveloperUpdated(ctx, in, opts...)
-}
-
-func (m *defaultDeveloperZrpcClient) UnblockDeveloper(ctx context.Context, in *UnblockDeveloperReq, opts ...grpc.CallOption) (*UnblockDeveloperResp, error) {
-	client := pb.NewDeveloperClient(m.cli.Conn())
-	return client.UnblockDeveloper(ctx, in, opts...)
 }

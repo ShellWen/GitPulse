@@ -22,16 +22,6 @@ type (
 	AddForkResp                      = pb.AddForkResp
 	AddStarReq                       = pb.AddStarReq
 	AddStarResp                      = pb.AddStarResp
-	BlockUntilCreatedRepoUpdatedReq  = pb.BlockUntilCreatedRepoUpdatedReq
-	BlockUntilCreatedRepoUpdatedResp = pb.BlockUntilCreatedRepoUpdatedResp
-	BlockUntilFollowerUpdatedReq     = pb.BlockUntilFollowerUpdatedReq
-	BlockUntilFollowerUpdatedResp    = pb.BlockUntilFollowerUpdatedResp
-	BlockUntilFollowingUpdatedReq    = pb.BlockUntilFollowingUpdatedReq
-	BlockUntilFollowingUpdatedResp   = pb.BlockUntilFollowingUpdatedResp
-	BlockUntilForkUpdatedReq         = pb.BlockUntilForkUpdatedReq
-	BlockUntilForkUpdatedResp        = pb.BlockUntilForkUpdatedResp
-	BlockUntilStarredRepoUpdatedReq  = pb.BlockUntilStarredRepoUpdatedReq
-	BlockUntilStarredRepoUpdatedResp = pb.BlockUntilStarredRepoUpdatedResp
 	CheckFollowResp                  = pb.CheckFollowResp
 	CheckIfFollowReq                 = pb.CheckIfFollowReq
 	CheckIfStarReq                   = pb.CheckIfStarReq
@@ -59,10 +49,20 @@ type (
 	DelStarResp                      = pb.DelStarResp
 	Follow                           = pb.Follow
 	Fork                             = pb.Fork
+	GetCreatedRepoUpdatedAtReq       = pb.GetCreatedRepoUpdatedAtReq
+	GetCreatedRepoUpdatedAtResp      = pb.GetCreatedRepoUpdatedAtResp
 	GetCreatorIdReq                  = pb.GetCreatorIdReq
 	GetCreatorIdResp                 = pb.GetCreatorIdResp
+	GetFollowerUpdatedAtReq          = pb.GetFollowerUpdatedAtReq
+	GetFollowerUpdatedAtResp         = pb.GetFollowerUpdatedAtResp
+	GetFollowingUpdatedAtReq         = pb.GetFollowingUpdatedAtReq
+	GetFollowingUpdatedAtResp        = pb.GetFollowingUpdatedAtResp
+	GetForkUpdatedAtReq              = pb.GetForkUpdatedAtReq
+	GetForkUpdatedAtResp             = pb.GetForkUpdatedAtResp
 	GetOriginReq                     = pb.GetOriginReq
 	GetOriginResp                    = pb.GetOriginResp
+	GetStarredRepoUpdatedAtReq       = pb.GetStarredRepoUpdatedAtReq
+	GetStarredRepoUpdatedAtResp      = pb.GetStarredRepoUpdatedAtResp
 	SearchCreatedRepoReq             = pb.SearchCreatedRepoReq
 	SearchCreatedRepoResp            = pb.SearchCreatedRepoResp
 	SearchFollowerByDeveloperIdReq   = pb.SearchFollowerByDeveloperIdReq
@@ -76,8 +76,16 @@ type (
 	SearchStarredRepoReq             = pb.SearchStarredRepoReq
 	SearchStarredRepoResp            = pb.SearchStarredRepoResp
 	Star                             = pb.Star
-	UnblockRelationReq               = pb.UnblockRelationReq
-	UnblockRelationResp              = pb.UnblockRelationResp
+	UpdateCreateRepoReq              = pb.UpdateCreateRepoReq
+	UpdateCreateRepoResp             = pb.UpdateCreateRepoResp
+	UpdateFollowerReq                = pb.UpdateFollowerReq
+	UpdateFollowerResp               = pb.UpdateFollowerResp
+	UpdateFollowingReq               = pb.UpdateFollowingReq
+	UpdateFollowingResp              = pb.UpdateFollowingResp
+	UpdateForkReq                    = pb.UpdateForkReq
+	UpdateForkResp                   = pb.UpdateForkResp
+	UpdateStarredRepoReq             = pb.UpdateStarredRepoReq
+	UpdateStarredRepoResp            = pb.UpdateStarredRepoResp
 
 	Relation interface {
 		// -----------------------createRepo-----------------------
@@ -86,7 +94,8 @@ type (
 		DelAllCreatedRepo(ctx context.Context, in *DelAllCreatedRepoReq, opts ...grpc.CallOption) (*DelAllCreatedRepoResp, error)
 		GetCreatorId(ctx context.Context, in *GetCreatorIdReq, opts ...grpc.CallOption) (*GetCreatorIdResp, error)
 		SearchCreatedRepo(ctx context.Context, in *SearchCreatedRepoReq, opts ...grpc.CallOption) (*SearchCreatedRepoResp, error)
-		BlockUntilCreatedRepoUpdated(ctx context.Context, in *BlockUntilCreatedRepoUpdatedReq, opts ...grpc.CallOption) (*BlockUntilCreatedRepoUpdatedResp, error)
+		UpdateCreateRepo(ctx context.Context, in *UpdateCreateRepoReq, opts ...grpc.CallOption) (*UpdateCreateRepoResp, error)
+		GetCreatedRepoUpdatedAt(ctx context.Context, in *GetCreatedRepoUpdatedAtReq, opts ...grpc.CallOption) (*GetCreatedRepoUpdatedAtResp, error)
 		// -----------------------follow-----------------------
 		AddFollow(ctx context.Context, in *AddFollowReq, opts ...grpc.CallOption) (*AddFollowResp, error)
 		DelFollow(ctx context.Context, in *DelFollowReq, opts ...grpc.CallOption) (*DelFollowResp, error)
@@ -95,15 +104,18 @@ type (
 		CheckIfFollow(ctx context.Context, in *CheckIfFollowReq, opts ...grpc.CallOption) (*CheckFollowResp, error)
 		SearchFollowingByDeveloperId(ctx context.Context, in *SearchFollowingByDeveloperIdReq, opts ...grpc.CallOption) (*SearchFollowingByDeveloperIdResp, error)
 		SearchFollowerByDeveloperId(ctx context.Context, in *SearchFollowerByDeveloperIdReq, opts ...grpc.CallOption) (*SearchFollowerByDeveloperIdResp, error)
-		BlockUntilFollowingUpdated(ctx context.Context, in *BlockUntilFollowingUpdatedReq, opts ...grpc.CallOption) (*BlockUntilFollowingUpdatedResp, error)
-		BlockUntilFollowerUpdated(ctx context.Context, in *BlockUntilFollowerUpdatedReq, opts ...grpc.CallOption) (*BlockUntilFollowerUpdatedResp, error)
+		UpdateFollowing(ctx context.Context, in *UpdateFollowingReq, opts ...grpc.CallOption) (*UpdateFollowingResp, error)
+		UpdateFollower(ctx context.Context, in *UpdateFollowerReq, opts ...grpc.CallOption) (*UpdateFollowerResp, error)
+		GetFollowingUpdatedAt(ctx context.Context, in *GetFollowingUpdatedAtReq, opts ...grpc.CallOption) (*GetFollowingUpdatedAtResp, error)
+		GetFollowerUpdatedAt(ctx context.Context, in *GetFollowerUpdatedAtReq, opts ...grpc.CallOption) (*GetFollowerUpdatedAtResp, error)
 		// -----------------------fork-----------------------
 		AddFork(ctx context.Context, in *AddForkReq, opts ...grpc.CallOption) (*AddForkResp, error)
 		DelFork(ctx context.Context, in *DelForkReq, opts ...grpc.CallOption) (*DelForkResp, error)
 		DelAllFork(ctx context.Context, in *DelAllForkReq, opts ...grpc.CallOption) (*DelAllForkResp, error)
 		GetOrigin(ctx context.Context, in *GetOriginReq, opts ...grpc.CallOption) (*GetOriginResp, error)
 		SearchFork(ctx context.Context, in *SearchForkReq, opts ...grpc.CallOption) (*SearchForkResp, error)
-		BlockUntilForkUpdated(ctx context.Context, in *BlockUntilForkUpdatedReq, opts ...grpc.CallOption) (*BlockUntilForkUpdatedResp, error)
+		UpdateFork(ctx context.Context, in *UpdateForkReq, opts ...grpc.CallOption) (*UpdateForkResp, error)
+		GetForkUpdatedAt(ctx context.Context, in *GetForkUpdatedAtReq, opts ...grpc.CallOption) (*GetForkUpdatedAtResp, error)
 		// -----------------------star-----------------------
 		AddStar(ctx context.Context, in *AddStarReq, opts ...grpc.CallOption) (*AddStarResp, error)
 		DelStar(ctx context.Context, in *DelStarReq, opts ...grpc.CallOption) (*DelStarResp, error)
@@ -112,8 +124,8 @@ type (
 		CheckIfStar(ctx context.Context, in *CheckIfStarReq, opts ...grpc.CallOption) (*CheckIfStarResp, error)
 		SearchStarredRepo(ctx context.Context, in *SearchStarredRepoReq, opts ...grpc.CallOption) (*SearchStarredRepoResp, error)
 		SearchStaringDev(ctx context.Context, in *SearchStaringDevReq, opts ...grpc.CallOption) (*SearchStaringDevResp, error)
-		BlockUntilStarredRepoUpdated(ctx context.Context, in *BlockUntilStarredRepoUpdatedReq, opts ...grpc.CallOption) (*BlockUntilStarredRepoUpdatedResp, error)
-		UnblockRelation(ctx context.Context, in *UnblockRelationReq, opts ...grpc.CallOption) (*UnblockRelationResp, error)
+		UpdateStarredRepo(ctx context.Context, in *UpdateStarredRepoReq, opts ...grpc.CallOption) (*UpdateStarredRepoResp, error)
+		GetStarredRepoUpdatedAt(ctx context.Context, in *GetStarredRepoUpdatedAtReq, opts ...grpc.CallOption) (*GetStarredRepoUpdatedAtResp, error)
 	}
 
 	defaultRelation struct {
@@ -153,9 +165,14 @@ func (m *defaultRelation) SearchCreatedRepo(ctx context.Context, in *SearchCreat
 	return client.SearchCreatedRepo(ctx, in, opts...)
 }
 
-func (m *defaultRelation) BlockUntilCreatedRepoUpdated(ctx context.Context, in *BlockUntilCreatedRepoUpdatedReq, opts ...grpc.CallOption) (*BlockUntilCreatedRepoUpdatedResp, error) {
+func (m *defaultRelation) UpdateCreateRepo(ctx context.Context, in *UpdateCreateRepoReq, opts ...grpc.CallOption) (*UpdateCreateRepoResp, error) {
 	client := pb.NewRelationClient(m.cli.Conn())
-	return client.BlockUntilCreatedRepoUpdated(ctx, in, opts...)
+	return client.UpdateCreateRepo(ctx, in, opts...)
+}
+
+func (m *defaultRelation) GetCreatedRepoUpdatedAt(ctx context.Context, in *GetCreatedRepoUpdatedAtReq, opts ...grpc.CallOption) (*GetCreatedRepoUpdatedAtResp, error) {
+	client := pb.NewRelationClient(m.cli.Conn())
+	return client.GetCreatedRepoUpdatedAt(ctx, in, opts...)
 }
 
 // -----------------------follow-----------------------
@@ -194,14 +211,24 @@ func (m *defaultRelation) SearchFollowerByDeveloperId(ctx context.Context, in *S
 	return client.SearchFollowerByDeveloperId(ctx, in, opts...)
 }
 
-func (m *defaultRelation) BlockUntilFollowingUpdated(ctx context.Context, in *BlockUntilFollowingUpdatedReq, opts ...grpc.CallOption) (*BlockUntilFollowingUpdatedResp, error) {
+func (m *defaultRelation) UpdateFollowing(ctx context.Context, in *UpdateFollowingReq, opts ...grpc.CallOption) (*UpdateFollowingResp, error) {
 	client := pb.NewRelationClient(m.cli.Conn())
-	return client.BlockUntilFollowingUpdated(ctx, in, opts...)
+	return client.UpdateFollowing(ctx, in, opts...)
 }
 
-func (m *defaultRelation) BlockUntilFollowerUpdated(ctx context.Context, in *BlockUntilFollowerUpdatedReq, opts ...grpc.CallOption) (*BlockUntilFollowerUpdatedResp, error) {
+func (m *defaultRelation) UpdateFollower(ctx context.Context, in *UpdateFollowerReq, opts ...grpc.CallOption) (*UpdateFollowerResp, error) {
 	client := pb.NewRelationClient(m.cli.Conn())
-	return client.BlockUntilFollowerUpdated(ctx, in, opts...)
+	return client.UpdateFollower(ctx, in, opts...)
+}
+
+func (m *defaultRelation) GetFollowingUpdatedAt(ctx context.Context, in *GetFollowingUpdatedAtReq, opts ...grpc.CallOption) (*GetFollowingUpdatedAtResp, error) {
+	client := pb.NewRelationClient(m.cli.Conn())
+	return client.GetFollowingUpdatedAt(ctx, in, opts...)
+}
+
+func (m *defaultRelation) GetFollowerUpdatedAt(ctx context.Context, in *GetFollowerUpdatedAtReq, opts ...grpc.CallOption) (*GetFollowerUpdatedAtResp, error) {
+	client := pb.NewRelationClient(m.cli.Conn())
+	return client.GetFollowerUpdatedAt(ctx, in, opts...)
 }
 
 // -----------------------fork-----------------------
@@ -230,9 +257,14 @@ func (m *defaultRelation) SearchFork(ctx context.Context, in *SearchForkReq, opt
 	return client.SearchFork(ctx, in, opts...)
 }
 
-func (m *defaultRelation) BlockUntilForkUpdated(ctx context.Context, in *BlockUntilForkUpdatedReq, opts ...grpc.CallOption) (*BlockUntilForkUpdatedResp, error) {
+func (m *defaultRelation) UpdateFork(ctx context.Context, in *UpdateForkReq, opts ...grpc.CallOption) (*UpdateForkResp, error) {
 	client := pb.NewRelationClient(m.cli.Conn())
-	return client.BlockUntilForkUpdated(ctx, in, opts...)
+	return client.UpdateFork(ctx, in, opts...)
+}
+
+func (m *defaultRelation) GetForkUpdatedAt(ctx context.Context, in *GetForkUpdatedAtReq, opts ...grpc.CallOption) (*GetForkUpdatedAtResp, error) {
+	client := pb.NewRelationClient(m.cli.Conn())
+	return client.GetForkUpdatedAt(ctx, in, opts...)
 }
 
 // -----------------------star-----------------------
@@ -271,12 +303,12 @@ func (m *defaultRelation) SearchStaringDev(ctx context.Context, in *SearchStarin
 	return client.SearchStaringDev(ctx, in, opts...)
 }
 
-func (m *defaultRelation) BlockUntilStarredRepoUpdated(ctx context.Context, in *BlockUntilStarredRepoUpdatedReq, opts ...grpc.CallOption) (*BlockUntilStarredRepoUpdatedResp, error) {
+func (m *defaultRelation) UpdateStarredRepo(ctx context.Context, in *UpdateStarredRepoReq, opts ...grpc.CallOption) (*UpdateStarredRepoResp, error) {
 	client := pb.NewRelationClient(m.cli.Conn())
-	return client.BlockUntilStarredRepoUpdated(ctx, in, opts...)
+	return client.UpdateStarredRepo(ctx, in, opts...)
 }
 
-func (m *defaultRelation) UnblockRelation(ctx context.Context, in *UnblockRelationReq, opts ...grpc.CallOption) (*UnblockRelationResp, error) {
+func (m *defaultRelation) GetStarredRepoUpdatedAt(ctx context.Context, in *GetStarredRepoUpdatedAtReq, opts ...grpc.CallOption) (*GetStarredRepoUpdatedAtResp, error) {
 	client := pb.NewRelationClient(m.cli.Conn())
-	return client.UnblockRelation(ctx, in, opts...)
+	return client.GetStarredRepoUpdatedAt(ctx, in, opts...)
 }

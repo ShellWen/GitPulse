@@ -3,7 +3,7 @@ package logic
 import (
 	"context"
 	"errors"
-	"github.com/ShellWen/GitPulse/developer/cmd/rpc/developer"
+	"github.com/ShellWen/GitPulse/common/tasks"
 	"github.com/ShellWen/GitPulse/fetcher/internal/svc"
 	"github.com/ShellWen/GitPulse/relation/cmd/rpc/relation"
 	"github.com/ShellWen/GitPulse/relation/model"
@@ -13,15 +13,10 @@ import (
 	"net/http"
 	"os"
 	"strconv"
-	"time"
 )
 
 func FetchCreatedRepo(ctx context.Context, svcContext *svc.ServiceContext, userId int64) (err error) {
 	if err = doFetchCreatedRepo(ctx, svcContext, userId); err != nil {
-		return
-	}
-
-	if err = updateCreateRepoFetchTimeOfDeveloper(ctx, svcContext, userId); err != nil {
 		return
 	}
 
@@ -68,6 +63,10 @@ func doFetchCreatedRepo(ctx context.Context, svcContext *svc.ServiceContext, use
 		}
 	}
 
+	if err = pushFetchCreatedRepoCompleted(ctx, svcContext, userId); err != nil {
+		return
+	}
+
 	logx.Info("Successfully push all update tasks of created repos")
 	return
 }
@@ -87,21 +86,6 @@ func delAllCreatedRepo(ctx context.Context, svcContext *svc.ServiceContext, user
 
 	logx.Info("Successfully delete all created repos")
 	return nil
-}
-
-func getLastFetchTimeOfCreatedRepo(ctx context.Context, svcContext *svc.ServiceContext, userId int64) (lastModified string, err error) {
-	var existingDeveloperResp *developer.GetDeveloperByIdResp
-
-	developerZrpcClient := svcContext.DeveloperRpcClient
-	if existingDeveloperResp, err = developerZrpcClient.GetDeveloperById(ctx, &developer.GetDeveloperByIdReq{Id: userId}); err != nil {
-		logx.Error(errors.New("Unexpected error when fetching developer profile: " + err.Error()))
-	} else if existingDeveloperResp.Code == http.StatusOK {
-		lastModified = time.Unix(existingDeveloperResp.Developer.LastFetchCreateRepoAt, 0).Format(http.TimeFormat)
-	} else {
-		lastModified = ""
-	}
-
-	return
 }
 
 func getAllGithubReposByLogin(ctx context.Context, githubClient *github.Client, login string, opt *github.RepositoryListByUserOptions) (allRepos []*github.Repository, err error) {
@@ -146,52 +130,15 @@ func pushCreatedRepo(ctx context.Context, svcContext *svc.ServiceContext, newCre
 	return
 }
 
-func updateCreateRepoFetchTimeOfDeveloper(ctx context.Context, svcContext *svc.ServiceContext, userId int64) (err error) {
-	developerZrpcClient := svcContext.DeveloperRpcClient
-	var resp *developer.GetDeveloperByIdResp
-	var theDeveloper *developer.Developer
-
-	if resp, err = developerZrpcClient.GetDeveloperById(ctx, &developer.GetDeveloperByIdReq{Id: userId}); err != nil {
-		return
-	}
-
-	switch resp.Code {
-	case http.StatusOK:
-		theDeveloper = resp.Developer
-	case http.StatusNotFound:
-		err = errors.New("Developer not found")
-		return
-	default:
-		err = errors.New("Unexpected error when getting developer: " + resp.Message)
-		return
-	}
-
-	theDeveloper.LastFetchCreateRepoAt = time.Now().Unix()
-	if _, err = developerZrpcClient.UpdateDeveloper(ctx, &developer.UpdateDeveloperReq{
-		Id:                      userId,
-		Name:                    theDeveloper.Name,
-		Login:                   theDeveloper.Login,
-		AvatarUrl:               theDeveloper.AvatarUrl,
-		Company:                 theDeveloper.Company,
-		Location:                theDeveloper.Location,
-		Bio:                     theDeveloper.Bio,
-		Blog:                    theDeveloper.Blog,
-		Email:                   theDeveloper.Email,
-		CreatedAt:               theDeveloper.CreatedAt,
-		UpdatedAt:               theDeveloper.UpdatedAt,
-		TwitterUsername:         theDeveloper.TwitterUsername,
-		Repos:                   theDeveloper.Repos,
-		Following:               theDeveloper.Following,
-		Followers:               theDeveloper.Followers,
-		Gists:                   theDeveloper.Gists,
-		Stars:                   theDeveloper.Stars,
-		LastFetchContributionAt: theDeveloper.LastFetchContributionAt,
-		LastFetchFollowAt:       theDeveloper.LastFetchFollowAt,
-		LastFetchStarAt:         theDeveloper.LastFetchStarAt,
-		LastFetchCreateRepoAt:   theDeveloper.LastFetchCreateRepoAt,
+func pushFetchCreatedRepoCompleted(ctx context.Context, svcContext *svc.ServiceContext, userId int64) (err error) {
+	if err = pushCreatedRepo(ctx, svcContext, &model.CreateRepo{
+		DataId:      tasks.FetchCreatedRepoCompletedDataId,
+		DeveloperId: userId,
 	}); err != nil {
+		logx.Error("Unexpected error when pushing fetch created repo completed: " + err.Error())
 		return
 	}
 
+	logx.Info("Successfully push all update tasks of created repos")
 	return
 }

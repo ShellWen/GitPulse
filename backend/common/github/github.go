@@ -5,6 +5,12 @@ import (
 	"github.com/google/go-github/v66/github"
 	"github.com/zeromicro/go-zero/core/logx"
 	"os"
+	"time"
+)
+
+const (
+	DefaultSearchLimit int64         = 60
+	DataExpiredTime    time.Duration = 24 * time.Hour
 )
 
 func GetIdByLogin(ctx context.Context, login string) (id int64, err error) {
@@ -29,4 +35,12 @@ func GetLoginById(ctx context.Context, id int64) (login string, err error) {
 	login = githubUser.GetLogin()
 	logx.Info("Successfully get login ", login, " of id", id)
 	return
+}
+
+func DefaultUpdateAfterTime() string {
+	return time.Unix(time.Now().Unix()-int64(60*24*time.Hour.Seconds()), 0).Format("2006-01-02")
+}
+
+func CheckIfDataExpired(lastUpdate time.Time) bool {
+	return time.Now().Sub(lastUpdate) > DataExpiredTime
 }

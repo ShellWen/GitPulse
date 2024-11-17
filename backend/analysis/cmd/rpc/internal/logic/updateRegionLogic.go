@@ -7,9 +7,11 @@ import (
 	"github.com/ShellWen/GitPulse/analysis/model"
 	customGithub "github.com/ShellWen/GitPulse/common/github"
 	"github.com/ShellWen/GitPulse/common/llm"
+	locks "github.com/ShellWen/GitPulse/common/lock"
 	"github.com/ShellWen/GitPulse/contribution/cmd/rpc/contribution"
 	"github.com/ShellWen/GitPulse/developer/cmd/rpc/developer"
 	"github.com/biter777/countries"
+	"github.com/hashicorp/consul/api"
 	"github.com/zeromicro/go-zero/core/jsonx"
 	"io"
 	"time"
@@ -64,6 +66,21 @@ func (l *UpdateRegionLogic) doUpdateRegion(id int64) (err error) {
 		mostPossibleRegion     string
 		mostPossibleConfidence float64 = 0
 	)
+
+	lock, err := l.acquireUpdateRegionLock(id)
+	if err != nil {
+		return
+	}
+	defer lock.Unlock()
+
+	needUpdate, err := l.checkIfNeedUpdateRegion(id)
+	if err != nil {
+		return
+	}
+
+	if !needUpdate {
+		return
+	}
 
 	if login, err = customGithub.GetLoginById(l.ctx, id); err != nil {
 		return
@@ -227,20 +244,27 @@ func (l *UpdateRegionLogic) getRegionWithConfidenceByLLModel(id int64, login str
 
 func (l *UpdateRegionLogic) getTextFromContribution(id int64, limitCharacterCount int64) (text string, err error) {
 	var (
-		req = contribution.SearchByUserIdReq{
+		updateReq  = contribution.UpdateContributionOfUserReq{UserId: id}
+		updateResp *contribution.UpdateContributionOfUserResp
+
+		getReq = contribution.SearchByUserIdReq{
 			UserId: id,
 			Limit:  1000,
 			Page:   1,
 		}
-		resp *contribution.SearchByUserIdResp
+		getResp *contribution.SearchByUserIdResp
 	)
 
-	if resp, err = l.svcCtx.ContributionRpcClient.SearchByUserId(l.ctx, &req); err != nil {
+	if updateResp, err = l.svcCtx.ContributionRpcClient.UpdateContributionOfUser(l.ctx, &updateReq); err != nil || updateResp.Code != http.StatusOK {
+		return
+	}
+
+	if getResp, err = l.svcCtx.ContributionRpcClient.SearchByUserId(l.ctx, &getReq); err != nil || getResp.Code != http.StatusOK {
 		return
 	}
 
 	text += "|Contribution Start|"
-	for _, theContribution := range resp.Contributions {
+	for _, theContribution := range getResp.Contributions {
 		text += theContribution.Content
 		if int64(len(text)) > limitCharacterCount {
 			break
@@ -257,16 +281,21 @@ func (l *UpdateRegionLogic) getTextFromContribution(id int64, limitCharacterCoun
 
 func (l *UpdateRegionLogic) getTextFromProfile(id int64) (text string, err error) {
 	var (
-		req          = developer.GetDeveloperByIdReq{Id: id}
-		resp         *developer.GetDeveloperByIdResp
+		updateReq    = developer.UpdateDeveloperReq{Id: id}
+		updateResp   *developer.UpdateDeveloperResp
+		getReq       = developer.GetDeveloperByIdReq{Id: id}
+		getResp      *developer.GetDeveloperByIdResp
 		theDeveloper *developer.Developer
 	)
 
-	if resp, err = l.svcCtx.DeveloperRpcClient.GetDeveloperById(l.ctx, &req); err != nil {
+	if updateResp, err = l.svcCtx.DeveloperRpcClient.UpdateDeveloper(l.ctx, &updateReq); err != nil || updateResp.Code != http.StatusOK {
+		return
+	}
+	if getResp, err = l.svcCtx.DeveloperRpcClient.GetDeveloperById(l.ctx, &getReq); err != nil || getResp.Code != http.StatusOK {
 		return
 	}
 
-	theDeveloper = resp.Developer
+	theDeveloper = getResp.Developer
 
 	if theDeveloper == nil {
 		err = errors.New("developer not found")
@@ -311,4 +340,44 @@ func (l *UpdateRegionLogic) restrictConfidence(confidence float64) (restrictedCo
 		restrictedConfidence = confidence
 	}
 	return
+}
+
+func (l *UpdateRegionLogic) acquireUpdateRegionLock(id int64) (*api.Lock, error) {
+	lock, err := l.svcCtx.ConsulClient.LockOpts(&api.LockOptions{
+		Key:         locks.GetNewLockKey(locks.UpdateRegion, id),
+		Value:       []byte("locked"),
+		SessionTTL:  "10s",
+		SessionName: "update_region",
+	})
+
+	if err != nil {
+		logx.Error("Failed to create lock: ", err)
+		return nil, err
+	}
+
+	_, err = lock.Lock(nil)
+
+	if err != nil {
+		logx.Error("Failed to acquire lock: ", err)
+		return nil, err
+	}
+
+	return lock, nil
+}
+
+func (l *UpdateRegionLogic) checkIfNeedUpdateRegion(id int64) (bool, error) {
+	if region, err := l.svcCtx.RegionModel.FindOneByDeveloperId(l.ctx, id); err != nil {
+		switch {
+		case errors.Is(err, model.ErrNotFound):
+			return true, nil
+		default:
+			return false, err
+		}
+	} else {
+		if customGithub.CheckIfDataExpired(region.DataUpdatedAt) {
+			return true, nil
+		} else {
+			return false, nil
+		}
+	}
 }

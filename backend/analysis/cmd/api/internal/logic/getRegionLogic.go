@@ -2,14 +2,11 @@ package logic
 
 import (
 	"context"
-	"errors"
+	"github.com/ShellWen/GitPulse/analysis/cmd/api/internal/svc"
+	"github.com/ShellWen/GitPulse/analysis/cmd/api/internal/types"
 	"github.com/ShellWen/GitPulse/analysis/cmd/rpc/analysis"
 	customGithub "github.com/ShellWen/GitPulse/common/github"
 	"net/http"
-	"time"
-
-	"github.com/ShellWen/GitPulse/analysis/cmd/api/internal/svc"
-	"github.com/ShellWen/GitPulse/analysis/cmd/api/internal/types"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -65,100 +62,24 @@ func (l *GetRegionLogic) doGetRegion(req *types.GetRegionReq) (resp *types.GetRe
 func (l *GetRegionLogic) getRegionFromRpc(id int64) (region string, confidence float64, err error) {
 	var (
 		analysisRpcClient = l.svcCtx.AnalysisRpcClient
-		rpcResp           *analysis.GetRegionResp
+		rpcUpdateResp     *analysis.UpdateAnalysisResp
+		rpcGetResp        *analysis.GetRegionResp
 	)
 
-	if rpcResp, err = analysisRpcClient.GetRegion(l.ctx, &analysis.GetAnalysisReq{
+	if rpcUpdateResp, err = analysisRpcClient.UpdateRegion(l.ctx, &analysis.UpdateAnalysisReq{
 		DeveloperId: id,
-	}); err != nil {
+	}); err != nil || rpcUpdateResp.Code != http.StatusOK {
 		return
 	}
 
-	switch rpcResp.Code {
-	case http.StatusOK:
-		logx.Info("Found in local cache")
-		if time.Now().Unix()-rpcResp.Region.GetDataUpdatedAt() < int64(time.Hour.Seconds()*24) {
-			break
-		}
-		logx.Info("Local cache expired, fetching from github")
-		fallthrough
-	case http.StatusNotFound:
-		if err = l.updateRegion(id); err != nil {
-			return
-		}
-		if rpcResp, err = analysisRpcClient.GetRegion(l.ctx, &analysis.GetAnalysisReq{
-			DeveloperId: id,
-		}); err != nil {
-			return
-		}
-		fallthrough
-	default:
-		if rpcResp.Code != http.StatusOK {
-			err = errors.New(rpcResp.Message)
-			return
-		}
-	}
-
-	region = rpcResp.Region.GetRegion()
-	confidence = rpcResp.Region.GetConfidence()
-
-	return
-}
-
-func (l *GetRegionLogic) updateRegion(id int64) (err error) {
-	var (
-		analysisRpcClient  = l.svcCtx.AnalysisRpcClient
-		updateAnalysisResp *analysis.UpdateAnalysisResp
-	)
-
-	if l.svcCtx.RegionUpdatedChan[id] == nil {
-		l.svcCtx.RegionUpdatedChan[id] = make(chan struct{})
-	}
-
-	if l.svcCtx.RegionUpdating {
-		<-l.svcCtx.RegionUpdatedChan[id]
-		return
-	} else {
-		l.svcCtx.RegionUpdating = true
-		defer func() {
-			l.svcCtx.RegionUpdating = false
-			for stillHasBlock := true; stillHasBlock; {
-				select {
-				case l.svcCtx.RegionUpdatedChan[id] <- struct{}{}:
-				default:
-					stillHasBlock = false
-				}
-			}
-		}()
-	}
-
-	if needUpdate, err := checkIfNeedUpdateDeveloper(l.ctx, l.svcCtx, id); err != nil {
-		return err
-	} else if needUpdate {
-		if err = updateDeveloper(l.ctx, l.svcCtx, id); err != nil {
-			return err
-		}
-	}
-
-	if needUpdate, err := checkIfNeedUpdateContribution(l.ctx, l.svcCtx, id); err != nil {
-		return err
-	} else if needUpdate {
-		if err = updateContribution(l.ctx, l.svcCtx, id); err != nil {
-			return err
-		}
-	}
-
-	if updateAnalysisResp, err = analysisRpcClient.UpdateRegion(l.ctx, &analysis.UpdateAnalysisReq{
+	if rpcGetResp, err = analysisRpcClient.GetRegion(l.ctx, &analysis.GetAnalysisReq{
 		DeveloperId: id,
-	}); err != nil {
+	}); err != nil || rpcGetResp.Code != http.StatusOK {
 		return
 	}
 
-	switch updateAnalysisResp.Code {
-	case http.StatusOK:
-	default:
-		err = errors.New(updateAnalysisResp.Message)
-	}
+	region = rpcGetResp.Region.GetRegion()
+	confidence = rpcGetResp.Region.GetConfidence()
 
 	return
 }

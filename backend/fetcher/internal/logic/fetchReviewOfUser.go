@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"github.com/ShellWen/GitPulse/common/tasks"
 	"github.com/ShellWen/GitPulse/contribution/model"
 	"github.com/ShellWen/GitPulse/fetcher/internal/svc"
 	"github.com/google/go-github/v66/github"
@@ -60,6 +61,10 @@ func doFetchReviewOfUser(ctx context.Context, svcContext *svc.ServiceContext, us
 		if err = buildAndPushRepoByGithubRepo(ctx, svcContext, githubClient, repo); err != nil {
 			continue
 		}
+	}
+
+	if err = pushFetchReviewOfUserCompleted(ctx, svcContext, userId); err != nil {
+		return
 	}
 
 	logx.Info("Successfully pushed review of user: ", githubUser.GetLogin()+", total review: "+strconv.Itoa(successPush))
@@ -125,6 +130,16 @@ func buildReview(ctx context.Context, svcContext *svc.ServiceContext, githubRevi
 		CreatedAt:      githubReviewWithRepoId.review.GetSubmittedAt().Time,
 		UpdatedAt:      githubReviewWithRepoId.review.GetSubmittedAt().Time,
 		ContributionId: githubReviewWithRepoId.review.GetID(),
+	}
+	return
+}
+
+func pushFetchReviewOfUserCompleted(ctx context.Context, svcContext *svc.ServiceContext, userId int64) (err error) {
+	if err = pushContribution(ctx, svcContext, &model.Contribution{
+		DataId: tasks.FetchReviewOfUserCompletedDataId,
+		UserId: userId,
+	}); err != nil {
+		return
 	}
 	return
 }

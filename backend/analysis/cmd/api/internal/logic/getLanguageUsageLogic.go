@@ -2,7 +2,6 @@ package logic
 
 import (
 	"context"
-	"errors"
 	githublangsgo "github.com/NDoolan360/github-langs-go"
 	"github.com/ShellWen/GitPulse/analysis/cmd/api/internal/svc"
 	"github.com/ShellWen/GitPulse/analysis/cmd/api/internal/types"
@@ -84,96 +83,27 @@ func (l *GetLanguageUsageLogic) doGetLanguageUsage(req *types.GetLanguageUsageRe
 func (l *GetLanguageUsageLogic) getLanguageUsageFromRpc(id int64) (usage map[string]float64, updatedAt time.Time, err error) {
 	var (
 		analysisRpcClient = l.svcCtx.AnalysisRpcClient
-		rpcResp           *analysis.GetLanguagesResp
+		rpcUpdateResp     *analysis.UpdateAnalysisResp
+		rpcGetResp        *analysis.GetLanguagesResp
 	)
 
-	if rpcResp, err = analysisRpcClient.GetLanguages(l.ctx, &analysis.GetAnalysisReq{
+	if rpcUpdateResp, err = analysisRpcClient.UpdateLanguage(l.ctx, &analysis.UpdateAnalysisReq{
 		DeveloperId: id,
-	}); err != nil {
+	}); err != nil || rpcUpdateResp.Code != http.StatusOK {
 		return
 	}
 
-	switch rpcResp.Code {
-	case http.StatusOK:
-		logx.Info("Found in local cache")
-		if time.Now().Unix()-rpcResp.Languages.GetDataUpdatedAt() < int64(time.Hour.Seconds()*24) {
-			break
-		}
-		logx.Info("Local cache expired, fetching from github")
-		fallthrough
-	case http.StatusNotFound:
-		if err = l.updateLanguageUsage(id); err != nil {
-			return
-		}
-		if rpcResp, err = analysisRpcClient.GetLanguages(l.ctx, &analysis.GetAnalysisReq{
-			DeveloperId: id,
-		}); err != nil {
-			return
-		}
-		fallthrough
-	default:
-		if rpcResp.Code != http.StatusOK {
-			err = errors.New(rpcResp.Message)
-			return
-		}
-	}
-
-	if err = jsonx.UnmarshalFromString(rpcResp.Languages.Languages, &usage); err != nil {
-		return
-	}
-
-	updatedAt = time.Unix(rpcResp.Languages.DataUpdatedAt, 0)
-
-	return
-}
-
-func (l *GetLanguageUsageLogic) updateLanguageUsage(id int64) (err error) {
-	var (
-		needUpdate         bool
-		analysisRpcClient  = l.svcCtx.AnalysisRpcClient
-		updateAnalysisResp *analysis.UpdateAnalysisResp
-	)
-
-	if l.svcCtx.LanguagesUpdatedChan[id] == nil {
-		l.svcCtx.LanguagesUpdatedChan[id] = make(chan struct{})
-	}
-
-	if l.svcCtx.LanguageUpdating {
-		<-l.svcCtx.LanguagesUpdatedChan[id]
-		return
-	} else {
-		l.svcCtx.LanguageUpdating = true
-		defer func() {
-			l.svcCtx.LanguageUpdating = false
-			for stillHasBlock := true; stillHasBlock; {
-				select {
-				case l.svcCtx.LanguagesUpdatedChan[id] <- struct{}{}:
-				default:
-					stillHasBlock = false
-				}
-			}
-		}()
-	}
-
-	if needUpdate, err = checkIfNeedUpdateCreatedRepo(l.ctx, l.svcCtx, id); err != nil {
-		return
-	} else if needUpdate {
-		if err = updateCreatedRepo(l.ctx, l.svcCtx, id); err != nil {
-			return
-		}
-	}
-
-	if updateAnalysisResp, err = analysisRpcClient.UpdateLanguage(l.ctx, &analysis.UpdateAnalysisReq{
+	if rpcGetResp, err = analysisRpcClient.GetLanguages(l.ctx, &analysis.GetAnalysisReq{
 		DeveloperId: id,
-	}); err != nil {
+	}); err != nil || rpcUpdateResp.Code != http.StatusOK {
 		return
 	}
 
-	switch updateAnalysisResp.Code {
-	case http.StatusOK:
-	default:
-		err = errors.New(updateAnalysisResp.Message)
+	if err = jsonx.UnmarshalFromString(rpcGetResp.Languages.Languages, &usage); err != nil {
+		return
 	}
+
+	updatedAt = time.Unix(rpcGetResp.Languages.DataUpdatedAt, 0)
 
 	return
 }

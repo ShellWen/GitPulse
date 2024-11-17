@@ -53,13 +53,3 @@ func (s *DeveloperServer) GetDeveloperByLogin(ctx context.Context, in *pb.GetDev
 	l := logic.NewGetDeveloperByLoginLogic(ctx, s.svcCtx)
 	return l.GetDeveloperByLogin(in)
 }
-
-func (s *DeveloperServer) BlockUntilDeveloperUpdated(ctx context.Context, in *pb.BlockUntilDeveloperUpdatedReq) (*pb.BlockUntilDeveloperUpdatedResp, error) {
-	l := logic.NewBlockUntilDeveloperUpdatedLogic(ctx, s.svcCtx)
-	return l.BlockUntilDeveloperUpdated(in)
-}
-
-func (s *DeveloperServer) UnblockDeveloper(ctx context.Context, in *pb.UnblockDeveloperReq) (*pb.UnblockDeveloperResp, error) {
-	l := logic.NewUnblockDeveloperLogic(ctx, s.svcCtx)
-	return l.UnblockDeveloper(in)
-}

@@ -65,13 +65,23 @@ message SearchCreatedRepoResp {
   repeated int64 repoIds = 3; //repoId
 }
 
-message BlockUntilCreatedRepoUpdatedReq {
-  int64 id = 1; //id
+message UpdateCreateRepoReq {
+  int64 developerId = 1;
 }
 
-message BlockUntilCreatedRepoUpdatedResp {
+message UpdateCreateRepoResp {
   int64 code = 1;
   string message = 2;
+}
+
+message GetCreatedRepoUpdatedAtReq {
+  int64 developerId = 1;
+}
+
+message GetCreatedRepoUpdatedAtResp {
+  int64 code = 1;
+  string message = 2;
+  int64 updatedAt = 3;
 }
 
 //--------------------------------follow--------------------------------
@@ -154,22 +164,42 @@ message SearchFollowerByDeveloperIdResp {
   repeated int64 followerIds = 3; //followerId
 }
 
-message BlockUntilFollowingUpdatedReq {
-  int64 id = 1; //id
+message UpdateFollowingReq {
+  int64 developerId = 1;
 }
 
-message BlockUntilFollowingUpdatedResp {
+message UpdateFollowingResp {
   int64 code = 1;
   string message = 2;
 }
 
-message BlockUntilFollowerUpdatedReq {
-  int64 id = 1; //id
+message UpdateFollowerReq {
+  int64 developerId = 1;
 }
 
-message BlockUntilFollowerUpdatedResp {
+message UpdateFollowerResp {
   int64 code = 1;
   string message = 2;
+}
+
+message GetFollowingUpdatedAtReq {
+  int64 developerId = 1;
+}
+
+message GetFollowingUpdatedAtResp {
+  int64 code = 1;
+  string message = 2;
+  int64 updatedAt = 3;
+}
+
+message GetFollowerUpdatedAtReq {
+  int64 developerId = 1;
+}
+
+message GetFollowerUpdatedAtResp {
+  int64 code = 1;
+  string message = 2;
+  int64 updatedAt = 3;
 }
 
 //--------------------------------fork--------------------------------
@@ -229,13 +259,23 @@ message SearchForkResp {
   repeated int64 forkRepoIds = 3; //forkRepoId
 }
 
-message BlockUntilForkUpdatedReq {
-  int64 id = 1; //id
+message UpdateForkReq {
+  int64 originalRepoId = 1;
 }
 
-message BlockUntilForkUpdatedResp {
+message UpdateForkResp {
   int64 code = 1;
   string message = 2;
+}
+
+message GetForkUpdatedAtReq {
+  int64 originalRepoId = 1;
+}
+
+message GetForkUpdatedAtResp {
+  int64 code = 1;
+  string message = 2;
+  int64 updatedAt = 3;
 }
 
 //--------------------------------star--------------------------------
@@ -318,25 +358,24 @@ message SearchStaringDevResp {
   repeated int64 developerIds = 3; //developerId
 }
 
-message BlockUntilStarredRepoUpdatedReq {
-  int64 id = 1; //id
+message UpdateStarredRepoReq {
+  int64 developerId = 1;
 }
 
-message BlockUntilStarredRepoUpdatedResp {
+message UpdateStarredRepoResp {
   int64 code = 1;
   string message = 2;
 }
 
-message UnblockRelationReq {
-  int64 fetchType = 1; //fetchType
-  int64 id = 2; //id
+message GetStarredRepoUpdatedAtReq {
+  int64 developerId = 1;
 }
 
-message UnblockRelationResp {
+message GetStarredRepoUpdatedAtResp {
   int64 code = 1;
   string message = 2;
+  int64 updatedAt = 3;
 }
-
 
 // ------------------------------------ 
 // Rpc Func
@@ -350,7 +389,8 @@ service relation{
     rpc DelAllCreatedRepo(DelAllCreatedRepoReq) returns (DelAllCreatedRepoResp);
     rpc GetCreatorId(GetCreatorIdReq) returns (GetCreatorIdResp);
     rpc SearchCreatedRepo(SearchCreatedRepoReq) returns (SearchCreatedRepoResp);
-    rpc BlockUntilCreatedRepoUpdated(BlockUntilCreatedRepoUpdatedReq) returns (BlockUntilCreatedRepoUpdatedResp);
+    rpc UpdateCreateRepo(UpdateCreateRepoReq) returns (UpdateCreateRepoResp);
+    rpc GetCreatedRepoUpdatedAt(GetCreatedRepoUpdatedAtReq) returns (GetCreatedRepoUpdatedAtResp);
     //-----------------------follow-----------------------
 	  rpc AddFollow(AddFollowReq) returns (AddFollowResp);
     rpc DelFollow(DelFollowReq) returns (DelFollowResp);
@@ -359,15 +399,18 @@ service relation{
     rpc CheckIfFollow(CheckIfFollowReq) returns (CheckFollowResp);
     rpc SearchFollowingByDeveloperId(SearchFollowingByDeveloperIdReq) returns (SearchFollowingByDeveloperIdResp);
     rpc SearchFollowerByDeveloperId(SearchFollowerByDeveloperIdReq) returns (SearchFollowerByDeveloperIdResp);
-    rpc BlockUntilFollowingUpdated(BlockUntilFollowingUpdatedReq) returns (BlockUntilFollowingUpdatedResp);
-    rpc BlockUntilFollowerUpdated(BlockUntilFollowerUpdatedReq) returns (BlockUntilFollowerUpdatedResp);
-	  //-----------------------fork-----------------------
+    rpc UpdateFollowing(UpdateFollowingReq) returns (UpdateFollowingResp);
+    rpc UpdateFollower(UpdateFollowerReq) returns (UpdateFollowerResp);
+    rpc GetFollowingUpdatedAt(GetFollowingUpdatedAtReq) returns (GetFollowingUpdatedAtResp);
+    rpc GetFollowerUpdatedAt(GetFollowerUpdatedAtReq) returns (GetFollowerUpdatedAtResp);
+    //-----------------------fork-----------------------
 	  rpc AddFork(AddForkReq) returns (AddForkResp);
     rpc DelFork(DelForkReq) returns (DelForkResp);
     rpc DelAllFork(DelAllForkReq) returns (DelAllForkResp);
     rpc GetOrigin(GetOriginReq) returns (GetOriginResp);
     rpc SearchFork(SearchForkReq) returns (SearchForkResp);
-    rpc BlockUntilForkUpdated(BlockUntilForkUpdatedReq) returns (BlockUntilForkUpdatedResp);
+    rpc UpdateFork(UpdateForkReq) returns (UpdateForkResp);
+    rpc GetForkUpdatedAt(GetForkUpdatedAtReq) returns (GetForkUpdatedAtResp);
 	  //-----------------------star-----------------------
 	  rpc AddStar(AddStarReq) returns (AddStarResp);
     rpc DelStar(DelStarReq) returns (DelStarResp);
@@ -376,7 +419,6 @@ service relation{
     rpc CheckIfStar(CheckIfStarReq) returns (CheckIfStarResp);
     rpc SearchStarredRepo(SearchStarredRepoReq) returns (SearchStarredRepoResp);
     rpc SearchStaringDev(SearchStaringDevReq) returns (SearchStaringDevResp);
-    rpc BlockUntilStarredRepoUpdated(BlockUntilStarredRepoUpdatedReq) returns (BlockUntilStarredRepoUpdatedResp);
-
-    rpc UnblockRelation(UnblockRelationReq) returns (UnblockRelationResp);
+    rpc UpdateStarredRepo(UpdateStarredRepoReq) returns (UpdateStarredRepoResp);
+    rpc GetStarredRepoUpdatedAt(GetStarredRepoUpdatedAtReq) returns (GetStarredRepoUpdatedAtResp);
 }
