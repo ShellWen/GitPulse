@@ -1,0 +1,43 @@
+package tasks
+
+import (
+	"encoding/json"
+	"github.com/hibiken/asynq"
+	"strconv"
+)
+
+type APIType int8
+
+const (
+	APITaskName = "api"
+)
+
+const (
+	APIGetDeveloper APIType = iota
+	APIGetLanguage
+	APIGetPulsePoint
+	APIGetRegion
+)
+
+type APIPayload struct {
+	Type   APIType `json:"type"`
+	Id     int64   `json:"id"`
+	TaskId string  `json:"taskId"`
+}
+
+func getNewAPITaskKey(fetchType APIType, id int64, reqId string) string {
+	return APITaskName + separator + strconv.Itoa(int(fetchType)) + separator + strconv.Itoa(int(id)) + separator + reqId
+}
+
+func NewAPITask(fetchType APIType, id int64, reqId string) (*asynq.Task, string, error) {
+	taskId := getNewAPITaskKey(fetchType, id, reqId)
+	payload, err := json.Marshal(APIPayload{
+		Type:   fetchType,
+		Id:     id,
+		TaskId: taskId,
+	})
+	if err != nil {
+		return nil, "", err
+	}
+	return asynq.NewTask(APITaskName, payload), taskId, nil
+}

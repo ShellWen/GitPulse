@@ -10,7 +10,6 @@ type FetchType int8
 
 const (
 	FetcherTaskName = "fetch"
-	separator       = "|"
 )
 
 const (

@@ -1,0 +1,36 @@
+DeveloperRpcConf:
+  Target: consul://localhost:8500/developer.rpc?wait=14s
+  Timeout: 30000
+
+RelationRpcConf:
+  Target: consul://localhost:8500/relation.rpc?wait=14s
+  Timeout: 30000
+
+ContributionRpcConf:
+  Target: consul://localhost:8500/contribution.rpc?wait=14s
+  Timeout: 30000
+
+RepoRpcConf:
+  Target: consul://localhost:8500/repo.rpc?wait=14s
+  Timeout: 30000
+
+AnalysisRpcConf:
+  Target: consul://localhost:8500/analysis.rpc?wait=14s
+  Timeout: 30000
+
+Log:
+  ServiceName: apiProcessor
+  Mode: file
+  Encoding: json
+  Path: logs/apiProcessor/
+
+RedisClient:
+  Host: 127.0.0.1:6379
+  Type: node
+  Pass:
+  Key: apiProcessor
+
+AsynqRedisConf:
+  Addr: 127.0.0.1:6379
+  Password:
+  DB: 0
