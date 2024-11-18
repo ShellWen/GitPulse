@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+option go_package ="./pb";
+
+package pb;
+
+message GetIdReq {
+}
+
+message GetIdResp {
+  int64 code = 1;
+  string message = 2;
+  string id = 3;
+}
+
+service IdGen {
+  rpc GetId(GetIdReq) returns (GetIdResp);
+}
