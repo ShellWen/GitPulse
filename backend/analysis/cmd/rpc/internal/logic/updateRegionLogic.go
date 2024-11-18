@@ -255,12 +255,16 @@ func (l *UpdateRegionLogic) getTextFromContribution(id int64, limitCharacterCoun
 		getResp *contribution.SearchByUserIdResp
 	)
 
-	if updateResp, err = l.svcCtx.ContributionRpcClient.UpdateContributionOfUser(l.ctx, &updateReq); err != nil || updateResp.Code != http.StatusOK {
+	if updateResp, err = l.svcCtx.ContributionRpcClient.UpdateContributionOfUser(l.ctx, &updateReq); err != nil {
 		return
+	} else if updateResp.Code != http.StatusOK {
+		return "", errors.New(updateResp.Message)
 	}
 
-	if getResp, err = l.svcCtx.ContributionRpcClient.SearchByUserId(l.ctx, &getReq); err != nil || getResp.Code != http.StatusOK {
+	if getResp, err = l.svcCtx.ContributionRpcClient.SearchByUserId(l.ctx, &getReq); err != nil {
 		return
+	} else if getResp.Code == http.StatusInternalServerError {
+		return "", errors.New(getResp.Message)
 	}
 
 	text += "|Contribution Start|"

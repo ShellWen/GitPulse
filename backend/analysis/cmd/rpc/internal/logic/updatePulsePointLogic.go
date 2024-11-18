@@ -88,8 +88,10 @@ func (l *UpdatePulsePointLogic) doUpdatePulsePoint(id int64) (err error) {
 
 	if updateAllContributionResp, err = contributionZrpcClient.UpdateContributionOfUser(l.ctx, &contribution.UpdateContributionOfUserReq{
 		UserId: id,
-	}); err != nil || updateAllContributionResp.Code != http.StatusOK {
+	}); err != nil {
 		return
+	} else if updateAllContributionResp.Code != http.StatusOK {
+		return errors.New(updateAllContributionResp.Message)
 	}
 
 	if allContributionResp, err = contributionZrpcClient.SearchByUserId(l.ctx, &contribution.SearchByUserIdReq{
@@ -98,7 +100,10 @@ func (l *UpdatePulsePointLogic) doUpdatePulsePoint(id int64) (err error) {
 		Page:   1,
 	}); err != nil {
 		return
+	} else if allContributionResp.Code == http.StatusInternalServerError {
+		return errors.New(allContributionResp.Message)
 	}
+
 	allContributions = allContributionResp.Contributions
 	for _, theContribution := range allContributions {
 		allContributionsCategorizedByRepoId[theContribution.RepoId] = append(allContributionsCategorizedByRepoId[theContribution.RepoId], theContribution)

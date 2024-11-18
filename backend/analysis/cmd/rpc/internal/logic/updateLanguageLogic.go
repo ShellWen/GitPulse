@@ -82,7 +82,10 @@ func (l *UpdateLanguageLogic) doUpdateLanguage(id int64) (err error) {
 
 	if updateCreateRepoResp, err = relationZrpcClient.UpdateCreateRepo(l.ctx, &relation.UpdateCreateRepoReq{
 		DeveloperId: id,
-	}); err != nil || updateCreateRepoResp.Code != http.StatusOK {
+	}); err != nil {
+		return
+	} else if updateCreateRepoResp.Code != http.StatusOK {
+		err = errors.New(updateCreateRepoResp.Message)
 		return
 	}
 
