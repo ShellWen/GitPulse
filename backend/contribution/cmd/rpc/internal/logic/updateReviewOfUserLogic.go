@@ -8,7 +8,7 @@ import (
 	"github.com/ShellWen/GitPulse/common/tasks"
 	"github.com/ShellWen/GitPulse/contribution/cmd/rpc/internal/svc"
 	"github.com/ShellWen/GitPulse/contribution/cmd/rpc/pb"
-	"github.com/ShellWen/GitPulse/relation/model"
+	"github.com/ShellWen/GitPulse/contribution/model"
 	"github.com/google/uuid"
 	"github.com/hashicorp/consul/api"
 	"github.com/hibiken/asynq"
