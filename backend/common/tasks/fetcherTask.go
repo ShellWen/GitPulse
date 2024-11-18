@@ -30,19 +30,19 @@ const (
 )
 
 const (
-	FetchCreatedRepoCompletedDataId = -1
+	FetchCreatedRepoCompletedDataId = -iota - 1
 
-	FetchStarredRepoCompletedDataId       = -1
-	FetchStarringDeveloperCompletedDataId = -2
+	FetchStarredRepoCompletedDataId
+	FetchStarringDeveloperCompletedDataId
 
-	FetchFollowingCompletedDataId = -1
-	FetchFollowerCompletedDataId  = -2
+	FetchFollowingCompletedDataId
+	FetchFollowerCompletedDataId
 
-	FetchIssuePROfUserCompletedDataId = -1
-	FetchCommentOfUserCompletedDataId = -2
-	FetchReviewOfUserCompletedDataId  = -3
+	FetchIssuePROfUserCompletedDataId
+	FetchCommentOfUserCompletedDataId
+	FetchReviewOfUserCompletedDataId
 
-	FetchForkCompletedDataId = -1
+	FetchForkCompletedDataId
 )
 
 type FetchPayload struct {
