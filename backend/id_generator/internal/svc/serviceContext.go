@@ -1,6 +1,6 @@
 package svc
 
-import "github.com/ShellWen/GitPulse/idgen/internal/config"
+import "github.com/ShellWen/GitPulse/id_generator/internal/config"
 
 type ServiceContext struct {
 	Config config.Config

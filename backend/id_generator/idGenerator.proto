@@ -13,6 +13,6 @@ message GetIdResp {
   string id = 3;
 }
 
-service IdGen {
+service IdGenerator {
   rpc GetId(GetIdReq) returns (GetIdResp);
 }

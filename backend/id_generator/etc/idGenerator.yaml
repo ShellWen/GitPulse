@@ -1,20 +1,20 @@
-Name: idGen.rpc
+Name: idGenerator.rpc
 ListenOn: 127.0.0.1:2006
 Mode: dev
 Timeout: 30000
 
 Log:
-  ServiceName: idGen.rpc
+  ServiceName: idGenerator.rpc
   Mode: file
   Encoding: json
-  Path: logs/idgen_rpc/
+  Path: logs/idGenerator_rpc/
 
 DevServer:
   Enabled: true
   Port: 4006
 
 Telemetry:
-  Name: idGen.rpc
+  Name: idGenerator.rpc
   Endpoint: http://127.0.0.1:14268/api/traces
   Sampler: 1.0
   Batcher: jaeger
@@ -22,7 +22,7 @@ Telemetry:
 Consul:
   Host: 127.0.0.1:8500
   Token:
-  Key: idGen.rpc
+  Key: idGenerator.rpc
   Meta:
     Protocol: grpc
   Tag:
@@ -33,4 +33,4 @@ Redis:
   Host: 127.0.0.1:6379
   Type: node
   Pass:
-  Key: idGen-rpc
+  Key: idGenerator-rpc

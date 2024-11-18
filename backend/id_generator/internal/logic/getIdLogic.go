@@ -2,8 +2,8 @@ package logic
 
 import (
 	"context"
-	"github.com/ShellWen/GitPulse/idgen/internal/svc"
-	"github.com/ShellWen/GitPulse/idgen/pb"
+	"github.com/ShellWen/GitPulse/id_generator/internal/svc"
+	"github.com/ShellWen/GitPulse/id_generator/pb"
 	gonanoid "github.com/matoous/go-nanoid"
 	"net/http"
 
