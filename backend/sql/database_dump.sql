@@ -199,6 +199,19 @@ ALTER TABLE analysis.pulse_point ALTER COLUMN data_id ADD GENERATED ALWAYS AS ID
 
 
 --
+-- Name: comment_of_user_updated_at; Type: TABLE; Schema: contribution; Owner: general_user
+--
+
+CREATE TABLE contribution.comment_of_user_updated_at (
+    data_id bigint NOT NULL,
+    updated_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    developer_id bigint DEFAULT 0 NOT NULL
+);
+
+
+ALTER TABLE contribution.comment_of_user_updated_at OWNER TO general_user;
+
+--
 -- Name: contribution; Type: TABLE; Schema: contribution; Owner: general_user
 --
 
@@ -234,6 +247,74 @@ ALTER TABLE contribution.contribution ALTER COLUMN data_id ADD GENERATED ALWAYS 
 
 
 --
+-- Name: review_of_user_updated_at; Type: TABLE; Schema: contribution; Owner: general_user
+--
+
+CREATE TABLE contribution.review_of_user_updated_at (
+    updated_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    data_id bigint NOT NULL,
+    developer_id bigint DEFAULT 0 NOT NULL
+);
+
+
+ALTER TABLE contribution.review_of_user_updated_at OWNER TO general_user;
+
+--
+-- Name: contribution_update_at_2_data_id_seq; Type: SEQUENCE; Schema: contribution; Owner: general_user
+--
+
+ALTER TABLE contribution.review_of_user_updated_at ALTER COLUMN data_id ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME contribution.contribution_update_at_2_data_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- Name: contribution_update_at_3_data_id_seq; Type: SEQUENCE; Schema: contribution; Owner: general_user
+--
+
+ALTER TABLE contribution.comment_of_user_updated_at ALTER COLUMN data_id ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME contribution.contribution_update_at_3_data_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- Name: issue_pr_of_user_updated_at; Type: TABLE; Schema: contribution; Owner: general_user
+--
+
+CREATE TABLE contribution.issue_pr_of_user_updated_at (
+    data_id bigint NOT NULL,
+    developer_id bigint DEFAULT 0 NOT NULL,
+    updated_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+
+ALTER TABLE contribution.issue_pr_of_user_updated_at OWNER TO general_user;
+
+--
+-- Name: contribution_update_at_data_id_seq; Type: SEQUENCE; Schema: contribution; Owner: general_user
+--
+
+ALTER TABLE contribution.issue_pr_of_user_updated_at ALTER COLUMN data_id ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME contribution.contribution_update_at_data_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
 -- Name: developer; Type: TABLE; Schema: developer; Owner: general_user
 --
 
@@ -257,11 +338,7 @@ CREATE TABLE developer.developer (
     following bigint DEFAULT 0 NOT NULL,
     followers bigint DEFAULT 0 NOT NULL,
     gists bigint DEFAULT 0 NOT NULL,
-    stars bigint DEFAULT 0 NOT NULL,
-    last_fetch_create_repo_at timestamp with time zone DEFAULT to_timestamp((0)::double precision) NOT NULL,
-    last_fetch_follow_at timestamp with time zone DEFAULT to_timestamp((0)::double precision) NOT NULL,
-    last_fetch_star_at timestamp with time zone DEFAULT to_timestamp((0)::double precision) NOT NULL,
-    last_fetch_contribution_at timestamp with time zone DEFAULT to_timestamp((0)::double precision) NOT NULL
+    stars bigint DEFAULT 0 NOT NULL
 );
 
 
@@ -309,6 +386,33 @@ ALTER TABLE relation.create_repo ALTER COLUMN data_id ADD GENERATED ALWAYS AS ID
 
 
 --
+-- Name: created_repo_updated_at; Type: TABLE; Schema: relation; Owner: general_user
+--
+
+CREATE TABLE relation.created_repo_updated_at (
+    data_id bigint NOT NULL,
+    developer_id bigint DEFAULT 0 NOT NULL,
+    updated_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+
+ALTER TABLE relation.created_repo_updated_at OWNER TO general_user;
+
+--
+-- Name: create_repo_update_at_data_id_seq; Type: SEQUENCE; Schema: relation; Owner: general_user
+--
+
+ALTER TABLE relation.created_repo_updated_at ALTER COLUMN data_id ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME relation.create_repo_update_at_data_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
 -- Name: follow; Type: TABLE; Schema: relation; Owner: general_user
 --
 
@@ -327,6 +431,60 @@ ALTER TABLE relation.follow OWNER TO general_user;
 
 ALTER TABLE relation.follow ALTER COLUMN data_id ADD GENERATED ALWAYS AS IDENTITY (
     SEQUENCE NAME relation.follow_data_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- Name: following_updated_at; Type: TABLE; Schema: relation; Owner: general_user
+--
+
+CREATE TABLE relation.following_updated_at (
+    data_id bigint NOT NULL,
+    developer_id bigint DEFAULT 0 NOT NULL,
+    updated_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+
+ALTER TABLE relation.following_updated_at OWNER TO general_user;
+
+--
+-- Name: follow_update_at_data_id_seq; Type: SEQUENCE; Schema: relation; Owner: general_user
+--
+
+ALTER TABLE relation.following_updated_at ALTER COLUMN data_id ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME relation.follow_update_at_data_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- Name: follower_updated_at; Type: TABLE; Schema: relation; Owner: general_user
+--
+
+CREATE TABLE relation.follower_updated_at (
+    updated_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    data_id bigint NOT NULL,
+    developer_id bigint DEFAULT 0 NOT NULL
+);
+
+
+ALTER TABLE relation.follower_updated_at OWNER TO general_user;
+
+--
+-- Name: follower_update_at_data_id_seq; Type: SEQUENCE; Schema: relation; Owner: general_user
+--
+
+ALTER TABLE relation.follower_updated_at ALTER COLUMN data_id ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME relation.follower_update_at_data_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -363,6 +521,33 @@ ALTER TABLE relation.fork ALTER COLUMN data_id ADD GENERATED ALWAYS AS IDENTITY 
 
 
 --
+-- Name: fork_updated_at; Type: TABLE; Schema: relation; Owner: general_user
+--
+
+CREATE TABLE relation.fork_updated_at (
+    data_id bigint NOT NULL,
+    repo_id bigint DEFAULT 0 NOT NULL,
+    updated_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+
+ALTER TABLE relation.fork_updated_at OWNER TO general_user;
+
+--
+-- Name: fork_update_at_data_id_seq; Type: SEQUENCE; Schema: relation; Owner: general_user
+--
+
+ALTER TABLE relation.fork_updated_at ALTER COLUMN data_id ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME relation.fork_update_at_data_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
 -- Name: star; Type: TABLE; Schema: relation; Owner: general_user
 --
 
@@ -381,6 +566,33 @@ ALTER TABLE relation.star OWNER TO general_user;
 
 ALTER TABLE relation.star ALTER COLUMN data_id ADD GENERATED ALWAYS AS IDENTITY (
     SEQUENCE NAME relation.star_data_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- Name: starred_repo_updated_at; Type: TABLE; Schema: relation; Owner: general_user
+--
+
+CREATE TABLE relation.starred_repo_updated_at (
+    data_id bigint NOT NULL,
+    developer_id bigint DEFAULT 0 NOT NULL,
+    updated_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+
+ALTER TABLE relation.starred_repo_updated_at OWNER TO general_user;
+
+--
+-- Name: star_update_at_data_id_seq; Type: SEQUENCE; Schema: relation; Owner: general_user
+--
+
+ALTER TABLE relation.starred_repo_updated_at ALTER COLUMN data_id ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME relation.star_update_at_data_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -456,6 +668,14 @@ COPY analysis.region (data_id, data_created_at, data_updated_at, developer_id, r
 
 
 --
+-- Data for Name: comment_of_user_updated_at; Type: TABLE DATA; Schema: contribution; Owner: general_user
+--
+
+COPY contribution.comment_of_user_updated_at (data_id, updated_at, developer_id) FROM stdin;
+\.
+
+
+--
 -- Data for Name: contribution; Type: TABLE DATA; Schema: contribution; Owner: general_user
 --
 
@@ -464,10 +684,26 @@ COPY contribution.contribution (data_id, data_created_at, data_updated_at, user_
 
 
 --
+-- Data for Name: issue_pr_of_user_updated_at; Type: TABLE DATA; Schema: contribution; Owner: general_user
+--
+
+COPY contribution.issue_pr_of_user_updated_at (data_id, developer_id, updated_at) FROM stdin;
+\.
+
+
+--
+-- Data for Name: review_of_user_updated_at; Type: TABLE DATA; Schema: contribution; Owner: general_user
+--
+
+COPY contribution.review_of_user_updated_at (updated_at, data_id, developer_id) FROM stdin;
+\.
+
+
+--
 -- Data for Name: developer; Type: TABLE DATA; Schema: developer; Owner: general_user
 --
 
-COPY developer.developer (data_id, data_created_at, data_updated_at, id, name, login, avatar_url, company, location, bio, blog, email, created_at, updated_at, twitter_username, repos, following, followers, gists, stars, last_fetch_create_repo_at, last_fetch_follow_at, last_fetch_star_at, last_fetch_contribution_at) FROM stdin;
+COPY developer.developer (data_id, data_created_at, data_updated_at, id, name, login, avatar_url, company, location, bio, blog, email, created_at, updated_at, twitter_username, repos, following, followers, gists, stars) FROM stdin;
 \.
 
 
@@ -480,10 +716,34 @@ COPY relation.create_repo (data_id, developer_id, repo_id) FROM stdin;
 
 
 --
+-- Data for Name: created_repo_updated_at; Type: TABLE DATA; Schema: relation; Owner: general_user
+--
+
+COPY relation.created_repo_updated_at (data_id, developer_id, updated_at) FROM stdin;
+\.
+
+
+--
 -- Data for Name: follow; Type: TABLE DATA; Schema: relation; Owner: general_user
 --
 
 COPY relation.follow (data_id, follower_id, following_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: follower_updated_at; Type: TABLE DATA; Schema: relation; Owner: general_user
+--
+
+COPY relation.follower_updated_at (updated_at, data_id, developer_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: following_updated_at; Type: TABLE DATA; Schema: relation; Owner: general_user
+--
+
+COPY relation.following_updated_at (data_id, developer_id, updated_at) FROM stdin;
 \.
 
 
@@ -496,10 +756,26 @@ COPY relation.fork (data_id, original_repo_id, fork_repo_id) FROM stdin;
 
 
 --
+-- Data for Name: fork_updated_at; Type: TABLE DATA; Schema: relation; Owner: general_user
+--
+
+COPY relation.fork_updated_at (data_id, repo_id, updated_at) FROM stdin;
+\.
+
+
+--
 -- Data for Name: star; Type: TABLE DATA; Schema: relation; Owner: general_user
 --
 
 COPY relation.star (data_id, developer_id, repo_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: starred_repo_updated_at; Type: TABLE DATA; Schema: relation; Owner: general_user
+--
+
+COPY relation.starred_repo_updated_at (data_id, developer_id, updated_at) FROM stdin;
 \.
 
 
@@ -515,42 +791,70 @@ COPY repo.repo (data_id, data_created_at, data_updated_at, id, name, star_count,
 -- Name: languages_data_id_seq; Type: SEQUENCE SET; Schema: analysis; Owner: general_user
 --
 
-SELECT pg_catalog.setval('analysis.languages_data_id_seq', 1, true);
+SELECT pg_catalog.setval('analysis.languages_data_id_seq', 15, true);
 
 
 --
 -- Name: nation_data_id_seq; Type: SEQUENCE SET; Schema: analysis; Owner: general_user
 --
 
-SELECT pg_catalog.setval('analysis.nation_data_id_seq', 1, false);
+SELECT pg_catalog.setval('analysis.nation_data_id_seq', 59, true);
 
 
 --
 -- Name: pulse_point_data_id_seq; Type: SEQUENCE SET; Schema: analysis; Owner: general_user
 --
 
-SELECT pg_catalog.setval('analysis.pulse_point_data_id_seq', 1, false);
+SELECT pg_catalog.setval('analysis.pulse_point_data_id_seq', 27, true);
 
 
 --
 -- Name: contribution_data_id_seq; Type: SEQUENCE SET; Schema: contribution; Owner: general_user
 --
 
-SELECT pg_catalog.setval('contribution.contribution_data_id_seq', 322, true);
+SELECT pg_catalog.setval('contribution.contribution_data_id_seq', 2113, true);
+
+
+--
+-- Name: contribution_update_at_2_data_id_seq; Type: SEQUENCE SET; Schema: contribution; Owner: general_user
+--
+
+SELECT pg_catalog.setval('contribution.contribution_update_at_2_data_id_seq', 2, true);
+
+
+--
+-- Name: contribution_update_at_3_data_id_seq; Type: SEQUENCE SET; Schema: contribution; Owner: general_user
+--
+
+SELECT pg_catalog.setval('contribution.contribution_update_at_3_data_id_seq', 2, true);
+
+
+--
+-- Name: contribution_update_at_data_id_seq; Type: SEQUENCE SET; Schema: contribution; Owner: general_user
+--
+
+SELECT pg_catalog.setval('contribution.contribution_update_at_data_id_seq', 2, true);
 
 
 --
 -- Name: developer_data_id_seq; Type: SEQUENCE SET; Schema: developer; Owner: general_user
 --
 
-SELECT pg_catalog.setval('developer.developer_data_id_seq', 98, true);
+SELECT pg_catalog.setval('developer.developer_data_id_seq', 134, true);
 
 
 --
 -- Name: create_repo_data_id_seq; Type: SEQUENCE SET; Schema: relation; Owner: general_user
 --
 
-SELECT pg_catalog.setval('relation.create_repo_data_id_seq', 11, true);
+SELECT pg_catalog.setval('relation.create_repo_data_id_seq', 270, true);
+
+
+--
+-- Name: create_repo_update_at_data_id_seq; Type: SEQUENCE SET; Schema: relation; Owner: general_user
+--
+
+SELECT pg_catalog.setval('relation.create_repo_update_at_data_id_seq', 4, true);
 
 
 --
@@ -561,10 +865,31 @@ SELECT pg_catalog.setval('relation.follow_data_id_seq', 63, true);
 
 
 --
+-- Name: follow_update_at_data_id_seq; Type: SEQUENCE SET; Schema: relation; Owner: general_user
+--
+
+SELECT pg_catalog.setval('relation.follow_update_at_data_id_seq', 1, false);
+
+
+--
+-- Name: follower_update_at_data_id_seq; Type: SEQUENCE SET; Schema: relation; Owner: general_user
+--
+
+SELECT pg_catalog.setval('relation.follower_update_at_data_id_seq', 1, false);
+
+
+--
 -- Name: fork_data_id_seq; Type: SEQUENCE SET; Schema: relation; Owner: general_user
 --
 
 SELECT pg_catalog.setval('relation.fork_data_id_seq', 13, true);
+
+
+--
+-- Name: fork_update_at_data_id_seq; Type: SEQUENCE SET; Schema: relation; Owner: general_user
+--
+
+SELECT pg_catalog.setval('relation.fork_update_at_data_id_seq', 1, false);
 
 
 --
@@ -575,10 +900,17 @@ SELECT pg_catalog.setval('relation.star_data_id_seq', 55, true);
 
 
 --
+-- Name: star_update_at_data_id_seq; Type: SEQUENCE SET; Schema: relation; Owner: general_user
+--
+
+SELECT pg_catalog.setval('relation.star_update_at_data_id_seq', 1, false);
+
+
+--
 -- Name: repo_data_id_seq; Type: SEQUENCE SET; Schema: repo; Owner: general_user
 --
 
-SELECT pg_catalog.setval('repo.repo_data_id_seq', 53, true);
+SELECT pg_catalog.setval('repo.repo_data_id_seq', 411, true);
 
 
 --
@@ -630,6 +962,22 @@ ALTER TABLE ONLY analysis.region
 
 
 --
+-- Name: comment_of_user_updated_at comment_of_user_update_at_pk; Type: CONSTRAINT; Schema: contribution; Owner: general_user
+--
+
+ALTER TABLE ONLY contribution.comment_of_user_updated_at
+    ADD CONSTRAINT comment_of_user_update_at_pk PRIMARY KEY (data_id);
+
+
+--
+-- Name: comment_of_user_updated_at comment_of_user_update_at_pk_2; Type: CONSTRAINT; Schema: contribution; Owner: general_user
+--
+
+ALTER TABLE ONLY contribution.comment_of_user_updated_at
+    ADD CONSTRAINT comment_of_user_update_at_pk_2 UNIQUE (developer_id);
+
+
+--
 -- Name: contribution contribution_pk; Type: CONSTRAINT; Schema: contribution; Owner: general_user
 --
 
@@ -643,6 +991,38 @@ ALTER TABLE ONLY contribution.contribution
 
 ALTER TABLE ONLY contribution.contribution
     ADD CONSTRAINT contribution_pk_2 UNIQUE (category, repo_id, contribution_id);
+
+
+--
+-- Name: issue_pr_of_user_updated_at issue_pr_of_user_update_at_pk; Type: CONSTRAINT; Schema: contribution; Owner: general_user
+--
+
+ALTER TABLE ONLY contribution.issue_pr_of_user_updated_at
+    ADD CONSTRAINT issue_pr_of_user_update_at_pk PRIMARY KEY (data_id);
+
+
+--
+-- Name: issue_pr_of_user_updated_at issue_pr_of_user_update_at_pk_2; Type: CONSTRAINT; Schema: contribution; Owner: general_user
+--
+
+ALTER TABLE ONLY contribution.issue_pr_of_user_updated_at
+    ADD CONSTRAINT issue_pr_of_user_update_at_pk_2 UNIQUE (developer_id);
+
+
+--
+-- Name: review_of_user_updated_at review_of_user_update_at_pk; Type: CONSTRAINT; Schema: contribution; Owner: general_user
+--
+
+ALTER TABLE ONLY contribution.review_of_user_updated_at
+    ADD CONSTRAINT review_of_user_update_at_pk PRIMARY KEY (data_id);
+
+
+--
+-- Name: review_of_user_updated_at review_of_user_update_at_pk_2; Type: CONSTRAINT; Schema: contribution; Owner: general_user
+--
+
+ALTER TABLE ONLY contribution.review_of_user_updated_at
+    ADD CONSTRAINT review_of_user_update_at_pk_2 UNIQUE (developer_id);
 
 
 --
@@ -686,11 +1066,67 @@ ALTER TABLE ONLY relation.create_repo
 
 
 --
+-- Name: created_repo_updated_at create_repo_update_at_pk; Type: CONSTRAINT; Schema: relation; Owner: general_user
+--
+
+ALTER TABLE ONLY relation.created_repo_updated_at
+    ADD CONSTRAINT create_repo_update_at_pk PRIMARY KEY (data_id);
+
+
+--
+-- Name: created_repo_updated_at create_repo_update_at_pk_2; Type: CONSTRAINT; Schema: relation; Owner: general_user
+--
+
+ALTER TABLE ONLY relation.created_repo_updated_at
+    ADD CONSTRAINT create_repo_update_at_pk_2 UNIQUE (developer_id);
+
+
+--
 -- Name: follow follow_pk; Type: CONSTRAINT; Schema: relation; Owner: general_user
 --
 
 ALTER TABLE ONLY relation.follow
     ADD CONSTRAINT follow_pk PRIMARY KEY (data_id);
+
+
+--
+-- Name: follow follow_pk_2; Type: CONSTRAINT; Schema: relation; Owner: general_user
+--
+
+ALTER TABLE ONLY relation.follow
+    ADD CONSTRAINT follow_pk_2 UNIQUE (follower_id, following_id);
+
+
+--
+-- Name: following_updated_at follow_update_at_pk; Type: CONSTRAINT; Schema: relation; Owner: general_user
+--
+
+ALTER TABLE ONLY relation.following_updated_at
+    ADD CONSTRAINT follow_update_at_pk PRIMARY KEY (data_id);
+
+
+--
+-- Name: following_updated_at follow_update_at_pk_2; Type: CONSTRAINT; Schema: relation; Owner: general_user
+--
+
+ALTER TABLE ONLY relation.following_updated_at
+    ADD CONSTRAINT follow_update_at_pk_2 UNIQUE (developer_id);
+
+
+--
+-- Name: follower_updated_at follower_update_at_pk; Type: CONSTRAINT; Schema: relation; Owner: general_user
+--
+
+ALTER TABLE ONLY relation.follower_updated_at
+    ADD CONSTRAINT follower_update_at_pk PRIMARY KEY (data_id);
+
+
+--
+-- Name: follower_updated_at follower_update_at_pk_2; Type: CONSTRAINT; Schema: relation; Owner: general_user
+--
+
+ALTER TABLE ONLY relation.follower_updated_at
+    ADD CONSTRAINT follower_update_at_pk_2 UNIQUE (developer_id);
 
 
 --
@@ -710,11 +1146,51 @@ ALTER TABLE ONLY relation.fork
 
 
 --
+-- Name: fork_updated_at fork_update_at_pk; Type: CONSTRAINT; Schema: relation; Owner: general_user
+--
+
+ALTER TABLE ONLY relation.fork_updated_at
+    ADD CONSTRAINT fork_update_at_pk PRIMARY KEY (data_id);
+
+
+--
+-- Name: fork_updated_at fork_update_at_pk_2; Type: CONSTRAINT; Schema: relation; Owner: general_user
+--
+
+ALTER TABLE ONLY relation.fork_updated_at
+    ADD CONSTRAINT fork_update_at_pk_2 UNIQUE (repo_id);
+
+
+--
 -- Name: star star_pk; Type: CONSTRAINT; Schema: relation; Owner: general_user
 --
 
 ALTER TABLE ONLY relation.star
     ADD CONSTRAINT star_pk PRIMARY KEY (data_id);
+
+
+--
+-- Name: star star_pk_2; Type: CONSTRAINT; Schema: relation; Owner: general_user
+--
+
+ALTER TABLE ONLY relation.star
+    ADD CONSTRAINT star_pk_2 UNIQUE (developer_id, repo_id);
+
+
+--
+-- Name: starred_repo_updated_at star_update_at_pk; Type: CONSTRAINT; Schema: relation; Owner: general_user
+--
+
+ALTER TABLE ONLY relation.starred_repo_updated_at
+    ADD CONSTRAINT star_update_at_pk PRIMARY KEY (data_id);
+
+
+--
+-- Name: starred_repo_updated_at star_update_at_pk_2; Type: CONSTRAINT; Schema: relation; Owner: general_user
+--
+
+ALTER TABLE ONLY relation.starred_repo_updated_at
+    ADD CONSTRAINT star_update_at_pk_2 UNIQUE (developer_id);
 
 
 --
