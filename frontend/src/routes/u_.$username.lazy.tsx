@@ -18,6 +18,7 @@ import { createLazyFileRoute, getRouteApi } from '@tanstack/react-router'
 import { type TCountryCode, getEmojiFlag } from 'countries-list'
 import { Skeleton } from 'react-daisyui'
 import { ErrorBoundary, type FallbackProps } from 'react-error-boundary'
+import { QueryError } from '$/lib/query/error.ts'
 
 const route = getRouteApi('/u_/$username')
 
@@ -252,7 +253,11 @@ const DeveloperTable = ({ username }: { username: string }) => {
 }
 const DeveloperNotFoundErrorBoundary = ({ children }: PropsWithChildren) => {
   const renderer = useCallback(({ error }: FallbackProps) => {
-    if (!(error instanceof HttpError) || error.response.status !== 404) {
+    if (!(error instanceof QueryError)) {
+      throw error
+    }
+    const innerError = error.innerError
+    if (!(innerError instanceof HttpError) || innerError.response.status !== 404) {
       // Only handle 404 error
       throw error
     }

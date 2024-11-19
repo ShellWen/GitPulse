@@ -2,66 +2,49 @@ import {
   getDeveloper,
   getDeveloperLanguages,
   getDeveloperPulsePoint,
-  getDeveloperRegion, searchDevelopers,
+  getDeveloperRegion,
+  searchDevelopers,
 } from '$/lib/api/endpoint/developer.ts'
-import { useQuery, useSuspenseQuery } from '@tanstack/react-query'
+import useSWR from 'swr'
 
 export const useDeveloper = (username: string) =>
-  useQuery({
-    queryKey: ['developers', username],
-    queryFn: () => getDeveloper(username),
-  })
+  useSWR(['developers', username], ([, username]) => getDeveloper(username))
 
 export const useSuspenseDeveloper = (username: string) =>
-  useSuspenseQuery({
-    queryKey: ['developers', username],
-    queryFn: () => getDeveloper(username),
-  })
+  useSWR(['developers', username], ([, username]) => getDeveloper(username), { suspense: true })
 
 export const useDeveloperPulsePoint = (username: string) =>
-  useQuery({
-    queryKey: ['developers', username, 'pulse-point'],
-    queryFn: () => getDeveloperPulsePoint(username),
-  })
+  useSWR(['developers', username, 'pulse-point'], ([, username]) => getDeveloperPulsePoint(username))
 
 export const useSuspenseDeveloperPulsePoint = (username: string) =>
-  useSuspenseQuery({
-    queryKey: ['developers', username, 'pulse-point'],
-    queryFn: () => getDeveloperPulsePoint(username),
+  useSWR(['developers', username, 'pulse-point'], ([, username]) => getDeveloperPulsePoint(username), {
+    suspense: true,
   })
 
 export const useDeveloperLanguages = (username: string) =>
-  useQuery({
-    queryKey: ['developers', username, 'languages'],
-    queryFn: () => getDeveloperLanguages(username),
-  })
+  useSWR(['developers', username, 'languages'], ([, username]) => getDeveloperLanguages(username))
 
 export const useSuspenseDeveloperLanguages = (username: string) =>
-  useSuspenseQuery({
-    queryKey: ['developers', username, 'languages'],
-    queryFn: () => getDeveloperLanguages(username),
+  useSWR(['developers', username, 'languages'], ([, username]) => getDeveloperLanguages(username), {
+    suspense: true,
   })
 
 export const useDeveloperRegion = (username: string) =>
-  useQuery({
-    queryKey: ['developers', username, 'region'],
-    queryFn: () => getDeveloperRegion(username),
-  })
+  useSWR(['developers', username, 'region'], ([, username]) => getDeveloperRegion(username))
 
 export const useSuspenseDeveloperRegion = (username: string) =>
-  useSuspenseQuery({
-    queryKey: ['developers', username, 'region'],
-    queryFn: () => getDeveloperRegion(username),
-  })
+  useSWR(['developers', username, 'region'], ([, username]) => getDeveloperRegion(username), { suspense: true })
 
 export const useSearchDevelopers = (limit: number, languageId?: string, region?: string) =>
-  useQuery({
-    queryKey: ['developers', limit, languageId, region],
-    queryFn: () => searchDevelopers(limit, languageId, region),
-  })
+  useSWR(['developers', limit, languageId, region], ([, limit, languageId, region]) =>
+    searchDevelopers(limit, languageId, region),
+  )
 
 export const useSuspenseSearchDevelopers = (limit: number, languageId?: string, region?: string) =>
-  useSuspenseQuery({
-    queryKey: ['developers', limit, languageId, region],
-    queryFn: () => searchDevelopers(limit, languageId, region),
-  })
+  useSWR(
+    ['developers', limit, languageId, region],
+    ([, limit, languageId, region]) => searchDevelopers(limit, languageId, region),
+    {
+      suspense: true,
+    },
+  )
