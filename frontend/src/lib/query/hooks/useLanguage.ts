@@ -1,14 +1,8 @@
 import { getLanguages } from '$/lib/api/endpoint/languages.ts'
-import { useQuery, useSuspenseQuery } from '@tanstack/react-query'
+import useSWR from 'swr'
 
 export const useLanguages = () =>
-  useQuery({
-    queryKey: ['languages'],
-    queryFn: () => getLanguages(),
-  })
+  useSWR(['languages'], getLanguages)
 
 export const useSuspenseLanguages = () =>
-  useSuspenseQuery({
-    queryKey: ['languages'],
-    queryFn: () => getLanguages(),
-  })
+  useSWR(['languages'], getLanguages, { suspense: true })

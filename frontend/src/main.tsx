@@ -1,10 +1,9 @@
 import { StrictMode } from 'react'
 
-import queryClient from '$/lib/query/client.ts'
-import { QueryClientProvider } from '@tanstack/react-query'
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import swrConfig from '$/lib/query/config.ts'
 import { RouterProvider, createRouter } from '@tanstack/react-router'
 import ReactDOM from 'react-dom/client'
+import { SWRConfig } from 'swr'
 
 import './index.css'
 import { routeTree } from './routeTree.gen'
@@ -30,11 +29,9 @@ declare module '@tanstack/react-router' {
 enableMockingIfEnabled().then(() => {
   ReactDOM.createRoot(document.getElementById('root')!).render(
     <StrictMode>
-      <QueryClientProvider client={queryClient}>
-        <ReactQueryDevtools initialIsOpen={false} />
-
+      <SWRConfig value={swrConfig}>
         <RouterProvider router={router} />
-      </QueryClientProvider>
+      </SWRConfig>
     </StrictMode>,
   )
 })
