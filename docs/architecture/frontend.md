@@ -14,8 +14,8 @@ GitPulse 的前端部分采用 Vite + React.js 构建，使用 TypeScript 编写
 - 路由库：TanStack Router \
   我们使用 TanStack Router 作为路由库的原因无它。市面上有很多基于 React 的路由库，对 SPA 而言，大部分的用户会选择使用 React Router。诚然，React Router 是一个十分优秀的路由库，开发迭代速度快，社区活跃，文档齐全。但 TanStack Router 的路由绑定使用 TypeScript 确保类型安全，并且提供了编译时代码生成器以在编译时从文件生成路由配置，无需手写路由，这节约了我们的时间，并提供了更高的可维护性。
 
-- 网络请求：React Query \
-  React Query 是一个基于 React Hooks 的数据获取库，它提供了一种简单的方式来管理数据获取和缓存。React Query 通过提供了一种简单的方式来管理数据获取和缓存，使得我们可以更加方便地处理数据请求和缓存。React Query 通过提供了一种简单的方式来管理数据获取和缓存，使得我们可以更加方便地处理数据请求和缓存。
+- 网络请求：SWR \
+  SWR 是一个基于 React Hooks 的数据获取库，它提供了一种简单的方式来管理数据获取和缓存。
 
 - 样式：Tailwind CSS + DaisyUI \
   Tailwind CSS 是一个高度可定制的 CSS 框架，它提供了一系列的 utility classes，使得我们可以更加方便地编写样式。DaisyUI 是一个基于 Tailwind CSS 的组件库，它提供了一系列的组件，使得我们可以更加方便地构建页面。我们所有的样式都是基于 Tailwind CSS 和 DaisyUI 来编写的。
@@ -35,7 +35,7 @@ GitPulse 的前端部分采用 Vite + React.js 构建，使用 TypeScript 编写
     - `components/`: 存放 React 组件，这里的组件都是无状态组件
     - `lib/`: 存放工具库和自定义 Hook
       - `api/`: 存放网络请求相关的代码，这些代码是框架无关的，便于后续扩展维护
-      - `query/`: 存放 React Query 相关的代码，使用上面的 `api/` 目录定义的请求函数与后端通信
+      - `query/`: 存放 SWR 相关的代码，使用上面的 `api/` 目录定义的请求函数与后端通信
     - `mocks/`: 存放 Mock 数据和对应的 handlers
     - `routes/`: 存放页面文件，这些文件会被 TanStack Router 的编译时代码生成器生成路由配置
     - `index.css`: 全局样式文件
