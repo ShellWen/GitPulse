@@ -1,0 +1,19 @@
+syntax = "v1"
+
+type (
+	Language {
+		Id    string `json:"id"`
+		Name  string `json:"name"`
+		Color string `json:"color"`
+	}
+	GetLanguages  {}
+)
+
+@server (
+	prefix: /languages
+)
+service Languages {
+	@handler getLanguages
+	get / (GetLanguages) returns ([]Language)
+}
+

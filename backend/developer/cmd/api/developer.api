@@ -1,10 +1,14 @@
 syntax = "v1"
 
 type (
-	GetDeveloperReq {
-		Login string `path:"login"`
+	TaskId {
+		TaskId string `json:"task_id"`
 	}
-	GetDeveloperResp {
+	TaskState {
+		State  string `json:"state"`
+		Reason string `json:"reason"`
+	}
+	Developer {
 		Id        int64  `json:"id"`
 		Name      string `json:"name"`
 		Login     string `json:"login"`
@@ -22,15 +26,77 @@ type (
 		CreatedAt string `json:"created_at"`
 		UpdatedAt string `json:"updated_at"`
 	}
+	PulsePoint {
+		Id         int64   `json:"id"`
+		PulsePoint float64 `json:"pulse_point"`
+		UpdatedAt  string  `json:"updated_at"`
+	}
+	Language {
+		Id    string `json:"id"`
+		Name  string `json:"name"`
+		Color string `json:"color"`
+	}
+	LanguageWithPercentage {
+		Language   Language `json:"language"`
+		Percentage float64  `json:"percentage"`
+	}
+	LanguageUsage {
+		Id        int64                    `json:"id"`
+		Languages []LanguageWithPercentage `json:"languages"`
+		UpdatedAt string                   `json:"updated_at"`
+	}
+	Region {
+		Id         int64   `json:"id"`
+		Region     string  `json:"region"`
+		Confidence float64 `json:"confidence"`
+	}
+	PostTaskReq {
+		Login string `path:"login"`
+	}
+	GetDeveloperReq {
+		Login  string `path:"login"`
+		TaskId string `form:"task_id"`
+	}
+	GetPulsePointReq {
+		Login  string `path:"login"`
+		TaskId string `form:"task_id"`
+	}
+	GetLanguageUsageReq {
+		Login  string `path:"login"`
+		TaskId string `form:"task_id"`
+	}
+	GetRegionReq {
+		Login  string `path:"login"`
+		TaskId string `form:"task_id"`
+	}
 )
 
 @server (
-	prefix:  /developers
-	group:   developer
-	timeout: 60s
+	prefix: /developers
 )
 service Developer {
+	@handler postDeveloperTask
+	post /:login (PostTaskReq) returns (TaskId)
+
+	@handler postPulsePointTask
+	post /:login/pulse-point (PostTaskReq) returns (TaskId)
+
+	@handler postLanguageUsageTask
+	post /:login/languages (PostTaskReq) returns (TaskId)
+
+	@handler postRegionTask
+	post /:login/region (PostTaskReq) returns (TaskId)
+
 	@handler getDeveloper
-	get /:login (GetDeveloperReq) returns (GetDeveloperResp)
+	get /:login (GetDeveloperReq) returns (Developer)
+
+	@handler getPulsePoint
+	get /:login/pulse-point (GetPulsePointReq) returns (PulsePoint)
+
+	@handler getLanguageUsage
+	get /:login/languages (GetLanguageUsageReq) returns (LanguageUsage)
+
+	@handler getRegion
+	get /:login/region (GetRegionReq) returns (Region)
 }
 

@@ -3,11 +3,7 @@
 
 package types
 
-type GetDeveloperReq struct {
-	Login string `path:"login"`
-}
-
-type GetDeveloperResp struct {
+type Developer struct {
 	Id        int64  `json:"id"`
 	Name      string `json:"name"`
 	Login     string `json:"login"`
@@ -24,4 +20,66 @@ type GetDeveloperResp struct {
 	Gists     int64  `json:"gists"`
 	CreatedAt string `json:"created_at"`
 	UpdatedAt string `json:"updated_at"`
+}
+
+type GetDeveloperReq struct {
+	Login  string `path:"login"`
+	TaskId string `form:"task_id"`
+}
+
+type GetLanguageUsageReq struct {
+	Login  string `path:"login"`
+	TaskId string `form:"task_id"`
+}
+
+type GetPulsePointReq struct {
+	Login  string `path:"login"`
+	TaskId string `form:"task_id"`
+}
+
+type GetRegionReq struct {
+	Login  string `path:"login"`
+	TaskId string `form:"task_id"`
+}
+
+type Language struct {
+	Id    string `json:"id"`
+	Name  string `json:"name"`
+	Color string `json:"color"`
+}
+
+type LanguageUsage struct {
+	Id        int64                    `json:"id"`
+	Languages []LanguageWithPercentage `json:"languages"`
+	UpdatedAt string                   `json:"updated_at"`
+}
+
+type LanguageWithPercentage struct {
+	Language   Language `json:"language"`
+	Percentage float64  `json:"percentage"`
+}
+
+type PostTaskReq struct {
+	Login string `path:"login"`
+}
+
+type PulsePoint struct {
+	Id         int64   `json:"id"`
+	PulsePoint float64 `json:"pulse_point"`
+	UpdatedAt  string  `json:"updated_at"`
+}
+
+type Region struct {
+	Id         int64   `json:"id"`
+	Region     string  `json:"region"`
+	Confidence float64 `json:"confidence"`
+}
+
+type TaskId struct {
+	TaskId string `json:"task_id"`
+}
+
+type TaskState struct {
+	State  string `json:"state"`
+	Reason string `json:"reason"`
 }

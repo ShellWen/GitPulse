@@ -9,7 +9,6 @@ import (
 	"github.com/hibiken/asynq"
 	"github.com/zeromicro/go-zero/core/jsonx"
 	"github.com/zeromicro/go-zero/core/logx"
-	"net/http"
 	"strconv"
 )
 
@@ -38,14 +37,12 @@ func (c *APITaskConsumer) Consume(ctx context.Context, task *asynq.Task) error {
 
 	var (
 		err  error
-		data string
+		data []byte
 		msg  = tasks.APIPayload{}
 	)
 
 	err = jsonx.Unmarshal(task.Payload(), &msg)
 	if err != nil {
-		data = logic.MustBuildErrData(http.StatusInternalServerError, err.Error())
-		err = logic.SaveToRedis(c.ctx, c.svc, data, msg.TaskId)
 		return err
 	}
 
@@ -64,10 +61,12 @@ func (c *APITaskConsumer) Consume(ctx context.Context, task *asynq.Task) error {
 		data, err = logic.GetRegion(c.ctx, c.svc, msg.Id)
 	default:
 		err = errors.New("unexpected message type: " + strconv.FormatInt(int64(msg.Type), 10))
-		data = logic.MustBuildErrData(http.StatusInternalServerError, err.Error())
+	}
+	if err != nil {
+		return err
 	}
 
-	err = logic.SaveToRedis(c.ctx, c.svc, msg.TaskId, data)
+	err = logic.SaveResult(c.ctx, c.svc, task, data)
 
 	return err
 }

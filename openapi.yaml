@@ -5,58 +5,198 @@ info:
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
-  version: ''
+  version: 1.0.0
 externalDocs:
   description: GitHub 仓库
   url: https://github.com/ShellWen/GitPulse
-servers:
-  - url: https://api-pulse.shellwen.com
 tags:
   - name: developers
-    description: 关于开发者
 paths:
-  /developers/{username}:
+  /developers/{login}:
     get:
+      summary: 根据 GitHub 用户名与任务 ID，获取该任务中用户的个人信息
+      deprecated: false
+      description: ''
       tags:
         - developers
-      summary: 根据 GitHub 用户 ID 获取信息
-      description: ''
       parameters:
-        - $ref: '#/components/parameters/username'
+        - name: login
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+        - name: task_id
+          in: query
+          description: ''
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           description: 请求成功
           content:
             application/json:
-              schema:
+              schema: &ref_2
                 $ref: '#/components/schemas/Developer'
+                description: 开发者信息
+          headers: {}
+        '202':
+          description: ''
+          content:
+            application/json:
+              schema: &ref_1
+                $ref: '#/components/schemas/TaskInfo'
+          headers: {}
+        '404':
+          description: 用户名不存在 或 任务不存在
+          content:
+            application/json:
+              schema: &ref_0
+                $ref: '#/components/schemas/CodeMsg'
+          headers: {}
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema: *ref_0
+          headers: {}
+      security: []
+    post:
+      summary: 根据 GitHub 用户名，创建获取用户个人信息的任务
+      deprecated: false
+      description: ''
+      tags: []
+      parameters:
+        - name: login
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  task_id:
+                    type: string
+                required:
+                  - task_id
+          headers: {}
         '404':
           description: 用户名不存在
-  /developers/{username}/pulse-point:
+          content:
+            application/json:
+              schema: *ref_0
+          headers: {}
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema: *ref_0
+          headers: {}
+      security: []
+  /developers/{login}/pulse-point:
     get:
+      summary: 根据 GitHub 用户名与任务 ID，获取该任务中用户的Pulse Point
+      deprecated: false
+      description: ''
       tags:
         - developers
-      summary: 根据 GitHub 用户 ID 获取 Pulse Point
-      description: ''
       parameters:
-        - $ref: '#/components/parameters/username'
+        - name: login
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+        - name: task_id
+          in: query
+          description: ''
+          required: true
+          example: oS-5Z3yrgLbKsmBz6iG7r
+          schema:
+            type: string
       responses:
         '200':
           description: 请求成功
           content:
             application/json:
-              schema:
+              schema: &ref_3
                 $ref: '#/components/schemas/DeveloperPulsePoint'
+                description: Pulse Point 信息
+          headers: {}
+        '202':
+          description: ''
+          content:
+            application/json:
+              schema: *ref_1
+          headers: {}
+        '404':
+          description: 用户名不存在 或 任务不存在
+          content:
+            application/json:
+              schema: *ref_0
+          headers: {}
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema: *ref_0
+          headers: {}
+      security: []
+    post:
+      summary: 根据 GitHub 用户名，创建获取用户PulsePoint的任务
+      deprecated: false
+      description: ''
+      tags: []
+      parameters:
+        - name: login
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+          headers: {}
         '404':
           description: 用户名不存在
-  /developers/{username}/languages:
+          content:
+            application/json:
+              schema: *ref_0
+          headers: {}
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema: *ref_0
+          headers: {}
+      security: []
+  /developers/{login}/languages:
     get:
+      summary: 根据 GitHub 用户名与任务 ID，获取该任务中用户的使用语言
+      deprecated: false
+      description: ''
       tags:
         - developers
-      summary: 根据 GitHub 用户 ID 获取使用的语言
-      description: ''
       parameters:
-        - $ref: '#/components/parameters/username'
+        - name: login
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           description: 请求成功
@@ -64,16 +204,78 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DeveloperLanguages'
+          headers: {}
+        '202':
+          description: ''
+          content:
+            application/json:
+              schema: *ref_1
+          headers: {}
+        '404':
+          description: 用户名不存在 或 任务不存在
+          content:
+            application/json:
+              schema: *ref_0
+          headers: {}
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema: *ref_0
+          headers: {}
+      security: []
+    post:
+      summary: 根据 GitHub 用户名，创建获取用户使用语言的任务
+      deprecated: false
+      description: ''
+      tags: []
+      parameters:
+        - name: login
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  task_id:
+                    type: string
+                required:
+                  - task_id
+          headers: {}
         '404':
           description: 用户名不存在
-  /developers/{username}/region:
+          content:
+            application/json:
+              schema: *ref_0
+          headers: {}
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema: *ref_0
+          headers: {}
+      security: []
+  /developers/{login}/region:
     get:
+      summary: 根据 GitHub 用户名与任务 ID，获取该任务中推测的用户国家/地区
+      deprecated: false
+      description: ''
       tags:
         - developers
-      summary: 根据 GitHub 用户 ID 推测国家/地区
-      description: ''
       parameters:
-        - $ref: '#/components/parameters/username'
+        - name: login
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           description: 请求成功
@@ -81,36 +283,93 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DeveloperRegion'
+          headers: {}
+        '202':
+          description: ''
+          content:
+            application/json:
+              schema: *ref_1
+          headers: {}
+        '404':
+          description: 用户名不存在 或 任务不存在
+          content:
+            application/json:
+              schema: *ref_0
+          headers: {}
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema: *ref_0
+          headers: {}
+      security: []
+    post:
+      summary: 根据 GitHub 用户名，创建推测用户国家/地区的任务
+      deprecated: false
+      description: ''
+      tags: []
+      parameters:
+        - name: login
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  task_id:
+                    type: string
+                required:
+                  - task_id
+          headers: {}
         '404':
           description: 用户名不存在
+          content:
+            application/json:
+              schema: *ref_0
+          headers: {}
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema: *ref_0
+          headers: {}
+      security: []
   /developers/:
     get:
+      summary: 获得开发者排行榜，按照 Pulse Point 降序排列，并应用筛选条件
+      deprecated: false
+      description: ''
       tags:
         - developers
-      summary: 获得开发者排行榜，按照 Pulse Point 降序排列，并应用筛选条件
-      description: ''
       parameters:
         - name: language
           in: query
+          description: 语言 ID
           required: false
           schema:
             type: string
-          description: 语言 ID
         - name: region
           in: query
+          description: 国家/地区代码
           required: false
           schema:
             type: string
-          description: 国家/地区代码
         - name: limit
           in: query
+          description: 返回数量
           required: false
           schema:
             type: integer
             minimum: 1
             maximum: 100
             default: 50
-          description: 返回数量
       responses:
         '200':
           description: 请求成功
@@ -120,12 +379,22 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/DeveloperWithPulsePoint'
+          headers: {}
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema: *ref_0
+          headers: {}
+      security: []
   /languages:
     get:
+      summary: 获得语言列表
+      deprecated: false
+      description: ''
       tags:
         - developers
-      summary: 获得语言列表
-      description: ''
+      parameters: []
       responses:
         '200':
           description: 请求成功
@@ -133,8 +402,17 @@ paths:
             application/json:
               schema:
                 type: array
-                items:
+                items: &ref_4
                   $ref: '#/components/schemas/Language'
+                  description: 语言信息
+          headers: {}
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema: *ref_0
+          headers: {}
+      security: []
 components:
   schemas:
     Developer:
@@ -143,117 +421,139 @@ components:
         id:
           type: integer
           minimum: 0
-          example: 38996248
           description: GitHub 用户数字 ID
+          examples:
+            - 38996248
         name:
           type: string
-          nullable: true
-          example: ShellWen | 颉文
           description: GitHub 用户显示名
+          examples:
+            - ShellWen | 颉文
+          nullable: true
         login:
           type: string
           minLength: 1
-          example: ShellWen
           description: GitHub 用户名
+          examples:
+            - ShellWen
         avatar_url:
           type: string
           format: uri
-          example: https://avatars.githubusercontent.com/u/38996248?v=4
           description: GitHub 用户头像
+          examples:
+            - https://avatars.githubusercontent.com/u/38996248?v=4
         company:
           type: string
-          nullable: true
-          example: null
           description: GitHub 用户公司
+          examples:
+            - null
+          nullable: true
         location:
           type: string
-          nullable: true
-          example: null
           description: GitHub 用户位置
+          examples:
+            - null
+          nullable: true
         bio:
           type: string
-          nullable: true
-          example: Another Furry/🌈/Coder/Student
           description: GitHub 用户简介
+          examples:
+            - Another Furry/🌈/Coder/Student
+          nullable: true
         blog:
           type: string
-          nullable: true
-          example: https://shellwen.com
           description: GitHub 用户博客
+          examples:
+            - https://shellwen.com
+          nullable: true
         email:
           type: string
           format: email
-          nullable: true
-          example: me@shellwen.com
           description: GitHub 用户邮箱
+          examples:
+            - me@shellwen.com
+          nullable: true
         followers:
           type: integer
           minimum: 0
-          example: 114
           description: GitHub 用户关注者数量
+          examples:
+            - 114
         following:
           type: integer
           minimum: 0
-          example: 514
           description: GitHub 用户关注数量
+          examples:
+            - 514
         stars:
           type: integer
           minimum: 0
-          example: 191
           description: GitHub 用户获得的星标数量
+          examples:
+            - 191
         repos:
           type: integer
           minimum: 0
-          example: 98
           description: GitHub 用户的公共仓库数量
+          examples:
+            - 98
         gists:
           type: integer
           minimum: 0
-          example: 10
           description: GitHub 用户的公共 Gists 数量
+          examples:
+            - 10
         created_at:
           type: string
           format: date-time
-          example: 2018-05-05T02:44:13Z
           description: GitHub 用户创建日期
+          examples:
+            - '2018-05-05T02:44:13.000Z'
         updated_at:
           type: string
           format: date-time
-          example: 2024-10-28T03:08:49Z
           description: GitHub 用户最后更新日期
+          examples:
+            - '2024-10-28T03:08:49.000Z'
     DeveloperWithPulsePoint:
       type: object
       properties:
-        developer:
-          $ref: '#/components/schemas/Developer'
-          description: 开发者信息
-        pulse_point:
-          $ref: '#/components/schemas/DeveloperPulsePoint'
-          description: Pulse Point 信息
+        developer: *ref_2
+        pulse_point: *ref_3
+      required:
+        - developer
+        - pulse_point
     DeveloperPulsePoint:
       type: object
       properties:
         id:
           type: integer
           minimum: 0
-          example: 38996248
           description: GitHub 用户数字 ID
+          examples:
+            - 38996248
         pulse_point:
-          type: integer
+          type: number
           minimum: 0
           description: GitHub 用户的 Pulse Point
         updated_at:
           type: string
           format: date-time
-          example: 2024-11-03T19:44:38Z
           description: Pulse Point 最后更新日期
+          examples:
+            - '2024-11-03T19:44:38.000Z'
+      required:
+        - id
+        - pulse_point
+        - updated_at
     DeveloperLanguages:
       type: object
       properties:
         id:
           type: string
-          example: 38996248
           description: GitHub 用户数字 ID
+          examples:
+            - 38996248
         languages:
           type: array
           items:
@@ -262,38 +562,48 @@ components:
         updated_at:
           type: string
           format: date-time
-          example: 2024-11-03T19:44:38Z
           description: 语言使用情况最后更新日期
+          examples:
+            - '2024-11-03T19:44:38.000Z'
+      required:
+        - id
+        - updated_at
+        - languages
     DeveloperRegion:
       type: object
       properties:
         id:
           type: integer
-          example: 38996248
           description: GitHub 用户数字 ID
+          examples:
+            - 38996248
         region:
           type: string
-          example: cn
-          nullable: true
           description: GitHub 用户国家/地区代码，以 ISO 3166-1 alpha-2 为准
+          examples:
+            - cn
+          nullable: true
         confidence:
           type: number
           minimum: 0
           maximum: 1
-          example: 0.8
           description: GitHub 用户国家/地区置信度，当 region 为 null 时，confidence 为 0
+          examples:
+            - 0.8
     LanguageWithUsage:
       type: object
       properties:
-        language:
-          $ref: '#/components/schemas/Language'
-          description: 语言信息
+        language: *ref_4
         percentage:
           type: number
           minimum: 0
           maximum: 100
-          example: 100
           description: 使用占比
+          examples:
+            - 100
+      required:
+        - language
+        - percentage
     Language:
       type: object
       properties:
@@ -303,17 +613,36 @@ components:
           description: 语言 ID，仅小写字母与连字符
         name:
           type: string
-          example: JavaScript
           description: 语言名称
+          examples:
+            - JavaScript
         color:
           type: string
-          example: '#f1e05a'
           description: 语言颜色
-  parameters:
-    username:
-      name: username
-      in: path
-      required: true
-      schema:
-        type: string
-      description: GitHub 用户名
+          examples:
+            - '#f1e05a'
+      required:
+        - name
+    TaskInfo:
+      type: object
+      properties:
+        state:
+          type: string
+        reason:
+          type: string
+      required:
+        - state
+    CodeMsg:
+      type: object
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+      required:
+        - code
+        - message
+  securitySchemes: {}
+servers:
+  - url: https://api-pulse.shellwen.com
+    description: GitPulse

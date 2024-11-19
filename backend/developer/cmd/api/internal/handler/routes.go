@@ -5,9 +5,7 @@ package handler
 
 import (
 	"net/http"
-	"time"
 
-	developer "github.com/ShellWen/GitPulse/developer/cmd/api/internal/handler/developer"
 	"github.com/ShellWen/GitPulse/developer/cmd/api/internal/svc"
 
 	"github.com/zeromicro/go-zero/rest"
@@ -17,12 +15,46 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 	server.AddRoutes(
 		[]rest.Route{
 			{
+				Method:  http.MethodPost,
+				Path:    "/:login",
+				Handler: postDeveloperTaskHandler(serverCtx),
+			},
+			{
 				Method:  http.MethodGet,
 				Path:    "/:login",
-				Handler: developer.GetDeveloperHandler(serverCtx),
+				Handler: getDeveloperHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/:login/languages",
+				Handler: postLanguageUsageTaskHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/:login/languages",
+				Handler: getLanguageUsageHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/:login/pulse-point",
+				Handler: postPulsePointTaskHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/:login/pulse-point",
+				Handler: getPulsePointHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/:login/region",
+				Handler: postRegionTaskHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/:login/region",
+				Handler: getRegionHandler(serverCtx),
 			},
 		},
 		rest.WithPrefix("/developers"),
-		rest.WithTimeout(60000*time.Millisecond),
 	)
 }
