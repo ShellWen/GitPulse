@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	DefaultSearchLimit int64         = 60
+	DefaultSearchLimit int64         = 150
 	DataExpiredTime    time.Duration = 24 * time.Hour
 )
 
@@ -38,7 +38,7 @@ func GetLoginById(ctx context.Context, id int64) (login string, err error) {
 }
 
 func DefaultUpdateAfterTime() string {
-	return time.Unix(time.Now().Unix()-int64(60*24*time.Hour.Seconds()), 0).Format("2006-01-02")
+	return time.Unix(time.Now().Unix()-int64(7*24*time.Hour.Seconds()), 0).Format("2006-01-02")
 }
 
 func CheckIfDataExpired(lastUpdate time.Time) bool {
