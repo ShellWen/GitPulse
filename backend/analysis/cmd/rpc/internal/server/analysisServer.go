@@ -39,6 +39,11 @@ func (s *AnalysisServer) DelPulsePoint(ctx context.Context, in *pb.DelAnalysisRe
 	return l.DelPulsePoint(in)
 }
 
+func (s *AnalysisServer) DelSummary(ctx context.Context, in *pb.DelAnalysisReq) (*pb.DelAnalysisResp, error) {
+	l := logic.NewDelSummaryLogic(ctx, s.svcCtx)
+	return l.DelSummary(in)
+}
+
 func (s *AnalysisServer) UpdateLanguage(ctx context.Context, in *pb.UpdateAnalysisReq) (*pb.UpdateAnalysisResp, error) {
 	l := logic.NewUpdateLanguageLogic(ctx, s.svcCtx)
 	return l.UpdateLanguage(in)
@@ -54,6 +59,11 @@ func (s *AnalysisServer) UpdatePulsePoint(ctx context.Context, in *pb.UpdateAnal
 	return l.UpdatePulsePoint(in)
 }
 
+func (s *AnalysisServer) UpdateSummary(ctx context.Context, in *pb.UpdateAnalysisReq) (*pb.UpdateAnalysisResp, error) {
+	l := logic.NewUpdateSummaryLogic(ctx, s.svcCtx)
+	return l.UpdateSummary(in)
+}
+
 func (s *AnalysisServer) GetLanguages(ctx context.Context, in *pb.GetAnalysisReq) (*pb.GetLanguagesResp, error) {
 	l := logic.NewGetLanguagesLogic(ctx, s.svcCtx)
 	return l.GetLanguages(in)
@@ -67,4 +77,9 @@ func (s *AnalysisServer) GetRegion(ctx context.Context, in *pb.GetAnalysisReq) (
 func (s *AnalysisServer) GetPulsePoint(ctx context.Context, in *pb.GetAnalysisReq) (*pb.GetPulsePointResp, error) {
 	l := logic.NewGetPulsePointLogic(ctx, s.svcCtx)
 	return l.GetPulsePoint(in)
+}
+
+func (s *AnalysisServer) GetSummary(ctx context.Context, in *pb.GetAnalysisReq) (*pb.GetSummaryResp, error) {
+	l := logic.NewGetSummaryLogic(ctx, s.svcCtx)
+	return l.GetSummary(in)
 }

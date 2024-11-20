@@ -8,8 +8,6 @@ import (
 	customGithub "github.com/ShellWen/GitPulse/common/github"
 	"github.com/ShellWen/GitPulse/common/llm"
 	locks "github.com/ShellWen/GitPulse/common/lock"
-	"github.com/ShellWen/GitPulse/contribution/cmd/rpc/contribution"
-	"github.com/ShellWen/GitPulse/developer/cmd/rpc/developer"
 	"github.com/biter777/countries"
 	"github.com/hashicorp/consul/api"
 	"github.com/zeromicro/go-zero/core/jsonx"
@@ -178,13 +176,13 @@ func (l *UpdateRegionLogic) getRegionWithConfidenceByLLModel(id int64, login str
 		}
 	)
 
-	if text, err := l.getTextFromProfile(id); err != nil {
+	if text, err := getTextFromProfile(l.ctx, l.svcCtx, id); err != nil {
 		return "", 0, err
 	} else {
 		allText += text
 	}
 
-	if text, err := l.getTextFromContribution(id, 1000); err != nil {
+	if text, err := getTextFromContribution(l.ctx, l.svcCtx, id, 1000); err != nil {
 		return "", 0, err
 	} else {
 		allText += text
@@ -238,77 +236,6 @@ func (l *UpdateRegionLogic) getRegionWithConfidenceByLLModel(id int64, login str
 	region = strings.ToLower(countries.ByName(region).Alpha2())
 	confidence = regionConfidence.Confidence
 	confidence = l.restrictConfidence(confidence)
-
-	return
-}
-
-func (l *UpdateRegionLogic) getTextFromContribution(id int64, limitCharacterCount int64) (text string, err error) {
-	var (
-		updateReq  = contribution.UpdateContributionOfUserReq{UserId: id}
-		updateResp *contribution.UpdateContributionOfUserResp
-
-		getReq = contribution.SearchByUserIdReq{
-			UserId: id,
-			Limit:  1000,
-			Page:   1,
-		}
-		getResp *contribution.SearchByUserIdResp
-	)
-
-	if updateResp, err = l.svcCtx.ContributionRpcClient.UpdateContributionOfUser(l.ctx, &updateReq); err != nil {
-		return
-	} else if updateResp.Code != http.StatusOK {
-		return "", errors.New(updateResp.Message)
-	}
-
-	if getResp, err = l.svcCtx.ContributionRpcClient.SearchByUserId(l.ctx, &getReq); err != nil {
-		return
-	} else if getResp.Code == http.StatusInternalServerError {
-		return "", errors.New(getResp.Message)
-	}
-
-	text += "|Contribution Start|"
-	for _, theContribution := range getResp.Contributions {
-		text += theContribution.Content
-		if int64(len(text)) > limitCharacterCount {
-			break
-		}
-	}
-	strings.ReplaceAll(text, "\n", " ")
-	if int64(len(text)) > limitCharacterCount {
-		text = text[:limitCharacterCount]
-	}
-	text += "|Contribution End|"
-
-	return
-}
-
-func (l *UpdateRegionLogic) getTextFromProfile(id int64) (text string, err error) {
-	var (
-		updateReq    = developer.UpdateDeveloperReq{Id: id}
-		updateResp   *developer.UpdateDeveloperResp
-		getReq       = developer.GetDeveloperByIdReq{Id: id}
-		getResp      *developer.GetDeveloperByIdResp
-		theDeveloper *developer.Developer
-	)
-
-	if updateResp, err = l.svcCtx.DeveloperRpcClient.UpdateDeveloper(l.ctx, &updateReq); err != nil || updateResp.Code != http.StatusOK {
-		return
-	}
-	if getResp, err = l.svcCtx.DeveloperRpcClient.GetDeveloperById(l.ctx, &getReq); err != nil || getResp.Code != http.StatusOK {
-		return
-	}
-
-	theDeveloper = getResp.Developer
-
-	if theDeveloper == nil {
-		err = errors.New("developer not found")
-		return
-	}
-
-	text += "|Developer Profile Start|" + "|Name:" +
-		theDeveloper.Name + "|Bio:" + theDeveloper.Bio + "|TwitterUsername:" + theDeveloper.TwitterUsername +
-		"|Company:" + theDeveloper.Company + "|Location:" + theDeveloper.Location + "|Developer Profile End|"
 
 	return
 }

@@ -31,6 +31,13 @@ message PulsePoint {
   double pulsePoint = 4; //pulsePoint
 }
 
+message Summary {
+  int64 dataId = 1; //dataId
+  int64 dataCreatedAt = 2; //dataCreatedAt
+  int64 dataUpdatedAt = 3; //dataUpdatedAt
+  string summary = 4; //summary
+}
+
 message DelAnalysisReq {
   int64 developerId = 1; //developerId
 }
@@ -62,6 +69,12 @@ message GetPulsePointResp {
   PulsePoint pulsePoint = 3; //pulsePoint
 }
 
+message GetSummaryResp {
+  int64 code = 1;
+  string message = 2;
+  Summary summary = 3; //summary
+}
+
 message UpdateAnalysisReq {
   int64 developerId = 1; //developerId
 }
@@ -79,16 +92,18 @@ message GetPulsePointRankReq {
 // Rpc Func
 // ------------------------------------ 
 
-service analysis{ 
-
+service analysis{
 	 //-----------------------analysis-----------------------
 	  rpc DelLanguage(DelAnalysisReq) returns (DelAnalysisResp);
     rpc DelRegion(DelAnalysisReq) returns (DelAnalysisResp);
     rpc DelPulsePoint(DelAnalysisReq) returns (DelAnalysisResp);
+    rpc DelSummary(DelAnalysisReq) returns (DelAnalysisResp);
     rpc UpdateLanguage(UpdateAnalysisReq) returns (UpdateAnalysisResp);
     rpc UpdateRegion(UpdateAnalysisReq) returns (UpdateAnalysisResp);
     rpc UpdatePulsePoint(UpdateAnalysisReq) returns (UpdateAnalysisResp);
+    rpc UpdateSummary(UpdateAnalysisReq) returns (UpdateAnalysisResp);
     rpc GetLanguages(GetAnalysisReq) returns (GetLanguagesResp);
     rpc GetRegion(GetAnalysisReq) returns (GetRegionResp);
     rpc GetPulsePoint(GetAnalysisReq) returns (GetPulsePointResp);
+    rpc GetSummary(GetAnalysisReq) returns (GetSummaryResp);
 }

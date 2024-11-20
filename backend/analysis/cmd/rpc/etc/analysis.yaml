@@ -58,7 +58,7 @@ Cache:
 SparkModelConf:
   Url: https://spark-api-open.xf-yun.com/v1/chat/completions
   APIPassword: fPXYVCkCeBnqSvEVcFZF:FNtNczoVCwNVkHAgxNJE
-  MaxTokens: 1000
+  MaxTokens: 4096
   TopK: 4
   Temperature: 0.5
   Model: generalv3.5

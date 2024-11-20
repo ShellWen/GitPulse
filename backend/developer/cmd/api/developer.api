@@ -50,6 +50,11 @@ type (
 		Region     string  `json:"region"`
 		Confidence float64 `json:"confidence"`
 	}
+	Summary {
+		Id        int64  `json:"id"`
+		Summary   string `json:"summary"`
+		UpdatedAt string `json:"updated_at"`
+	}
 	PostTaskReq {
 		Login string `path:"login"`
 	}
@@ -66,6 +71,10 @@ type (
 		TaskId string `form:"task_id"`
 	}
 	GetRegionReq {
+		Login  string `path:"login"`
+		TaskId string `form:"task_id"`
+	}
+	GetSummaryReq {
 		Login  string `path:"login"`
 		TaskId string `form:"task_id"`
 	}
@@ -87,6 +96,9 @@ service Developer {
 	@handler postRegionTask
 	post /:login/region (PostTaskReq) returns (TaskId)
 
+	@handler postSummaryTask
+	post /:login/summary (PostTaskReq) returns (TaskId)
+
 	@handler getDeveloper
 	get /:login (GetDeveloperReq) returns (Developer)
 
@@ -98,5 +110,8 @@ service Developer {
 
 	@handler getRegion
 	get /:login/region (GetRegionReq) returns (Region)
+
+	@handler getSummary
+	get /:login/summary (GetSummaryReq) returns (Summary)
 }
 

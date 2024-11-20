@@ -59,6 +59,9 @@ func (c *APITaskConsumer) Consume(ctx context.Context, task *asynq.Task) error {
 	case tasks.APIGetRegion:
 		logx.Info("consume message: APIGetRegion")
 		data, err = logic.GetRegion(c.ctx, c.svc, msg.Id)
+	case tasks.APIGetSummary:
+		logx.Info("consume message: APIGetSummary")
+		data, err = logic.GetSummary(c.ctx, c.svc, msg.Id)
 	default:
 		err = errors.New("unexpected message type: " + strconv.FormatInt(int64(msg.Type), 10))
 	}

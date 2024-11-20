@@ -42,6 +42,11 @@ type GetRegionReq struct {
 	TaskId string `form:"task_id"`
 }
 
+type GetSummaryReq struct {
+	Login  string `path:"login"`
+	TaskId string `form:"task_id"`
+}
+
 type Language struct {
 	Id    string `json:"id"`
 	Name  string `json:"name"`
@@ -73,6 +78,12 @@ type Region struct {
 	Id         int64   `json:"id"`
 	Region     string  `json:"region"`
 	Confidence float64 `json:"confidence"`
+}
+
+type Summary struct {
+	Id        int64  `json:"id"`
+	Summary   string `json:"summary"`
+	UpdatedAt string `json:"updated_at"`
 }
 
 type TaskId struct {

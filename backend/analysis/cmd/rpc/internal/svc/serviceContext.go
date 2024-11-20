@@ -20,6 +20,7 @@ type ServiceContext struct {
 	RegionModel     model.RegionModel
 	LanguagesModel  model.LanguagesModel
 	PulsePointModel model.PulsePointModel
+	SummaryModel    model.SummaryModel
 
 	DeveloperRpcClient    developer.DeveloperZrpcClient
 	RepoRpcClient         repo.RepoZrpcClient
@@ -36,6 +37,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		RegionModel:     model.NewRegionModel(sqlx.NewSqlConn("pgx", c.DB.DataSource), c.Cache),
 		LanguagesModel:  model.NewLanguagesModel(sqlx.NewSqlConn("pgx", c.DB.DataSource), c.Cache),
 		PulsePointModel: model.NewPulsePointModel(sqlx.NewSqlConn("pgx", c.DB.DataSource), c.Cache),
+		SummaryModel:    model.NewSummaryModel(sqlx.NewSqlConn("pgx", c.DB.DataSource), c.Cache),
 
 		DeveloperRpcClient:    developer.NewDeveloperZrpcClient(zrpc.MustNewClient(c.DeveloperRpcConf)),
 		RepoRpcClient:         repo.NewRepoZrpcClient(zrpc.MustNewClient(c.RepoRpcConf)),

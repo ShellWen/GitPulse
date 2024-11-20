@@ -54,6 +54,16 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Path:    "/:login/region",
 				Handler: getRegionHandler(serverCtx),
 			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/:login/summary",
+				Handler: postSummaryTaskHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/:login/summary",
+				Handler: getSummaryHandler(serverCtx),
+			},
 		},
 		rest.WithPrefix("/developers"),
 	)

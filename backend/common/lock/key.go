@@ -26,6 +26,7 @@ const (
 	UpdateRegion
 	UpdateLanguages
 	UpdatePulsePoint
+	UpdateSummary
 )
 
 func GetNewLockKey(updateType int, id int64) string {

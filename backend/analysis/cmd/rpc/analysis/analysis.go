@@ -14,29 +14,35 @@ import (
 )
 
 type (
-	DelAnalysisReq     = pb.DelAnalysisReq
-	DelAnalysisResp    = pb.DelAnalysisResp
-	GetAnalysisReq     = pb.GetAnalysisReq
-	GetLanguagesResp   = pb.GetLanguagesResp
-	GetPulsePointResp  = pb.GetPulsePointResp
-	GetRegionResp      = pb.GetRegionResp
-	Languages          = pb.Languages
-	PulsePoint         = pb.PulsePoint
-	Region             = pb.Region
-	UpdateAnalysisReq  = pb.UpdateAnalysisReq
-	UpdateAnalysisResp = pb.UpdateAnalysisResp
+	DelAnalysisReq       = pb.DelAnalysisReq
+	DelAnalysisResp      = pb.DelAnalysisResp
+	GetAnalysisReq       = pb.GetAnalysisReq
+	GetLanguagesResp     = pb.GetLanguagesResp
+	GetPulsePointRankReq = pb.GetPulsePointRankReq
+	GetPulsePointResp    = pb.GetPulsePointResp
+	GetRegionResp        = pb.GetRegionResp
+	GetSummaryResp       = pb.GetSummaryResp
+	Languages            = pb.Languages
+	PulsePoint           = pb.PulsePoint
+	Region               = pb.Region
+	Summary              = pb.Summary
+	UpdateAnalysisReq    = pb.UpdateAnalysisReq
+	UpdateAnalysisResp   = pb.UpdateAnalysisResp
 
 	Analysis interface {
 		// -----------------------analysis-----------------------
 		DelLanguage(ctx context.Context, in *DelAnalysisReq, opts ...grpc.CallOption) (*DelAnalysisResp, error)
 		DelRegion(ctx context.Context, in *DelAnalysisReq, opts ...grpc.CallOption) (*DelAnalysisResp, error)
 		DelPulsePoint(ctx context.Context, in *DelAnalysisReq, opts ...grpc.CallOption) (*DelAnalysisResp, error)
+		DelSummary(ctx context.Context, in *DelAnalysisReq, opts ...grpc.CallOption) (*DelAnalysisResp, error)
 		UpdateLanguage(ctx context.Context, in *UpdateAnalysisReq, opts ...grpc.CallOption) (*UpdateAnalysisResp, error)
 		UpdateRegion(ctx context.Context, in *UpdateAnalysisReq, opts ...grpc.CallOption) (*UpdateAnalysisResp, error)
 		UpdatePulsePoint(ctx context.Context, in *UpdateAnalysisReq, opts ...grpc.CallOption) (*UpdateAnalysisResp, error)
+		UpdateSummary(ctx context.Context, in *UpdateAnalysisReq, opts ...grpc.CallOption) (*UpdateAnalysisResp, error)
 		GetLanguages(ctx context.Context, in *GetAnalysisReq, opts ...grpc.CallOption) (*GetLanguagesResp, error)
 		GetRegion(ctx context.Context, in *GetAnalysisReq, opts ...grpc.CallOption) (*GetRegionResp, error)
 		GetPulsePoint(ctx context.Context, in *GetAnalysisReq, opts ...grpc.CallOption) (*GetPulsePointResp, error)
+		GetSummary(ctx context.Context, in *GetAnalysisReq, opts ...grpc.CallOption) (*GetSummaryResp, error)
 	}
 
 	defaultAnalysis struct {
@@ -66,6 +72,11 @@ func (m *defaultAnalysis) DelPulsePoint(ctx context.Context, in *DelAnalysisReq,
 	return client.DelPulsePoint(ctx, in, opts...)
 }
 
+func (m *defaultAnalysis) DelSummary(ctx context.Context, in *DelAnalysisReq, opts ...grpc.CallOption) (*DelAnalysisResp, error) {
+	client := pb.NewAnalysisClient(m.cli.Conn())
+	return client.DelSummary(ctx, in, opts...)
+}
+
 func (m *defaultAnalysis) UpdateLanguage(ctx context.Context, in *UpdateAnalysisReq, opts ...grpc.CallOption) (*UpdateAnalysisResp, error) {
 	client := pb.NewAnalysisClient(m.cli.Conn())
 	return client.UpdateLanguage(ctx, in, opts...)
@@ -81,6 +92,11 @@ func (m *defaultAnalysis) UpdatePulsePoint(ctx context.Context, in *UpdateAnalys
 	return client.UpdatePulsePoint(ctx, in, opts...)
 }
 
+func (m *defaultAnalysis) UpdateSummary(ctx context.Context, in *UpdateAnalysisReq, opts ...grpc.CallOption) (*UpdateAnalysisResp, error) {
+	client := pb.NewAnalysisClient(m.cli.Conn())
+	return client.UpdateSummary(ctx, in, opts...)
+}
+
 func (m *defaultAnalysis) GetLanguages(ctx context.Context, in *GetAnalysisReq, opts ...grpc.CallOption) (*GetLanguagesResp, error) {
 	client := pb.NewAnalysisClient(m.cli.Conn())
 	return client.GetLanguages(ctx, in, opts...)
@@ -94,4 +110,9 @@ func (m *defaultAnalysis) GetRegion(ctx context.Context, in *GetAnalysisReq, opt
 func (m *defaultAnalysis) GetPulsePoint(ctx context.Context, in *GetAnalysisReq, opts ...grpc.CallOption) (*GetPulsePointResp, error) {
 	client := pb.NewAnalysisClient(m.cli.Conn())
 	return client.GetPulsePoint(ctx, in, opts...)
+}
+
+func (m *defaultAnalysis) GetSummary(ctx context.Context, in *GetAnalysisReq, opts ...grpc.CallOption) (*GetSummaryResp, error) {
+	client := pb.NewAnalysisClient(m.cli.Conn())
+	return client.GetSummary(ctx, in, opts...)
 }

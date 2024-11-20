@@ -22,6 +22,7 @@ const (
 	APIGetLanguage
 	APIGetPulsePoint
 	APIGetRegion
+	APIGetSummary
 )
 
 type APIPayload struct {

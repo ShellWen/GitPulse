@@ -16,7 +16,7 @@ RepoRpcConf:
 
 AnalysisRpcConf:
   Target: consul://localhost:8500/analysis.rpc?wait=14s
-  Timeout: 30000
+  Timeout: 180000
 
 Log:
   ServiceName: apiProcessor
