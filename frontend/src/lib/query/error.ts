@@ -8,7 +8,7 @@ export class QueryError extends Error {
   public key: SWRArguments
 
   constructor(innerError: Error, key: SWRArguments) {
-    super(`Query error: ${innerError.message}`)
+    super(`Query error: (${innerError.name}) ${innerError.message}`)
     this.name = this.constructor.name
 
     this.innerError = innerError
