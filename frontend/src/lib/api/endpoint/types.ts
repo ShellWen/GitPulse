@@ -70,7 +70,7 @@ export type DeveloperLanguages = z.infer<typeof developerLanguages>
 export const developerRegion = z.object({
   region: z.object({
     id: z.number().nonnegative('Developer ID should be non-negative'),
-    region: z.string().min(1, 'Region should not be empty'),
+    region: z.string(),
     confidence: z
       .number()
       .min(0, 'Region confidence should be non-negative')
