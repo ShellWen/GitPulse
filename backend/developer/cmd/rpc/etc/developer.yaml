@@ -1,7 +1,7 @@
 Name: developer.rpc
 ListenOn: 127.0.0.1:2001
 Mode: dev
-Timeout: 30000
+Timeout: 300000
 
 Log:
   ServiceName: developer.rpc

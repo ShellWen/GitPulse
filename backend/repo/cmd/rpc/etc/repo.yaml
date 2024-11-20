@@ -1,7 +1,7 @@
 Name: repo.rpc
 ListenOn: 127.0.0.1:2002
 Mode: dev
-Timeout: 30000
+Timeout: 300000
 
 Log:
   ServiceName: repo.rpc

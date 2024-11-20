@@ -3,6 +3,7 @@ package svc
 import (
 	"github.com/ShellWen/GitPulse/analysis/cmd/rpc/analysis"
 	"github.com/ShellWen/GitPulse/api_processor/internal/config"
+	"github.com/ShellWen/GitPulse/common/tasks"
 	"github.com/ShellWen/GitPulse/contribution/cmd/rpc/contribution"
 	"github.com/ShellWen/GitPulse/developer/cmd/rpc/developer"
 	"github.com/ShellWen/GitPulse/relation/cmd/rpc/relation"
@@ -10,6 +11,7 @@ import (
 	"github.com/hibiken/asynq"
 	"github.com/zeromicro/go-zero/core/stores/redis"
 	"github.com/zeromicro/go-zero/zrpc"
+	"time"
 )
 
 type ServiceContext struct {
@@ -41,7 +43,10 @@ func NewServiceContext(c config.Config) *ServiceContext {
 				Password: c.AsynqRedisConf.Password,
 				DB:       c.AsynqRedisConf.DB,
 			}, asynq.Config{
-				Concurrency: 10,
+				Concurrency: 20,
+				RetryDelayFunc: func(n int, e error, t *asynq.Task) time.Duration {
+					return tasks.APIRetryDelay
+				},
 			}),
 	}
 }

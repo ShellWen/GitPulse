@@ -1,22 +1,22 @@
 DeveloperRpcConf:
   Target: consul://localhost:8500/developer.rpc?wait=14s
-  Timeout: 30000
+  Timeout: 300000
 
 RelationRpcConf:
   Target: consul://localhost:8500/relation.rpc?wait=14s
-  Timeout: 30000
+  Timeout: 300000
 
 ContributionRpcConf:
   Target: consul://localhost:8500/contribution.rpc?wait=14s
-  Timeout: 30000
+  Timeout: 300000
 
 RepoRpcConf:
   Target: consul://localhost:8500/repo.rpc?wait=14s
-  Timeout: 30000
+  Timeout: 300000
 
 AnalysisRpcConf:
   Target: consul://localhost:8500/analysis.rpc?wait=14s
-  Timeout: 180000
+  Timeout: 300000
 
 Log:
   ServiceName: apiProcessor

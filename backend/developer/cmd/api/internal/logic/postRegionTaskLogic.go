@@ -54,7 +54,7 @@ func (l *PostRegionTaskLogic) PostRegionTask(rayId string, req *types.PostTaskRe
 		return nil, zeroErrors.New(http.StatusInternalServerError, "Failed to create task")
 	}
 
-	_, err = l.svcCtx.AsynqClient.Enqueue(task, asynq.TaskID(taskId), asynq.Retention(tasks.APITaskExpireTime))
+	_, err = l.svcCtx.AsynqClient.Enqueue(task, asynq.TaskID(taskId), asynq.Retention(tasks.APITaskExpireTime), asynq.MaxRetry(tasks.APIMaxRetry))
 	if err != nil {
 		logx.Error("Failed to enqueue task ", err)
 		return nil, zeroErrors.New(http.StatusInternalServerError, "Failed to enqueue task")

@@ -1,6 +1,6 @@
 Name: analysis.rpc
 ListenOn: 127.0.0.1:2005
-Timeout: 180000
+Timeout: 300000
 
 Log:
   ServiceName: analysis.rpc
@@ -30,11 +30,11 @@ DevServer:
 
 DeveloperRpcConf:
   Target: consul://localhost:8500/developer.rpc?wait=14s
-  Timeout: 30000
+  Timeout: 300000
 
 RelationRpcConf:
   Target: consul://localhost:8500/relation.rpc?wait=14s
-  Timeout: 180000
+  Timeout: 300000
 
 ContributionRpcConf:
   Target: consul://localhost:8500/contribution.rpc?wait=14s
@@ -42,7 +42,7 @@ ContributionRpcConf:
 
 RepoRpcConf:
   Target: consul://localhost:8500/repo.rpc?wait=14s
-  Timeout: 30000
+  Timeout: 300000
 
 RedisConf:
   Host: 127.0.0.1:6379

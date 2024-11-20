@@ -8,10 +8,9 @@ import (
 	"github.com/ShellWen/GitPulse/developer/cmd/api/internal/types"
 	"github.com/ShellWen/GitPulse/id_generator/idgenerator"
 	"github.com/hibiken/asynq"
+	"github.com/zeromicro/go-zero/core/logx"
 	zeroErrors "github.com/zeromicro/x/errors"
 	"net/http"
-
-	"github.com/zeromicro/go-zero/core/logx"
 )
 
 type PostDeveloperTaskLogic struct {
@@ -53,7 +52,7 @@ func (l *PostDeveloperTaskLogic) PostDeveloperTask(rayId string, req *types.Post
 		return nil, zeroErrors.New(http.StatusInternalServerError, "Failed to create task")
 	}
 
-	_, err = l.svcCtx.AsynqClient.Enqueue(task, asynq.TaskID(taskId), asynq.Retention(tasks.APITaskExpireTime))
+	_, err = l.svcCtx.AsynqClient.Enqueue(task, asynq.TaskID(taskId), asynq.Retention(tasks.APITaskExpireTime), asynq.MaxRetry(tasks.APIMaxRetry))
 	if err != nil {
 		logx.Error("Failed to enqueue task ", err)
 		return nil, zeroErrors.New(http.StatusInternalServerError, "Failed to enqueue task")
