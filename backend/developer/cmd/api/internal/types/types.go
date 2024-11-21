@@ -23,8 +23,7 @@ type Developer struct {
 }
 
 type GetDeveloperReq struct {
-	Login  string `path:"login"`
-	TaskId string `form:"task_id"`
+	Login string `path:"login"`
 }
 
 type GetLanguageUsageReq struct {

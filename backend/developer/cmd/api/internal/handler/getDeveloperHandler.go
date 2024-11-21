@@ -22,7 +22,7 @@ func getDeveloperHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 		}
 
 		l := logic.NewGetDeveloperLogic(r.Context(), svcCtx)
-		devResp, taskResp, err := l.GetDeveloper(&req)
+		devResp, err := l.GetDeveloper(&req)
 		var codeMsg *zeroErrors.CodeMsg
 		var ghErrResp *github.ErrorResponse
 		if err != nil {
@@ -39,9 +39,6 @@ func getDeveloperHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			xhttp.JsonBaseResponseCtx(r.Context(), w, err)
 		} else if devResp != nil {
 			httpx.OkJsonCtx(r.Context(), w, devResp)
-		} else if taskResp != nil {
-			w.WriteHeader(http.StatusAccepted)
-			httpx.OkJsonCtx(r.Context(), w, taskResp)
 		} else {
 			err = zeroErrors.New(http.StatusInternalServerError, "Internal server error")
 			w.WriteHeader(http.StatusInternalServerError)

@@ -59,8 +59,7 @@ type (
 		Login string `path:"login"`
 	}
 	GetDeveloperReq {
-		Login  string `path:"login"`
-		TaskId string `form:"task_id"`
+		Login string `path:"login"`
 	}
 	GetPulsePointReq {
 		Login  string `path:"login"`
@@ -84,9 +83,6 @@ type (
 	prefix: /developers
 )
 service Developer {
-	@handler postDeveloperTask
-	post /:login (PostTaskReq) returns (TaskId)
-
 	@handler postPulsePointTask
 	post /:login/pulse-point (PostTaskReq) returns (TaskId)
 

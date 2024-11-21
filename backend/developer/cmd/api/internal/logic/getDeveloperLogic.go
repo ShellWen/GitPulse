@@ -2,15 +2,11 @@ package logic
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	customGithub "github.com/ShellWen/GitPulse/common/github"
-	"github.com/ShellWen/GitPulse/common/tasks"
 	"github.com/ShellWen/GitPulse/developer/cmd/api/internal/svc"
 	"github.com/ShellWen/GitPulse/developer/cmd/api/internal/types"
 	"github.com/ShellWen/GitPulse/developer/cmd/rpc/developer"
-	"github.com/hibiken/asynq"
-	zeroErrors "github.com/zeromicro/x/errors"
 	"net/http"
 	"time"
 
@@ -31,70 +27,81 @@ func NewGetDeveloperLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetD
 	}
 }
 
-func (l *GetDeveloperLogic) GetDeveloper(req *types.GetDeveloperReq) (*types.Developer, *types.TaskState, error) {
-	reqId := req.TaskId
-	id, err := customGithub.GetIdByLogin(l.ctx, req.Login)
-	if err != nil {
-		logx.Error("Failed to get id by login ", req.Login, err)
-		return nil, nil, err
-	}
-	taskId := tasks.GetNewAPITaskKey(tasks.APIGetDeveloper, id, reqId)
-
-	taskInfo, err := l.svcCtx.AsynqInspector.GetTaskInfo(tasks.APITaskQueue, taskId)
-	if err != nil {
-		switch {
-		case errors.Is(err, asynq.ErrTaskNotFound):
-			return nil, nil, zeroErrors.New(http.StatusNotFound, "Task not found")
-		default:
-			return nil, nil, zeroErrors.New(http.StatusInternalServerError, "Failed to get task info: "+err.Error())
-		}
-	}
-
-	switch taskInfo.State {
-	case asynq.TaskStatePending, asynq.TaskStateActive:
-		return nil, &types.TaskState{
-			State: taskInfo.State.String(),
-		}, nil
-	case asynq.TaskStateRetry:
-		return nil, &types.TaskState{
-			State:  taskInfo.State.String(),
-			Reason: taskInfo.LastErr,
-		}, nil
-	case asynq.TaskStateArchived:
-		return nil, &types.TaskState{
-			State:  "fail",
-			Reason: taskInfo.LastErr,
-		}, nil
-	case asynq.TaskStateCompleted:
-		var dev = developer.Developer{}
-		err = json.Unmarshal(taskInfo.Result, &dev)
-		if err != nil {
-			return nil, nil, zeroErrors.New(http.StatusInternalServerError, "Failed to unmarshal task result: "+err.Error())
-		}
-		return l.buildResp(&dev), nil, nil
-	default:
-		return nil, nil, zeroErrors.New(http.StatusInternalServerError, "Unexpected task state: "+taskInfo.State.String())
-	}
+func (l *GetDeveloperLogic) GetDeveloper(req *types.GetDeveloperReq) (resp *types.Developer, err error) {
+	resp, err = l.doGetDeveloper(req)
+	return
 }
 
-func (l *GetDeveloperLogic) buildResp(dev *developer.Developer) (resp *types.Developer) {
-	resp = &types.Developer{
-		Id:        dev.Id,
-		Name:      dev.Name,
-		Login:     dev.Login,
-		AvatarUrl: dev.AvatarUrl,
-		Company:   dev.Company,
-		Location:  dev.Location,
-		Bio:       dev.Bio,
-		Blog:      dev.Blog,
-		Email:     dev.Email,
-		Followers: dev.Followers,
-		Following: dev.Following,
-		Stars:     dev.Stars,
-		Repos:     dev.Repos,
-		Gists:     dev.Gists,
-		CreatedAt: time.Unix(dev.CreatedAt, 0).Format(time.RFC3339),
-		UpdatedAt: time.Unix(dev.UpdatedAt, 0).Format(time.RFC3339),
+func (l *GetDeveloperLogic) doGetDeveloper(req *types.GetDeveloperReq) (resp *types.Developer, err error) {
+	var (
+		id      int64
+		rpcResp *developer.GetDeveloperByIdResp
+	)
+
+	resp = &types.Developer{}
+
+	if id, err = customGithub.GetIdByLogin(l.ctx, req.Login); err != nil {
+		logx.Error("Failed to get id by login ", req.Login, err)
+		return
 	}
+
+	if _, err = l.rpcUpdateDeveloperById(id); err != nil {
+		logx.Error("Failed to update developer by id ", id, err)
+		return
+	}
+
+	if rpcResp, err = l.rpcGetDeveloperById(id); err != nil {
+		logx.Error("Failed to get developer by id ", id, err)
+		return
+	}
+
+	resp = &types.Developer{
+		Id:        rpcResp.Developer.Id,
+		Name:      rpcResp.Developer.Name,
+		Login:     rpcResp.Developer.Login,
+		AvatarUrl: rpcResp.Developer.AvatarUrl,
+		Company:   rpcResp.Developer.Company,
+		Location:  rpcResp.Developer.Location,
+		Bio:       rpcResp.Developer.Bio,
+		Blog:      rpcResp.Developer.Blog,
+		Email:     rpcResp.Developer.Email,
+		Followers: rpcResp.Developer.Followers,
+		Following: rpcResp.Developer.Following,
+		Stars:     rpcResp.Developer.Stars,
+		Repos:     rpcResp.Developer.Repos,
+		Gists:     rpcResp.Developer.Gists,
+		CreatedAt: time.Unix(rpcResp.Developer.CreatedAt, 0).Format(time.RFC3339),
+		UpdatedAt: time.Unix(rpcResp.Developer.UpdatedAt, 0).Format(time.RFC3339),
+	}
+
+	logx.Info("Successfully get developer by login ", req.Login)
+	return
+}
+
+func (l *GetDeveloperLogic) rpcUpdateDeveloperById(id int64) (resp *developer.UpdateDeveloperResp, err error) {
+	if resp, err = l.svcCtx.DeveloperRpcClient.UpdateDeveloper(l.ctx, &developer.UpdateDeveloperReq{
+		Id: id,
+	}); err != nil {
+		return
+	} else if resp.Code != http.StatusOK {
+		err = errors.New(resp.Message)
+		return
+	}
+
+	logx.Info("Successfully update developer by id ", id)
+	return
+}
+
+func (l *GetDeveloperLogic) rpcGetDeveloperById(id int64) (resp *developer.GetDeveloperByIdResp, err error) {
+	if resp, err = l.svcCtx.DeveloperRpcClient.GetDeveloperById(l.ctx, &developer.GetDeveloperByIdReq{
+		Id: id,
+	}); err != nil {
+		return
+	} else if resp.Code != http.StatusOK {
+		err = errors.New(resp.Message)
+		return
+	}
+
+	logx.Info("Successfully get developer by id ", id)
 	return
 }
