@@ -59,9 +59,11 @@ const fetchWithTimeout: FetchWithTimeout = async (input, init) => {
   const { gp_timeout, ...restInit } = init ?? {}
   const controller = new AbortController()
   const timer = setTimeout(() => controller.abort(), gp_timeout ?? DEFAULT_TIMEOUT)
-  const response = await fetchWithBaseUrl(input, { ...restInit, signal: controller.signal })
-  clearTimeout(timer)
-  return response
+  try {
+    return await fetchWithBaseUrl(input, { ...restInit, signal: controller.signal })
+  } finally {
+    clearTimeout(timer)
+  }
 }
 
 /**
