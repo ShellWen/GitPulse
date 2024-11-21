@@ -3,6 +3,7 @@ import { QueryError } from '$/lib/query/error.ts'
 import type { Middleware, SWRConfiguration } from 'swr'
 
 const wrapError: Middleware = (useSWRNext) => (key, fetcher, config) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const newFetcher = fetcher ? (...args: any[]) => {
     const result = fetcher(...args)
     if (result instanceof Promise) {
