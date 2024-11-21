@@ -18,7 +18,7 @@ COPY ./relation ./relation
 COPY ./repo ./repo
 COPY ./api_processor/etc/apiProcessor.yaml /app/api_processor/etc/apiProcessor.yaml
 ENV GOCACHE=/root/.cache/go-build
-RUN --mount=type=cache,target="/root/.cache/go-build" go build -ldflags="-s -w" -o /app/api_processor ./api_processor
+RUN --mount=type=cache,target="/root/.cache/go-build" go build -ldflags="-s -w" -o /app/api_processor_exec ./api_processor
 
 
 FROM alpine:latest
@@ -29,6 +29,6 @@ WORKDIR /app
 
 VOLUME /app/api_processor/etc
 COPY --from=builder /app/api_processor/etc/apiProcessor.yaml /app/api_processor/etc/apiProcessor.yaml
-COPY --from=builder /app/api_processor /app/api_processor
+COPY --from=builder /app/api_processor_exec /app/api_processor_exec
 
-CMD ["./api_processor"]
+CMD ["./api_processor_exec"]
