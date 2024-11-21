@@ -14,7 +14,7 @@ tags:
 paths:
   /developers/{login}:
     get:
-      summary: 根据 GitHub 用户名与任务 ID，获取该任务中用户的个人信息
+      summary: 根据 GitHub 用户名，获取用户的个人信息
       deprecated: false
       description: ''
       tags:
@@ -22,12 +22,6 @@ paths:
       parameters:
         - name: login
           in: path
-          description: ''
-          required: true
-          schema:
-            type: string
-        - name: task_id
-          in: query
           description: ''
           required: true
           schema:
@@ -54,44 +48,6 @@ paths:
             application/json:
               schema: &ref_0
                 $ref: '#/components/schemas/CodeMsg'
-          headers: {}
-        '500':
-          description: ''
-          content:
-            application/json:
-              schema: *ref_0
-          headers: {}
-      security: []
-    post:
-      summary: 根据 GitHub 用户名，创建获取用户个人信息的任务
-      deprecated: false
-      description: ''
-      tags: []
-      parameters:
-        - name: login
-          in: path
-          description: ''
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  task_id:
-                    type: string
-                required:
-                  - task_id
-          headers: {}
-        '404':
-          description: 用户名不存在
-          content:
-            application/json:
-              schema: *ref_0
           headers: {}
         '500':
           description: ''
