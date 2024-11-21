@@ -12,6 +12,7 @@ import {
   useDeveloperLanguages,
   useDeveloperPulsePoint,
   useDeveloperRegion,
+  useDeveloperSummary,
   useSuspenseDeveloper,
 } from '$/lib/query/hooks/useDeveloper.ts'
 import useDarkMode from '$/lib/useDarkMode.ts'
@@ -132,31 +133,33 @@ const LanguagePie = ({ data }: { data: DeveloperLanguages }) => {
   return <Pie {...config} />
 }
 
+const DeveloperSummaryBlock = ({ username }: { username: string }) => {
+  const { data } = useDeveloperSummary(username)
+
+  return (
+    <section className="w-full rounded bg-base-200 p-8 lg:col-span-5">
+      {data ? (
+        <p>{data.summary}</p>
+      ) : (
+        <>
+          <Skeleton className="mb-4 h-8 w-[70%]" />
+          <Skeleton className="mb-4 h-8 w-[30%]" />
+          <Skeleton className="mb-4 h-8 w-[45%]" />
+        </>
+      )}
+    </section>
+  )
+}
+
 const DeveloperLanguageBlock = ({ username }: { username: string }) => {
   const { data: developer } = useDeveloper(username)
   const { data } = useDeveloperLanguages(username)
-  const mostUsedLanguage = useMemo(() => {
-    if (!data) {
-      return null
-    }
-    if (data.languages.length === 0) {
-      return null
-    }
-    return data.languages.reduce((prev, current) => (prev.percentage > current.percentage ? prev : current))
-  }, [data])
+
   if (!developer || !data) {
-    return <DeveloperBlockSkeleton />
+    return <Skeleton className="h-64 w-full rounded bg-base-200 lg:col-span-3" />
   }
   return (
     <>
-      <section className="w-full rounded bg-base-200 p-8 lg:col-span-2 lg:h-96">
-        <p>
-          {mostUsedLanguage
-            ? `${developer.name} 使用最多的语言是 ${mostUsedLanguage?.language.name}，占比 ${mostUsedLanguage?.percentage.toFixed(2)}%。`
-            : `我们暂时没有找到 ${developer.name} 使用最多的语言。`}
-          {/* TODO: Styles */}
-        </p>
-      </section>
       <section className="w-full rounded bg-base-200 lg:col-span-3 lg:h-96">
         {/* TODO: styles */}
         {data && <LanguagePie data={data} />}
@@ -217,42 +220,33 @@ const DeveloperRegionBlock = ({ username }: { username: string }) => {
   }, [region])
 
   if (!developer || !data) {
-    return <DeveloperBlockSkeleton />
+    return <Skeleton className="h-64 w-full rounded bg-base-200 lg:col-span-2" />
   }
 
   return (
     <>
-      <section className="flex w-full flex-col items-center justify-center rounded bg-base-200 p-8 text-8xl lg:col-span-3 lg:h-96">
-        {regionFlag}
-      </section>
-      <section className="w-full rounded bg-base-200 p-8 lg:col-span-2 lg:h-96">
+      <section className="relative overflow-clip w-full rounded bg-base-200 p-8 lg:col-span-2 lg:h-96">
         {region === RegionNotSure ? (
           <p>我们没有找到开发者可能所处的地区。</p>
         ) : (
-          <p>{`${developer.name} 来自 ${regionName}，置信度为 ${(confidence * 100).toFixed(2)}%。`}</p>
+          <p>{`@${developer.login} 来自 ${regionName}，置信度为 ${(confidence * 100).toFixed(2)}%。`}</p>
         )}
+        <div className="absolute bottom-4 right-4 text-6xl lg:text-9xl opacity-25">{regionFlag}</div>
       </section>
     </>
   )
-}
-
-const DeveloperBlockSkeleton = () => {
-  return <Skeleton className="h-64 w-full rounded bg-base-200 lg:col-span-5" />
-}
-
-const DeveloperBlockSuspense = ({ children }: PropsWithChildren) => {
-  return <Suspense fallback={<DeveloperBlockSkeleton />}>{children}</Suspense>
 }
 
 const DeveloperTable = ({ username }: { username: string }) => {
   return (
     <div className="flex w-full max-w-6xl flex-col">
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-5">
+        <DeveloperSummaryBlock username={username} />
         {/* We have to use Suspense due to lazy components */}
-        <DeveloperBlockSuspense>
-          <DeveloperLanguageBlock username={username} />
-        </DeveloperBlockSuspense>
         <DeveloperRegionBlock username={username} />
+        <Suspense fallback={<Skeleton className="h-64 w-full rounded bg-base-200 lg:col-span-3" />}>
+          <DeveloperLanguageBlock username={username} />
+        </Suspense>
       </div>
     </div>
   )

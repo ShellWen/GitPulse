@@ -9,7 +9,7 @@ import {
   developerLanguages,
   developerRegion,
   developerWithPulsePoint,
-  pulsePoint,
+  pulsePoint, type DeveloperSummary, developerSummary,
 } from '$/lib/api/endpoint/types.ts'
 import { buildUrl, typedFetch, typedFetchAsync } from '$/lib/api/fetcher.ts'
 import type { Key } from 'swr'
@@ -44,6 +44,16 @@ export const subscribeDeveloperRegion =
   (_: Key, { next }: SWRSubscriptionOptions<DeveloperRegion, Error>) => {
     const abortController = new AbortController()
     typedFetchAsync(`/developers/${username}/region`, developerRegion, abortController, next)
+    return () => {
+      abortController.abort()
+    }
+  }
+
+export const subscribeDeveloperSummary =
+  (username: string) =>
+  (_: Key, { next }: SWRSubscriptionOptions<DeveloperSummary, Error>) => {
+    const abortController = new AbortController()
+    typedFetchAsync(`/developers/${username}/summary`, developerSummary, abortController, next)
     return () => {
       abortController.abort()
     }

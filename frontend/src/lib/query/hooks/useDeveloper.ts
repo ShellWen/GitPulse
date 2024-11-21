@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import {
   getDeveloper,
   searchDevelopers,
-  subscribeDeveloperRegion,
+  subscribeDeveloperRegion, subscribeDeveloperSummary,
   subscriptDeveloperLanguages,
   subscriptDeveloperPulsePoint,
 } from '$/lib/api/endpoint/developer.ts'
@@ -29,6 +29,11 @@ export const useDeveloperLanguages = (username: string) => {
 export const useDeveloperRegion = (username: string) => {
   const fetcher = useMemo(() => subscribeDeveloperRegion(username), [username])
   return useSWRSubscription(['developers', username, 'region'], fetcher)
+}
+
+export const useDeveloperSummary = (username: string) => {
+  const fetcher = useMemo(() => subscribeDeveloperSummary(username), [username])
+  return useSWRSubscription(['developers', username, 'summary'], fetcher)
 }
 
 export const useSearchDevelopers = (limit: number, language?: string, region?: string) =>

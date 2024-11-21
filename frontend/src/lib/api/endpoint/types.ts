@@ -70,6 +70,15 @@ export const developerRegion = z.object({
 })
 export type DeveloperRegion = z.infer<typeof developerRegion>
 
+export const developerSummary = z.object({
+  id: z.number().nonnegative('Developer ID should be non-negative'),
+  summary: z.string(),
+  // FIXME: replace with `z.coerce.date()` after the API is fixed
+  updated_at: z.string(),
+})
+
+export type DeveloperSummary = z.infer<typeof developerSummary>
+
 export const task = z.object({
   task_id: z.string().min(1, 'Task ID should not be empty'),
 })
