@@ -40,7 +40,7 @@ func (l *GetDeveloperLogic) GetDeveloper(req *types.GetDeveloperReq) (*types.Dev
 	}
 	taskId := tasks.GetNewAPITaskKey(tasks.APIGetDeveloper, id, reqId)
 
-	taskInfo, err := l.svcCtx.AsynqInspector.GetTaskInfo("default", taskId)
+	taskInfo, err := l.svcCtx.AsynqInspector.GetTaskInfo(tasks.APITaskQueue, taskId)
 	if err != nil {
 		switch {
 		case errors.Is(err, asynq.ErrTaskNotFound):

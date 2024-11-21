@@ -39,7 +39,7 @@ func (l *GetPulsePointLogic) GetPulsePoint(req *types.GetPulsePointReq) (*types.
 	}
 	taskId := tasks.GetNewAPITaskKey(tasks.APIGetPulsePoint, id, reqId)
 
-	taskInfo, err := l.svcCtx.AsynqInspector.GetTaskInfo("default", taskId)
+	taskInfo, err := l.svcCtx.AsynqInspector.GetTaskInfo(tasks.APITaskQueue, taskId)
 	if err != nil {
 		switch {
 		case errors.Is(err, asynq.ErrTaskNotFound):

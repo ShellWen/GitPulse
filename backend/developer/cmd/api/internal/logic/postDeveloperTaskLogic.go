@@ -52,7 +52,11 @@ func (l *PostDeveloperTaskLogic) PostDeveloperTask(rayId string, req *types.Post
 		return nil, zeroErrors.New(http.StatusInternalServerError, "Failed to create task")
 	}
 
-	_, err = l.svcCtx.AsynqClient.Enqueue(task, asynq.TaskID(taskId), asynq.Retention(tasks.APITaskExpireTime), asynq.MaxRetry(tasks.APIMaxRetry))
+	_, err = l.svcCtx.AsynqClient.Enqueue(task, asynq.TaskID(taskId),
+		asynq.Retention(tasks.APITaskExpireTime),
+		asynq.MaxRetry(tasks.APIMaxRetry),
+		asynq.Queue(tasks.APITaskQueue),
+	)
 	if err != nil {
 		logx.Error("Failed to enqueue task ", err)
 		return nil, zeroErrors.New(http.StatusInternalServerError, "Failed to enqueue task")

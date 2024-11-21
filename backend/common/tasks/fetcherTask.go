@@ -4,12 +4,19 @@ import (
 	"encoding/json"
 	"github.com/hibiken/asynq"
 	"strconv"
+	"time"
 )
 
 type FetchType int8
 
 const (
-	FetcherTaskName = "fetch"
+	FetchMaxRetry   = 3
+	FetchRetryDelay = time.Second * 5
+)
+
+const (
+	FetcherTaskName  = "fetch"
+	FetcherTaskQueue = "fetch"
 )
 
 const (

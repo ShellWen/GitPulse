@@ -16,7 +16,8 @@ const (
 )
 
 const (
-	APITaskName = "api"
+	APITaskName  = "api"
+	APITaskQueue = "api"
 )
 
 const (

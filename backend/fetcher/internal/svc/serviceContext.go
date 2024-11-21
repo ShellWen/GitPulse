@@ -1,6 +1,7 @@
 package svc
 
 import (
+	"github.com/ShellWen/GitPulse/common/tasks"
 	"github.com/ShellWen/GitPulse/contribution/cmd/rpc/contribution"
 	"github.com/ShellWen/GitPulse/developer/cmd/rpc/developer"
 	"github.com/ShellWen/GitPulse/fetcher/internal/config"
@@ -10,6 +11,7 @@ import (
 	"github.com/zeromicro/go-queue/kq"
 	"github.com/zeromicro/go-zero/core/stores/redis"
 	"github.com/zeromicro/go-zero/zrpc"
+	"time"
 )
 
 type ServiceContext struct {
@@ -62,7 +64,11 @@ func NewServiceContext(c config.Config) *ServiceContext {
 				Password: c.AsynqRedisConf.Password,
 				DB:       c.AsynqRedisConf.DB,
 			}, asynq.Config{
-				Concurrency: 10,
+				Concurrency: 20,
+				RetryDelayFunc: func(n int, e error, t *asynq.Task) time.Duration {
+					return tasks.FetchRetryDelay
+				},
+				Queues: map[string]int{tasks.FetcherTaskQueue: 1},
 			}),
 	}
 }

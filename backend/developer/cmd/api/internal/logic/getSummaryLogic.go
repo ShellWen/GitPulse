@@ -38,7 +38,7 @@ func (l *GetSummaryLogic) GetSummary(req *types.GetSummaryReq) (*types.Summary, 
 	}
 	taskId := tasks.GetNewAPITaskKey(tasks.APIGetSummary, id, reqId)
 
-	taskInfo, err := l.svcCtx.AsynqInspector.GetTaskInfo("default", taskId)
+	taskInfo, err := l.svcCtx.AsynqInspector.GetTaskInfo(tasks.APITaskQueue, taskId)
 	if err != nil {
 		switch {
 		case errors.Is(err, asynq.ErrTaskNotFound):

@@ -135,7 +135,7 @@ func (l *UpdateReviewOfUserLogic) pushUpdateReviewOfUserTask(id int64, updateAft
 		return
 	}
 
-	if _, err = l.svcCtx.AsynqClient.Enqueue(task, asynq.TaskID(taskId)); err != nil {
+	if _, err = l.svcCtx.AsynqClient.Enqueue(task, asynq.TaskID(taskId), asynq.Queue(tasks.FetcherTaskQueue), asynq.MaxRetry(tasks.FetchMaxRetry)); err != nil {
 		if errors.Is(err, asynq.ErrTaskIDConflict) {
 			err = nil
 		} else {

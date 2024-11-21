@@ -47,6 +47,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 				RetryDelayFunc: func(n int, e error, t *asynq.Task) time.Duration {
 					return tasks.APIRetryDelay
 				},
+				Queues: map[string]int{tasks.APITaskQueue: 1},
 			}),
 	}
 }
