@@ -22,7 +22,7 @@ RUN --mount=type=cache,target="/root/.cache/go-build" go build -ldflags="-s -w" 
 
 FROM alpine:latest
 
-RUN apk add --no-cache ca-certificates tzdata
+RUN apk add --no-cache ca-certificates tzdata curl
 
 WORKDIR /app
 
