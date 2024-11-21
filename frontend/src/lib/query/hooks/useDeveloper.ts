@@ -1,11 +1,14 @@
+import { useMemo } from 'react'
+
 import {
   getDeveloper,
-  getDeveloperLanguages,
-  getDeveloperPulsePoint,
-  getDeveloperRegion,
   searchDevelopers,
+  subscribeDeveloperRegion,
+  subscriptDeveloperLanguages,
+  subscriptDeveloperPulsePoint,
 } from '$/lib/api/endpoint/developer.ts'
 import useSWR from 'swr'
+import useSWRSubscription from 'swr/subscription'
 
 export const useDeveloper = (username: string) =>
   useSWR(['developers', username], ([, username]) => getDeveloper(username))
@@ -13,37 +16,30 @@ export const useDeveloper = (username: string) =>
 export const useSuspenseDeveloper = (username: string) =>
   useSWR(['developers', username], ([, username]) => getDeveloper(username), { suspense: true })
 
-export const useDeveloperPulsePoint = (username: string) =>
-  useSWR(['developers', username, 'pulse-point'], ([, username]) => getDeveloperPulsePoint(username))
+export const useDeveloperPulsePoint = (username: string) => {
+  const fetcher = useMemo(() => subscriptDeveloperPulsePoint(username), [username])
+  return useSWRSubscription(['developers', username, 'pulse-point'], fetcher)
+}
 
-export const useSuspenseDeveloperPulsePoint = (username: string) =>
-  useSWR(['developers', username, 'pulse-point'], ([, username]) => getDeveloperPulsePoint(username), {
-    suspense: true,
-  })
+export const useDeveloperLanguages = (username: string) => {
+  const fetcher = useMemo(() => subscriptDeveloperLanguages(username), [username])
+  return useSWRSubscription(['developers', username, 'languages'], fetcher)
+}
 
-export const useDeveloperLanguages = (username: string) =>
-  useSWR(['developers', username, 'languages'], ([, username]) => getDeveloperLanguages(username))
+export const useDeveloperRegion = (username: string) => {
+  const fetcher = useMemo(() => subscribeDeveloperRegion(username), [username])
+  return useSWRSubscription(['developers', username, 'region'], fetcher)
+}
 
-export const useSuspenseDeveloperLanguages = (username: string) =>
-  useSWR(['developers', username, 'languages'], ([, username]) => getDeveloperLanguages(username), {
-    suspense: true,
-  })
-
-export const useDeveloperRegion = (username: string) =>
-  useSWR(['developers', username, 'region'], ([, username]) => getDeveloperRegion(username))
-
-export const useSuspenseDeveloperRegion = (username: string) =>
-  useSWR(['developers', username, 'region'], ([, username]) => getDeveloperRegion(username), { suspense: true })
-
-export const useSearchDevelopers = (limit: number, languageId?: string, region?: string) =>
-  useSWR(['developers', limit, languageId, region], ([, limit, languageId, region]) =>
-    searchDevelopers(limit, languageId, region),
+export const useSearchDevelopers = (limit: number, language?: string, region?: string) =>
+  useSWR(['developers', limit, language, region], ([, limit, language, region]) =>
+    searchDevelopers(limit, language, region),
   )
 
-export const useSuspenseSearchDevelopers = (limit: number, languageId?: string, region?: string) =>
+export const useSuspenseSearchDevelopers = (limit: number, language?: string, region?: string) =>
   useSWR(
-    ['developers', limit, languageId, region],
-    ([, limit, languageId, region]) => searchDevelopers(limit, languageId, region),
+    ['developers', limit, language, region],
+    ([, limit, language, region]) => searchDevelopers(limit, language, region),
     {
       suspense: true,
     },

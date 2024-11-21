@@ -1,45 +1,65 @@
-import { BASE_URL } from '$/lib/api/constants.ts'
 import {
   type Developer,
   type DeveloperLanguages,
-  type DeveloperPulsePoint,
   type DeveloperRegion,
   type DeveloperWithPulsePoint,
   type Language,
+  type PulsePoint,
   developer,
   developerLanguages,
-  developerPulsePoint,
   developerRegion,
   developerWithPulsePoint,
+  pulsePoint,
 } from '$/lib/api/endpoint/types.ts'
-import fetchWrapped from '$/lib/api/fetchWrapped.ts'
+import { buildUrl, typedFetch, typedFetchAsync } from '$/lib/api/fetcher.ts'
+import type { Key } from 'swr'
+import { type SWRSubscription, type SWRSubscriptionOptions } from 'swr/subscription'
 
 export const getDeveloper = async (username: string): Promise<Developer> => {
-  return fetchWrapped(`${BASE_URL}/developers/${username}`, developer)
+  return typedFetch(`/developers/${username}`, developer)
 }
 
-export const getDeveloperPulsePoint = async (username: string): Promise<DeveloperPulsePoint> => {
-  return fetchWrapped(`${BASE_URL}/developers/${username}/pulse-point`, developerPulsePoint)
-}
+export const subscriptDeveloperPulsePoint =
+  (username: string) =>
+  (_: Key, { next }: SWRSubscriptionOptions<PulsePoint, Error>) => {
+    const abortController = new AbortController()
+    typedFetchAsync(`/developers/${username}/pulse-point`, pulsePoint, abortController, next)
+    return () => {
+      abortController.abort()
+    }
+  }
 
-export const getDeveloperLanguages = async (username: string): Promise<DeveloperLanguages> => {
-  return fetchWrapped(`${BASE_URL}/developers/${username}/languages`, developerLanguages)
-}
+export const subscriptDeveloperLanguages =
+  (username: string) =>
+  (_: Key, { next }: SWRSubscriptionOptions<DeveloperLanguages, Error>): SWRSubscription => {
+    const abortController = new AbortController()
+    typedFetchAsync(`/developers/${username}/languages`, developerLanguages, abortController, next)
+    return () => {
+      abortController.abort()
+    }
+  }
 
-export const getDeveloperRegion = async (username: string): Promise<DeveloperRegion> => {
-  return fetchWrapped(`${BASE_URL}/developers/${username}/region`, developerRegion)
-}
+export const subscribeDeveloperRegion =
+  (username: string) =>
+  (_: Key, { next }: SWRSubscriptionOptions<DeveloperRegion, Error>) => {
+    const abortController = new AbortController()
+    typedFetchAsync(`/developers/${username}/region`, developerRegion, abortController, next)
+    return () => {
+      abortController.abort()
+    }
+  }
 
 export const searchDevelopers = async (
   limit: number,
-  languageId?: Language['id'],
-  region?: DeveloperRegion['region']['region'],
+  language?: Language['id'],
+  region?: DeveloperRegion['region'],
 ): Promise<Array<DeveloperWithPulsePoint>> => {
-  const url = new URL(`${BASE_URL}/developers`)
-  url.searchParams.set('limit', (limit ?? "").toString())
-  url.searchParams.set('language', languageId ?? "")
-  url.searchParams.set('region', region ?? "")
-  return fetchWrapped(url, developerWithPulsePoint.array(), {
+  const url = buildUrl('/rank', {
+    limit: (limit ?? '').toString(),
+    language: language ?? '',
+    region: region ?? '',
+  })
+  return typedFetch(url, developerWithPulsePoint.array(), {
     method: 'GET',
   })
 }

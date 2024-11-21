@@ -23,17 +23,12 @@ export const developer = z.object({
 })
 export type Developer = z.infer<typeof developer>
 
-const pulsePoint = z.object({
+export const pulsePoint = z.object({
   id: z.number().nonnegative('Developer ID should be non-negative'),
   pulse_point: z.number().nonnegative('Pulse Point should be non-negative'),
   updated_at: z.coerce.date(),
 })
 export type PulsePoint = z.infer<typeof pulsePoint>
-
-export const developerPulsePoint = z.object({
-  pulse_point: pulsePoint,
-})
-export type DeveloperPulsePoint = z.infer<typeof developerPulsePoint>
 
 export const developerWithPulsePoint = z.object({
   developer: developer,
@@ -59,22 +54,23 @@ export const languageWithUsage = z.object({
 export type LanguageWithUsage = z.infer<typeof languageWithUsage>
 
 export const developerLanguages = z.object({
-  languages: z.object({
-    id: z.number().nonnegative('Developer ID should be non-negative'),
-    languages: z.array(languageWithUsage),
-    updated_at: z.coerce.date(),
-  }),
+  id: z.number().nonnegative('Developer ID should be non-negative'),
+  languages: z.array(languageWithUsage),
+  updated_at: z.coerce.date(),
 })
 export type DeveloperLanguages = z.infer<typeof developerLanguages>
 
 export const developerRegion = z.object({
-  region: z.object({
-    id: z.number().nonnegative('Developer ID should be non-negative'),
-    region: z.string(),
-    confidence: z
-      .number()
-      .min(0, 'Region confidence should be non-negative')
-      .max(1, 'Region confidence should be less than 1'),
-  }),
+  id: z.number().nonnegative('Developer ID should be non-negative'),
+  region: z.string(),
+  confidence: z
+    .number()
+    .min(0, 'Region confidence should be non-negative')
+    .max(1, 'Region confidence should be less than 1'),
 })
 export type DeveloperRegion = z.infer<typeof developerRegion>
+
+export const task = z.object({
+  task_id: z.string().min(1, 'Task ID should not be empty'),
+})
+export type Task = z.infer<typeof task>

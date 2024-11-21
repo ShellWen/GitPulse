@@ -6,11 +6,12 @@ import DeveloperInfo from '$/component/developer/DeveloperInfo.tsx'
 import DeveloperInfoSkeleton from '$/component/developer/DeveloperInfoSkeleton.tsx'
 import type { DeveloperLanguages } from '$/lib/api/endpoint/types.ts'
 import { HttpError } from '$/lib/api/error.ts'
+import { QueryError } from '$/lib/query/error.ts'
 import {
-  useDeveloperPulsePoint,
+  useDeveloper,
+  useDeveloperLanguages,
+  useDeveloperPulsePoint, useDeveloperRegion,
   useSuspenseDeveloper,
-  useSuspenseDeveloperLanguages,
-  useSuspenseDeveloperRegion,
 } from '$/lib/query/hooks/useDeveloper.ts'
 import useDarkMode from '$/lib/useDarkMode.ts'
 import type { PieConfig } from '@ant-design/plots/es/components/pie'
@@ -18,7 +19,6 @@ import { createLazyFileRoute, getRouteApi } from '@tanstack/react-router'
 import { type TCountryCode, getEmojiFlag } from 'countries-list'
 import { Skeleton } from 'react-daisyui'
 import { ErrorBoundary, type FallbackProps } from 'react-error-boundary'
-import { QueryError } from '$/lib/query/error.ts'
 
 const route = getRouteApi('/u_/$username')
 
@@ -31,7 +31,7 @@ const DeveloperInfoWrapper = ({ username }: { username: string }) => {
       developer={user}
       rightBlock={
         <div className="text-clip whitespace-nowrap text-8xl font-bold italic tracking-wider text-base-content/20 sm:text-9xl">
-          {pulsePoint ? `${pulsePoint.pulse_point.pulse_point.toFixed(2)}pp` : '计算中...'}
+          {pulsePoint ? `${pulsePoint.pulse_point.toFixed(2)}pp` : '计算中...'}
         </div>
       }
     />
@@ -58,7 +58,7 @@ const LanguagePie = ({ data }: { data: DeveloperLanguages }) => {
   const isDarkMode = useDarkMode()
   const flattenedData: LanguagePieItem[] = useMemo(
     () => [
-      ...data.languages.languages.map((language) => ({
+      ...data.languages.map((language) => ({
         id: language.language.id,
         color: language.language.color,
         name: language.language.name,
@@ -132,33 +132,33 @@ const LanguagePie = ({ data }: { data: DeveloperLanguages }) => {
 }
 
 const DeveloperLanguageBlock = ({ username }: { username: string }) => {
-  const { data: developer } = useSuspenseDeveloper(username)
-  const { data } = useSuspenseDeveloperLanguages(username)
+  const { data: developer } = useDeveloper(username)
+  const { data } = useDeveloperLanguages(username)
   const mostUsedLanguage = useMemo(() => {
     if (!data) {
       return null
     }
-    if (data.languages.languages.length === 0) {
+    if (data.languages.length === 0) {
       return null
     }
-    return data.languages.languages.reduce((prev, current) => (prev.percentage > current.percentage ? prev : current))
+    return data.languages.reduce((prev, current) => (prev.percentage > current.percentage ? prev : current))
   }, [data])
+  if (!developer || !data) {
+    return <DeveloperBlockSkeleton />
+  }
   return (
     <>
       <section className="w-full rounded bg-base-200 p-8 lg:col-span-2 lg:h-96">
         <p>
-          {
-            mostUsedLanguage ? (
-              `${developer.name} 使用最多的语言是 ${mostUsedLanguage?.language.name}，占比 ${mostUsedLanguage?.percentage.toFixed(2)}%。`
-            ) : (
-              `我们暂时没有找到 ${developer.name} 使用最多的语言。`
-            )
-          }
+          {mostUsedLanguage
+            ? `${developer.name} 使用最多的语言是 ${mostUsedLanguage?.language.name}，占比 ${mostUsedLanguage?.percentage.toFixed(2)}%。`
+            : `我们暂时没有找到 ${developer.name} 使用最多的语言。`}
           {/* TODO: Styles */}
         </p>
       </section>
       <section className="w-full rounded bg-base-200 lg:col-span-3 lg:h-96">
-        <LanguagePie data={data} />
+        {/* TODO: styles */}
+        {data && <LanguagePie data={data} />}
       </section>
     </>
   )
@@ -167,19 +167,19 @@ const DeveloperLanguageBlock = ({ username }: { username: string }) => {
 const RegionNotSure = Symbol('RegionNotSure')
 
 const DeveloperRegionBlock = ({ username }: { username: string }) => {
-  const { data: developer } = useSuspenseDeveloper(username)
-  const { data } = useSuspenseDeveloperRegion(username)
+  const { data: developer } = useDeveloper(username)
+  const { data } = useDeveloperRegion(username)
   const { region, confidence } = useMemo(() => {
     if (!data) {
       return { region: RegionNotSure, confidence: 0 }
     }
-    if (data.region.region.toLowerCase() === 'unknown') {
+    if (data.region.toLowerCase() === 'unknown') {
       return { region: RegionNotSure, confidence: 0 }
     }
-    if (data.region.confidence < 0.1) {
-      return { region: RegionNotSure, confidence: data.region.confidence }
+    if (data.confidence < 0.1) {
+      return { region: RegionNotSure, confidence: data.confidence }
     }
-    return { region: data.region.region, confidence: data.region.confidence }
+    return { region: data.region, confidence: data.confidence }
   }, [data])
   const regionName = useMemo(() => {
     if (region === RegionNotSure) {
@@ -215,6 +215,10 @@ const DeveloperRegionBlock = ({ username }: { username: string }) => {
     }
   }, [region])
 
+  if (!developer || !data) {
+    return <DeveloperBlockSkeleton />
+  }
+
   return (
     <>
       <section className="flex w-full flex-col items-center justify-center rounded bg-base-200 p-8 text-8xl lg:col-span-3 lg:h-96">
@@ -231,22 +235,23 @@ const DeveloperRegionBlock = ({ username }: { username: string }) => {
   )
 }
 
+const DeveloperBlockSkeleton = () => {
+  return <Skeleton className="h-64 w-full rounded bg-base-200 lg:col-span-5" />
+}
+
 const DeveloperBlockSuspense = ({ children }: PropsWithChildren) => {
-  return (
-    <Suspense fallback={<Skeleton className="h-64 w-full rounded bg-base-200 lg:col-span-5" />}>{children}</Suspense>
-  )
+  return <Suspense fallback={<DeveloperBlockSkeleton />}>{children}</Suspense>
 }
 
 const DeveloperTable = ({ username }: { username: string }) => {
   return (
     <div className="flex w-full max-w-6xl flex-col">
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-5">
+        {/* We have to use Suspense due to lazy components */}
         <DeveloperBlockSuspense>
           <DeveloperLanguageBlock username={username} />
         </DeveloperBlockSuspense>
-        <DeveloperBlockSuspense>
-          <DeveloperRegionBlock username={username} />
-        </DeveloperBlockSuspense>
+        <DeveloperRegionBlock username={username} />
       </div>
     </div>
   )
