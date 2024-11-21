@@ -134,7 +134,7 @@ export const handlers = [
     await delay(1000)
 
     if (params.username !== fakeDeveloper.login.toLowerCase()) {
-      return developerNotFoundResponse
+      return developerNotFoundResponse.clone()
     }
 
     const resp = developer.parse(fakeDeveloper)
@@ -165,7 +165,7 @@ export const handlers = [
   }),
   ...httpAsyncApi(`${BASE_URL}/developers/:username/languages`, async ({ params }) => {
     if (params.username !== fakeDeveloper.login.toLowerCase()) {
-      return developerNotFoundResponse
+      return developerNotFoundResponse.clone()
     }
 
     await delay(DEFAULT_ASYNC_DELAY)
@@ -202,7 +202,7 @@ export const handlers = [
   }),
   ...httpAsyncApi(`${BASE_URL}/developers/:username/region`, async ({ params }) => {
     if (params.username !== fakeDeveloper.login.toLowerCase()) {
-      return developerNotFoundResponse
+      return developerNotFoundResponse.clone()
     }
 
     await delay(DEFAULT_ASYNC_DELAY)
