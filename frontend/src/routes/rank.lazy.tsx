@@ -97,7 +97,6 @@ const RankPage = () => {
             <Select
               name="language"
               defaultValue="_all"
-              value={searchLanguage}
               onChange={(e) => {
                 setSearchLanguage(e.target.value)
               }}
@@ -117,7 +116,6 @@ const RankPage = () => {
             <Select
               name="region"
               defaultValue="_all"
-              value={searchRegion}
               onChange={(e) => {
                 setSearchRegion(e.target.value)
               }}
