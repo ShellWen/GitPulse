@@ -11,6 +11,11 @@ ADD go.sum .
 RUN go mod download
 COPY ./common ./common
 COPY ./developer ./developer
+COPY ./analysis ./analysis
+COPY ./contribution ./contribution
+COPY ./id_generator ./id_generator
+COPY ./relation ./relation
+COPY ./repo ./repo
 COPY ./developer/cmd/api/etc/developer.yaml /app/developer/cmd/api/etc/developer.yaml
 ENV GOCACHE=/root/.cache/go-build
 RUN --mount=type=cache,target="/root/.cache/go-build" go build -ldflags="-s -w" -o /app/developer_api ./developer/cmd/api
