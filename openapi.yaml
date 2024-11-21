@@ -168,7 +168,11 @@ paths:
             application/json:
               schema:
                 type: object
-                properties: {}
+                properties:
+                  task_id:
+                    type: string
+                required:
+                  - task_id
           headers: {}
         '404':
           description: 用户名不存在
@@ -195,6 +199,13 @@ paths:
           in: path
           description: ''
           required: true
+          schema:
+            type: string
+        - name: task_id
+          in: query
+          description: ''
+          required: true
+          example: 9SDdcf0uuu_em3BWYc5In
           schema:
             type: string
       responses:
@@ -276,6 +287,12 @@ paths:
           required: true
           schema:
             type: string
+        - name: task_id
+          in: query
+          description: ''
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           description: 请求成功
@@ -341,7 +358,118 @@ paths:
               schema: *ref_0
           headers: {}
       security: []
-  /developers/:
+  /developers/{login}/summary:
+    get:
+      summary: 根据 GitHub 用户名与任务 ID，获取该任务中用户的总结
+      deprecated: false
+      description: ''
+      tags:
+        - developers
+      parameters:
+        - name: login
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+        - name: task_id
+          in: query
+          description: ''
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 请求成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeveloperSummary'
+          headers: {}
+        '202':
+          description: ''
+          content:
+            application/json:
+              schema: *ref_1
+          headers: {}
+        '404':
+          description: 用户名不存在 或 任务不存在
+          content:
+            application/json:
+              schema: *ref_0
+          headers: {}
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema: *ref_0
+          headers: {}
+      security: []
+    post:
+      summary: 根据 GitHub 用户名，创建获取用户个人总结的任务
+      deprecated: false
+      description: ''
+      tags: []
+      parameters:
+        - name: login
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  task_id:
+                    type: string
+                required:
+                  - task_id
+          headers: {}
+        '404':
+          description: 用户名不存在
+          content:
+            application/json:
+              schema: *ref_0
+          headers: {}
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema: *ref_0
+          headers: {}
+      security: []
+  /languages:
+    get:
+      summary: 获得语言列表
+      deprecated: false
+      description: ''
+      tags:
+        - developers
+      parameters: []
+      responses:
+        '200':
+          description: 请求成功
+          content:
+            application/json:
+              schema:
+                type: array
+                items: &ref_4
+                  $ref: '#/components/schemas/Language'
+                  description: 语言信息
+          headers: {}
+        '500':
+          description: ''
+          content:
+            application/json:
+              schema: *ref_0
+          headers: {}
+      security: []
+  /rank/:
     get:
       summary: 获得开发者排行榜，按照 Pulse Point 降序排列，并应用筛选条件
       deprecated: false
@@ -379,32 +507,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/DeveloperWithPulsePoint'
-          headers: {}
-        '500':
-          description: ''
-          content:
-            application/json:
-              schema: *ref_0
-          headers: {}
-      security: []
-  /languages:
-    get:
-      summary: 获得语言列表
-      deprecated: false
-      description: ''
-      tags:
-        - developers
-      parameters: []
-      responses:
-        '200':
-          description: 请求成功
-          content:
-            application/json:
-              schema:
-                type: array
-                items: &ref_4
-                  $ref: '#/components/schemas/Language'
-                  description: 语言信息
           headers: {}
         '500':
           description: ''
@@ -534,7 +636,6 @@ components:
             - 38996248
         pulse_point:
           type: number
-          minimum: 0
           description: GitHub 用户的 Pulse Point
         updated_at:
           type: string
@@ -609,8 +710,7 @@ components:
       properties:
         id:
           type: string
-          example: javascript
-          description: 语言 ID，仅小写字母与连字符
+          description: ' 语言 ID，仅小写字母与连字符'
         name:
           type: string
           description: 语言名称
@@ -623,6 +723,7 @@ components:
             - '#f1e05a'
       required:
         - name
+        - id
     TaskInfo:
       type: object
       properties:
@@ -642,6 +743,19 @@ components:
       required:
         - code
         - message
+    DeveloperSummary:
+      type: object
+      properties:
+        id:
+          type: integer
+        summary:
+          type: string
+        updated_at:
+          type: string
+      required:
+        - id
+        - summary
+        - updated_at
   securitySchemes: {}
 servers:
   - url: https://api-pulse.shellwen.com
