@@ -5,7 +5,7 @@ import DeveloperGlance from '$/component/developer/DeveloperGlance.tsx'
 import DeveloperInfo from '$/component/developer/DeveloperInfo.tsx'
 import DeveloperInfoSkeleton from '$/component/developer/DeveloperInfoSkeleton.tsx'
 import type { DeveloperLanguages } from '$/lib/api/endpoint/types.ts'
-import { HttpError } from '$/lib/api/error.ts'
+import { BusinessError } from '$/lib/api/error.ts'
 import { QueryError } from '$/lib/query/error.ts'
 import {
   useDeveloper,
@@ -262,7 +262,7 @@ const DeveloperNotFoundErrorBoundary = ({ children }: PropsWithChildren) => {
       throw error
     }
     const innerError = error.innerError
-    if (!(innerError instanceof HttpError) || innerError.response.status !== 404) {
+    if (!(innerError instanceof BusinessError) || innerError.code !== 404) {
       // Only handle 404 error
       throw error
     }

@@ -1,6 +1,6 @@
 import { type PropsWithChildren, useCallback } from 'react'
 
-import { HttpError } from '$/lib/api/error.ts'
+import { BusinessError } from '$/lib/api/error.ts'
 import { QueryError } from '$/lib/query/error.ts'
 import { Button } from 'react-daisyui'
 import { ErrorBoundary, type FallbackProps } from 'react-error-boundary'
@@ -20,10 +20,10 @@ const QueryErrorBoundaryBlock = ({ children }: PropsWithChildren) => {
       throw error
     }
     const innerError = error.innerError
-    if (innerError instanceof HttpError && innerError.response.status === 404) {
+    if (innerError instanceof BusinessError && innerError.code === 404) {
       throw error
     }
-    const errorMsg = innerError instanceof Error ? error.message : '未知错误'
+    const errorMsg = error.message
     return (
       <div>
         请求失败：{errorMsg}
