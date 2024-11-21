@@ -16,13 +16,6 @@ scrape_configs:
           job: developer.rpc
           app: developer.rpc
           env: dev
-  - job_name: 'developer.api'
-    static_configs:
-      - targets: ['127.0.0.1:5001']
-        labels:
-          job: developer.api
-          app: developer.api
-          env: dev
   - job_name: 'repo.rpc'
     static_configs:
       - targets: ['127.0.0.1:4002']
@@ -51,10 +44,24 @@ scrape_configs:
           job: analysis.rpc
           app: analysis.rpc
           env: dev
-  - job_name: 'analysis.api'
+  - job_name: 'developer.api'
     static_configs:
-      - targets: ['127.0.0.1:5005']
+      - targets: [ '127.0.0.1:5001' ]
         labels:
-          job: analysis.api
-          app: analysis.api
+          job: developer.api
+          app: developer.api
+          env: dev
+  - job_name: 'rank.api'
+    static_configs:
+      - targets: ['127.0.0.1:5002']
+        labels:
+          job: rank.api
+          app: rank.api
+          env: dev
+  - job_name: 'languages.api'
+    static_configs:
+      - targets: [ '127.0.0.1:5002' ]
+        labels:
+          job: languages.api
+          app: languages.api
           env: dev

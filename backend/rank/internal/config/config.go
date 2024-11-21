@@ -17,9 +17,6 @@ type Config struct {
 	Cache          cache.CacheConf
 	AsynqRedisConf config.AsynqRedisConf
 
-	DeveloperRpcConf    zrpc.RpcClientConf
-	RelationRpcConf     zrpc.RpcClientConf
-	RepoRpcConf         zrpc.RpcClientConf
-	ContributionRpcConf zrpc.RpcClientConf
-	AnalysisRpcConf     zrpc.RpcClientConf
+	DeveloperRpcConf zrpc.RpcClientConf
+	AnalysisRpcConf  zrpc.RpcClientConf
 }

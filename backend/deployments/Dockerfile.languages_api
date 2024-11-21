@@ -1,0 +1,29 @@
+FROM golang:alpine AS builder
+
+LABEL stage=gobuilder
+
+ENV CGO_ENABLED=0
+
+WORKDIR /build
+
+ADD go.mod .
+ADD go.sum .
+RUN go mod download
+COPY ./common ./common
+COPY ./languages ./languages
+COPY ./languages/etc/languages.yaml /app/languages/etc/languages.yaml
+ENV GOCACHE=/root/.cache/go-build
+RUN --mount=type=cache,target="/root/.cache/go-build" go build -ldflags="-s -w" -o /app/languages_api ./languages
+
+
+FROM alpine:latest
+
+RUN apk add --no-cache ca-certificates tzdata
+
+WORKDIR /app
+
+VOLUME /app/languages/etc
+COPY --from=builder /app/languages/etc/languages.yaml /app/languages/etc/languages.yaml
+COPY --from=builder /app/languages_api /app/languages_api
+
+CMD ["./languages_api"]

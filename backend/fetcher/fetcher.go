@@ -24,8 +24,7 @@ func main() {
 	var c config.Config
 	conf.MustLoad(*configFile, &c)
 
-	logx.MustSetup(c.Log)
-	logx.Info("fetcher started")
+	c.MustSetUp()
 
 	ctx := context.Background()
 	svcContext := svc.NewServiceContext(c)

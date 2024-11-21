@@ -1,0 +1,29 @@
+FROM golang:alpine AS builder
+
+LABEL stage=gobuilder
+
+ENV CGO_ENABLED=0
+
+WORKDIR /build
+
+ADD go.mod .
+ADD go.sum .
+RUN go mod download
+COPY ./common ./common
+COPY ./idGenerator ./idGenerator
+COPY ./idGenerator/etc/idGenerator.yaml /app/idGenerator/etc/idGenerator.yaml
+ENV GOCACHE=/root/.cache/go-build
+RUN --mount=type=cache,target="/root/.cache/go-build" go build -ldflags="-s -w" -o /app/idGenerator_rpc ./idGenerator
+
+
+FROM alpine:latest
+
+RUN apk add --no-cache ca-certificates tzdata
+
+WORKDIR /app
+
+VOLUME /app/idGenerator/etc
+COPY --from=builder /app/idGenerator/etc/idGenerator.yaml /app/idGenerator/etc/idGenerator.yaml
+COPY --from=builder /app/idGenerator_rpc /app/idGenerator_rpc
+
+CMD ["./idGenerator_rpc"]
