@@ -10,7 +10,8 @@ import { QueryError } from '$/lib/query/error.ts'
 import {
   useDeveloper,
   useDeveloperLanguages,
-  useDeveloperPulsePoint, useDeveloperRegion,
+  useDeveloperPulsePoint,
+  useDeveloperRegion,
   useSuspenseDeveloper,
 } from '$/lib/query/hooks/useDeveloper.ts'
 import useDarkMode from '$/lib/useDarkMode.ts'
@@ -24,14 +25,14 @@ const route = getRouteApi('/u_/$username')
 
 const DeveloperInfoWrapper = ({ username }: { username: string }) => {
   const { data: user } = useSuspenseDeveloper(username)
-  const { data: pulsePoint } = useDeveloperPulsePoint(username)
+  const { data: pulsePoint, error } = useDeveloperPulsePoint(username)
 
   return (
     <DeveloperInfo
       developer={user}
       rightBlock={
         <div className="text-clip whitespace-nowrap text-8xl font-bold italic tracking-wider text-base-content/20 sm:text-9xl">
-          {pulsePoint ? `${pulsePoint.pulse_point.toFixed(2)}pp` : '计算中...'}
+          {pulsePoint ? `${pulsePoint.pulse_point.toFixed(2)}pp` : error ? '计算失败' : '计算中...'}
         </div>
       }
     />
