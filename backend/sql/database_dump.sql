@@ -199,6 +199,35 @@ ALTER TABLE analysis.pulse_point ALTER COLUMN data_id ADD GENERATED ALWAYS AS ID
 
 
 --
+-- Name: summary; Type: TABLE; Schema: analysis; Owner: general_user
+--
+
+CREATE TABLE analysis.summary (
+    data_id bigint NOT NULL,
+    data_created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    data_updated_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    developer_id bigint DEFAULT 0 NOT NULL,
+    summary text DEFAULT ''::text NOT NULL
+);
+
+
+ALTER TABLE analysis.summary OWNER TO general_user;
+
+--
+-- Name: summary_data_id_seq; Type: SEQUENCE; Schema: analysis; Owner: general_user
+--
+
+ALTER TABLE analysis.summary ALTER COLUMN data_id ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME analysis.summary_data_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
 -- Name: comment_of_user_updated_at; Type: TABLE; Schema: contribution; Owner: general_user
 --
 
@@ -668,6 +697,14 @@ COPY analysis.region (data_id, data_created_at, data_updated_at, developer_id, r
 
 
 --
+-- Data for Name: summary; Type: TABLE DATA; Schema: analysis; Owner: general_user
+--
+
+COPY analysis.summary (data_id, data_created_at, data_updated_at, developer_id, summary) FROM stdin;
+\.
+
+
+--
 -- Data for Name: comment_of_user_updated_at; Type: TABLE DATA; Schema: contribution; Owner: general_user
 --
 
@@ -791,70 +828,77 @@ COPY repo.repo (data_id, data_created_at, data_updated_at, id, name, star_count,
 -- Name: languages_data_id_seq; Type: SEQUENCE SET; Schema: analysis; Owner: general_user
 --
 
-SELECT pg_catalog.setval('analysis.languages_data_id_seq', 15, true);
+SELECT pg_catalog.setval('analysis.languages_data_id_seq', 21, true);
 
 
 --
 -- Name: nation_data_id_seq; Type: SEQUENCE SET; Schema: analysis; Owner: general_user
 --
 
-SELECT pg_catalog.setval('analysis.nation_data_id_seq', 59, true);
+SELECT pg_catalog.setval('analysis.nation_data_id_seq', 72, true);
 
 
 --
 -- Name: pulse_point_data_id_seq; Type: SEQUENCE SET; Schema: analysis; Owner: general_user
 --
 
-SELECT pg_catalog.setval('analysis.pulse_point_data_id_seq', 27, true);
+SELECT pg_catalog.setval('analysis.pulse_point_data_id_seq', 30, true);
+
+
+--
+-- Name: summary_data_id_seq; Type: SEQUENCE SET; Schema: analysis; Owner: general_user
+--
+
+SELECT pg_catalog.setval('analysis.summary_data_id_seq', 4, true);
 
 
 --
 -- Name: contribution_data_id_seq; Type: SEQUENCE SET; Schema: contribution; Owner: general_user
 --
 
-SELECT pg_catalog.setval('contribution.contribution_data_id_seq', 2113, true);
+SELECT pg_catalog.setval('contribution.contribution_data_id_seq', 2124, true);
 
 
 --
 -- Name: contribution_update_at_2_data_id_seq; Type: SEQUENCE SET; Schema: contribution; Owner: general_user
 --
 
-SELECT pg_catalog.setval('contribution.contribution_update_at_2_data_id_seq', 2, true);
+SELECT pg_catalog.setval('contribution.contribution_update_at_2_data_id_seq', 5, true);
 
 
 --
 -- Name: contribution_update_at_3_data_id_seq; Type: SEQUENCE SET; Schema: contribution; Owner: general_user
 --
 
-SELECT pg_catalog.setval('contribution.contribution_update_at_3_data_id_seq', 2, true);
+SELECT pg_catalog.setval('contribution.contribution_update_at_3_data_id_seq', 5, true);
 
 
 --
 -- Name: contribution_update_at_data_id_seq; Type: SEQUENCE SET; Schema: contribution; Owner: general_user
 --
 
-SELECT pg_catalog.setval('contribution.contribution_update_at_data_id_seq', 2, true);
+SELECT pg_catalog.setval('contribution.contribution_update_at_data_id_seq', 5, true);
 
 
 --
 -- Name: developer_data_id_seq; Type: SEQUENCE SET; Schema: developer; Owner: general_user
 --
 
-SELECT pg_catalog.setval('developer.developer_data_id_seq', 134, true);
+SELECT pg_catalog.setval('developer.developer_data_id_seq', 136, true);
 
 
 --
 -- Name: create_repo_data_id_seq; Type: SEQUENCE SET; Schema: relation; Owner: general_user
 --
 
-SELECT pg_catalog.setval('relation.create_repo_data_id_seq', 270, true);
+SELECT pg_catalog.setval('relation.create_repo_data_id_seq', 317, true);
 
 
 --
 -- Name: create_repo_update_at_data_id_seq; Type: SEQUENCE SET; Schema: relation; Owner: general_user
 --
 
-SELECT pg_catalog.setval('relation.create_repo_update_at_data_id_seq', 4, true);
+SELECT pg_catalog.setval('relation.create_repo_update_at_data_id_seq', 7, true);
 
 
 --
@@ -910,7 +954,7 @@ SELECT pg_catalog.setval('relation.star_update_at_data_id_seq', 1, false);
 -- Name: repo_data_id_seq; Type: SEQUENCE SET; Schema: repo; Owner: general_user
 --
 
-SELECT pg_catalog.setval('repo.repo_data_id_seq', 411, true);
+SELECT pg_catalog.setval('repo.repo_data_id_seq', 438, true);
 
 
 --
@@ -959,6 +1003,22 @@ ALTER TABLE ONLY analysis.region
 
 ALTER TABLE ONLY analysis.region
     ADD CONSTRAINT region_pk_2 UNIQUE (developer_id);
+
+
+--
+-- Name: summary summary_pk; Type: CONSTRAINT; Schema: analysis; Owner: general_user
+--
+
+ALTER TABLE ONLY analysis.summary
+    ADD CONSTRAINT summary_pk PRIMARY KEY (data_id);
+
+
+--
+-- Name: summary summary_pk_2; Type: CONSTRAINT; Schema: analysis; Owner: general_user
+--
+
+ALTER TABLE ONLY analysis.summary
+    ADD CONSTRAINT summary_pk_2 UNIQUE (developer_id);
 
 
 --
@@ -1228,6 +1288,13 @@ CREATE TRIGGER update_time BEFORE UPDATE ON analysis.pulse_point FOR EACH ROW EX
 --
 
 CREATE TRIGGER update_time BEFORE UPDATE ON analysis.region FOR EACH ROW EXECUTE FUNCTION analysis.update_time();
+
+
+--
+-- Name: summary update_time; Type: TRIGGER; Schema: analysis; Owner: general_user
+--
+
+CREATE TRIGGER update_time BEFORE UPDATE ON analysis.summary FOR EACH ROW EXECUTE FUNCTION analysis.update_time();
 
 
 --
