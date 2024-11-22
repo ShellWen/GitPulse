@@ -22,7 +22,9 @@ git clone https://github.com/ShellWen/GitPulse.git
 复制样例配置文件
 
 ```bash
-cp ./GitPulse/docs/deploy/example/* ./
+cp ./GitPulse/deployments/files ./
+
+cp ./GitPulse/compose.yaml ./compose.yaml
 ```
 
 其中：
@@ -31,7 +33,7 @@ cp ./GitPulse/docs/deploy/example/* ./
 
 * docker-compose配置：`compose-example.yaml`
 
-* nginx配置：`example-nginx.conf`
+
 
 请根据实际情况对上述文件进行修改，以适配您的需要。
 
@@ -61,6 +63,4 @@ docker-compose up --build -d
 
 日志文件位于`./logs`目录下。
 
-在样例配置中，Prometheus与Jaeger接口并未启用。具体的启用方法请参考 [go-zero 文档](https://go-zero.dev/docs/tutorials/monitor/index) 与 go-zero-looklook 文档 [链路追踪](https://github.com/Mikaelemmmm/go-zero-looklook/blob/main/doc/chinese/12-%E9%93%BE%E8%B7%AF%E8%BF%BD%E8%B8%AA.md) 与 [服务监控](https://github.com/Mikaelemmmm/go-zero-looklook/blob/main/doc/chinese/13-%E6%9C%8D%E5%8A%A1%E7%9B%91%E6%8E%A7.md)。
-
-我们提供了Prometheus的样例配置文件，位于`GitPulse/deployments/prometheus`目录下，请根据实际情况进行使用。
+样例配置默认启用了所有的微服务，可以根据实际情况修改。如果Elasticsearch启动失败，可能是资源占用过高导致的，请考虑释放资源或关闭Elasticsearch服务。
