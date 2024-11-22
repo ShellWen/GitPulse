@@ -1,0 +1,48 @@
+Name: apiProcessor
+
+DeveloperRpcConf:
+  Target: consul://consul:8500/developer.rpc?wait=14s
+  Timeout: 300000
+
+RelationRpcConf:
+  Target: consul://consul:8500/relation.rpc?wait=14s
+  Timeout: 300000
+
+ContributionRpcConf:
+  Target: consul://consul:8500/contribution.rpc?wait=14s
+  Timeout: 300000
+
+RepoRpcConf:
+  Target: consul://consul:8500/repo.rpc?wait=14s
+  Timeout: 300000
+
+AnalysisRpcConf:
+  Target: consul://consul:8500/analysis.rpc?wait=14s
+  Timeout: 300000
+
+Telemetry:
+  Name: fetcher
+  Endpoint: http://jaeger:14268/api/traces
+  Sampler: 1.0
+  Batcher: jaeger
+
+DevServer:
+  Enabled: true
+  Port: 6002
+
+Log:
+  ServiceName: apiProcessor
+  Mode: file
+  Encoding: json
+  Path: logs/apiProcessor/
+
+RedisClient:
+  Host: redis:6379
+  Type: node
+  Pass:
+  Key: apiProcessor
+
+AsynqRedisConf:
+  Addr: redis:6379
+  Password:
+  DB: 0

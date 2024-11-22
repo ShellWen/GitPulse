@@ -1,0 +1,808 @@
+name: gitpulse
+
+services:
+
+##################### FRONTEND #####################
+
+  frontend:
+    container_name: gitpulse_frontend
+    restart: on-failure
+    build:
+      context: ./GitPulse/frontend
+      dockerfile: Dockerfile
+      args:
+        ENABLE_MOCK: ""
+        BACKEND_BASEURL: https://api-pulse.shellwen.com
+    networks:
+      - web
+
+##################### GATEWAY #####################
+
+  kong-pg:
+    container_name: gitpulse_kong_postgres
+    restart: on-failure
+    image: postgres:11.5-alpine
+    environment:
+      POSTGRES_USER: kong # should use docker secrets
+      POSTGRES_PASSWORD: kong # should use docker secrets
+      POSTGRES_DB: kong
+    volumes:
+      - kong-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "pg_isready",
+          "-d",
+          "kong",
+          "-U",
+          "kong",
+        ]
+      interval: 1s
+      timeout: 30s
+      retries: 30
+    networks:
+      - kong
+
+  kong-migration:
+    container_name: gitpulse_kong-migration
+    image: kong:3.8.0
+    command: "kong migrations bootstrap"
+    restart: on-failure
+    environment:
+      - KONG_DATABASE=postgres
+      - KONG_PG_DATABASE=kong
+      - KONG_PG_PASSWORD=kong
+      - KONG_PG_HOST=kong-pg
+    links:
+      - kong-pg
+    depends_on:
+      kong-pg:
+        condition: service_healthy
+    networks:
+      - kong
+
+  kong:
+    container_name: gitpulse_kong
+    image: kong:3.8.0
+    user: kong
+    environment:
+      KONG_PROXY_ACCESS_LOG: /dev/stdout
+      KONG_ADMIN_ACCESS_LOG: /dev/stdout
+      KONG_PROXY_ERROR_LOG: /dev/stdout
+      KONG_ADMIN_ERROR_LOG: /dev/stdout
+      KONG_PROXY_LISTEN: 0.0.0.0:8000, 0.0.0.0:8443 ssl
+      KONG_ADMIN_LISTEN: 0.0.0.0:8001, 0.0.0.0:8444 ssl
+      KONG_DATABASE: postgres
+      KONG_PG_HOST: kong-pg
+      KONG_PG_PORT: 5432
+      KONG_PG_PASSWORD: kong
+      KONG_PG_DATABASE: kong
+    depends_on:
+      kong-pg:
+        condition: service_healthy
+      kong-migration:
+        condition: service_completed_successfully
+    ports:
+      - "127.0.0.1:8000:8000"
+      - "127.0.0.1:8443:8443"
+      - "127.0.0.1:8001:8001"
+      - "127.0.0.1:8444:8444"
+    healthcheck:
+      test: [ "CMD", "kong", "health" ]
+      interval: 1s
+      timeout: 10s
+      retries: 30
+    networks:
+      - kong
+      - pulse
+      - web
+
+  konga-prepare:
+    container_name: gitpulse_konga-prepare
+    image: pantsel/konga:0.14.9
+    command: "-c prepare -a postgres -u postgresql://kong:kong@kong-pg:5432/konga"
+    networks:
+      - kong
+    restart: on-failure
+    links:
+      - kong-pg
+    depends_on:
+      kong:
+        condition: service_healthy
+      kong-pg:
+        condition: service_healthy
+
+  konga:
+    container_name: gitpulse_konga
+    image: pantsel/konga:0.14.9
+    environment:
+      DB_ADAPTER: postgres
+      DB_HOST: kong-pg
+      DB_PORT: 5432
+      DB_USER: kong
+      DB_PASSWORD: kong
+      DB_DATABASE: konga
+      NODE_ENV: production
+    depends_on:
+      kong:
+        condition: service_healthy
+      konga-prepare:
+        condition: service_completed_successfully
+    ports:
+      - "127.0.0.1:1337:1337"
+    networks:
+      - kong
+      - pulse
+
+##################### MONITOR #####################
+
+  jaeger:
+    image: jaegertracing/all-in-one:1.42.0
+    container_name: gitpulse_jaeger
+    restart: always
+    ports:
+      - "16686:16686"
+    environment:
+      - SPAN_STORAGE_TYPE=elasticsearch
+      - ES_SERVER_URLS=http://elasticsearch:9200
+      - LOG_LEVEL=debug
+    networks:
+      - pulse
+
+  prometheus:
+    container_name: gitpulse_prometheus
+    image: prom/prometheus:v2.53.3
+    volumes:
+      - ./files/prometheus/:/etc/prometheus/
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yaml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+    ports:
+      - 9090:9090
+    links:
+      - cadvisor:cadvisor
+      - alertmanager:alertmanager
+    depends_on:
+      - cadvisor
+    networks:
+      - pulse
+    restart: always
+
+  node-exporter:
+    container_name: gitpulse_node-exporter
+    image: quay.io/prometheus/node-exporter:latest
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+      - /:/host:ro,rslave
+    command: 
+      - '--path.rootfs=/host'
+      - '--path.procfs=/host/proc' 
+      - '--path.sysfs=/host/sys'
+      - --collector.filesystem.ignored-mount-points
+      - "^/(sys|proc|dev|host|etc|rootfs/var/lib/docker/containers|rootfs/var/lib/docker/overlay2|rootfs/run/docker/netns|rootfs/var/lib/docker/aufs)($$|/)"
+    ports:
+      - 9100:9100
+    networks:
+      - pulse
+    restart: always
+    deploy:
+      mode: global
+
+  alertmanager:
+    container_name: gitpulse_alertmanager
+    image: prom/alertmanager
+    ports:
+      - 9093:9093
+    volumes:
+      - ./files/alertmanager/:/etc/alertmanager/
+    networks:
+      - pulse
+    restart: always
+    command:
+      - '--config.file=/etc/alertmanager/config.yaml'
+      - '--storage.path=/alertmanager'
+
+  cadvisor:
+    container_name: gitpulse_cadvisor
+    image: gcr.io/cadvisor/cadvisor
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    ports:
+      - 8880:8080
+    networks:
+      - pulse
+    restart: always
+    deploy:
+      mode: global
+
+  grafana:
+    container_name: gitpulse_grafana
+    image: grafana/grafana
+    user: "472"
+    depends_on:
+      - prometheus
+    ports:
+      - 3000:3000
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./files/grafana/provisioning/:/etc/grafana/provisioning/
+    env_file:
+      - ./files/grafana/config.monitoring
+    networks:
+      - pulse
+    restart: always
+
+  asynqmon:
+    image: hibiken/asynqmon:latest
+    container_name: gitpulse_asynqmon
+    ports:
+      - 8980:8080
+    command:
+      - '--redis-addr=redis:6379'
+    restart: always
+    networks:
+      - pulse
+    depends_on:
+      redis:
+        condition: service_healthy
+
+##################### LOG #####################
+
+  filebeat:
+    image: elastic/filebeat:7.13.4
+    container_name: gitpulse_filebeat
+    environment:
+      TZ: Asia/Shanghai
+    user: root
+    restart: always
+    entrypoint: "filebeat -e -strict.perms=false" 
+    volumes:
+      - ./files/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml
+      - ./logs:/usr/share/filebeat/input_logs
+    networks:
+      - pulse
+    depends_on:
+      init-kafka:
+        condition: service_completed_successfully
+
+  go-stash:
+    image: kevinwan/go-stash:1.0
+    container_name: gitpulse_go-stash
+    environment:
+      TZ: Asia/Shanghai
+    user: root
+    restart: always
+    volumes:
+      - ./files/go-stash/etc:/app/etc
+    networks:
+      - pulse
+    depends_on:
+      elasticsearch: 
+        condition: service_started
+      init-kafka:
+        condition: service_completed_successfully
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.13.4
+    container_name: gitpulse_elasticsearch
+    environment:
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - TZ=Asia/Shanghai
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    restart: always
+    ports:
+      - 9200:9200
+      - 9300:9300
+    networks:
+      - pulse
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.13.4
+    container_name: gitpulse_kibana
+    environment:
+      - elasticsearch.hosts=http://elasticsearch:9200
+      - TZ=Asia/Shanghai
+    restart: always
+    networks:
+      - pulse
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+
+##################### INFRASTRUCTURE #####################
+  consul:
+    container_name: gitpulse_consul
+    restart: on-failure
+    image: hashicorp/consul:1.20.1
+    networks:
+      - pulse
+    ports:
+      - "127.0.0.1:8500:8500" # Web UI
+    volumes:
+      - consul-data:/consul/data
+    command: "agent -server -ui -node=n1 -bootstrap-expect=1 -client=0.0.0.0 -data-dir=/consul/data -bind=0.0.0.0"
+    healthcheck:
+      test: ["CMD", "curl", "-X", "GET", "localhost:8500/v1/status/leader"]
+      interval: 1s
+      timeout: 3s
+      retries: 60
+
+  kafka:
+    container_name: gitpulse_kafka
+    restart: on-failure
+    image: apache/kafka:3.8.1
+    networks:
+      - pulse
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT'
+      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT_HOST://localhost:19092,PLAINTEXT://kafka:9092'
+      KAFKA_PROCESS_ROLES: 'broker,controller'
+      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka:29093'
+      KAFKA_LISTENERS: 'CONTROLLER://:29093,PLAINTEXT_HOST://:19092,PLAINTEXT://:9092'
+      KAFKA_INTER_BROKER_LISTENER_NAME: 'PLAINTEXT'
+      KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
+      CLUSTER_ID: '4L6g3nShT-eMCtK--X86sw'
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_LOG_DIRS: '/tmp/kraft-combined-logs'
+    volumes:
+      - kafka-data:/var/lib/kafka/data
+    healthcheck:
+      test: /opt/kafka/bin/kafka-topics.sh --list --bootstrap-server kafka:9092 || exit 1
+      interval: 1s
+      timeout: 60s
+      retries: 60
+
+  init-kafka:
+    container_name: gitpulse_init-kafka
+    image: apache/kafka:3.8.1
+    networks:
+      - pulse
+    depends_on:
+      kafka:
+          condition: service_healthy
+    entrypoint: [ '/bin/sh', '-c' ]
+    working_dir: /opt/kafka/bin
+    command: |
+      "
+      # blocks until kafka is reachable
+      ./kafka-topics.sh --bootstrap-server kafka:9092 --list
+
+      echo -e 'Creating kafka topics'
+      ./kafka-topics.sh --bootstrap-server kafka:9092 --create --if-not-exists --topic developer-update --replication-factor 1 --partitions 1
+      ./kafka-topics.sh --bootstrap-server kafka:9092 --create --if-not-exists --topic repo-update --replication-factor 1 --partitions 1
+      ./kafka-topics.sh --bootstrap-server kafka:9092 --create --if-not-exists --topic contribution-update --replication-factor 1 --partitions 1
+      ./kafka-topics.sh --bootstrap-server kafka:9092 --create --if-not-exists --topic create-repo-update --replication-factor 1 --partitions 1
+      ./kafka-topics.sh --bootstrap-server kafka:9092 --create --if-not-exists --topic fork-update --replication-factor 1 --partitions 1
+      ./kafka-topics.sh --bootstrap-server kafka:9092 --create --if-not-exists --topic star-update --replication-factor 1 --partitions 1
+      ./kafka-topics.sh --bootstrap-server kafka:9092 --create --if-not-exists --topic follow-update --replication-factor 1 --partitions 1
+      ./kafka-topics.sh --bootstrap-server kafka:9092 --create --if-not-exists --topic log --replication-factor 1 --partitions 1
+
+      echo -e 'Successfully created the following topics:'
+      ./kafka-topics.sh --bootstrap-server kafka:9092 --list
+      " 
+ 
+  redis:
+    container_name: gitpulse_redis
+    restart: on-failure
+    image: redis:7.4.1-alpine
+    networks:
+      - pulse
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli","ping"]
+
+  postgres:
+    container_name: gitpulse_postgres
+    restart: on-failure
+    image: postgres:17.0-alpine
+    networks:
+      - pulse
+    ports:
+      - "127.0.0.1:5432:5432"
+    environment:
+      POSTGRES_USER: pulse # should use docker secrets
+      POSTGRES_PASSWORD: youguesswhatnobodyknows # should use docker secrets
+      POSTGRES_DB: pulse
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "pg_isready",
+          "-d",
+          "pulse",
+          "-U",
+          "pulse",
+        ]
+      interval: 30s
+      timeout: 30s
+      retries: 3
+
+##################### BACKEND #####################
+
+  backend-analysis-rpc:
+    container_name: gitpulse_backend_analysis_rpc
+    restart: on-failure
+    build:
+      context: ./GitPulse/backend
+      dockerfile: ./deployments/Dockerfile.analysis_rpc
+    volumes:
+      - ./files/etc/analysis-rpc.yaml:/app/analysis/cmd/rpc/etc/analysis.yaml:ro
+      - ./logs/analysis_rpc:/app/logs/analysis_rpc/
+    env_file:
+      - ./files/github_env
+    depends_on:
+      consul:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      init-kafka:
+        condition: service_completed_successfully
+      backend-contribution-rpc:
+        condition: service_healthy
+      backend-developer-rpc:
+        condition: service_healthy
+      backend-relation-rpc:
+        condition: service_healthy
+      backend-repo-rpc:
+        condition: service_healthy
+    networks:
+      - pulse
+    healthcheck:
+      test: curl -sf http://backend-analysis-rpc:4005/healthz | grep -q 'OK' || exit 1
+      interval: 10s
+      timeout: 60s
+      retries: 10
+
+  backend-contribution-rpc:
+    container_name: gitpulse_backend_contribution_rpc
+    restart: on-failure
+    build:
+      context: ./GitPulse/backend
+      dockerfile: ./deployments/Dockerfile.contribution_rpc
+    env_file:
+      - ./files/github_env
+    volumes:
+      - ./files/etc/contribution-rpc.yaml:/app/contribution/cmd/rpc/etc/contribution.yaml:ro
+      - ./logs/contribution_rpc:/app/logs/contribution_rpc/
+    depends_on:
+      consul:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      init-kafka:
+        condition: service_completed_successfully
+    networks:
+      - pulse
+    healthcheck:
+      test: curl -sf http://backend-contribution-rpc:4004/healthz | grep -q 'OK' || exit 1
+      interval: 10s
+      timeout: 60s
+      retries: 10
+
+  backend-developer-rpc:
+    container_name: gitpulse_backend_developer_rpc
+    restart: on-failure
+    build:
+      context: ./GitPulse/backend
+      dockerfile: ./deployments/Dockerfile.developer_rpc
+    env_file:
+      - ./files/github_env
+    volumes:
+      - ./files/etc/developer-rpc.yaml:/app/developer/cmd/rpc/etc/developer.yaml:ro
+      - ./logs/developer_rpc:/app/logs/developer_rpc/
+    depends_on:
+      consul:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      init-kafka:
+        condition: service_completed_successfully
+    networks:
+      - pulse
+    healthcheck:
+      test: curl -sf http://backend-developer-rpc:4001/healthz | grep -q 'OK' || exit 1
+      interval: 10s
+      timeout: 60s
+      retries: 10
+
+  backend-relation-rpc:
+    container_name: gitpulse_backend_relation_rpc
+    restart: on-failure
+    build:
+      context: ./GitPulse/backend
+      dockerfile: ./deployments/Dockerfile.relation_rpc
+    env_file:
+      - ./files/github_env
+    volumes:
+      - ./files/etc/relation-rpc.yaml:/app/relation/cmd/rpc/etc/relation.yaml:ro
+      - ./logs/relation_rpc:/app/logs/relation_rpc/
+    depends_on:
+      consul:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      init-kafka:
+        condition: service_completed_successfully
+    networks:
+      - pulse
+    healthcheck:
+      test: curl -sf http://backend-relation-rpc:4003/healthz | grep -q 'OK' || exit 1
+      interval: 10s
+      timeout: 60s
+      retries: 10
+
+  backend-repo-rpc:
+    container_name: gitpulse_backend_repo_rpc
+    restart: on-failure
+    build:
+      context: ./GitPulse/backend
+      dockerfile: ./deployments/Dockerfile.repo_rpc
+    env_file:
+      - ./files/github_env
+    volumes:
+      - ./files/etc/repo-rpc.yaml:/app/repo/cmd/rpc/etc/repo.yaml:ro
+      - ./logs/repo_rpc:/app/logs/repo_rpc/
+    depends_on:
+      consul:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      init-kafka:
+        condition: service_completed_successfully
+    networks:
+      - pulse
+    healthcheck:
+        test: curl -sf http://backend-repo-rpc:4002/healthz | grep -q 'OK' || exit 1
+        interval: 10s
+        timeout: 60s
+        retries: 10
+
+  backend-id_generator-rpc:
+    container_name: gitpulse_backend_id_generator_rpc
+    restart: on-failure
+    build:
+      context: ./GitPulse/backend
+      dockerfile: ./deployments/Dockerfile.id_generator_rpc
+    env_file:
+      - ./files/github_env
+    volumes:
+      - ./files/etc/idGenerator-rpc.yaml:/app/id_generator/etc/idGenerator.yaml:ro
+      - ./logs/idGenerator_rpc:/app/logs/idGenerator_rpc/
+    depends_on:
+      consul:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      init-kafka:
+        condition: service_completed_successfully
+    networks:
+      - pulse
+    healthcheck:
+      test: curl -sf http://backend-id_generator-rpc:4006/healthz | grep -q 'OK' || exit 1
+      interval: 10s
+      timeout: 60s
+      retries: 10
+
+  backend-fetcher:
+    container_name: gitpulse_backend_fetcher
+    restart: on-failure
+    build:
+      context: ./GitPulse/backend
+      dockerfile: ./deployments/Dockerfile.fetcher
+    env_file:
+      - ./files/github_env
+    volumes:
+      - ./files/etc/fetcher.yaml:/app/fetcher/etc/fetcher.yaml:ro
+      - ./logs/fetcher:/app/logs/fetcher/
+    depends_on:
+      consul:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      init-kafka:
+        condition: service_completed_successfully
+      backend-developer-rpc:
+        condition: service_healthy
+      backend-relation-rpc:
+        condition: service_healthy
+      backend-repo-rpc:
+        condition: service_healthy
+      backend-contribution-rpc:
+        condition: service_healthy
+    networks:
+      - pulse
+    healthcheck:
+      test: curl -sf http://backend-fetcher:6001/healthz | grep -q 'OK' || exit 1
+      interval: 10s
+      timeout: 60s
+      retries: 10
+
+  backend-api_processor:
+    container_name: gitpulse_backend_api_processor
+    restart: on-failure
+    build:
+      context: ./GitPulse/backend
+      dockerfile: ./deployments/Dockerfile.api_processor
+    env_file:
+      - ./files/github_env
+    volumes:
+      - ./files/etc/apiProcessor.yaml:/app/api_processor/etc/apiProcessor.yaml:ro
+      - ./logs/apiProcessor:/app/logs/apiProcessor/
+    depends_on:
+      consul:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      init-kafka:
+        condition: service_completed_successfully
+      backend-developer-rpc:
+        condition: service_healthy
+      backend-relation-rpc:
+        condition: service_healthy
+      backend-repo-rpc:
+        condition: service_healthy
+      backend-contribution-rpc:
+        condition: service_healthy
+      backend-analysis-rpc:
+        condition: service_healthy
+    networks:
+      - pulse
+    healthcheck:
+        test: curl -sf http://backend-api_processor:6002/healthz | grep -q 'OK' || exit 1
+        interval: 10s
+        timeout: 60s
+        retries: 10
+
+  backend-rank-api:
+    container_name: gitpulse_backend_rank_api
+    restart: on-failure
+    build:
+      context: ./GitPulse/backend
+      dockerfile: ./deployments/Dockerfile.rank_api
+    volumes:
+      - ./files/etc/rank-api.yaml:/app/rank/etc/rank.yaml:ro
+      - ./logs/rank_api:/app/logs/rank_api/
+    env_file:
+      - ./files/github_env
+    depends_on:
+      consul:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      init-kafka:
+        condition: service_completed_successfully
+      backend-analysis-rpc:
+        condition: service_healthy
+      backend-developer-rpc:
+        condition: service_healthy
+    networks:
+      - pulse
+    healthcheck:
+        test: curl -sf http://backend-rank-api:5002/healthz | grep -q 'OK' || exit 1
+        interval: 10s
+        timeout: 60s
+        retries: 10
+
+  backend-languages-api:
+    container_name: gitpulse_backend_languages_api
+    restart: on-failure
+    build:
+      context: ./GitPulse/backend
+      dockerfile: ./deployments/Dockerfile.languages_api
+    volumes:
+      - ./files/etc/languages-api.yaml:/app/languages/etc/languages.yaml:ro
+      - ./logs/languages_api:/app/logs/languages_api/
+    env_file:
+      - ./files/github_env
+    depends_on:
+      consul:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      init-kafka:
+        condition: service_completed_successfully
+    networks:
+      - pulse
+    healthcheck:
+      test: curl -sf http://backend-languages-api:5003/healthz | grep -q 'OK' || exit 1
+      interval: 10s
+      timeout: 60s
+      retries: 10
+
+  backend-developer-api:
+    container_name: gitpulse_backend_developer_api
+    restart: on-failure
+    build:
+      context: ./GitPulse/backend
+      dockerfile: ./deployments/Dockerfile.developer_api
+    env_file:
+      - ./files/github_env
+    volumes:
+      - ./files/etc/developer-api.yaml:/app/developer/cmd/api/etc/developer.yaml:ro
+      - ./logs/developer_api:/app/logs/developer_api/
+    depends_on:
+      consul:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      init-kafka:
+        condition: service_completed_successfully
+      backend-analysis-rpc:
+        condition: service_healthy
+      backend-contribution-rpc:
+        condition: service_healthy
+      backend-developer-rpc:
+        condition: service_healthy
+      backend-relation-rpc:
+        condition: service_healthy
+      backend-repo-rpc:
+        condition: service_healthy
+      backend-api_processor:
+        condition: service_healthy
+      backend-id_generator-rpc:
+        condition: service_healthy
+    networks:
+      - pulse
+    healthcheck:
+        test: curl -sf http://backend-developer-api:5001/healthz | grep -q 'OK' || exit 1
+        interval: 10s
+        timeout: 60s
+        retries: 10
+
+volumes:
+  consul-data:
+  kafka-data:
+  redis-data:
+  postgres-data:
+  kong-postgres-data:
+  prometheus-data:
+  grafana-data:
+  elasticsearch-data:
+
+networks:
+  kong:
+  pulse:
+  web:
+    name: web
+    external: true

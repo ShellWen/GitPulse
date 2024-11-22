@@ -1,0 +1,53 @@
+Name: contribution.rpc
+ListenOn: 0.0.0.0:2004
+Timeout: 300000
+
+Consul:
+  Host: consul:8500
+  Token:
+  Key: contribution.rpc
+  Meta:
+    Protocol: grpc
+  Tag:
+    - tag
+    - rpc
+
+DevServer:
+  Enabled: true
+  Port: 4004
+
+Telemetry:
+  Name: coontribution.rpc
+  Endpoint: http://jaeger:14268/api/traces
+  Sampler: 1.0
+  Batcher: jaeger
+
+Log:
+  ServiceName: contribution.rpc
+  Mode: file
+  Encoding: json
+  Path: logs/contribution_rpc/
+  
+Redis:
+  Host: redis:6379
+  Type: node
+  Pass:
+  Key: contribution-rpc
+
+DB:
+  DataSource: postgres://pulse:youguesswhatnobodyknows@postgres:5432/pulse?sslmode=disable
+Cache:
+  - Host: redis:6379
+    Pass:
+
+KqContributionUpdateConsumerConf:
+  Name: contribution-update-consumer
+  Brokers:
+    - kafka:9092
+  Group: contribution
+  Topic: contribution-update
+
+AsynqRedisConf:
+  Addr: redis:6379
+  Password:
+  DB: 0

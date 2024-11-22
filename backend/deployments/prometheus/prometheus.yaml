@@ -3,65 +3,104 @@ global:
   external_labels:
     monitor: 'codelab-monitor'
 
+rule_files:
+  - 'alert.rules'
+
+alerting:
+  alertmanagers:
+  - scheme: http
+    static_configs:
+    - targets:
+      - "alertmanager:9093"
+
 scrape_configs:
   - job_name: 'prometheus'
     scrape_interval: 10s
     static_configs:
       - targets: ['127.0.0.1:9090']
+  - job_name: 'cadvisor'
+    scrape_interval: 10s
+    static_configs:
+      - targets: ['cadvisor:8080']
+  - job_name: 'node-exporter'
+    scrape_interval: 10s
+    static_configs:
+      - targets: ['node-exporter:9100']
 
   - job_name: 'developer.rpc'
     static_configs:
-      - targets: [ '127.0.0.1:4001' ]
+      - targets: [ 'backend-developer-rpc:4001' ]
         labels:
           job: developer.rpc
           app: developer.rpc
           env: dev
   - job_name: 'repo.rpc'
     static_configs:
-      - targets: ['127.0.0.1:4002']
+      - targets: ['backend-repo-rpc:4002']
         labels:
           job: repo.rpc
           app: repo.rpc
           env: dev
   - job_name: 'relation.rpc'
     static_configs:
-      - targets: ['127.0.0.1:4003']
+      - targets: ['backend-relation-rpc:4003']
         labels:
           job: relation.rpc
           app: relation.rpc
           env: dev
   - job_name: 'contribution.rpc'
     static_configs:
-      - targets: ['127.0.0.1:4004']
+      - targets: ['backend-contribution-rpc:4004']
         labels:
           job: contribution.rpc
           app: contribution.rpc
           env: dev
   - job_name: 'analysis.rpc'
     static_configs:
-      - targets: ['127.0.0.1:4005']
+      - targets: ['backend-analysis-rpc:4005']
         labels:
           job: analysis.rpc
           app: analysis.rpc
           env: dev
+  - job_name: 'idGenerator.rpc'
+    static_configs:
+      - targets: ['backend-id_generator-rpc:4006']
+        labels:
+          job: idGenerator.rpc
+          app: idGenerator.rpc
+          env: dev
   - job_name: 'developer.api'
     static_configs:
-      - targets: [ '127.0.0.1:5001' ]
+      - targets: [ 'backend-developer-api:5001' ]
         labels:
           job: developer.api
           app: developer.api
           env: dev
   - job_name: 'rank.api'
     static_configs:
-      - targets: ['127.0.0.1:5002']
+      - targets: ['backend-rank-rpc:5002']
         labels:
           job: rank.api
           app: rank.api
           env: dev
   - job_name: 'languages.api'
     static_configs:
-      - targets: [ '127.0.0.1:5002' ]
+      - targets: [ 'backend-languages-api:5003' ]
         labels:
           job: languages.api
           app: languages.api
+          env: dev
+  - job_name: 'fetcher'
+    static_configs:
+      - targets: ['backend-fetcher:6001']
+        labels:
+          job: fetcher
+          app: fetcher
+          env: dev
+  - job_name: 'api_processor'
+    static_configs:
+      - targets: ['backend-api_processor:6002']
+        labels:
+          job: api_processor
+          app: api_processor
           env: dev

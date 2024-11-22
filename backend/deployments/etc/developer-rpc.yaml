@@ -1,0 +1,54 @@
+Name: developer.rpc
+ListenOn: 0.0.0.0:2001
+Timeout: 300000
+
+Log:
+  ServiceName: developer.rpc
+  Mode: file
+  Encoding: json
+  Path: logs/developer_rpc/
+
+DevServer:
+  Enabled: true
+  Port: 4001
+
+Telemetry:
+  Name: developer.rpc
+  Endpoint: http://jaeger:14268/api/traces
+  Sampler: 1.0
+  Batcher: jaeger
+
+Consul:
+  Host: consul:8500
+  Token:
+  Key: developer.rpc
+  Meta:
+    Protocol: grpc
+  Tag:
+    - tag
+    - rpc
+
+Redis:
+  Host: redis:6379
+  Type: node
+  Pass:
+  Key: developer-rpc
+
+DB:
+  DataSource: postgres://pulse:youguesswhatnobodyknows@postgres:5432/pulse?sslmode=disable
+Cache:
+  - Host: redis:6379
+    Pass:
+
+
+KqDeveloperUpdateConsumerConf:
+  Name: developer-update-consumer
+  Brokers:
+    - kafka:9092
+  Group: developer
+  Topic: developer-update
+
+AsynqRedisConf:
+  Addr: redis:6379
+  Password:
+  DB: 0
