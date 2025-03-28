@@ -4,7 +4,11 @@
 
 GitPulse 是一个 GitHub 用户分析工具，通过利用 GitHub 开源项目数据，精准评估开发者的技术水平。通过分析项目影响力和贡献度，生成精准的 TalentRank，并推测开发者的地域和专长，助您轻松发现全球优秀开发者与技术专家。
 
-线上地址：[https://pulse.shellwen.com](https://pulse.shellwen.com)，欢迎体验！
+该项目已获得 [七牛云 1024 创作节校园编程马拉松](https://www.qiniu.com/activity/detail/66cfe17084a4441c29b08be9#list-of-winners) 二等奖。
+
+线上地址：~~[https://pulse.shellwen.com](https://pulse.shellwen.com)，欢迎体验！~~
+
+因服务器负载过高，线上演示已被暂停，如有需要请自行部署。
 
 演示视频：[./docs/demo/demo.mp4](./docs/demo/demo.mp4)
 
